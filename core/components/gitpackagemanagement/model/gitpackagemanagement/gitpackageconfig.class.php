@@ -1,284 +1,11 @@
 <?php
 
-class GitPackageConfigAction {
-    private $modx;
-    /* @var $gitPackageConfig GitPackageConfig */
-    private $gitPackageConfig;
-    private $id;
-    private $controller;
-    private $hasLayout;
-    private $langTopics;
-    private $assets;
+require_once 'gitpackageconfigaction.class.php';
+require_once 'gitpackageconfigmenu.class.php';
+require_once 'gitpackageconfigsetting.class.php';
+require_once 'gitpackageconfigdatabase.class.php';
+require_once 'gitpackageconfigelementplugin.class.php';
 
-    public function __construct(modX &$modx, $gitPackageConfig) {
-        $this->modx =& $modx;
-        $this->gitPackageConfig = $gitPackageConfig;
-    }
-
-    public function fromArray($config) {
-        if(isset($config['id'])){
-            $this->id = $config['id'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Actions - id is not set');
-            return false;
-        }
-
-        if(isset($config['controller'])){
-            $this->controller = $config['controller'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Actions - controller is not set');
-            return false;
-        }
-
-        if(isset($config['hasLayout'])){
-            $this->hasLayout = $config['hasLayout'];
-        }else{
-            $this->hasLayout = 1;
-        }
-
-        if(isset($config['langTopics'])){
-            $this->langTopics = $config['langTopics'];
-        }else{
-            $this->langTopics = $this->gitPackageConfig->getLowCaseName().':default';
-        }
-
-        if(isset($config['assets'])){
-            $this->assets = $config['assets'];
-        }else{
-            $this->assets = '';
-        }
-
-        return true;
-    }
-
-    public function getAssets() {
-        return $this->assets;
-    }
-
-    public function getController() {
-        return $this->controller;
-    }
-
-    public function getHasLayout() {
-        return $this->hasLayout;
-    }
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getLangTopics() {
-        return $this->langTopics;
-    }
-
-
-}
-
-class GitPackageConfigMenu {
-    private $modx;
-    /* @var $gitPackageConfig GitPackageConfig */
-    private $gitPackageConfig;
-    private $text;
-    private $description;
-    private $parent;
-    private $icon;
-    private $menuIndex;
-    private $params;
-    private $handler;
-    private $action;
-
-    public function __construct(modX &$modx, $gitPackageConfig) {
-        $this->modx =& $modx;
-        $this->gitPackageConfig = $gitPackageConfig;
-    }
-
-    public function fromArray($config) {
-        if(isset($config['text'])){
-            $this->text = $config['text'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - text is not set');
-            return false;
-        }
-
-        if(isset($config['description'])){
-            $this->description = $config['description'];
-        }else{
-            $this->description = '';
-        }
-
-        if(isset($config['parent'])){
-            $this->parent = $config['parent'];
-        }else{
-            $this->parent = 'components';
-        }
-
-        if(isset($config['icon'])){
-            $this->icon = $config['icon'];
-        }else{
-            $this->icon = '';
-        }
-
-        if(isset($config['menuIndex'])){
-            $this->menuIndex = $config['menuIndex'];
-        }else{
-            $this->menuIndex = 0;
-        }
-
-        if(isset($config['params'])){
-            $this->params = $config['params'];
-        }else{
-            $this->params = '';
-        }
-
-        if(isset($config['handler'])){
-            $this->handler = $config['handler'];
-        }else{
-            $this->handler = '';
-        }
-
-        if(isset($config['action'])){
-            /** @var $action GitPackageConfigAction **/
-            foreach($this->gitPackageConfig->getActions() as $action){
-                if($action->getId() == $config['action']) break;
-                $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - action not exist');
-                return false;
-            }
-            $this->action = $config['action'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - action is not set');
-            return false;
-        }
-
-        return true;
-    }
-
-    public function getAction() {
-        return $this->action;
-    }
-
-    public function getDescription() {
-        return $this->description;
-    }
-
-    public function getHandler() {
-        return $this->handler;
-    }
-
-    public function getIcon() {
-        return $this->icon;
-    }
-
-    public function getMenuIndex() {
-        return $this->menuIndex;
-    }
-
-    public function getParams() {
-        return $this->params;
-    }
-
-    public function getParent() {
-        return $this->parent;
-    }
-
-    public function getText() {
-        return $this->text;
-    }
-
-}
-
-class GitPackageConfigSetting {
-    private $modx;
-    private $key;
-    private $type;
-    private $area;
-    private $value;
-
-    public function __construct(modX &$modx) {
-        $this->modx =& $modx;
-    }
-
-    public function fromArray($config) {
-        if(isset($config['key'])){
-            $this->key = $config['key'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Settings - key is not set');
-            return false;
-        }
-
-        if(isset($config['type'])){
-            $this->type = $config['type'];
-        }else{
-            $this->type = 'textfield';
-        }
-
-        if(isset($config['area'])){
-            $this->area = $config['area'];
-        }else{
-            $this->area = 'default';
-        }
-
-        if(isset($config['value'])){
-            $this->value = $config['value'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Settings - value is not set');
-            return false;
-        }
-
-        return true;
-    }
-
-    public function getArea() {
-        return $this->area;
-    }
-
-    public function getKey() {
-        return $this->key;
-    }
-
-    public function getType() {
-        return $this->type;
-    }
-
-    public function getValue() {
-        return $this->value;
-    }
-
-}
-
-class GitPackageConfigDatabase {
-    private $modx;
-    private $prefix;
-    private $tables;
-
-    public function __construct(modX &$modx) {
-        $this->modx =& $modx;
-    }
-
-    public function fromArray($config) {
-        if(isset($config['prefix'])){
-            $this->prefix = $config['prefix'];
-        }else{
-            $this->prefix = '';
-        }
-
-        if(isset($config['tables'])){
-            $this->tables = $config['tables'];
-        }else{
-            $this->tables = array();
-        }
-
-        return true;
-    }
-
-    public function getPrefix() {
-        return $this->prefix;
-    }
-
-    public function getTables() {
-        return $this->tables;
-    }
-
-}
 
 class GitPackageConfig {
     private $modx;
@@ -293,6 +20,7 @@ class GitPackageConfig {
     private $settings = array();
     private $database = null;
     private $extensionPackage = null;
+    private $elements = array('plugins' => array());
 
     public function __construct(modX &$modx) {
         $this->modx =& $modx;
@@ -350,6 +78,14 @@ class GitPackageConfig {
                     return false;
                 }
             }
+
+            if(isset($config['package']['elements'])){
+                if(isset($config['package']['elements']['plugins'])){
+                    if($this->setPluginElements($config['package']['elements']['plugins']) == false){
+                        return false;
+                    }
+                }
+            }
         }
 
         if(isset($config['database'])){
@@ -369,6 +105,16 @@ class GitPackageConfig {
             }
         }else{
             $this->extensionPackage = false;
+        }
+
+        return true;
+    }
+
+    private function setPluginElements($plugins){
+        foreach ($plugins as $plugin){
+            $p = new GitPackageConfigElementPlugin($this->modx, $this);
+            if($p->fromArray($plugin) == false) return false;
+            $this->elements['plugins'][] = $p;
         }
 
         return true;
@@ -452,5 +198,13 @@ class GitPackageConfig {
 
     public function getExtensionPackage() {
         return $this->extensionPackage;
+    }
+
+    public function getElements($type = null) {
+        if($type){
+            return $this->elements[$type];
+        }
+
+        return $this->elements;
     }
 }

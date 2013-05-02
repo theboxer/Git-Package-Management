@@ -14,51 +14,62 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /** @var $config GitPackageConfig **/
     private $config = null;
 
+    private $configPath = '/_build/config.json';
+
     private $packageCorePath = null;
     private $packageAssetsPath = null;
     private $packageAssetsUrl = null;
 
+    private $category = null;
+
     public function beforeSave() {
         $url = $this->getProperty('url');
         $folderName = $this->getProperty('folderName');
+
+        $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
+        if($packagePath == null){
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
+            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            return false;
+        }
 
         if (empty($folderName)) {
             $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
         }
 
+        $skipClone = false;
+
         if (empty($url)) {
-            $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
-            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
+            $configFile = $packagePath . $folderName . $this->configPath;
+            if(!file_exists($configFile)){
+                $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
+                $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
+            }else{
+                $skipClone = true;
+            }
         } else if ($this->doesAlreadyExist(array('url' => $url))) {
             $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ae_url'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ae_url'));
         }
 
         if(!$this->hasErrors()){
-            $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
-            if($packagePath == null){
-                $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
-                $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
-                $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
-                return false;
+            if(!$skipClone){
+                if(is_dir($packagePath . $folderName)){
+                    $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ae_folder_name'));
+                    $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ae_folder_name'));
+                    $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+                    return false;
+                }
+
+                mkdir($packagePath . $folderName);
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Folder for package created.');
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Cloning of repository started.');
+                $this->modx->gitpackagemanagement->createRepo($packagePath . $folderName, $url);
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Git repository cloned.');
             }
-
-            if(is_dir($packagePath . $folderName)){
-                $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ae_folder_name'));
-                $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ae_folder_name'));
-                $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
-                return false;
-            }
-
-            mkdir($packagePath . $folderName);
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Folder for package created.');
-
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Cloning of repository started.');
-            $this->modx->gitpackagemanagement->createRepo($packagePath . $folderName, $url);
-            $this->recursiveChmod($packagePath . $folderName);
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Git repository cloned.');
-
             if($this->setConfig($packagePath . $folderName) == false) {
                 return false;
             }
@@ -85,7 +96,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     }
 
     private function setConfig($package){
-        $configFile = $package . '/_build/config.json';
+        $configFile = $package . $this->configPath;
         if(!file_exists($configFile)){
             $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
             $this->deleteDirectory($package);
@@ -142,6 +153,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         if($this->config->getExtensionPackage() != false){
             $this->addExtensionPackage();
         }
+        $this->createElements();
     }
 
     private function addExtensionPackage(){
@@ -264,37 +276,53 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         system("rm -rf ".escapeshellarg($dir));
     }
 
-    private function recursiveChmod ($path, $filePerm=0777, $dirPerm=0777) {
-        // Check if the path exists
-        if (!file_exists($path)) {
-            return(false);
+    private function createElements(){
+        $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements started');
+        $this->createCategory();
+        $this->createPlugins();
+    }
+
+    private function createCategory() {
+        $category = $this->modx->getObject('modCategory', array('name' => $this->config->getName()));
+        if(!$category){
+            $category = $this->modx->newObject('modCategory');
+            $category->set('category', $this->config->getName());
+            $category->save();
         }
 
-        // See whether this is a file
-        if (is_file($path)) {
-            // Chmod the file with our given filepermissions
-            chmod($path, $filePerm);
+        $this->category = $category;
+    }
 
-            // If this is a directory...
-        } elseif (is_dir($path)) {
-            // Then get an array of the contents
-            $foldersAndFiles = scandir($path);
+    private function createPlugins(){
+        $plugins = $this->config->getElements('plugins');
+        if(count($plugins) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating plugins:');
+            /** @var GitPackageConfigElementPlugin $plugin */
+            foreach($plugins as $plugin){
+                $pluginObject = $this->modx->newObject('modPlugin');
+                $pluginObject->set('name', $plugin->getName());
+                $pluginObject->set('static', 1);
+                $pluginObject->set('static_file', $this->packageCorePath . 'elements/plugins/' . $plugin->getFile() . '.php');
+                $pluginObject->set('category', $this->category->id);
+                $pluginObject->save();
 
-            // Remove "." and ".." from the list
-            $entries = array_slice($foldersAndFiles, 2);
+                $events = array();
 
-            // Parse every result...
-            foreach ($entries as $entry) {
-                // And call this function again recursively, with the same permissions
-                $this->recursiveChmod($path."/".$entry, $filePerm, $dirPerm);
+                foreach($plugin->getEvents() as $event){
+                    $events[$event]= $this->modx->newObject('modPluginEvent');
+                    $events[$event]->fromArray(array(
+                          'event' => $event,
+                          'priority' => 0,
+                          'propertyset' => 0,
+                     ),'',true,true);
+                }
+
+                $pluginObject->addMany($events);
+                $pluginObject->save();
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Plugin ' . $plugin->getName() . ' created.');
             }
 
-            // When we are done with the contents of the directory, we chmod the directory itself
-            chmod($path, $dirPerm);
         }
-
-        // Everything seemed to work out well, return true
-        return(true);
     }
 }
 return 'GitPackageManagementCreateProcessor';
