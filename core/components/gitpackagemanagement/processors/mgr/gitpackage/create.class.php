@@ -280,6 +280,9 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements started');
         $this->createCategory();
         $this->createPlugins();
+        $this->createChunks();
+        $this->createSnippets();
+        $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements finished');
     }
 
     private function createCategory() {
@@ -302,7 +305,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('static', 1);
-                $pluginObject->set('static_file', $this->packageCorePath . 'elements/plugins/' . $plugin->getFile() . '.php');
+                $pluginObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/plugins/' . $plugin->getFile() . '.php');
                 $pluginObject->set('category', $this->category->id);
                 $pluginObject->save();
 
@@ -320,6 +323,44 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject->addMany($events);
                 $pluginObject->save();
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Plugin ' . $plugin->getName() . ' created.');
+            }
+
+        }
+    }
+
+    private function createSnippets(){
+        $snippets = $this->config->getElements('snippets');
+        if(count($snippets) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating snippets:');
+            /** @var GitPackageConfigElementSnippet $snippet */
+            foreach($snippets as $snippet){
+                $snippetObject = $this->modx->newObject('modSnippet');
+                $snippetObject->set('name', $snippet->getName());
+                $snippetObject->set('static', 1);
+                $snippetObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/snippets/' . $snippet->getFile() . '.php');
+                $snippetObject->set('category', $this->category->id);
+                $snippetObject->save();
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Snippet ' . $snippet->getName() . ' created.');
+            }
+
+        }
+    }
+
+    private function createChunks(){
+        $chunks = $this->config->getElements('chunks');
+        if(count($chunks) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating chunks:');
+            /** @var GitPackageConfigElementChunk $chunk */
+            foreach($chunks as $chunk){
+                $chunkObject = $this->modx->newObject('modChunk');
+                $chunkObject->set('name', $chunk->getName());
+                $chunkObject->set('static', 1);
+                $chunkObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/chunks/' . $chunk->getFile() . '.tpl');
+                $chunkObject->set('category', $this->category->id);
+                $chunkObject->save();
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Chunk ' . $chunk->getName() . ' created.');
             }
 
         }

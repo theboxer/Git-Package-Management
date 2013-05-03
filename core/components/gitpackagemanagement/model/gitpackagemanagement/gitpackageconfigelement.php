@@ -21,7 +21,7 @@ abstract class GitPackageConfigElement{
         if(isset($config['file'])){
             $this->file = $config['file'];
         }else{
-            $this->file = $this->type.'.'.$this->name;
+            $this->file = strtolower($this->name).'.'.$this->type;
         }
 
         return true;
