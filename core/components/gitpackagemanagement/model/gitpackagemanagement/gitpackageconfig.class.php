@@ -1,10 +1,13 @@
 <?php
 
+require_once 'gitpackageconfigelement.php';
 require_once 'gitpackageconfigaction.class.php';
 require_once 'gitpackageconfigmenu.class.php';
 require_once 'gitpackageconfigsetting.class.php';
 require_once 'gitpackageconfigdatabase.class.php';
 require_once 'gitpackageconfigelementplugin.class.php';
+require_once 'gitpackageconfigelementchunk.class.php';
+require_once 'gitpackageconfigelementsnippet.class.php';
 
 
 class GitPackageConfig {
@@ -20,7 +23,7 @@ class GitPackageConfig {
     private $settings = array();
     private $database = null;
     private $extensionPackage = null;
-    private $elements = array('plugins' => array());
+    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array());
 
     public function __construct(modX &$modx) {
         $this->modx =& $modx;
@@ -85,6 +88,18 @@ class GitPackageConfig {
                         return false;
                     }
                 }
+
+                if(isset($config['package']['elements']['snippets'])){
+                    if($this->setSnippetElements($config['package']['elements']['snippets']) == false){
+                        return false;
+                    }
+                }
+
+                if(isset($config['package']['elements']['chunks'])){
+                    if($this->setChunkElements($config['package']['elements']['chunks']) == false){
+                        return false;
+                    }
+                }
             }
         }
 
@@ -115,6 +130,26 @@ class GitPackageConfig {
             $p = new GitPackageConfigElementPlugin($this->modx, $this);
             if($p->fromArray($plugin) == false) return false;
             $this->elements['plugins'][] = $p;
+        }
+
+        return true;
+    }
+
+    private function setSnippetElements($plugins){
+        foreach ($plugins as $plugin){
+            $p = new GitPackageConfigElementSnippet($this->modx, $this);
+            if($p->fromArray($plugin) == false) return false;
+            $this->elements['snippets'][] = $p;
+        }
+
+        return true;
+    }
+
+    private function setChunkElements($plugins){
+        foreach ($plugins as $plugin){
+            $p = new GitPackageConfigElementChunk($this->modx, $this);
+            if($p->fromArray($plugin) == false) return false;
+            $this->elements['chunks'][] = $p;
         }
 
         return true;

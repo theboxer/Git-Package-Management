@@ -1,29 +1,10 @@
 <?php
 
-class GitPackageConfigElementPlugin{
-    private $modx;
-    private $name;
-    private $file;
-    private $events = array();
-
-    public function __construct(modX &$modx) {
-        $this->modx =& $modx;
-    }
+class GitPackageConfigElementPlugin extends GitPackageConfigElement{
+    protected $type = 'plugin';
+    protected $events = array();
 
     public function fromArray($config) {
-        if(isset($config['name'])){
-            $this->name = $config['name'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: plugin - name is not set');
-            return false;
-        }
-
-        if(isset($config['file'])){
-            $this->file = $config['file'];
-        }else{
-            $this->file = 'plugin.'.$this->name;
-        }
-
         if(isset($config['events'])){
             $this->events = $config['events'];
         }else{
@@ -31,18 +12,10 @@ class GitPackageConfigElementPlugin{
             return false;
         }
 
-        return true;
+        return parent::fromArray($config);
     }
 
     public function getEvents() {
         return $this->events;
-    }
-
-    public function getFile() {
-        return $this->file;
-    }
-
-    public function getName() {
-        return $this->name;
     }
 }
