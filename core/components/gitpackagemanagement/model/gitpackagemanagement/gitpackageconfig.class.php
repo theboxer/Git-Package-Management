@@ -13,22 +13,41 @@ require_once 'gitpackageconfigelementsnippet.class.php';
 class GitPackageConfig {
     private $modx;
 
+    /** @var string $name Package name  */
     private $name = null;
+    /** @var string $lowCaseName Package low case name */
     private $lowCaseName = null;
+    /** @var string $author Package author */
     private $author = null;
+    /** @var string $version Package current version */
     private $version = null;
+    /** @var string $description PAckage description */
     private $description = null;
+    /** @var array $action Array with package's actions */
     private $actions = array();
+    /** @var array $menus Array with package's menus */
     private $menus = array();
+    /** @var array $settings Array with package's settings */
     private $settings = array();
+    /** @var GitPackageConfigDatabase $database Object with package's database information */
     private $database = null;
+    /** @var array $extensionPackage Array with extensionPackage information */
     private $extensionPackage = null;
+    /** @var array $elements Array with all elements */
     private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array());
 
+    /**
+     * @param modX $modx
+     */
     public function __construct(modX &$modx) {
         $this->modx =& $modx;
     }
 
+    /**
+     * Parse and validate given array into objects
+     * @param $config Array
+     * @return bool
+     */
     public function parseConfig($config) {
         if(isset($config['name'])){
             $this->name = $config['name'];
@@ -125,6 +144,11 @@ class GitPackageConfig {
         return true;
     }
 
+    /**
+     * Parse and validate plugins array
+     * @param $plugins Array
+     * @return bool
+     */
     private function setPluginElements($plugins){
         foreach ($plugins as $plugin){
             $p = new GitPackageConfigElementPlugin($this->modx, $this);
@@ -135,28 +159,43 @@ class GitPackageConfig {
         return true;
     }
 
-    private function setSnippetElements($plugins){
-        foreach ($plugins as $plugin){
+    /**
+     * Parse and validate snippets array
+     * @param $snippets Array
+     * @return bool
+     */
+    private function setSnippetElements($snippets){
+        foreach ($snippets as $snippet){
             $p = new GitPackageConfigElementSnippet($this->modx, $this);
-            if($p->fromArray($plugin) == false) return false;
+            if($p->fromArray($snippet) == false) return false;
             $this->elements['snippets'][] = $p;
         }
 
         return true;
     }
 
-    private function setChunkElements($plugins){
-        foreach ($plugins as $plugin){
+    /**
+     * Parse and validate chunks array
+     * @param $chunks Array
+     * @return bool
+     */
+    private function setChunkElements($chunks){
+        foreach ($chunks as $chunk){
             $p = new GitPackageConfigElementChunk($this->modx, $this);
-            if($p->fromArray($plugin) == false) return false;
+            if($p->fromArray($chunk) == false) return false;
             $this->elements['chunks'][] = $p;
         }
 
         return true;
     }
 
-    private function setActions($config) {
-        foreach ($config as $action){
+    /**
+     * Parse and validate actions
+     * @param $actions Array
+     * @return bool
+     */
+    private function setActions($actions) {
+        foreach ($actions as $action){
             $a = new GitPackageConfigAction($this->modx, $this);
             if($a->fromArray($action) == false) return false;
             $this->actions[] = $a;
@@ -165,8 +204,13 @@ class GitPackageConfig {
         return true;
     }
 
-    private function setMenus($config) {
-        foreach ($config as $menu){
+    /**
+     * Parse and validate menus
+     * @param $menus Array
+     * @return bool
+     */
+    private function setMenus($menus) {
+        foreach ($menus as $menu){
             $m = new GitPackageConfigMenu($this->modx, $this);
             if($m->fromArray($menu) == false) return false;
             $this->menus[] = $m;
@@ -175,8 +219,13 @@ class GitPackageConfig {
         return true;
     }
 
-    private function setSettings($config) {
-        foreach ($config as $setting){
+    /**
+     * Parse and validate settings
+     * @param $settings
+     * @return bool
+     */
+    private function setSettings($settings) {
+        foreach ($settings as $setting){
             $s = new GitPackageConfigSetting($this->modx);
             if($s->fromArray($setting) == false) return false;
             $this->settings[] = $s;
@@ -185,56 +234,103 @@ class GitPackageConfig {
         return true;
     }
 
-    private function setDatabase($config) {
+    /**
+     * Parse and validate database information
+     * @param $database
+     * @return bool
+     */
+    private function setDatabase($database) {
         $this->database = new GitPackageConfigDatabase($this->modx);
-        if($this->database->fromArray($config) == false) return false;
+        if($this->database->fromArray($database) == false) return false;
 
         return true;
     }
 
+    /**
+     * Returns array of GitPackageConfigAction objects
+     * @return array
+     */
     public function getActions() {
         return $this->actions;
     }
 
+    /**
+     * Returns author of package
+     * @return string
+     */
     public function getAuthor() {
         return $this->author;
     }
 
+    /**
+     * Returns low case name of package
+     * @return string
+     */
     public function getLowCaseName() {
         return $this->lowCaseName;
     }
 
+    /**
+     * Returns array of GitPackageConfigMenu objects
+     * @return array
+     */
     public function getMenus() {
         return $this->menus;
     }
 
+    /**
+     * Returns name of package
+     * @return string
+     */
     public function getName() {
         return $this->name;
     }
 
+    /**
+     * Returns array of GitPackageConfigSetting objects
+     * @return array
+     */
     public function getSettings() {
         return $this->settings;
     }
 
+    /**
+     * Returns version of package
+     * @return string
+     */
     public function getVersion() {
         return $this->version;
     }
 
+    /**
+     * Returns description of package
+     * @return string
+     */
     public function getDescription() {
         return $this->description;
     }
 
     /**
+     * Returns information about database
      * @return GitPackageConfigDatabase
      */
     public function getDatabase() {
         return $this->database;
     }
 
+    /**
+     * Returns information about extension package
+     * @return array|null
+     */
     public function getExtensionPackage() {
         return $this->extensionPackage;
     }
 
+    /**
+     * Return array with all elements, or only with elements of type $type
+     * @param string $type (default is null)
+     * @return array
+     */
     public function getElements($type = null) {
         if($type){
             return $this->elements[$type];
