@@ -75,6 +75,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $this->removePlugins();
         $this->removeSnippets();
         $this->removeChunks();
+        $this->removeTemplates();
         $this->removeCategory();
     }
 
@@ -98,7 +99,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($plugins as $plugin){
                 /** @var modPlugin $pluginObject */
                 $pluginObject = $this->modx->getObject('modPlugin', array('name' => $plugin->getName()));
-                $pluginObject->remove();
+                if($pluginObject) $pluginObject->remove();
             }
         }
     }
@@ -110,7 +111,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($snippets as $snippet){
                 /** @var modSnippet $snippetObject */
                 $snippetObject = $this->modx->getObject('modSnippet', array('name' => $snippet->getName()));
-                $snippetObject->remove();
+                if($snippetObject) $snippetObject->remove();
             }
         }
     }
@@ -122,7 +123,19 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($chunks as $chunk){
                 /** @var modChunk $chunkObject */
                 $chunkObject = $this->modx->getObject('modChunk', array('name' => $chunk->getName()));
-                $chunkObject->remove();
+                if($chunkObject) $chunkObject->remove();
+            }
+        }
+    }
+
+    private function removeTemplates() {
+        $templates = $this->config->getElements('templates');
+        if(count($templates) > 0){
+            /** @var GitPackageConfigElementTemplate $template */
+            foreach($templates as $template){
+                /** @var modChunk $chunkObject */
+                $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $template->getName()));
+                if($templateObject) $templateObject->remove();
             }
         }
     }
@@ -130,9 +143,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     private function removeCategory() {
         /** @var modCategory $cat */
         $cat = $this->modx->getObject('modCategory', array('category' => $this->config->getLowCaseName()));
-        if($cat){
-            $cat->remove();
-        }
+        if($cat) $cat->remove();
+
     }
 }
 return 'GitPackageManagementRemoveProcessor';
