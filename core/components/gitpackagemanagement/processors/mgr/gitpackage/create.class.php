@@ -20,6 +20,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
     private $category = null;
 
+    private $installFromDirectory = false;
+
     public function beforeSave() {
         $url = $this->getProperty('url');
         $folderName = $this->getProperty('folderName');
@@ -43,19 +45,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
         }
 
-        $skipClone = false;
+        $configFile = $packagePath . $folderName . $this->modx->gitpackagemanagement->configPath;
+        if(file_exists($configFile)){
+            $this->installFromDirectory = true;
+        }
 
         /**
          * If URL is empty and folder with folderName exists, installation process will start from that folder.
          * If URL is empty and folder with folderName NOT exist, error is showed.
          */
         if (empty($url)) {
-            $configFile = $packagePath . $folderName . $this->modx->gitpackagemanagement->configPath;
-            if(!file_exists($configFile)){
+            if(!$this->installFromDirectory){
                 $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
                 $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
-            }else{
-                $skipClone = true;
             }
         } else if ($this->doesAlreadyExist(array('url' => $url))) {
             $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ae_url'));
@@ -70,7 +72,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             /**
              * If installation from folder has to be done, cloning of git repository is skipped
              */
-            if(!$skipClone){
+            if(!$this->installFromDirectory){
 
                 /**
                  * If folder with folderName already exist render error
@@ -141,21 +143,28 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $configFile = $package . $this->modx->gitpackagemanagement->configPath;
         if(!file_exists($configFile)){
             $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
-            $this->modx->gitpackagemanagement->deleteDirectory($package);
+            if(!$this->installFromDirectory){
+                $this->modx->gitpackagemanagement->deleteDirectory($package);
+            }
             return false;
         }
 
+        $configContent = $this->modx->fromJSON(file_get_contents($configFile));
         $this->config = new GitPackageConfig($this->modx);
-        if($this->config->parseConfig($this->modx->fromJSON(file_get_contents($configFile))) == false) {
+        if($this->config->parseConfig($configContent) == false) {
             $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Config file is invalid.');
-            $this->modx->gitpackagemanagementdeleteDirectory($package);
+            if(!$this->installFromDirectory){
+                $this->modx->gitpackagemanagement->deleteDirectory($package);
+            }
             $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
             return false;
-        }else{
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Config file is valid.');
-            return true;
         }
+
+        $this->object->set('config', $this->modx->toJSON($configContent));
+        $this->object->save();
+        $this->modx->log(modX::LOG_LEVEL_INFO, 'Config file is valid.');
+        return true;
 
     }
 
@@ -357,6 +366,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->createPlugins();
         $this->createChunks();
         $this->createSnippets();
+        $this->createTemplates();
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements finished');
     }
 
@@ -448,6 +458,28 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $chunkObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Chunk ' . $chunk->getName() . ' created.');
+            }
+
+        }
+    }
+
+    /**
+     * Create templates if any
+     */
+    private function createTemplates(){
+        $templates = $this->config->getElements('templates');
+        if(count($templates) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating chunks:');
+            /** @var GitPackageConfigElementTemplate $template */
+            foreach($templates as $template){
+                $templatesObject = $this->modx->newObject('modTemplate');
+                $templatesObject->set('templatename', $template->getName());
+                $templatesObject->set('static', 1);
+                $templatesObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/chunks/' . $template->getFile() . '.tpl');
+                $templatesObject->set('category', $this->category->id);
+                $templatesObject->save();
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Template ' . $template->getName() . ' created.');
             }
 
         }

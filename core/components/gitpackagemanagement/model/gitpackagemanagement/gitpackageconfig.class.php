@@ -34,7 +34,7 @@ class GitPackageConfig {
     /** @var array $extensionPackage Array with extensionPackage information */
     private $extensionPackage = null;
     /** @var array $elements Array with all elements */
-    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array());
+    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array());
 
     /**
      * @param modX $modx
@@ -119,6 +119,12 @@ class GitPackageConfig {
                         return false;
                     }
                 }
+
+                if(isset($config['package']['elements']['templates'])){
+                    if($this->setTemplateElements($config['package']['elements']['templates']) == false){
+                        return false;
+                    }
+                }
             }
         }
 
@@ -184,6 +190,21 @@ class GitPackageConfig {
             $p = new GitPackageConfigElementChunk($this->modx, $this);
             if($p->fromArray($chunk) == false) return false;
             $this->elements['chunks'][] = $p;
+        }
+
+        return true;
+    }
+
+    /**
+     * Parse and validate templates array
+     * @param $templates Array
+     * @return bool
+     */
+    private function setTemplateElements($templates){
+        foreach ($templates as $template){
+            $p = new GitPackageConfigElementTemplate($this->modx, $this);
+            if($p->fromArray($template) == false) return false;
+            $this->elements['templates'][] = $p;
         }
 
         return true;
