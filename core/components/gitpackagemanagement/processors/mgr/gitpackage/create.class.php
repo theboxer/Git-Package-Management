@@ -14,8 +14,6 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /** @var $config GitPackageConfig **/
     private $config = null;
 
-    private $configPath = '/_build/config.json';
-
     private $packageCorePath = null;
     private $packageAssetsPath = null;
     private $packageAssetsUrl = null;
@@ -52,7 +50,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
          * If URL is empty and folder with folderName NOT exist, error is showed.
          */
         if (empty($url)) {
-            $configFile = $packagePath . $folderName . $this->configPath;
+            $configFile = $packagePath . $folderName . $this->modx->gitpackagemanagement->configPath;
             if(!file_exists($configFile)){
                 $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
                 $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
@@ -140,10 +138,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @return bool
      */
     private function setConfig($package){
-        $configFile = $package . $this->configPath;
+        $configFile = $package . $this->modx->gitpackagemanagement->configPath;
         if(!file_exists($configFile)){
             $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
-            $this->deleteDirectory($package);
+            $this->modx->gitpackagemanagement->deleteDirectory($package);
             return false;
         }
 
@@ -151,7 +149,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         if($this->config->parseConfig($this->modx->fromJSON(file_get_contents($configFile))) == false) {
             $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Config file is invalid.');
-            $this->deleteDirectory($package);
+            $this->modx->gitpackagemanagementdeleteDirectory($package);
             $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
             return false;
         }else{
@@ -351,15 +349,6 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     }
 
     /**
-     * Remove directory (recursively with all children)
-     * @param $dir string
-     */
-    private function deleteDirectory($dir) {
-        //TODO: Find better solution to remove all directories and children
-        system("rm -rf ".escapeshellarg($dir));
-    }
-
-    /**
      * Create category. Create plugins, chunks and snippets and insert all of them to created category.
      */
     private function createElements(){
@@ -375,7 +364,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create category for elements
      */
     private function createCategory() {
-        $category = $this->modx->getObject('modCategory', array('name' => $this->config->getName()));
+        $category = $this->modx->getObject('modCategory', array('category' => $this->config->getName()));
         if(!$category){
             $category = $this->modx->newObject('modCategory');
             $category->set('category', $this->config->getName());

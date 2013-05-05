@@ -12,6 +12,8 @@ class GitPackageManagement {
     public $config = array();
     /** @var array $chunks */
     public $chunks = array();
+    /** @var string $configPath */
+    public $configPath = '/_build/config.json';
 
     function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
@@ -97,5 +99,14 @@ class GitPackageManagement {
 
     public function createRepo($path, $source){
         return Git::create($path, $source);
+    }
+
+    /**
+     * Remove directory (recursively with all children)
+     * @param $dir string
+     */
+    public function deleteDirectory($dir) {
+        //TODO: Find better solution to remove all directories and children
+        system("rm -rf ".escapeshellarg($dir));
     }
 }

@@ -30,3 +30,4 @@ $_lang['gitpackagemanagement.package_err_ae_url'] = 'Package from this URL has b
 $_lang['gitpackagemanagement.package_err_ns_packages_dir'] = 'Folder for packages is not set. Set package folder in system settings.';
 $_lang['gitpackagemanagement.package_err_ae_folder_name'] = 'Folder with this name already exists.';
 $_lang['gitpackagemanagement.package_err_url_config_nf'] = 'This GIT repository does not contain config file.';
+$_lang['gitpackagemanagement.package_err_url_config_nfif'] = 'Folder with cloned repository doesn\'t contain config file.';
