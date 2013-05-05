@@ -355,6 +355,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @param $dir string
      */
     private function deleteDirectory($dir) {
+        //TODO: Find better solution to remove all directories and children
         system("rm -rf ".escapeshellarg($dir));
     }
 
