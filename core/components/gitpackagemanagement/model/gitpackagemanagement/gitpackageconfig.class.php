@@ -8,6 +8,7 @@ require_once 'gitpackageconfigdatabase.class.php';
 require_once 'gitpackageconfigelementplugin.class.php';
 require_once 'gitpackageconfigelementchunk.class.php';
 require_once 'gitpackageconfigelementsnippet.class.php';
+require_once 'gitpackageconfigelementtemplate.class.php';
 
 
 class GitPackageConfig {

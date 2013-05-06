@@ -469,13 +469,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     private function createTemplates(){
         $templates = $this->config->getElements('templates');
         if(count($templates) > 0){
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating chunks:');
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating templates:');
             /** @var GitPackageConfigElementTemplate $template */
             foreach($templates as $template){
                 $templatesObject = $this->modx->newObject('modTemplate');
                 $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('static', 1);
-                $templatesObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/chunks/' . $template->getFile() . '.tpl');
+                $templatesObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/templates/' . $template->getFile() . '.tpl');
                 $templatesObject->set('category', $this->category->id);
                 $templatesObject->save();
 
