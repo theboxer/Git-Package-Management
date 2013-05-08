@@ -1,11 +1,10 @@
 --------------------
 GitPackageManagement
 --------------------
-Version: 0.0.2
+Version: 0.1.0 alpha
 Author: Jan Peca <pecajan@gmail.com>
 --------------------
 
-A basic Extra for MODx Revolution.
+Manage downloaded packages or clone and install package directly from git.
 
-Feel free to suggest ideas/improvements/bugs on GitHub:
-http://github.com/theboxer/GitPackageManagement/issues
+After installation please set git_path in system settings to your git executable.

@@ -1,9 +1,15 @@
 Changelog for GitPackageManagement.
 
-GitPackageManagement 0.0.2
+GitPackageManagement 0.1.0 alpha
 ==============
-- Added ability to sort grid by drag and drop.
+- Clone package from git to specific folder
+- Install package from folder
+- Uninstall package
 
-GitPackageManagement 0.0.1
-==============
-- Initial release.
+- Installation process can handle:
+    - Creating namespace
+    - Creating system settings
+    - Creating actions and menus
+    - Creating elements: chunks, snippets, templates and plugins as static (better for development process)
+    - Creating database tables
+    - Adding extension package

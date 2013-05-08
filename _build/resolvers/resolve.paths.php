@@ -52,6 +52,11 @@ if ($object->xpdo) {
 
             /* setup urls */
             createSetting($modx,'assets_url',$modx->getOption('assets_url').'components/gitpackagemanagement/');
+
+            /* create gitpackagemanagement settings */
+            createSetting($modx,'git_path', '/usr/bin/git');
+            createSetting($modx,'packages_dir', '');
+
         break;
     }
 }

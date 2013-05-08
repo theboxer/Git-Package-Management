@@ -1,25 +1,5 @@
 <?php
 /**
- * GitPackageManagement
- *
- * Copyright 2010 by Shaun McCormick <shaun+gitpackagemanagement@modx.com>
- *
- * GitPackageManagement is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * GitPackageManagement is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * GitPackageManagement; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * @package gitpackagemanagement
- */
-/**
  * GitPackageManagement build script
  *
  * @package gitpackagemanagement 
@@ -34,8 +14,8 @@ set_time_limit(0);
 /* define package */
 define('PKG_NAME','GitPackageManagement');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','1.0.0');
-define('PKG_RELEASE','pl');
+define('PKG_VERSION','0.1.0');
+define('PKG_RELEASE','alpha');
 
 /* define sources */
 $root = dirname(dirname(__FILE__)).'/';
@@ -135,24 +115,6 @@ $vehicle->resolve('file',array(
     'target' => "return MODX_CORE_PATH . 'components/';",
 ));
 $builder->putVehicle($vehicle);
-
-/* load system settings */
-$settings = include $sources['data'].'transport.settings.php';
-if (!is_array($settings)) {
-    $modx->log(modX::LOG_LEVEL_ERROR,'Could not package in settings.');
-} else {
-    $attributes= array(
-        xPDOTransport::UNIQUE_KEY => 'key',
-        xPDOTransport::PRESERVE_KEYS => true,
-        xPDOTransport::UPDATE_OBJECT => false,
-    );
-    foreach ($settings as $setting) {
-        $vehicle = $builder->createVehicle($setting,$attributes);
-        $builder->putVehicle($vehicle);
-    }
-    $modx->log(modX::LOG_LEVEL_INFO,'Packaged in '.count($settings).' System Settings.');
-}
-unset($settings,$setting,$attributes);
 
 /* load menu */
 $menu = include $sources['data'].'transport.menu.php';
