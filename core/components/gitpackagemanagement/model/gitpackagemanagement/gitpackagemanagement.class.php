@@ -42,7 +42,10 @@ class GitPackageManagement {
         $this->modx->addPackage('gitpackagemanagement',$this->config['modelPath']);
         $this->modx->lexicon->load('gitpackagemanagement:default');
 
-        Git::set_bin('C:\\cygwin\\bin\\git.exe');
+        $gitPath = $this->modx->getOption('gitpackagemanagement.git_path');
+        if($gitPath){
+            Git::set_bin($gitPath);
+        }
     }
 
     /**
