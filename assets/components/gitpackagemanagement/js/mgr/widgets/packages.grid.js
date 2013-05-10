@@ -3,7 +3,7 @@ GitPackageManagement.grid.Packages = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         id: 'gitpackagemanagement-grid-packages'
-        ,url: GitPackageManagement.config.connector_url
+        ,url: GitPackageManagement.config.connectorUrl
         ,baseParams: {
             action: 'mgr/gitpackage/getlist'
         }
@@ -66,10 +66,30 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,getMenu: function() {
         var m = [];
         m.push({
+            text: _('gitpackagemanagement.update_config')
+            ,handler: this.updateConfig
+        });
+        m.push('-');
+        m.push({
             text: _('gitpackagemanagement.remove_package')
             ,handler: this.removeItem
         });
         this.addContextMenuItem(m);
+    }
+
+    ,updateConfig: function(){
+        MODx.Ajax.request({
+            url: GitPackageManagement.config.connectorUrl
+            ,params: {
+                action: 'mgr/gitpackage/updateconfig'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success':{fn:function(r) {
+                    MODx.msg.alert(_('gitpackagemanagement.update_config'), _('gitpackagemanagement.config_update_success'));
+                },scope:this}
+            }
+        });
     }
     
     ,createItem: function(btn,e) {
@@ -133,7 +153,7 @@ GitPackageManagement.window.AddPackage = function(config) {
         ,id: this.ident
         ,height: 150
         ,width: 475
-        ,url: GitPackageManagement.config.connector_url
+        ,url: GitPackageManagement.config.connectorUrl
         ,baseParams: {
             action: 'mgr/gitpackage/create'
             ,register: 'mgr'

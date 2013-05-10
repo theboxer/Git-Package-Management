@@ -22,6 +22,8 @@ $_lang['gitpackagemanagement.version'] = 'Version';
 $_lang['gitpackagemanagement.add_package'] = 'Add package';
 $_lang['gitpackagemanagement.remove_package'] = 'Remove package';
 $_lang['gitpackagemanagement.remove_package_confirm'] = 'Do you really want to remove this package?';
+$_lang['gitpackagemanagement.update_config'] = 'Push local config to database';
+$_lang['gitpackagemanagement.config_update_success'] = 'Config file was successfully pushed to database';
 
 //Errors
 $_lang['gitpackagemanagement.package_err_ns_folder_name'] = 'You have to enter folder name.';

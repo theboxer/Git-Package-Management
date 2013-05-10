@@ -1,0 +1,59 @@
+{
+    "name": "Package"                               // Required
+    ,"lowCaseName": "package"                       // Required
+    ,"description": "Package description"
+    ,"author": "Author name"                        // Required
+    ,"version": "1.0.0"
+    ,"package":{                                    // Optional
+        "actions": [{                               // Optional
+            "id": 1                                 // Required, used only in this config scope
+            ,"controller": "index"                  // Required
+            ,"hasLayout": 1                         // Optional, default value 1
+            ,"langTopics": "package:default"        // Optional, default value $lowCaseName$:default
+            ,"assets": ""                           // Optional, default value null
+        }]
+        ,"menus": [{                                // Optional
+            "text": "package"                       // Required
+            ,"description": "package.menu_desc"     // Optional, default value null
+            ,"action": 1                            // Required, ID of actions (from this config)
+            ,"parent": "components"                 // Optional, default value components
+            ,"icon": ""                             // Optional, default value null
+            ,"menuIndex": 0                         // Optional, default value 0
+            ,"params": ""                           // Optional, default value null
+            ,"handler": ""                          // Optional, default value null
+        }]
+        ,"elements": {                              // Optional
+            "plugins": [{                           // Optional
+                "name": "PackagePlugin"             // Required
+                ,"file": "packageplugin.plugin"     // Optional, default value strtolower($name$).plugin
+                ,"events": ["OnPageNotFound"]       // Required
+            }]
+            ,"snippets": [{                         // Optional
+                "name": "PackageSnippet"            // Required
+                ,"file": "packagesnippet.snippet"   // Optional, default value strtolower($name$).snippet
+            }]
+            ,"chunks": [{                           // Optional
+                "name": "PackageChunk"              // Required
+                ,"file": "packagechunk.chunk"       // Optional, default value strtolower($name$).chunk
+            }]
+            ,"templates": [{                        // Optional
+                "name": "PackageTemplate"           // Required
+                ,"file": "packagetemplate.template" // Optional, default value strtolower($name$).template
+            }]
+        }
+        ,"systemSettings": [{                       // Optional
+            "key": "test_key"                       // Required
+            ,"type": "textfield"                    // Optional, default value textfield
+            ,"area": "default"                      // Optional, default value default
+            ,"value": "it works"                    // Required
+        }]
+    }
+    ,"database": {                                  // Optional
+        "tables": ["PackageItem"]                   // Required
+        ,"prefix": "modx_"                          // Optional, default value modx_
+    }
+    ,"extensionPackage": {                          // Optional
+        "serviceName": "package"                    // Required
+        ,"serviceClass": "Package"                  // Required
+    }
+}
