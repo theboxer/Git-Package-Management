@@ -32,7 +32,7 @@ class GitPackageManagementUpdateConfigUpdateProcessor extends modObjectUpdatePro
 
         $config = $this->modx->fromJSON($config);
 
-        $configObject = new GitPackageConfig($this->modx);
+        $configObject = new GitPackageConfig($this->modx, $packagePath);
         if($configObject->parseConfig($config) == false) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
         }

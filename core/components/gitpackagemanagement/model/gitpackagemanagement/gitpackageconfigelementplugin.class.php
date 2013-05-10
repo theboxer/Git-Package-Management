@@ -2,6 +2,7 @@
 
 class GitPackageConfigElementPlugin extends GitPackageConfigElement{
     protected $type = 'plugin';
+    protected $extension = 'php';
     protected $events = array();
 
     public function fromArray($config) {

@@ -1,13 +1,22 @@
 <?php
 
 abstract class GitPackageConfigElement{
+    /** @var modX $modx */
     protected $modx;
+    /** @var GitPackageConfig $config */
+    protected $config;
+    /** @var string $name */
     protected $name;
+    /** @var string $file */
     protected $file;
+    /** @var string $type */
     protected $type;
+    /** @var string $extension */
+    protected $extension;
 
-    public function __construct(modX &$modx) {
+    public function __construct(modX &$modx, GitPackageConfig $config) {
         $this->modx =& $modx;
+        $this->config = $config;
     }
 
     public function fromArray($config) {
@@ -21,7 +30,22 @@ abstract class GitPackageConfigElement{
         if(isset($config['file'])){
             $this->file = $config['file'];
         }else{
-            $this->file = strtolower($this->name).'.'.$this->type;
+            $this->file = strtolower($this->name).'.'.$this->type . '.' . $this->extension;
+        }
+
+        if ($this->checkFile() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function checkFile() {
+        $file = $this->config->getPackagePath();
+        $file .= '/elements/' . $this->type . 's/' . $this->file;
+
+        if(!file_exists($file)){
+            return false;
         }
 
         return true;

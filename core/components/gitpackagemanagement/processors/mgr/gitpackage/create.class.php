@@ -150,7 +150,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         }
 
         $configContent = $this->modx->fromJSON(file_get_contents($configFile));
-        $this->config = new GitPackageConfig($this->modx);
+        $this->config = new GitPackageConfig($this->modx, $package);
         if($this->config->parseConfig($configContent) == false) {
             $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Config file is invalid.');
@@ -396,7 +396,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('static', 1);
-                $pluginObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/plugins/' . $plugin->getFile() . '.php');
+                $pluginObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/plugins/' . $plugin->getFile());
                 $pluginObject->set('category', $this->category->id);
                 $pluginObject->save();
 
@@ -431,7 +431,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
                 $snippetObject->set('static', 1);
-                $snippetObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/snippets/' . $snippet->getFile() . '.php');
+                $snippetObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/snippets/' . $snippet->getFile());
                 $snippetObject->set('category', $this->category->id);
                 $snippetObject->save();
 
@@ -453,7 +453,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $chunk->getName());
                 $chunkObject->set('static', 1);
-                $chunkObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/chunks/' . $chunk->getFile() . '.tpl');
+                $chunkObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/chunks/' . $chunk->getFile());
                 $chunkObject->set('category', $this->category->id);
                 $chunkObject->save();
 
@@ -475,7 +475,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $templatesObject = $this->modx->newObject('modTemplate');
                 $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('static', 1);
-                $templatesObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/templates/' . $template->getFile() . '.tpl');
+                $templatesObject->set('static_file', '[[++'.$this->config->getLowCaseName().'.core_path]]elements/templates/' . $template->getFile());
                 $templatesObject->set('category', $this->category->id);
                 $templatesObject->save();
 

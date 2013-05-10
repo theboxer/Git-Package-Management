@@ -12,8 +12,10 @@ require_once 'gitpackageconfigelementtemplate.class.php';
 
 
 class GitPackageConfig {
+    /** @var modX $modx */
     private $modx;
-
+    /** @var string $packagePath */
+    private $packagePath;
     /** @var string $name Package name  */
     private $name = null;
     /** @var string $lowCaseName Package low case name */
@@ -39,9 +41,11 @@ class GitPackageConfig {
 
     /**
      * @param modX $modx
+     * @param string $packagePath
      */
-    public function __construct(modX &$modx) {
+    public function __construct(modX &$modx, $packagePath) {
         $this->modx =& $modx;
+        $this->packagePath = $packagePath;
     }
 
     /**
@@ -359,5 +363,12 @@ class GitPackageConfig {
         }
 
         return $this->elements;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPackagePath() {
+        return $this->packagePath;
     }
 }
