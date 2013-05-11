@@ -1,7 +1,7 @@
 <?php
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/model/gitpackagemanagement/gitpackageconfig.class.php';
 /**
- * Update a config file in databse
+ * Update a config file in database
  *
  * @package gitpackagemanagement
  * @subpackage processors

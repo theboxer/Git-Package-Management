@@ -34,6 +34,7 @@ abstract class GitPackageConfigElement{
         }
 
         if ($this->checkFile() == false) {
+            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: '.$this->file.' - file does not exists');
             return false;
         }
 
@@ -42,7 +43,7 @@ abstract class GitPackageConfigElement{
 
     protected function checkFile() {
         $file = $this->config->getPackagePath();
-        $file .= '/elements/' . $this->type . 's/' . $this->file;
+        $file .= '/core/components/'.$this->config->getLowCaseName().'/elements/' . $this->type . 's/' . $this->file;
 
         if(!file_exists($file)){
             return false;

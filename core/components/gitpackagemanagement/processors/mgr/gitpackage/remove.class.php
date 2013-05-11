@@ -24,7 +24,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
         }
 
-        $configRet = $this->setConfig($packagePath . $this->object->dir_name . $this->modx->gitpackagemanagement->configPath);
+        $configRet = $this->setConfig($packagePath . $this->object->dir_name);
         if($configRet !== true){
             return $configRet;
         }
@@ -34,12 +34,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         return parent::beforeRemove();
     }
 
-    private function setConfig($configFile){
+    private function setConfig($packagePath){
+        $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
         if(!file_exists($configFile)){
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nfif');
         }
 
-        $this->config = new GitPackageConfig($this->modx);
+        $this->config = new GitPackageConfig($this->modx, $packagePath);
 
         if($this->config->parseConfig($this->modx->fromJSON(file_get_contents($configFile))) == false) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
