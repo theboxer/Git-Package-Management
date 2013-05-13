@@ -126,6 +126,19 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                 xtype: 'gitpackagemanagement-window-remove-package'
                 ,listeners: {
                     'success': {fn:function() { this.refresh(); },scope:this}
+                    ,'beforeSubmit': {fn:function() {
+                        var topic = '/gitpackageuninstall/';
+                        var register = 'mgr';
+                        if(this.console == null){
+                            this.console = MODx.load({
+                                xtype: 'modx-console'
+                                ,register: register
+                                ,topic: topic
+                                ,show_filename: 0
+                            });
+                        }
+                        this.console.show(Ext.getBody());
+                    },scope:this}
                 }
             });
         }
@@ -192,6 +205,8 @@ GitPackageManagement.window.RemovePackage = function(config) {
         ,labelAlign: 'left'
         ,baseParams: {
             action: 'mgr/gitpackage/remove'
+            ,register: 'mgr'
+            ,topic: '/gitpackageuninstall/'
         }
         ,fields: [{
             xtype: 'textfield'

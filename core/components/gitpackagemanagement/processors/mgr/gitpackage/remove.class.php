@@ -23,15 +23,21 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
          */
         $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
         if($packagePath == null){
-            return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
+            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            return false;
+
         }
 
         $this->packageFolder = $packagePath . $this->object->dir_name;
         $configRet = $this->setConfig($this->packageFolder);
         if($configRet !== true){
-            return $configRet;
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $configRet);
+            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            return false;
         }
 
+        $this->modx->log(modX::LOG_LEVEL_INFO,'Uninstallation process begun');
         $this->uninstallPackage();
 
         return parent::beforeRemove();
@@ -42,9 +48,11 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $deleteFolder = $this->getProperty('deleteFolder');
 
         if($deleteFolder == 1){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing direcotry ' . $this->packageFolder);
             $this->modx->gitpackagemanagement->deleteDirectory($this->packageFolder);
         }
 
+        $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
         return parent::afterRemove();
     }
 
@@ -75,6 +83,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         /** @var modNamespace $ns */
         $ns = $this->modx->getObject('modNamespace', array('name' => $this->config->getLowCaseName()));
         if($ns){
+            $this->modx->log(modX::LOG_LEVEL_INFO,'Removing namespace');
             $ns->remove();
         }
     }
@@ -82,11 +91,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     private function removeExtensionPackage() {
         $extPackage = $this->config->getExtensionPackage();
         if($extPackage != false){
+            $this->modx->log(modX::LOG_LEVEL_INFO,'Removing extension package');
             $this->modx->removeExtensionPackage($this->config->getLowCaseName());
         }
     }
 
     private function removeElements() {
+        $this->modx->log(modX::LOG_LEVEL_INFO,'Removing elements');
         $this->removePlugins();
         $this->removeSnippets();
         $this->removeChunks();
@@ -102,6 +113,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             $manager = $this->modx->getManager();
 
             foreach($this->config->getDatabase()->getTables() as $table){
+                $this->modx->log(modX::LOG_LEVEL_INFO,'Removing table ' . $table);
                 $manager->removeObjectContainer($table);
             }
         }
@@ -114,7 +126,10 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($plugins as $plugin){
                 /** @var modPlugin $pluginObject */
                 $pluginObject = $this->modx->getObject('modPlugin', array('name' => $plugin->getName()));
-                if($pluginObject) $pluginObject->remove();
+                if($pluginObject) {
+                    $this->modx->log(modX::LOG_LEVEL_INFO,'Removing plugin ' . $plugin->getName());
+                    $pluginObject->remove();
+                }
             }
         }
     }
@@ -126,7 +141,10 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($snippets as $snippet){
                 /** @var modSnippet $snippetObject */
                 $snippetObject = $this->modx->getObject('modSnippet', array('name' => $snippet->getName()));
-                if($snippetObject) $snippetObject->remove();
+                if($snippetObject) {
+                    $this->modx->log(modX::LOG_LEVEL_INFO,'Removing snippet ' . $snippet->getName());
+                    $snippetObject->remove();
+                }
             }
         }
     }
@@ -138,7 +156,10 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($chunks as $chunk){
                 /** @var modChunk $chunkObject */
                 $chunkObject = $this->modx->getObject('modChunk', array('name' => $chunk->getName()));
-                if($chunkObject) $chunkObject->remove();
+                if($chunkObject) {
+                    $this->modx->log(modX::LOG_LEVEL_INFO,'Removing chunk ' . $chunk->getName());
+                    $chunkObject->remove();
+                }
             }
         }
     }
@@ -150,7 +171,10 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             foreach($templates as $template){
                 /** @var modChunk $chunkObject */
                 $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $template->getName()));
-                if($templateObject) $templateObject->remove();
+                if($templateObject) {
+                    $this->modx->log(modX::LOG_LEVEL_INFO,'Removing template ' . $template->getName());
+                    $templateObject->remove();
+                }
             }
         }
     }
@@ -158,7 +182,10 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     private function removeCategory() {
         /** @var modCategory $cat */
         $cat = $this->modx->getObject('modCategory', array('category' => $this->config->getLowCaseName()));
-        if($cat) $cat->remove();
+        if($cat) {
+            $this->modx->log(modX::LOG_LEVEL_INFO,'Removing category ' . $this->config->getLowCaseName());
+            $cat->remove();
+        }
 
     }
 }
