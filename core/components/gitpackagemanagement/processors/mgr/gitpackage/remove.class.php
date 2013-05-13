@@ -14,6 +14,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     public $object;
     /** @var GitPackageConfig $config */
     private $config;
+    /** @var string $packageFolder */
+    private $packageFolder;
 
     public function beforeRemove() {
         /**
@@ -24,7 +26,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
         }
 
-        $configRet = $this->setConfig($packagePath . $this->object->dir_name);
+        $this->packageFolder = $packagePath . $this->object->dir_name;
+        $configRet = $this->setConfig($this->packageFolder);
         if($configRet !== true){
             return $configRet;
         }
@@ -32,6 +35,17 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $this->uninstallPackage();
 
         return parent::beforeRemove();
+    }
+
+    public function afterRemove() {
+        /** @var int $deleteFolder */
+        $deleteFolder = $this->getProperty('deleteFolder');
+
+        if($deleteFolder == 1){
+            $this->modx->gitpackagemanagement->deleteDirectory($this->packageFolder);
+        }
+
+        return parent::afterRemove();
     }
 
     private function setConfig($packagePath){

@@ -185,9 +185,11 @@ GitPackageManagement.window.RemovePackage = function(config) {
         ,id: this.ident
         ,height: 150
         ,width: 475
+        ,labelWidth: 200
         ,url: GitPackageManagement.config.connectorUrl
         ,cancelBtnText: _('no')
         ,saveBtnText: _('yes')
+        ,labelAlign: 'left'
         ,baseParams: {
             action: 'mgr/gitpackage/remove'
         }
@@ -197,7 +199,12 @@ GitPackageManagement.window.RemovePackage = function(config) {
             ,hidden: true
 
         },{
-            html: _('gitpackagemanagement.remove_package_confirm')
+            html: _('gitpackagemanagement.remove_package_confirm') + '<br /><br />'
+        },{
+            xtype: 'xcheckbox'
+            ,name: 'deleteFolder'
+            ,fieldLabel: _('gitpackagemanagement.delete_package_folder')
+
         }]
     });
     GitPackageManagement.window.RemovePackage.superclass.constructor.call(this,config);
