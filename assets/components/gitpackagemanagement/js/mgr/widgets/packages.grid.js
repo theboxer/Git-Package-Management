@@ -120,19 +120,18 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     
     ,removeItem: function(btn,e) {
         if (!this.menu.record) return false;
-        
-        MODx.msg.confirm({
-            title: _('gitpackagemanagement.remove_package')
-            ,text: _('gitpackagemanagement.remove_package_confirm')
-            ,url: this.config.url
-            ,params: {
-                action: 'mgr/gitpackage/remove'
-                ,id: this.menu.record.id
-            }
-            ,listeners: {
-                'success': {fn:function(r) { this.refresh(); },scope:this}
-            }
-        });
+
+        if (!this.windows.removePackage) {
+            this.windows.removePackage = MODx.load({
+                xtype: 'gitpackagemanagement-window-remove-package'
+                ,listeners: {
+                    'success': {fn:function() { this.refresh(); },scope:this}
+                }
+            });
+        }
+        this.windows.removePackage.fp.getForm().reset();
+        this.windows.removePackage.setValues(this.menu.record);
+        this.windows.removePackage.show(e.target);
     }
 
     ,search: function(tf,nv,ov) {
@@ -177,3 +176,31 @@ GitPackageManagement.window.AddPackage = function(config) {
 };
 Ext.extend(GitPackageManagement.window.AddPackage,MODx.Window);
 Ext.reg('gitpackagemanagement-window-add-package',GitPackageManagement.window.AddPackage);
+
+GitPackageManagement.window.RemovePackage = function(config) {
+    config = config || {};
+    this.ident = config.ident || 'gitpackagemanagement-window-remove-package';
+    Ext.applyIf(config,{
+        title: _('gitpackagemanagement.remove_package')
+        ,id: this.ident
+        ,height: 150
+        ,width: 475
+        ,url: GitPackageManagement.config.connectorUrl
+        ,cancelBtnText: _('no')
+        ,saveBtnText: _('yes')
+        ,baseParams: {
+            action: 'mgr/gitpackage/remove'
+        }
+        ,fields: [{
+            xtype: 'textfield'
+            ,name: 'id'
+            ,hidden: true
+
+        },{
+            html: _('gitpackagemanagement.remove_package_confirm')
+        }]
+    });
+    GitPackageManagement.window.RemovePackage.superclass.constructor.call(this,config);
+};
+Ext.extend(GitPackageManagement.window.RemovePackage,MODx.Window);
+Ext.reg('gitpackagemanagement-window-remove-package',GitPackageManagement.window.RemovePackage);
