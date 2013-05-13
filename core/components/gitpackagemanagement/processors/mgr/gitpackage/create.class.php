@@ -110,8 +110,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             /** @var string packageAssetsPath Path to assets of cloned repository */
             $this->packageAssetsPath = $packagePath . $folderName . "/assets/components/" . $this->config->getLowCaseName() . "/";
 
+            /** @var string $packagesUrl Base url for packages directory */
+            $packagesUrl = $this->modx->getOption('gitpackagemanagement.packages_base_url',null,null);
+
             /** @var string packageAssetsUrl URL of assets of cloned repository */
-            $this->packageAssetsUrl = '/' . $folderName . '/assets/components/' . $this->config->getLowCaseName() . '/';
+            $this->packageAssetsUrl = $packagesUrl . $folderName . '/assets/components/' . $this->config->getLowCaseName() . '/';
 
             $this->modx->log(modX::LOG_LEVEL_INFO, '<br /><strong>INSTALLATION START</strong>');
             /**

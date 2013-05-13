@@ -56,6 +56,8 @@ if ($object->xpdo) {
             /* create gitpackagemanagement settings */
             createSetting($modx,'git_path', '/usr/bin/git');
             createSetting($modx,'packages_dir', '');
+            createSetting($modx,'packages_base_url', '/');
+
 
         break;
     }
