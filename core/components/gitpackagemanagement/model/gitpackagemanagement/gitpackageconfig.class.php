@@ -140,9 +140,9 @@ class GitPackageConfig {
         }
 
         if(isset($config['extensionPackage'])){
-            if(!isset($config['extensionPackage']['serviceName'])){
-                $this->extensionPackage = false;
-            }else if(!isset($config['extensionPackage']['serviceClass'])){
+            if(!isset($config['extensionPackage']['serviceName']) && !isset($config['extensionPackage']['serviceClass'])){
+                $this->extensionPackage = true;
+            }else if((!isset($config['extensionPackage']['serviceClass']) && isset($config['extensionPackage']['serviceClass'])) || (isset($config['extensionPackage']['serviceClass']) && !isset($config['extensionPackage']['serviceClass']))){
                 $this->extensionPackage = false;
             }else{
                 $this->extensionPackage['serviceName'] = $config['extensionPackage']['serviceName'];

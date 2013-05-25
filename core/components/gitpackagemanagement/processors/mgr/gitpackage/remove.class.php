@@ -90,7 +90,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
 
     private function removeExtensionPackage() {
         $extPackage = $this->config->getExtensionPackage();
-        if($extPackage != false){
+        if($extPackage !== false){
             $this->modx->log(modX::LOG_LEVEL_INFO,'Removing extension package');
             $this->modx->removeExtensionPackage($this->config->getLowCaseName());
         }

@@ -225,13 +225,18 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      */
     private function addExtensionPackage(){
         $extPackage = $this->config->getExtensionPackage();
-        if($extPackage != false){
+        if($extPackage !== false){
             $modelPath = $this->packageCorePath . 'model/';
             $modelPath = str_replace('\\', '/', $modelPath);
-            $this->modx->addExtensionPackage($this->config->getLowCaseName(),$modelPath, array(
-                'serviceName' => $extPackage['serviceName'],
-                'serviceClass' => $extPackage['serviceClass']
-            ));
+            if($extPackage === true){
+                $this->modx->addExtensionPackage($this->config->getLowCaseName(),$modelPath);
+            }else{
+                $this->modx->addExtensionPackage($this->config->getLowCaseName(),$modelPath, array(
+                      'serviceName' => $extPackage['serviceName'],
+                      'serviceClass' => $extPackage['serviceClass']
+                 ));
+            }
+
         }
     }
 
