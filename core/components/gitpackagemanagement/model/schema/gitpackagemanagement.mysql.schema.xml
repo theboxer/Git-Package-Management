@@ -5,7 +5,6 @@
         <field key="description" dbtype="text" phptype="text" null="false" default="" />
         <field key="version" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
         <field key="author" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
-        <field key="url" dbtype="text" phptype="text" null="false" default="" />
         <field key="dir_name" dbtype="varchar" precision="100" phptype="string" null="false" />
         <field key="config" dbtype="text" phptype="text" null="false" default="" />
     </object>

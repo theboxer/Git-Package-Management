@@ -53,7 +53,7 @@
         ,"prefix": "modx_"                          // Optional, default value modx_
     }
     ,"extensionPackage": {                          // Optional
-        "serviceName": "package"                    // Required
-        ,"serviceClass": "Package"                  // Required
+        "serviceName": "package"                    // serviceName and serviceClass are both required or both optional
+        ,"serviceClass": "Package"                  // serviceName and serviceClass are both required or both optional
     }
 }

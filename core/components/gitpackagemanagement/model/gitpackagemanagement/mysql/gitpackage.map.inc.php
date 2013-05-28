@@ -13,7 +13,6 @@ $xpdo_meta_map['GitPackage']= array (
     'description' => '',
     'version' => '',
     'author' => '',
-    'url' => '',
     'dir_name' => NULL,
     'config' => '',
   ),
@@ -46,13 +45,6 @@ $xpdo_meta_map['GitPackage']= array (
       'dbtype' => 'varchar',
       'precision' => '32',
       'phptype' => 'string',
-      'null' => false,
-      'default' => '',
-    ),
-    'url' => 
-    array (
-      'dbtype' => 'text',
-      'phptype' => 'text',
       'null' => false,
       'default' => '',
     ),

@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/git.php';
 /**
  * The base class for GitPackageManagement.
  *
@@ -42,10 +41,6 @@ class GitPackageManagement {
         $this->modx->addPackage('gitpackagemanagement',$this->config['modelPath']);
         $this->modx->lexicon->load('gitpackagemanagement:default');
 
-        $gitPath = $this->modx->getOption('gitpackagemanagement.git_path');
-        if($gitPath){
-            Git::set_bin($gitPath);
-        }
     }
 
     /**
@@ -94,22 +89,5 @@ class GitPackageManagement {
             $chunk->setContent($o);
         }
         return $chunk;
-    }
-
-    public function getRepo($path){
-        return Git::open($path);
-    }
-
-    public function createRepo($path, $source){
-        return Git::create($path, $source);
-    }
-
-    /**
-     * Remove directory (recursively with all children)
-     * @param $dir string
-     */
-    public function deleteDirectory($dir) {
-        //TODO: Find better solution to remove all directories and children
-        system("rm -rf ".escapeshellarg($dir));
     }
 }

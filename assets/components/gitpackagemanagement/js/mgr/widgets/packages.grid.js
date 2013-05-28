@@ -173,12 +173,6 @@ GitPackageManagement.window.AddPackage = function(config) {
         }
         ,fields: [{
             xtype: 'textfield'
-            ,fieldLabel: _('gitpackagemanagement.url')
-            ,name: 'url'
-            ,id: this.ident+'-url'
-            ,anchor: '100%'
-        },{
-            xtype: 'textfield'
             ,fieldLabel: _('gitpackagemanagement.folder')
             ,name: 'folderName'
             ,id: this.ident+'-folderName'

@@ -1,5 +1,9 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.2.0 alpha
+==============
+- Removed native support for Git commands
+
 GitPackageManagement 0.1.2 alpha
 ==============
 - Added base href for packages directory

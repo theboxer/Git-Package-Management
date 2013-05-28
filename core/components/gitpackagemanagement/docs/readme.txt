@@ -1,7 +1,7 @@
 --------------------
 GitPackageManagement
 --------------------
-Version: 0.1.2 alpha
+Version: 0.2.0 alpha
 Author: Jan Peca <pecajan@gmail.com>
 --------------------
 

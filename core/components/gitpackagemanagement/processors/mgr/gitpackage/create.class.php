@@ -23,7 +23,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     private $installFromDirectory = false;
 
     public function beforeSave() {
-        $url = $this->getProperty('url');
+//        $url = $this->getProperty('url');
         $folderName = $this->getProperty('folderName');
 
         /**
@@ -45,59 +45,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
         }
 
-        $configFile = $packagePath . $folderName . $this->modx->gitpackagemanagement->configPath;
-        if(file_exists($configFile)){
-            $this->installFromDirectory = true;
-        }
-
-        /**
-         * If URL is empty and folder with folderName exists, installation process will start from that folder.
-         * If URL is empty and folder with folderName NOT exist, error is showed.
-         */
-        if (empty($url)) {
-            if(!$this->installFromDirectory){
-                $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
-                $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_url'));
-            }
-        } else if ($this->doesAlreadyExist(array('url' => $url))) {
-            $this->addFieldError('url',$this->modx->lexicon('gitpackagemanagement.package_err_ae_url'));
-            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ae_url'));
-        }
-
         /**
          * If no error was added in block above, cloning and installation part begins
          */
         if(!$this->hasErrors()){
-
-            /**
-             * If installation from folder has to be done, cloning of git repository is skipped
-             */
-            if(!$this->installFromDirectory){
-
-                /**
-                 * If folder with folderName already exist render error
-                 */
-                if(is_dir($packagePath . $folderName)){
-                    $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ae_folder_name'));
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ae_folder_name'));
-                    $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
-                    return false;
-                }
-
-                /**
-                 * Create folder for repository
-                 */
-                mkdir($packagePath . $folderName);
-                $this->modx->log(modX::LOG_LEVEL_INFO, 'Folder for package created.');
-
-                $this->modx->log(modX::LOG_LEVEL_INFO, 'Cloning of repository started.');
-                /**
-                 * Clone repository
-                 */
-                $this->modx->gitpackagemanagement->createRepo($packagePath . $folderName, $url);
-                $this->modx->log(modX::LOG_LEVEL_INFO, 'Git repository cloned.');
-            }
-
             /**
              * Parse config file to objects
              */
@@ -145,21 +96,16 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     private function setConfig($package){
         $configFile = $package . $this->modx->gitpackagemanagement->configPath;
         if(!file_exists($configFile)){
-            $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
-            if(!$this->installFromDirectory){
-                $this->modx->gitpackagemanagement->deleteDirectory($package);
-            }
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
+
             return false;
         }
 
         $configContent = $this->modx->fromJSON(file_get_contents($configFile));
         $this->config = new GitPackageConfig($this->modx, $package);
         if($this->config->parseConfig($configContent) == false) {
-            $this->addFieldError('url', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Config file is invalid.');
-            if(!$this->installFromDirectory){
-                $this->modx->gitpackagemanagement->deleteDirectory($package);
-            }
             $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
             return false;
         }
