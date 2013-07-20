@@ -20,7 +20,6 @@ class GitPackageManagementGetListProcessor extends modObjectGetListProcessor {
                     'OR:description:LIKE' => '%'.$query.'%',
                 ));
         }
-
         return $c;
     }
 }

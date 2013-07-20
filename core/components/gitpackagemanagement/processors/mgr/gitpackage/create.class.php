@@ -11,15 +11,22 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     public $languageTopics = array('gitpackagemanagement:default');
     public $objectType = 'gitpackagemanagement.package';
 
-    /** @var $config GitPackageConfig **/
+    /** @var GitPackageConfig $config **/
     private $config = null;
 
+    /** @var string $packageCorePath */
     private $packageCorePath = null;
+
+    /** @var string $packageAssetsPath */
     private $packageAssetsPath = null;
+
+    /** @var string $packageAssetsUrl */
     private $packageAssetsUrl = null;
 
+    /** @var modCategory $category */
     private $category = null;
 
+   /** @var bool $installFromDirectory */
     private $installFromDirectory = false;
 
     public function beforeSave() {
@@ -58,8 +65,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
             /** @var string packageCorePath Path to core of cloned repository*/
             $this->packageCorePath = $packagePath . $folderName . "/core/components/" . $this->config->getLowCaseName() . "/";
+            $this->packageCorePath = str_replace('\\', '/', $this->packageCorePath);
+
             /** @var string packageAssetsPath Path to assets of cloned repository */
             $this->packageAssetsPath = $packagePath . $folderName . "/assets/components/" . $this->config->getLowCaseName() . "/";
+            $this->packageAssetsPath = str_replace('\\', '/', $this->packageAssetsPath);
 
             /** @var string $packagesUrl Base url for packages directory */
             $packagesUrl = $this->modx->getOption('gitpackagemanagement.packages_base_url',null,null);
@@ -182,7 +192,6 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                       'serviceClass' => $extPackage['serviceClass']
                  ));
             }
-
         }
     }
 
@@ -255,8 +264,9 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create system settings, core_path and assets_url are created automatically
      */
     private function createSystemSettings() {
-        $this->createSystemSetting('core_path', $this->packageCorePath);
-        $this->createSystemSetting('assets_url', $this->packageAssetsUrl);
+        $this->createSystemSetting('core_path', $this->packageCorePath, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting('assets_path', $this->packageAssetsPath, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting('assets_url', $this->packageAssetsUrl, 'textfield', 'Git Package Management Settings');
 
         /** @var $setting GitPackageConfigSetting */
         foreach($this->config->getSettings() as $setting){
@@ -275,11 +285,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @param string $area string
      */
     private function createSystemSetting($key, $value, $xtype = 'textfield', $area = 'default'){
-        $ct = $this->modx->getObject('modSystemSetting',array('key' => $this->config->getLowCaseName().".".$key));
+        $ct = $this->modx->getObject('modSystemSetting',array('key' => $this->config->getLowCaseName() . '.' . $key));
         if (!$ct){
             /** @var modSystemSetting $setting */
             $setting = $this->modx->newObject('modSystemSetting');
-            $setting->set('key', $this->config->getLowCaseName().".".$key);
+            $setting->set('key', $this->config->getLowCaseName() . '.' . $key);
             $setting->set('value',$value);
             $setting->set('namespace', $this->config->getLowCaseName());
             $setting->set('area',$area);
@@ -350,7 +360,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('static', 1);
-                $pluginObject->set('static_file', $this->packageCorePath.'elements/plugins/' . $plugin->getFile());
+                $pluginObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/plugins/' . $plugin->getFile());
                 $pluginObject->set('category', $this->category->id);
                 $pluginObject->save();
 
@@ -385,7 +395,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
                 $snippetObject->set('static', 1);
-                $snippetObject->set('static_file', $this->packageCorePath.'elements/snippets/' . $snippet->getFile());
+                $snippetObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/snippets/' . $snippet->getFile());
                 $snippetObject->set('category', $this->category->id);
                 $snippetObject->save();
 
@@ -407,7 +417,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $chunk->getName());
                 $chunkObject->set('static', 1);
-                $chunkObject->set('static_file', $this->packageCorePath.'elements/chunks/' . $chunk->getFile());
+                $chunkObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/chunks/' . $chunk->getFile());
                 $chunkObject->set('category', $this->category->id);
                 $chunkObject->save();
 
@@ -429,7 +439,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $templatesObject = $this->modx->newObject('modTemplate');
                 $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('static', 1);
-                $templatesObject->set('static_file', $this->packageCorePath.'elements/templates/' . $template->getFile());
+                $templatesObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/templates/' . $template->getFile());
                 $templatesObject->set('category', $this->category->id);
                 $templatesObject->save();
 

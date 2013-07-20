@@ -164,7 +164,7 @@ class GitPackageConfig {
         foreach ($plugins as $plugin){
             $p = new GitPackageConfigElementPlugin($this->modx, $this);
             if($p->fromArray($plugin) == false) return false;
-            $this->elements['plugins'][] = $p;
+            $this->elements['plugins'][$p->getName()] = $p;
         }
 
         return true;
@@ -179,7 +179,7 @@ class GitPackageConfig {
         foreach ($snippets as $snippet){
             $p = new GitPackageConfigElementSnippet($this->modx, $this);
             if($p->fromArray($snippet) == false) return false;
-            $this->elements['snippets'][] = $p;
+            $this->elements['snippets'][$p->getName()] = $p;
         }
 
         return true;
@@ -194,7 +194,7 @@ class GitPackageConfig {
         foreach ($chunks as $chunk){
             $p = new GitPackageConfigElementChunk($this->modx, $this);
             if($p->fromArray($chunk) == false) return false;
-            $this->elements['chunks'][] = $p;
+            $this->elements['chunks'][$p->getName()] = $p;
         }
 
         return true;
@@ -209,7 +209,7 @@ class GitPackageConfig {
         foreach ($templates as $template){
             $p = new GitPackageConfigElementTemplate($this->modx, $this);
             if($p->fromArray($template) == false) return false;
-            $this->elements['templates'][] = $p;
+            $this->elements['templates'][$p->getName()] = $p;
         }
 
         return true;
@@ -254,7 +254,7 @@ class GitPackageConfig {
         foreach ($settings as $setting){
             $s = new GitPackageConfigSetting($this->modx);
             if($s->fromArray($setting) == false) return false;
-            $this->settings[] = $s;
+            $this->settings[$s->getKey()] = $s;
         }
 
         return true;

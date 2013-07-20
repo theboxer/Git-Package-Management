@@ -4,7 +4,7 @@
  * @property string $description Description of the package
  * @property string $version Version of the package
  * @property string $author Author of the package
- * @property string $url Url of the package's repository
+ * @property string $config JSON config
  * @property string $dir_name Name of directory where package's repository is cloned
  * @package gitpackagemanagement
  */

@@ -1,3 +1,5 @@
+// CREATE YOUR CONFIG IN _BUILD DIRECTORY
+// REMOVE ALL COMMENTS FROM THIS FILE IF YOU JUST UPDATING IT
 {
     "name": "Package"                               // Required
     ,"lowCaseName": "package"                       // Required

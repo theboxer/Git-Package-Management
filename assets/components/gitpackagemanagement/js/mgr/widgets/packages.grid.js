@@ -66,8 +66,8 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,getMenu: function() {
         var m = [];
         m.push({
-            text: _('gitpackagemanagement.update_config')
-            ,handler: this.updateConfig
+            text: _('gitpackagemanagement.update_package')
+            ,handler: this.updatePackage
         });
         m.push('-');
         m.push({
@@ -77,16 +77,17 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
         this.addContextMenuItem(m);
     }
 
-    ,updateConfig: function(){
+    ,updatePackage: function(){
         MODx.Ajax.request({
             url: GitPackageManagement.config.connectorUrl
             ,params: {
-                action: 'mgr/gitpackage/updateconfig'
+                action: 'mgr/gitpackage/update'
                 ,id: this.menu.record.id
             }
             ,listeners: {
                 'success':{fn:function(r) {
-                    MODx.msg.alert(_('gitpackagemanagement.update_config'), _('gitpackagemanagement.config_update_success'));
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
+                    this.refresh();
                 },scope:this}
             }
         });
@@ -156,67 +157,3 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
 
 });
 Ext.reg('gitpackagemanagement-grid-packages',GitPackageManagement.grid.Packages);
-
-GitPackageManagement.window.AddPackage = function(config) {
-    config = config || {};
-    this.ident = config.ident || 'gitpackagemanagement-window-add-package';
-    Ext.applyIf(config,{
-        title: _('gitpackagemanagement.add_package')
-        ,id: this.ident
-        ,height: 150
-        ,width: 475
-        ,url: GitPackageManagement.config.connectorUrl
-        ,baseParams: {
-            action: 'mgr/gitpackage/create'
-            ,register: 'mgr'
-            ,topic: '/gitpackageinstall/'
-        }
-        ,fields: [{
-            xtype: 'textfield'
-            ,fieldLabel: _('gitpackagemanagement.folder')
-            ,name: 'folderName'
-            ,id: this.ident+'-folderName'
-            ,anchor: '100%'
-        }]
-    });
-    GitPackageManagement.window.AddPackage.superclass.constructor.call(this,config);
-};
-Ext.extend(GitPackageManagement.window.AddPackage,MODx.Window);
-Ext.reg('gitpackagemanagement-window-add-package',GitPackageManagement.window.AddPackage);
-
-GitPackageManagement.window.RemovePackage = function(config) {
-    config = config || {};
-    this.ident = config.ident || 'gitpackagemanagement-window-remove-package';
-    Ext.applyIf(config,{
-        title: _('gitpackagemanagement.remove_package')
-        ,id: this.ident
-        ,height: 150
-        ,width: 475
-        ,labelWidth: 200
-        ,url: GitPackageManagement.config.connectorUrl
-        ,cancelBtnText: _('no')
-        ,saveBtnText: _('yes')
-        ,labelAlign: 'left'
-        ,baseParams: {
-            action: 'mgr/gitpackage/remove'
-            ,register: 'mgr'
-            ,topic: '/gitpackageuninstall/'
-        }
-        ,fields: [{
-            xtype: 'textfield'
-            ,name: 'id'
-            ,hidden: true
-
-        },{
-            html: _('gitpackagemanagement.remove_package_confirm') + '<br /><br />'
-        },{
-            xtype: 'xcheckbox'
-            ,name: 'deleteFolder'
-            ,fieldLabel: _('gitpackagemanagement.delete_package_folder')
-
-        }]
-    });
-    GitPackageManagement.window.RemovePackage.superclass.constructor.call(this,config);
-};
-Ext.extend(GitPackageManagement.window.RemovePackage,MODx.Window);
-Ext.reg('gitpackagemanagement-window-remove-package',GitPackageManagement.window.RemovePackage);
