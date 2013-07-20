@@ -69,6 +69,10 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             text: _('gitpackagemanagement.update_package')
             ,handler: this.updatePackage
         });
+        m.push({
+            text: _('gitpackagemanagement.update_package_database')
+            ,handler: this.updatePackageAndDatabase
+        });
         m.push('-');
         m.push({
             text: _('gitpackagemanagement.remove_package')
@@ -83,6 +87,24 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             ,params: {
                 action: 'mgr/gitpackage/update'
                 ,id: this.menu.record.id
+                ,recreateDatabase: 0
+            }
+            ,listeners: {
+                'success':{fn:function(r) {
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
+                    this.refresh();
+                },scope:this}
+            }
+        });
+    }
+
+    ,updatePackageAndDatabase: function(){
+        MODx.Ajax.request({
+            url: GitPackageManagement.config.connectorUrl
+            ,params: {
+                action: 'mgr/gitpackage/update'
+                ,id: this.menu.record.id
+                ,recreateDatabase: 1
             }
             ,listeners: {
                 'success':{fn:function(r) {

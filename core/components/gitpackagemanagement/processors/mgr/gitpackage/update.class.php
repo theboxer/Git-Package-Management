@@ -18,6 +18,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     /** @var GitPackageConfig $oldConfig */
     private $newConfig;
     private $category;
+    private $recreateDatabase = 0;
 
     public function beforeSet() {
 
@@ -44,6 +45,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $this->oldConfig = new GitPackageConfig($this->modx, $packagePath);
         $this->oldConfig->parseConfig($this->modx->fromJSON($this->object->config));
+
+        $this->recreateDatabase = $this->getProperty('recreateDatabase', 0);
 
         $update = $this->update();
         if($update !== true){
@@ -279,25 +282,42 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     }
 
     private function updateDatabase() {
-        if($this->oldConfig->getDatabase() != null){
-            $modelPath = $this->modx->getOption($this->oldConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->oldConfig->getLowCaseName().'/').'model/';
-            $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+        $modelPath = $this->modx->getOption($this->newConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->newConfig->getLowCaseName().'/').'model/';
+        $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+        $manager = $this->modx->getManager();
 
-            $manager = $this->modx->getManager();
-
-            foreach($this->oldConfig->getDatabase()->getTables() as $table){
-                $manager->removeObjectContainer($table);
+        if($this->recreateDatabase){
+            if($this->oldConfig->getDatabase() != null){
+                foreach($this->oldConfig->getDatabase()->getTables() as $table){
+                    $manager->removeObjectContainer($table);
+                }
             }
-        }
 
-        if($this->newConfig->getDatabase() != null){
-            $modelPath = $this->modx->getOption($this->newConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->newConfig->getLowCaseName().'/').'model/';
-            $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+            if($this->newConfig->getDatabase() != null){
+                foreach($this->newConfig->getDatabase()->getTables() as $table){
+                    $manager->createObjectContainer($table);
+                }
+            }
+        }else{
+            if($this->oldConfig->getDatabase() != null){
+                $notUsedTables = $this->oldConfig->getDatabase()->getTables();
+            }else{
+                $notUsedTables = array();
+            }
+            $notUsedTables = array_flip($notUsedTables);
 
-            $manager = $this->modx->getManager();
+            if($this->newConfig->getDatabase() != null){
+                foreach($this->newConfig->getDatabase()->getTables() as $table){
+                    $manager->createObjectContainer($table);
 
-            foreach($this->newConfig->getDatabase()->getTables() as $table){
-                $manager->createObjectContainer($table);
+                    if(isset($notUsedTables[$table])){
+                        unset($notUsedTables[$table]);
+                    }
+                }
+            }
+
+            foreach($notUsedTables as $table){
+                $manager->removeObjectContainer($table);
             }
         }
     }
