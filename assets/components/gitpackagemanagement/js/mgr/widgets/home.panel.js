@@ -16,6 +16,7 @@ GitPackageManagement.panel.Home = function(config) {
             ,hideMode: 'offsets'
             ,items: [{
                 title: _('gitpackagemanagement.packages')
+                ,layout: 'form'
                 ,items: [{
                     html: '<p>'+_('gitpackagemanagement.intro_msg')+'</p>'
                     ,border: false
