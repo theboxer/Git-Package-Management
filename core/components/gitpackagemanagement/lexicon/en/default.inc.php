@@ -27,6 +27,12 @@ $_lang['gitpackagemanagement.update_package_database'] = 'Update package and rec
 $_lang['gitpackagemanagement.update_package_success'] = 'The package was successfully updated.';
 $_lang['gitpackagemanagement.delete_package_folder'] = 'Delete package folder';
 
+//Options
+$_lang['setting_gitpackagemanagement.packages_dir'] = 'Packages directory';
+$_lang['setting_gitpackagemanagement.packages_dir_desc'] = 'Path to the directory where you store packages.';
+$_lang['setting_gitpackagemanagement.packages_base_url'] = 'Packages base URL';
+$_lang['setting_gitpackagemanagement.packages_base_url_desc'] = 'Base URL for packages directory. Default is <strong>/</strong>';
+
 //Errors
 $_lang['gitpackagemanagement.package_err_ns_folder_name'] = 'You have to enter folder name.';
 $_lang['gitpackagemanagement.package_err_ns_url'] = 'You have to enter URL.';
