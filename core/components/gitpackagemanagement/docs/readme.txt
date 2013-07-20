@@ -1,10 +1,10 @@
 --------------------
 GitPackageManagement
 --------------------
-Version: 0.2.0 alpha
+Version: 0.3.0 alpha
 Author: Jan Peca <pecajan@gmail.com>
 --------------------
 
-Manage downloaded packages or clone and install package directly from git.
+Manage packages stored outside MODX root directory and install them directly!
 
-After installation please set git_path in system settings to your git executable.
+After installation please set packages_dir in system settings to your packages directory.

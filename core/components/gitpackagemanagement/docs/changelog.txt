@@ -1,5 +1,10 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.3.0 alpha
+==============
+- Added update package
+- Added update package and recreate database
+
 GitPackageManagement 0.2.0 alpha
 ==============
 - Removed native support for Git commands
