@@ -72,6 +72,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->object->set('description', $this->newConfig->getDescription());
         $this->object->set('version', $this->newConfig->getVersion());
 
+        $this->updateDatabase();
         $this->updateActionsAndMenus();
         $this->updateExtensionPackage();
         $this->updateSystemSettings();
@@ -275,6 +276,30 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         }
 
         return true;
+    }
+
+    private function updateDatabase() {
+        if($this->oldConfig->getDatabase() != null){
+            $modelPath = $this->modx->getOption($this->oldConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->oldConfig->getLowCaseName().'/').'model/';
+            $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+
+            $manager = $this->modx->getManager();
+
+            foreach($this->oldConfig->getDatabase()->getTables() as $table){
+                $manager->removeObjectContainer($table);
+            }
+        }
+
+        if($this->newConfig->getDatabase() != null){
+            $modelPath = $this->modx->getOption($this->newConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->newConfig->getLowCaseName().'/').'model/';
+            $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
+            $manager = $this->modx->getManager();
+
+            foreach($this->newConfig->getDatabase()->getTables() as $table){
+                $manager->createObjectContainer($table);
+            }
+        }
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';
