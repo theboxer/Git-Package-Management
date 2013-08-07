@@ -211,6 +211,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->updateElement('Snippet');
         $this->updateElement('Template');
         $this->updateElement('Plugin');
+        $this->updateTV();
     }
 
     private function updateElement($type) {
@@ -228,8 +229,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $elementObject = $this->modx->newObject('mod'.$type);
                 if($type == 'Template'){
                     $elementObject->set('templatename', $element->getName());
+                }else{
+                    $elementObject->set('name', $element->getName());
                 }
-                $elementObject->set('name', $element->getName());
                 $elementObject->set('static', 1);
                 $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
                 $elementObject->set('category', $this->category);
@@ -275,6 +277,63 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             if ($element) {
                 $element->remove();
+            }
+        }
+
+        return true;
+    }
+
+    private function updateTV() {
+        $notUsedElements = array_keys($this->oldConfig->getElements('tvs'));
+        $notUsedElements = array_flip($notUsedElements);
+
+        /** @var GitPackageConfigElementTV $tv */
+        foreach($this->newConfig->getElements('tvs') as $name => $tv){
+            /** @var modTemplateVar $tvObject */
+            $tvObject = $this->modx->getObject('modTemplateVar', array('name' => $name));
+
+            if (!$tvObject){
+                $tvObject = $this->modx->newObject('modTemplateVar');
+                $tvObject->set('name', $tv->getName());
+                $tvObject->set('caption', $tv->getCaption());
+                $tvObject->set('description', $tv->getDescription());
+                $tvObject->set('type', $tv->getInputType());
+                $tvObject->set('category', $this->category);
+            }else{
+                $tvObject->set('caption', $tv->getCaption());
+                $tvObject->set('description', $tv->getDescription());
+                $tvObject->set('type', $tv->getInputType());
+                $tvObject->set('category', $this->category);
+            }
+
+            $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
+
+            /** @var modTemplateVarTemplate $oldTemplate */
+            foreach($oldTemplates as $oldTemplate){
+                $oldTemplate->remove();
+            }
+
+            $tvObject->save();
+
+            $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
+            foreach($templates as $template){
+                $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
+                $templateTVObject->set('tmplvarid', $tv->id);
+                $templateTVObject->set('templateid', $template->id);
+                $templateTVObject->save();
+            }
+
+            if(isset($notUsedElements[$name])){
+                unset($notUsedElements[$name]);
+            }
+        }
+
+        foreach($notUsedElements as $name => $value){
+            /** @var modTemplateVar $tv */
+            $tv = $this->modx->getObject('modTemplateVar', array('name' => $name));
+
+            if ($tv) {
+                $tv->remove();
             }
         }
 

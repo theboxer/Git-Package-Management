@@ -3,9 +3,9 @@
 {
     "name": "Package"                               // Required
     ,"lowCaseName": "package"                       // Required
-    ,"description": "Package description"
+    ,"description": "Package description"           // Optional
     ,"author": "Author name"                        // Required
-    ,"version": "1.0.0"
+    ,"version": "1.0.0"                             // Required
     ,"package":{                                    // Optional
         "actions": [{                               // Optional
             "id": 1                                 // Required, used only in this config scope
@@ -27,20 +27,27 @@
         ,"elements": {                              // Optional
             "plugins": [{                           // Optional
                 "name": "PackagePlugin"             // Required
-                ,"file": "packageplugin.plugin"     // Optional, default value strtolower($name$).plugin
+                ,"file": "packageplugin.plugin.php"     // Optional, default value strtolower($name$).plugin.php
                 ,"events": ["OnPageNotFound"]       // Required
             }]
             ,"snippets": [{                         // Optional
                 "name": "PackageSnippet"            // Required
-                ,"file": "packagesnippet.snippet"   // Optional, default value strtolower($name$).snippet
+                ,"file": "packagesnippet.snippet.php"   // Optional, default value strtolower($name$).snippet.php
             }]
             ,"chunks": [{                           // Optional
                 "name": "PackageChunk"              // Required
-                ,"file": "packagechunk.chunk"       // Optional, default value strtolower($name$).chunk
+                ,"file": "packagechunk.chunk.tpl"       // Optional, default value strtolower($name$).chunk.tpl
             }]
             ,"templates": [{                        // Optional
                 "name": "PackageTemplate"           // Required
-                ,"file": "packagetemplate.template" // Optional, default value strtolower($name$).template
+                ,"file": "packagetemplate.template.tpl" // Optional, default value strtolower($name$).template.tpl
+            }]
+            ,"tvs": [{                              // Optional
+                "caption": "SampleTV"               // Required
+                ,"name": "sampletv"                 // Optional, default strtolower($name$)
+                ,"type": "text"                     // Optional, default text
+                ,"description": "description"       // Optional, default null
+                ,"templates": ["PackageTemplate"]   // Optional, default null
             }]
         }
         ,"systemSettings": [{                       // Optional

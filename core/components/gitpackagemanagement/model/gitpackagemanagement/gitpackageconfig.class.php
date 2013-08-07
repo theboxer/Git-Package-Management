@@ -9,6 +9,7 @@ require_once 'gitpackageconfigelementplugin.class.php';
 require_once 'gitpackageconfigelementchunk.class.php';
 require_once 'gitpackageconfigelementsnippet.class.php';
 require_once 'gitpackageconfigelementtemplate.class.php';
+require_once 'gitpackageconfigelementtv.class.php';
 
 
 class GitPackageConfig {
@@ -37,7 +38,7 @@ class GitPackageConfig {
     /** @var array $extensionPackage Array with extensionPackage information */
     private $extensionPackage = null;
     /** @var array $elements Array with all elements */
-    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array());
+    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array());
 
     /**
      * @param modX $modx
@@ -130,6 +131,12 @@ class GitPackageConfig {
                         return false;
                     }
                 }
+
+                if(isset($config['package']['elements']['tvs'])){
+                    if($this->setTVElements($config['package']['elements']['tvs']) == false){
+                        return false;
+                    }
+                }
             }
         }
 
@@ -210,6 +217,21 @@ class GitPackageConfig {
             $p = new GitPackageConfigElementTemplate($this->modx, $this);
             if($p->fromArray($template) == false) return false;
             $this->elements['templates'][$p->getName()] = $p;
+        }
+
+        return true;
+    }
+
+    /**
+     * Parse and validate TVs array
+     * @param $tvs Array
+     * @return bool
+     */
+    private function setTVElements($tvs){
+        foreach ($tvs as $tv){
+            $p = new GitPackageConfigElementTV($this->modx, $this);
+            if($p->fromArray($tv) == false) return false;
+            $this->elements['tvs'][$p->getName()] = $p;
         }
 
         return true;

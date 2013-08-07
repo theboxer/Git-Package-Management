@@ -102,6 +102,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $this->removeSnippets();
         $this->removeChunks();
         $this->removeTemplates();
+        $this->removeTVs();
         $this->removeCategory();
     }
 
@@ -169,11 +170,26 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         if(count($templates) > 0){
             /** @var GitPackageConfigElementTemplate $template */
             foreach($templates as $template){
-                /** @var modChunk $chunkObject */
+                /** @var modTemplate $templateObject */
                 $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $template->getName()));
                 if($templateObject) {
                     $this->modx->log(modX::LOG_LEVEL_INFO,'Removing template ' . $template->getName());
                     $templateObject->remove();
+                }
+            }
+        }
+    }
+
+    private function removeTVs() {
+        $tvs = $this->config->getElements('tvs');
+        if(count($tvs) > 0){
+            /** @var GitPackageConfigElementTV $tv */
+            foreach($tvs as $tv){
+                /** @var modTemplateVar $tvObject */
+                $tvObject = $this->modx->getObject('modTemplateVar', array('name' => $tv->getName()));
+                if($tvObject) {
+                    $this->modx->log(modX::LOG_LEVEL_INFO,'Removing tv ' . $tv->getName());
+                    $tvObject->remove();
                 }
             }
         }

@@ -331,6 +331,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->createChunks();
         $this->createSnippets();
         $this->createTemplates();
+        $this->createTVs();
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements finished');
     }
 
@@ -444,6 +445,38 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $templatesObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Template ' . $template->getName() . ' created.');
+            }
+
+        }
+    }
+
+    /**
+     * Create tvs if any
+     */
+    private function createTVs(){
+        $tvs = $this->config->getElements('tvs');
+        if(count($tvs) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating TVs:');
+            /** @var GitPackageConfigElementTV $tv */
+            foreach($tvs as $tv){
+                /** @var modTemplateVar $tvObject */
+                $tvObject = $this->modx->newObject('modTemplateVar');
+                $tvObject->set('name', $tv->getName());
+                $tvObject->set('caption', $tv->getCaption());
+                $tvObject->set('description', $tv->getDescription());
+                $tvObject->set('type', $tv->getInputType());
+                $tvObject->set('category', $this->category->id);
+                $tvObject->save();
+
+                $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
+                foreach($templates as $template){
+                    $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
+                    $templateTVObject->set('tmplvarid', $tvObject->id);
+                    $templateTVObject->set('templateid', $template->id);
+                    $templateTVObject->save();
+                }
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'TV ' . $tv->getName() . ' created.');
             }
 
         }
