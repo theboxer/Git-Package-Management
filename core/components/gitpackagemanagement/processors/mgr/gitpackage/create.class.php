@@ -53,6 +53,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         }
 
         /**
+         * Check if build config and core config are writable
+         */
+        if (!$this->checkConfig($packagePath . $folderName . '/config.core.php')) {
+            $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $packagePath . $folderName)));
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $packagePath . $folderName)));
+        }
+
+        if (!$this->checkConfig($packagePath . $folderName . '/_build/build.config.php')) {
+            $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
+        }
+
+        /**
          * If no error was added in block above, cloning and installation part begins
          */
         if(!$this->hasErrors()){
@@ -479,6 +492,27 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'TV ' . $tv->getName() . ' created.');
             }
 
+        }
+    }
+
+    /**
+     * Check if given config file is writable or can be created
+     *
+     * @param $config
+     * @return bool
+     */
+    private function checkConfig($config) {
+        if (!file_exists($config)) {
+            /* make an attempt to create the file */
+            @ $hnd = fopen($config, 'w');
+            @ fwrite($hnd, '<?php');
+            @ fclose($hnd);
+        }
+        $isWritable = @is_writable($config);
+        if (!$isWritable) {
+            return false;
+        } else {
+            return true;
         }
     }
 }

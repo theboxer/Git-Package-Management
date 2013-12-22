@@ -44,3 +44,5 @@ $_lang['gitpackagemanagement.package_err_url_config_nfif'] = 'Folder with cloned
 $_lang['gitpackagemanagement.package_err_nvil'] = 'Version of new package is lower that currently installed package.';
 $_lang['gitpackagemanagement.package_err_ccn'] = 'You can not update your package because you changed package\'s name. Please remove package and install it again.';
 $_lang['gitpackagemanagement.package_err_ccln'] = 'You can not update your package because you changed package\'s lowercase name. Please remove package and install it again.';
+$_lang['gitpackagemanagement.package_err_bc_nw'] = 'Build config is not writable. Please make [[+package]]/_build/build.config.php writable to continue.';
+$_lang['gitpackagemanagement.package_err_cc_nw'] = 'Core config is not writable. Please make [[+package]]/config.core.php writable to continue.';
