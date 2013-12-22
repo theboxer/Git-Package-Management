@@ -186,6 +186,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->createSystemSettings();
         $this->createTables();
         $this->addExtensionPackage();
+        $this->clearCache();
         $this->createElements();
     }
 
@@ -493,6 +494,16 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             }
 
         }
+    }
+
+    /**
+     * Clears MODX cache and sets placeholders
+     */
+    private function clearCache() {
+        $this->modx->cacheManager->delete('system_settings/config', array('cache_key' => ''));
+        $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.core_path', $this->packageCorePath);
+        $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath);
+        $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl);
     }
 
     /**
