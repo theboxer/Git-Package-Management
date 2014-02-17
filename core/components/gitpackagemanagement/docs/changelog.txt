@@ -1,5 +1,11 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.5.0 alpha
+==============
+- #8 Fixed error when updating package without DB
+- #7 Added check if configs are writable
+- #2 Cleared cache after install, weired directories are not creating in core/components anymore
+
 GitPackageManagement 0.4.0 alpha
 ==============
 - Added basic support for TVs
