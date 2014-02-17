@@ -59,10 +59,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     }
 
     private function update() {
-        $vc = version_compare($this->oldConfig->getVersion(), $this->newConfig->getVersion());
-        if($vc != -1){
-            return $this->modx->lexicon('gitpackagemanagement.package_err_nvil');
-        }
+//        $vc = version_compare($this->oldConfig->getVersion(), $this->newConfig->getVersion());
+//        if($vc != -1){
+//            return $this->modx->lexicon('gitpackagemanagement.package_err_nvil');
+//        }
 
         if($this->oldConfig->getName() != $this->newConfig->getName()){
             return $this->modx->lexicon('gitpackagemanagement.package_err_ccn');
@@ -341,24 +341,32 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     }
 
     private function updateDatabase() {
+        if (($this->oldConfig->getDatabase() == null) && ($this->newConfig->getDatabase() == null)) return;
+
         $modelPath = $this->modx->getOption($this->newConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->newConfig->getLowCaseName().'/').'model/';
-        $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
         $manager = $this->modx->getManager();
 
         if($this->recreateDatabase){
             if($this->oldConfig->getDatabase() != null){
+                $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+
                 foreach($this->oldConfig->getDatabase()->getTables() as $table){
                     $manager->removeObjectContainer($table);
                 }
             }
 
             if($this->newConfig->getDatabase() != null){
+                $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
                 foreach($this->newConfig->getDatabase()->getTables() as $table){
                     $manager->createObjectContainer($table);
                 }
             }
         }else{
             if($this->oldConfig->getDatabase() != null){
+                $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+
                 $notUsedTables = $this->oldConfig->getDatabase()->getTables();
             }else{
                 $notUsedTables = array();
@@ -366,6 +374,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $notUsedTables = array_flip($notUsedTables);
 
             if($this->newConfig->getDatabase() != null){
+                $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
                 foreach($this->newConfig->getDatabase()->getTables() as $table){
                     $manager->createObjectContainer($table);
 
