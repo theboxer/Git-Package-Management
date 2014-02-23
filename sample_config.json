@@ -60,6 +60,7 @@
     ,"database": {                                  // Optional
         "tables": ["PackageItem"]                   // Required
         ,"prefix": "modx_"                          // Optional, default value modx_
+        ,"simpleObjects": ["SimplePackageItem"]     // Optional, default value empty array
     }
     ,"extensionPackage": {                          // Optional
         "serviceName": "package"                    // serviceName and serviceClass are both required or both optional
