@@ -351,6 +351,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if($this->oldConfig->getDatabase() != null){
                 $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
 
+                foreach ($this->oldConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                    $this->modx->loadClass($simpleObject);
+                }
+
                 foreach($this->oldConfig->getDatabase()->getTables() as $table){
                     $manager->removeObjectContainer($table);
                 }
@@ -358,6 +362,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             if($this->newConfig->getDatabase() != null){
                 $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
+                foreach ($this->newConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                    $this->modx->loadClass($simpleObject);
+                }
 
                 foreach($this->newConfig->getDatabase()->getTables() as $table){
                     $manager->createObjectContainer($table);
@@ -367,6 +375,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if($this->oldConfig->getDatabase() != null){
                 $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
 
+                foreach ($this->oldConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                    $this->modx->loadClass($simpleObject);
+                }
+
                 $notUsedTables = $this->oldConfig->getDatabase()->getTables();
             }else{
                 $notUsedTables = array();
@@ -375,6 +387,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             if($this->newConfig->getDatabase() != null){
                 $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
+                foreach ($this->newConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                    $this->modx->loadClass($simpleObject);
+                }
 
                 foreach($this->newConfig->getDatabase()->getTables() as $table){
                     $manager->createObjectContainer($table);

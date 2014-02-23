@@ -326,6 +326,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $modelPath = $this->packageCorePath.'model/';
             $this->modx->addPackage($this->config->getLowCaseName(), $modelPath, $this->config->getDatabase()->getPrefix());
 
+            foreach ($this->config->getDatabase()->getSimpleObjects() as $simpleObject) {
+                $this->modx->loadClass($simpleObject);
+            }
+
             $manager = $this->modx->getManager();
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating tables:');
 
