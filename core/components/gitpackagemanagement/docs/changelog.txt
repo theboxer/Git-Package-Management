@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+- Fixed adding more menus
+
 GitPackageManagement 0.6.0 alpha
 ==============
 - #9 Added option to add SimpleObjects (via modx->loadClass)

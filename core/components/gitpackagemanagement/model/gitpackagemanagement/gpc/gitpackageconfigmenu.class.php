@@ -63,13 +63,12 @@ class GitPackageConfigMenu {
         }
 
         if(isset($config['action'])){
-            /** @var $action GitPackageConfigAction **/
-            foreach($this->gitPackageConfig->getActions() as $action){
-                if($action->getId() == $config['action']) break;
+            $action = $this->setAction($config['action']);
+
+            if ($action === false) {
                 $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - action not exist');
                 return false;
             }
-            $this->action = $config['action'];
         }else{
             $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - action is not set');
             return false;
@@ -110,4 +109,15 @@ class GitPackageConfigMenu {
         return $this->text;
     }
 
+    public function setAction($givenAction) {
+        /** @var $action GitPackageConfigAction **/
+        foreach($this->gitPackageConfig->getActions() as $action){
+            if($action->getId() != $givenAction) continue;
+            $this->action = $givenAction;
+
+            return true;
+        }
+
+        return false;
+    }
 }
