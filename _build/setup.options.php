@@ -22,10 +22,10 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
 
-        foreach ($settings as $setting) {
+        foreach ($settings as $key => $setting) {
             $settingObject = $modx->getObject('modSystemSetting',array('key' => 'gitpackagemanagement.'.$setting['key']));
             if ($settingObject) {
-                $settings[$setting['key']] = $settingObject->get('value');
+                $settings[$key]['value'] = $settingObject->get('value');
             }
         }
 
