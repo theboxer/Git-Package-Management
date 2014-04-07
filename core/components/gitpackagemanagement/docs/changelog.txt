@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.6.1 alpha
+==============
 - Fixed setup options
 - Fixed adding more menus
 
