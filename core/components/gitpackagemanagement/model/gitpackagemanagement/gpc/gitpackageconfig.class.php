@@ -27,11 +27,11 @@ class GitPackageConfig {
     private $version = null;
     /** @var string $description PAckage description */
     private $description = null;
-    /** @var array $action Array with package's actions */
+    /** @var GitPackageConfigAction[] $action Array with package's actions */
     private $actions = array();
-    /** @var array $menus Array with package's menus */
+    /** @var GitPackageConfigMenu[] $menus Array with package's menus */
     private $menus = array();
-    /** @var array $settings Array with package's settings */
+    /** @var GitPackageConfigSetting[] $settings Array with package's settings */
     private $settings = array();
     /** @var GitPackageConfigDatabase $database Object with package's database information */
     private $database = null;
@@ -296,7 +296,7 @@ class GitPackageConfig {
 
     /**
      * Returns array of GitPackageConfigAction objects
-     * @return array
+     * @return GitPackageConfigAction[]
      */
     public function getActions() {
         return $this->actions;
@@ -377,7 +377,7 @@ class GitPackageConfig {
     /**
      * Return array with all elements, or only with elements of type $type
      * @param string $type (default is null)
-     * @return array
+     * @return GitPackageConfigElement[]
      */
     public function getElements($type = null) {
         if($type){

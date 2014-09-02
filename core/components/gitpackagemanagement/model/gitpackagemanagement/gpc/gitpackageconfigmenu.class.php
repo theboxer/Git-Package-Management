@@ -117,7 +117,6 @@ class GitPackageConfigMenu {
             return true;
         }
 
-        /** @var $action GitPackageConfigAction **/
         foreach($this->gitPackageConfig->getActions() as $action){
             if($action->getId() != $givenAction) continue;
             $this->action = $givenAction;

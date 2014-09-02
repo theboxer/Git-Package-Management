@@ -234,8 +234,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
          * Create actions if any
          */
         if(count($this->config->getActions()) > 0){
-            /** @var $act GitPackageConfigAction */
             foreach($this->config->getActions() as $act){
+                /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
                         'namespace' => $this->config->getLowCaseName(),
@@ -254,8 +254,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
          * Crete menus if any
          */
         if(count($this->config->getMenus()) > 0){
-            /** @var $men GitPackageConfigMenu */
             foreach($this->config->getMenus() as $i => $men){
+                /** @var modMenu[] $menus */
                 $menus[$i] = $this->modx->newObject('modMenu');
                 $menus[$i]->fromArray(array(
                           'text' => $men->getText(),
@@ -378,10 +378,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create plugins if any
      */
     private function createPlugins(){
+        /** @var GitPackageConfigElementPlugin[] $plugins */
         $plugins = $this->config->getElements('plugins');
         if(count($plugins) > 0){
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating plugins:');
-            /** @var GitPackageConfigElementPlugin $plugin */
             foreach($plugins as $plugin){
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
@@ -413,10 +413,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create snippets if any
      */
     private function createSnippets(){
+        /** @var GitPackageConfigElementSnippet[] $snippets */
         $snippets = $this->config->getElements('snippets');
         if(count($snippets) > 0){
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating snippets:');
-            /** @var GitPackageConfigElementSnippet $snippet */
             foreach($snippets as $snippet){
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
@@ -435,10 +435,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create chunks if any
      */
     private function createChunks(){
+        /** @var GitPackageConfigElementChunk[] $chunks */
         $chunks = $this->config->getElements('chunks');
         if(count($chunks) > 0){
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating chunks:');
-            /** @var GitPackageConfigElementChunk $chunk */
             foreach($chunks as $chunk){
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $chunk->getName());
@@ -457,10 +457,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create templates if any
      */
     private function createTemplates(){
+        /** @var GitPackageConfigElementTemplate[] $templates */
         $templates = $this->config->getElements('templates');
         if(count($templates) > 0){
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating templates:');
-            /** @var GitPackageConfigElementTemplate $template */
             foreach($templates as $template){
                 $templatesObject = $this->modx->newObject('modTemplate');
                 $templatesObject->set('templatename', $template->getName());
@@ -479,10 +479,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create tvs if any
      */
     private function createTVs(){
+        /** @var GitPackageConfigElementTV[] $tvs */
         $tvs = $this->config->getElements('tvs');
         if(count($tvs) > 0){
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating TVs:');
-            /** @var GitPackageConfigElementTV $tv */
             foreach($tvs as $tv){
                 /** @var modTemplateVar $tvObject */
                 $tvObject = $this->modx->newObject('modTemplateVar');

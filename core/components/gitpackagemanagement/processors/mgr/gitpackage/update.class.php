@@ -86,8 +86,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     }
 
     private function updateActionsAndMenus() {
+        /** @var modAction[] $actions */
         $actions = $this->modx->getCollection('modAction', array('namespace' => $this->newConfig->getLowCaseName()));
-        /** @var modAction $action */
         foreach($actions as $action){
             $action->remove();
         }
@@ -104,7 +104,6 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
          * Create actions if any
          */
         if(count($this->newConfig->getActions()) > 0){
-            /** @var $act GitPackageConfigAction */
             foreach($this->newConfig->getActions() as $act){
                 /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
@@ -123,7 +122,6 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
          * Crete menus if any
          */
         if(count($this->newConfig->getMenus()) > 0){
-            /** @var $men GitPackageConfigMenu */
             foreach($this->newConfig->getMenus() as $i => $men){
                 /** @var modMenu[] $menus */
                 $menus[$i] = $this->modx->newObject('modMenu');
@@ -177,7 +175,6 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $notUsedSettings = array_keys($this->oldConfig->getSettings());
         $notUsedSettings = array_flip($notUsedSettings);
 
-        /** @var GitPackageConfigSetting $setting */
         foreach($this->newConfig->getSettings() as $key => $setting){
             /** @var modSystemSetting $systemSetting */
             $systemSetting = $this->modx->getObject('modSystemSetting', array('key' => $key));
@@ -257,8 +254,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             }
 
             if($type == 'Plugin'){
+                /** @var modPluginEvent[] $oldEvents */
                 $oldEvents = $elementObject->getMany('PluginEvents');
-                /** @var modPluginEvent $oldEvent */
                 foreach($oldEvents as $oldEvent){
                     $oldEvent->remove();
                 }
@@ -321,9 +318,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $tvObject->set('category', $this->category);
             }
 
+            /** @var modTemplateVarTemplate[] $oldTemplates */
             $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
 
-            /** @var modTemplateVarTemplate $oldTemplate */
             foreach($oldTemplates as $oldTemplate){
                 $oldTemplate->remove();
             }

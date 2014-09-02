@@ -48,7 +48,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $deleteFolder = $this->getProperty('deleteFolder');
 
         if($deleteFolder == 1){
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing direcotry ' . $this->packageFolder);
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing directory ' . $this->packageFolder);
             $this->modx->gitpackagemanagement->deleteDirectory($this->packageFolder);
         }
 
@@ -124,9 +124,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     }
 
     private function removePlugins() {
+        /** @var GitPackageConfigElementPlugin[] $plugins */
         $plugins = $this->config->getElements('plugins');
         if(count($plugins) > 0){
-            /** @var GitPackageConfigElementPlugin $plugin */
             foreach($plugins as $plugin){
                 /** @var modPlugin $pluginObject */
                 $pluginObject = $this->modx->getObject('modPlugin', array('name' => $plugin->getName()));
@@ -139,9 +139,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     }
 
     private function removeSnippets() {
+        /** @var GitPackageConfigElementSnippet[] $snippets */
         $snippets = $this->config->getElements('snippets');
         if(count($snippets) > 0){
-            /** @var GitPackageConfigElementSnippet $snippet */
             foreach($snippets as $snippet){
                 /** @var modSnippet $snippetObject */
                 $snippetObject = $this->modx->getObject('modSnippet', array('name' => $snippet->getName()));
@@ -154,9 +154,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     }
 
     private function removeChunks() {
+        /** @var GitPackageConfigElementChunk[] $chunks */
         $chunks = $this->config->getElements('chunks');
         if(count($chunks) > 0){
-            /** @var GitPackageConfigElementChunk $chunk */
             foreach($chunks as $chunk){
                 /** @var modChunk $chunkObject */
                 $chunkObject = $this->modx->getObject('modChunk', array('name' => $chunk->getName()));
@@ -169,9 +169,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     }
 
     private function removeTemplates() {
+        /** @var GitPackageConfigElementTemplate[] $templates */
         $templates = $this->config->getElements('templates');
         if(count($templates) > 0){
-            /** @var GitPackageConfigElementTemplate $template */
             foreach($templates as $template){
                 /** @var modTemplate $templateObject */
                 $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $template->getName()));
@@ -184,9 +184,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     }
 
     private function removeTVs() {
+        /** @var GitPackageConfigElementTV[] $tvs */
         $tvs = $this->config->getElements('tvs');
         if(count($tvs) > 0){
-            /** @var GitPackageConfigElementTV $tv */
             foreach($tvs as $tv){
                 /** @var modTemplateVar $tvObject */
                 $tvObject = $this->modx->getObject('modTemplateVar', array('name' => $tv->getName()));
@@ -216,8 +216,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     }
 
     private function removeActions() {
+        /** @var modAction[] $actions */
         $actions = $this->modx->getCollection('modAction', array('namespace' => $this->config->getLowCaseName()));
-        /** @var modAction $action */
         foreach($actions as $action){
             $action->remove();
         }

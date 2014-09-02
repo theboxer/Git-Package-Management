@@ -1,5 +1,10 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.7.0 alpha
+==============
+- Clear menu cache after installing/updating/removing package
+- Fixed updating actions and menus
+- Added support for string actions in menus (as used from MODX 2.3)
 - Added support for different prefix in system settings
 
 GitPackageManagement 0.6.1 alpha
