@@ -4,7 +4,6 @@ GitPackageManagement.window.AddPackage = function(config) {
     Ext.applyIf(config,{
         title: _('gitpackagemanagement.add_package')
         ,id: this.ident
-        ,height: 150
         ,width: 475
         ,url: GitPackageManagement.config.connectorUrl
         ,baseParams: {

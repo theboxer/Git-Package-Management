@@ -266,7 +266,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                           'params' => $men->getParams(),
                           'handler' => $men->getHandler(),
                      ),'',true,true);
-                $menus[$i]->addOne($actions[$men->getAction()]);
+
+                if (isset($actions[$men->getAction()])) {
+                    $menus[$i]->addOne($actions[$men->getAction()]);
+                } else {
+                    $menus[$i]->set('action', $men->getAction());
+                }
+
                 $menus[$i]->save();
             }
 

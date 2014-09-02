@@ -110,6 +110,13 @@ class GitPackageConfigMenu {
     }
 
     public function setAction($givenAction) {
+
+        if(is_string($givenAction)) {
+            $this->action = $givenAction;
+
+            return true;
+        }
+
         /** @var $action GitPackageConfigAction **/
         foreach($this->gitPackageConfig->getActions() as $action){
             if($action->getId() != $givenAction) continue;
