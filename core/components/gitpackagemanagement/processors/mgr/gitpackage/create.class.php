@@ -512,6 +512,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      */
     private function clearCache() {
         $this->modx->cacheManager->delete('system_settings/config', array('cache_key' => ''));
+        $results = array();
+        $partitions = array ('menu' => array ());
+        $this->modx->cacheManager->refresh($partitions, $results);
+
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.core_path', $this->packageCorePath);
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath);
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl);

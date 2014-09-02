@@ -80,6 +80,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->updateExtensionPackage();
         $this->updateSystemSettings();
         $this->updateElements();
+        $this->clearCache();
 
         return true;
     }
@@ -419,6 +420,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $manager->removeObjectContainer($table);
             }
         }
+    }
+
+    private function clearCache() {
+        $results = array ();
+        $partitions = array ('menu' => array ());
+        $this->modx->cacheManager->refresh($partitions, $results);
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';

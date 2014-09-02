@@ -106,6 +106,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $this->removeTemplates();
         $this->removeTVs();
         $this->removeCategory();
+        $this->clearCache();
     }
 
     private function removeTables() {
@@ -220,6 +221,12 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         foreach($actions as $action){
             $action->remove();
         }
+    }
+
+    private function clearCache() {
+        $results = array();
+        $partitions = array ('menu' => array ());
+        $this->modx->cacheManager->refresh($partitions, $results);
     }
 }
 return 'GitPackageManagementRemoveProcessor';
