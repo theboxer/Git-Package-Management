@@ -91,6 +91,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $action->remove();
         }
 
+        foreach ($this->oldConfig->getMenus() as $menu) {
+            $menuObject = $this->modx->getObject('modMenu', array ('text' => $menu->getText()));
+            $menuObject->remove();
+        }
+
         $actions = array();
         $menus = array();
 
@@ -100,6 +105,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         if(count($this->newConfig->getActions()) > 0){
             /** @var $act GitPackageConfigAction */
             foreach($this->newConfig->getActions() as $act){
+                /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
                                                         'namespace' => $this->newConfig->getLowCaseName(),
@@ -118,6 +124,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         if(count($this->newConfig->getMenus()) > 0){
             /** @var $men GitPackageConfigMenu */
             foreach($this->newConfig->getMenus() as $i => $men){
+                /** @var modMenu[] $menus */
                 $menus[$i] = $this->modx->newObject('modMenu');
                 $menus[$i]->fromArray(array(
                                            'text' => $men->getText(),

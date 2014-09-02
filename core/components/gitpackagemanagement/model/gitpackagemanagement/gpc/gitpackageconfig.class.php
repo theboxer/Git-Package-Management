@@ -320,7 +320,7 @@ class GitPackageConfig {
 
     /**
      * Returns array of GitPackageConfigMenu objects
-     * @return array
+     * @return GitPackageConfigMenu[]
      */
     public function getMenus() {
         return $this->menus;
@@ -336,7 +336,7 @@ class GitPackageConfig {
 
     /**
      * Returns array of GitPackageConfigSetting objects
-     * @return array
+     * @return GitPackageConfigSetting[]
      */
     public function getSettings() {
         return $this->settings;
