@@ -140,6 +140,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                     $menus[$i]->addOne($actions[$men->getAction()]);
                 } else {
                     $menus[$i]->set('action', $men->getAction());
+                    $menus[$i]->set('namespace', $this->newConfig->getLowCaseName());
                 }
 
                 $menus[$i]->save();

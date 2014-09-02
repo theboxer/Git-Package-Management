@@ -271,6 +271,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     $menus[$i]->addOne($actions[$men->getAction()]);
                 } else {
                     $menus[$i]->set('action', $men->getAction());
+                    $menus[$i]->set('namespace', $this->config->getLowCaseName());
                 }
 
                 $menus[$i]->save();
@@ -284,9 +285,9 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create system settings, core_path and assets_url are created automatically
      */
     private function createSystemSettings() {
-        $this->createSystemSetting('core_path', $this->packageCorePath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting('assets_path', $this->packageAssetsPath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting('assets_url', $this->packageAssetsUrl, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.core_path', $this->packageCorePath, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl, 'textfield', 'Git Package Management Settings');
 
         /** @var $setting GitPackageConfigSetting */
         foreach($this->config->getSettings() as $setting){

@@ -75,6 +75,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $this->removeElements();
         $this->removeTables();
         $this->removeExtensionPackage();
+        $this->removeMenus();
+        $this->removeActions();
         $this->removeNamespace();
 
     }
@@ -203,6 +205,21 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
             $cat->remove();
         }
 
+    }
+
+    private function removeMenus() {
+        foreach ($this->config->getMenus() as $menu) {
+            $menuObject = $this->modx->getObject('modMenu', array ('text' => $menu->getText()));
+            $menuObject->remove();
+        }
+    }
+
+    private function removeActions() {
+        $actions = $this->modx->getCollection('modAction', array('namespace' => $this->config->getLowCaseName()));
+        /** @var modAction $action */
+        foreach($actions as $action){
+            $action->remove();
+        }
     }
 }
 return 'GitPackageManagementRemoveProcessor';
