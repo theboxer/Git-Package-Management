@@ -284,7 +284,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
         /** @var $setting GitPackageConfigSetting */
         foreach($this->config->getSettings() as $setting){
-            $this->createSystemSetting($setting->getKey(), $setting->getValue(), $setting->getType(), $setting->getArea());
+            $this->createSystemSetting($setting->getNamespacedKey(), $setting->getValue(), $setting->getType(), $setting->getArea());
         }
 
         $this->modx->log(modX::LOG_LEVEL_INFO, 'System settings created.');
@@ -299,20 +299,20 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @param string $area string
      */
     private function createSystemSetting($key, $value, $xtype = 'textfield', $area = 'default'){
-        $ct = $this->modx->getObject('modSystemSetting',array('key' => $this->config->getLowCaseName() . '.' . $key));
+        $ct = $this->modx->getObject('modSystemSetting',array('key' => $key));
         if (!$ct){
             /** @var modSystemSetting $setting */
             $setting = $this->modx->newObject('modSystemSetting');
-            $setting->set('key', $this->config->getLowCaseName() . '.' . $key);
-            $setting->set('value',$value);
+            $setting->set('key', $key);
+            $setting->set('value', $value);
             $setting->set('namespace', $this->config->getLowCaseName());
-            $setting->set('area',$area);
+            $setting->set('area', $area);
             $setting->set('xtype', $xtype);
             $setting->save();
         }else{
-            $ct->set('value',$value);
+            $ct->set('value', $value);
             $ct->set('namespace', $this->config->getLowCaseName());
-            $ct->set('area',$area);
+            $ct->set('area', $area);
             $ct->set('xtype', $xtype);
             $ct->save();
         }

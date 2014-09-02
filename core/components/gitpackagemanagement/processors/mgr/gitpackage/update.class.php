@@ -165,10 +165,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         /** @var GitPackageConfigSetting $setting */
         foreach($this->newConfig->getSettings() as $key => $setting){
             /** @var modSystemSetting $systemSetting */
-            $systemSetting = $this->modx->getObject('modSystemSetting', array('key' => $this->newConfig->getLowCaseName() . '.' . $key));
+            $systemSetting = $this->modx->getObject('modSystemSetting', array('key' => $key));
             if (!$systemSetting){
                 $systemSetting = $this->modx->newObject('modSystemSetting');
-                $systemSetting->set('key', $this->newConfig->getLowCaseName() . '.' . $key);
+                $systemSetting->set('key', $key);
                 $systemSetting->set('value',$setting->getValue());
                 $systemSetting->set('namespace', $this->newConfig->getLowCaseName());
                 $systemSetting->set('area',$setting->getArea());
@@ -189,7 +189,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         foreach($notUsedSettings as $key => $value){
             /** @var modSystemSetting $setting */
-            $setting = $this->modx->getObject('modSystemSetting', array('key' => $this->newConfig->getLowCaseName() . '.' . $key));
+            $setting = $this->modx->getObject('modSystemSetting', array('key' => $key));
             if ($setting) {
                 $setting->remove();
             };

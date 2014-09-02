@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+- Added support for different prefix in system settings
+
 GitPackageManagement 0.6.1 alpha
 ==============
 - Fixed setup options

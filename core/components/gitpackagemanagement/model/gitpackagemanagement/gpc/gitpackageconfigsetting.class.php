@@ -6,9 +6,13 @@ class GitPackageConfigSetting {
     private $type;
     private $area;
     private $value;
+    private $namespace;
+    /** @var GitPackageConfig $gitPackageConfig */
+    private $gitPackageConfig;
 
-    public function __construct(modX &$modx) {
+    public function __construct(modX &$modx, $gitPackageConfig) {
         $this->modx =& $modx;
+        $this->gitPackageConfig = $gitPackageConfig;
     }
 
     public function fromArray($config) {
@@ -31,6 +35,12 @@ class GitPackageConfigSetting {
             $this->area = 'default';
         }
 
+        if(isset($config['namespace'])){
+            $this->namespace = $config['namespace'];
+        }else{
+            $this->namespace = $this->gitPackageConfig->getLowCaseName();
+        }
+
         if(isset($config['value'])){
             $this->value = $config['value'];
         }else{
@@ -41,12 +51,20 @@ class GitPackageConfigSetting {
         return true;
     }
 
+    public function getNamespace() {
+        return $this->namespace;
+    }
+
     public function getArea() {
         return $this->area;
     }
 
     public function getKey() {
         return $this->key;
+    }
+
+    public function getNamespacedKey() {
+        return $this->namespace . '.' . $this->key;
     }
 
     public function getType() {

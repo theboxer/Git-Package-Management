@@ -274,9 +274,9 @@ class GitPackageConfig {
      */
     private function setSettings($settings) {
         foreach ($settings as $setting){
-            $s = new GitPackageConfigSetting($this->modx);
+            $s = new GitPackageConfigSetting($this->modx, $this);
             if($s->fromArray($setting) == false) return false;
-            $this->settings[$s->getKey()] = $s;
+            $this->settings[$s->getNamespacedKey()] = $s;
         }
 
         return true;
