@@ -25,7 +25,7 @@ class GitPackageConfig {
     private $author = null;
     /** @var string $version Package current version */
     private $version = null;
-    /** @var string $description PAckage description */
+    /** @var string $description Package description */
     private $description = null;
     /** @var GitPackageConfigAction[] $action Array with package's actions */
     private $actions = array();

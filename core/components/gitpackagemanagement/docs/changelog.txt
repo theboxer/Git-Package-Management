@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+- Fixed comment in generated build.config
+
 GitPackageManagement 0.7.0 alpha
 ==============
 - Clear menu cache after installing/updating/removing package

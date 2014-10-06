@@ -156,7 +156,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                               "/**\n" .
                               "* Define the MODX path constants necessary for installation\n" .
                               "*\n" .
-                              "* @package monitoring\n" .
+                              "* @package " . $this->config->getLowCaseName() . "\n" .
                               "* @subpackage build\n" .
                               "*/\n" .
                               "define('MODX_BASE_PATH', '".MODX_BASE_PATH."');\n" .
