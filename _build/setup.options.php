@@ -33,7 +33,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_UNINSTALL: break;
 }
 
-$output = [];
+$output = array();
 
 foreach ($settings as $setting) {
     $output[] = '<label for="'. $setting['key'] .'">'. $setting['name'] .':</label><input type="text" name="'. $setting['key'] .'" id="'. $setting['key'] .'" width="300" value="'. $setting['value'] .'" />';

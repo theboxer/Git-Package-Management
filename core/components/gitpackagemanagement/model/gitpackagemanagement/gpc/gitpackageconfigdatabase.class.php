@@ -20,13 +20,13 @@ class GitPackageConfigDatabase {
         if (isset($config['tables'])) {
             $this->tables = $config['tables'];
         } else {
-            $this->tables = [];
+            $this->tables = array();
         }
 
         if (isset($config['simpleObjects'])) {
             $this->simpleObjects = $config['simpleObjects'];
         } else {
-            $this->simpleObjects = [];
+            $this->simpleObjects = array();
         }
 
         return true;

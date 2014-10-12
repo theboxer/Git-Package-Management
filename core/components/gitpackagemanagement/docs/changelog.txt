@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Fixed PHP 5.3 incompatibility
 - Fixed comment in generated build.config
 
 GitPackageManagement 0.7.0 alpha
