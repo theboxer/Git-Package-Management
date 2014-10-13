@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+- Fixed creating system settings without a namespace
+
 GitPackageManagement 0.7.1 alpha
 ==============
 - Fixed PHP 5.3 incompatibility

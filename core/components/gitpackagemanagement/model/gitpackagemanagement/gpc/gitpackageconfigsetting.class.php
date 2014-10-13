@@ -64,6 +64,10 @@ class GitPackageConfigSetting {
     }
 
     public function getNamespacedKey() {
+        if ($this->namespace == '') {
+            return $this->key;
+        }
+
         return $this->namespace . '.' . $this->key;
     }
 
