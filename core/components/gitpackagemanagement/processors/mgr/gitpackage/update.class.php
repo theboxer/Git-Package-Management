@@ -19,6 +19,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private $newConfig;
     private $category;
     private $recreateDatabase = 0;
+    private $alterDatabase = 0;
 
     public function beforeSet() {
 
@@ -47,6 +48,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->oldConfig->parseConfig($this->modx->fromJSON($this->object->config));
 
         $this->recreateDatabase = $this->getProperty('recreateDatabase', 0);
+        $this->alterDatabase = $this->getProperty('alterDatabase', 0);
 
         $update = $this->update();
         if($update !== true){
@@ -360,62 +362,108 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $manager = $this->modx->getManager();
 
         if($this->recreateDatabase){
-            if($this->oldConfig->getDatabase() != null){
-                $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+            $this->recreateDatabase($modelPath, $manager);
+            return;
+        }
 
-                foreach ($this->oldConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
-                    $this->modx->loadClass($simpleObject);
-                }
+        if($this->oldConfig->getDatabase() != null){
+            $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
 
-                foreach($this->oldConfig->getDatabase()->getTables() as $table){
-                    $manager->removeObjectContainer($table);
-                }
+            foreach ($this->oldConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                $this->modx->loadClass($simpleObject);
             }
 
-            if($this->newConfig->getDatabase() != null){
-                $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
-
-                foreach ($this->newConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
-                    $this->modx->loadClass($simpleObject);
-                }
-
-                foreach($this->newConfig->getDatabase()->getTables() as $table){
-                    $manager->createObjectContainer($table);
-                }
-            }
+            $notUsedTables = $this->oldConfig->getDatabase()->getTables();
         }else{
-            if($this->oldConfig->getDatabase() != null){
-                $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+            $notUsedTables = array();
+        }
 
-                foreach ($this->oldConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
-                    $this->modx->loadClass($simpleObject);
-                }
+        $notUsedTables = array_flip($notUsedTables);
 
-                $notUsedTables = $this->oldConfig->getDatabase()->getTables();
-            }else{
-                $notUsedTables = array();
+        if($this->newConfig->getDatabase() != null){
+            $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
+            foreach ($this->newConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                $this->modx->loadClass($simpleObject);
             }
-            $notUsedTables = array_flip($notUsedTables);
 
-            if($this->newConfig->getDatabase() != null){
-                $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+            foreach($this->newConfig->getDatabase()->getTables() as $table){
+                $manager->createObjectContainer($table);
 
-                foreach ($this->newConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
-                    $this->modx->loadClass($simpleObject);
-                }
+                if(isset($notUsedTables[$table])){
+                    unset($notUsedTables[$table]);
 
-                foreach($this->newConfig->getDatabase()->getTables() as $table){
-                    $manager->createObjectContainer($table);
-
-                    if(isset($notUsedTables[$table])){
-                        unset($notUsedTables[$table]);
+                    if ($this->alterDatabase) {
+                        $this->updateTableColumns($table);
                     }
                 }
             }
+        }
 
-            foreach($notUsedTables as $table){
+        foreach($notUsedTables as $table){
+            $manager->removeObjectContainer($table);
+        }
+    }
+
+    /**
+     * @param string $modelPath
+     * @param xPDOManager $manager
+     */
+    private function recreateDatabase($modelPath, $manager){
+        if($this->oldConfig->getDatabase() != null){
+            $this->modx->addPackage($this->oldConfig->getLowCaseName(), $modelPath, $this->oldConfig->getDatabase()->getPrefix());
+
+            foreach ($this->oldConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                $this->modx->loadClass($simpleObject);
+            }
+
+            foreach($this->oldConfig->getDatabase()->getTables() as $table){
                 $manager->removeObjectContainer($table);
             }
+        }
+
+        if($this->newConfig->getDatabase() != null){
+            $this->modx->addPackage($this->newConfig->getLowCaseName(), $modelPath, $this->newConfig->getDatabase()->getPrefix());
+
+            foreach ($this->newConfig->getDatabase()->getSimpleObjects() as $simpleObject) {
+                $this->modx->loadClass($simpleObject);
+            }
+
+            foreach($this->newConfig->getDatabase()->getTables() as $table){
+                $manager->createObjectContainer($table);
+            }
+        }
+    }
+
+    private function updateTableColumns($table) {
+        $tableName = $this->modx->getTableName($table);
+        $tableName = str_replace('`', '', $tableName);
+
+        $c = $this->modx->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = :dbName AND table_name = :tableName");
+
+        $c->bindParam(':dbName', $this->modx->getOption('dbname'));
+        $c->bindParam(':tableName', $tableName);
+        $c->execute();
+
+        $unusedColumns = $c->fetchAll(PDO::FETCH_COLUMN, 0);
+        $unusedColumns = array_flip($unusedColumns);
+
+        $meta = $this->modx->getFieldMeta($table);
+        $columns = array_keys($meta);
+
+        $m = $this->modx->getManager();
+
+        foreach ($columns as $column) {
+            if (isset($unusedColumns[$column])) {
+                $m->alterField($table, $column);
+                unset($unusedColumns[$column]);
+            } else {
+                $m->addField($table, $column);
+            }
+        }
+
+        foreach ($unusedColumns as $column => $v) {
+            $m->removeField($table, $column);
         }
     }
 

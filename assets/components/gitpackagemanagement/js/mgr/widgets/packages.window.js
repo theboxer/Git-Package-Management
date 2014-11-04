@@ -30,7 +30,6 @@ GitPackageManagement.window.RemovePackage = function(config) {
     Ext.applyIf(config,{
         title: _('gitpackagemanagement.remove_package')
         ,id: this.ident
-        ,height: 150
         ,width: 475
         ,labelWidth: 200
         ,url: GitPackageManagement.config.connectorUrl

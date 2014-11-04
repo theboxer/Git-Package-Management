@@ -24,6 +24,7 @@ $_lang['gitpackagemanagement.remove_package'] = 'Remove package';
 $_lang['gitpackagemanagement.remove_package_confirm'] = 'Do you really want to remove this package?';
 $_lang['gitpackagemanagement.update_package'] = 'Update package';
 $_lang['gitpackagemanagement.update_package_database'] = 'Update package and recreate database';
+$_lang['gitpackagemanagement.update_package_alter_database'] = 'Update package and alter database';
 $_lang['gitpackagemanagement.update_package_success'] = 'The package was successfully updated.';
 $_lang['gitpackagemanagement.delete_package_folder'] = 'Delete package folder';
 

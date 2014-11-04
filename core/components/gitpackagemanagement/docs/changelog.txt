@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Added an option to alter database
 - Fixed creating system settings without a namespace
 
 GitPackageManagement 0.7.1 alpha
