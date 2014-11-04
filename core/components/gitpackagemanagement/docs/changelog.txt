@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Update indexes when altering table
 - Fixed removing not-used tables
 - Added an option to alter database
 - Fixed creating system settings without a namespace

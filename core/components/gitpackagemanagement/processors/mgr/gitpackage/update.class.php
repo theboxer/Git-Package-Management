@@ -394,7 +394,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                     unset($notUsedTables[$table]);
 
                     if ($this->alterDatabase) {
-                        $this->updateTableColumns($table);
+                        $this->alterTable($table);
                     }
                 }
             }
@@ -435,6 +435,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         }
     }
 
+    private function alterTable($table) {
+        $this->updateTableColumns($table);
+        $this->updateTableIndexes($table);
+    }
+
     private function updateTableColumns($table) {
         $tableName = $this->modx->getTableName($table);
         $tableName = str_replace('`', '', $tableName);
@@ -471,6 +476,34 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $results = array ();
         $partitions = array ('menu' => array ());
         $this->modx->cacheManager->refresh($partitions, $results);
+    }
+
+    private function updateTableIndexes($table) {
+        $m = $this->modx->getManager();
+
+        $tableName = $this->modx->getTableName($table);
+        $tableName = str_replace('`', '', $tableName);
+
+        $c = $this->modx->prepare("SELECT DISTINCT INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema = :dbName AND table_name = :tableName");
+
+        $c->bindParam(':dbName', $this->modx->getOption('dbname'));
+        $c->bindParam(':tableName', $tableName);
+        $c->execute();
+
+        $oldIndexes = $c->fetchAll(PDO::FETCH_COLUMN, 0);
+
+        foreach ($oldIndexes as $oldIndex) {
+            $m->removeIndex($table, $oldIndex);
+        }
+
+        $meta = $this->modx->getIndexMeta($table);
+        $indexes = array_keys($meta);
+
+
+
+        foreach ($indexes as $index) {
+            $m->addIndex($table, $index);
+        }
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';
