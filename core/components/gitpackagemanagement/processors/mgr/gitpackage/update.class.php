@@ -400,7 +400,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             }
         }
 
-        foreach($notUsedTables as $table){
+        foreach($notUsedTables as $table => $id){
             $manager->removeObjectContainer($table);
         }
     }
