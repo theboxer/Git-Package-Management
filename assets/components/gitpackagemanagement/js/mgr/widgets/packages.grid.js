@@ -7,11 +7,13 @@ GitPackageManagement.grid.Packages = function(config) {
         ,baseParams: {
             action: 'mgr/gitpackage/getlist'
         }
-        ,fields: ['id','name','description', 'author', 'version']
+        ,fields: ['id','name','description', 'author', 'version', 'key']
         ,autoHeight: true
         ,paging: true
         ,remoteSort: true
         ,enableDragDrop: false
+        ,save_action: 'mgr/gitpackage/updatefromgrid'
+        ,autosave: true
         ,columns: [{
             header: _('id')
             ,dataIndex: 'id'
@@ -32,7 +34,14 @@ GitPackageManagement.grid.Packages = function(config) {
         },{
             header: _('gitpackagemanagement.version')
             ,dataIndex: 'version'
-            ,width: 250
+            ,width: 100
+        },{
+            header: _('gitpackagemanagement.key')
+            ,dataIndex: 'key'
+            ,editor: {
+                xtype: 'textfield'
+            }
+            ,width: 300
         }]
         ,tbar: [{
             text: _('gitpackagemanagement.add_package')
@@ -80,6 +89,11 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
         });
         m.push('-');
         m.push({
+            text: _('gitpackagemanagement.build_schema')
+            ,handler: this.buildSchema
+        });
+        m.push('-');
+        m.push({
             text: _('gitpackagemanagement.remove_package')
             ,handler: this.removeItem
         });
@@ -111,6 +125,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                 ,id: this.menu.record.id
                 ,recreateDatabase: 1
                 ,alterDatabase: 0
+                ,buildSchema: 1
             }
             ,listeners: {
                 'success':{fn:function(r) {
@@ -129,6 +144,23 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                 ,id: this.menu.record.id
                 ,recreateDatabase: 0
                 ,alterDatabase: 1
+                ,buildSchema: 1
+            }
+            ,listeners: {
+                'success':{fn:function(r) {
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
+                    this.refresh();
+                },scope:this}
+            }
+        });
+    }
+
+    ,buildSchema: function(){
+        MODx.Ajax.request({
+            url: GitPackageManagement.config.connectorUrl
+            ,params: {
+                action: 'mgr/gitpackage/buildschema'
+                ,id: this.menu.record.id
             }
             ,listeners: {
                 'success':{fn:function(r) {

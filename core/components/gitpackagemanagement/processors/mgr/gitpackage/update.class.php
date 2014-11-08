@@ -357,6 +357,13 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private function updateDatabase() {
         if (($this->oldConfig->getDatabase() == null) && ($this->newConfig->getDatabase() == null)) return;
 
+        if($this->newConfig->getDatabase() != null){
+            $buildSchema = $this->getProperty('buildSchema', 0);
+            if ($buildSchema) {
+                $this->buildSchema();
+            }
+        }
+
         $modelPath = $this->modx->getOption($this->newConfig->getLowCaseName().'.core_path',null,$this->modx->getOption('core_path').'components/'.$this->newConfig->getLowCaseName().'/').'model/';
 
         $manager = $this->modx->getManager();
@@ -504,6 +511,15 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         foreach ($indexes as $index) {
             $m->addIndex($table, $index);
         }
+    }
+
+    private function buildSchema() {
+        $corePath = $this->modx->getOption('gitpackagemanagement.core_path',null,$this->modx->getOption('core_path').'components/gitpackagemanagement/');
+        $path = $this->modx->getOption('processorsPath', $this->modx->gitpackagemanagement->config, $corePath . 'processors/');
+        $this->modx->runProcessor('mgr/gitpackage/buildschema', $this->getProperties(), array(
+            'processors_path' => $path,
+            'location' => '',
+        ));
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';
