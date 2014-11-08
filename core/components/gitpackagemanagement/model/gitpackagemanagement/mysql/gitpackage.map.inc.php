@@ -15,6 +15,7 @@ $xpdo_meta_map['GitPackage']= array (
     'author' => '',
     'dir_name' => NULL,
     'config' => '',
+    'key' => '',
   ),
   'fieldMeta' => 
   array (
@@ -48,19 +49,27 @@ $xpdo_meta_map['GitPackage']= array (
       'null' => false,
       'default' => '',
     ),
-    'dir_name' =>
+    'dir_name' => 
     array (
-        'dbtype' => 'varchar',
-        'precision' => '100',
-        'phptype' => 'string',
-        'null' => false,
+      'dbtype' => 'varchar',
+      'precision' => '100',
+      'phptype' => 'string',
+      'null' => false,
     ),
-    'config' =>
+    'config' => 
     array (
-        'dbtype' => 'text',
-        'phptype' => 'text',
-        'null' => false,
-        'default' => '',
+      'dbtype' => 'text',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
+    ),
+    'key' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '32',
+      'phptype' => 'string',
+      'null' => false,
+      'default' => '',
     ),
   ),
 );
