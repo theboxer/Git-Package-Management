@@ -233,6 +233,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
     private function removeResources() {
         $assetsFolder = $this->config->getAssetsFolder();
         $rmf = $assetsFolder . 'resourcemap.php';
+        $siteStart = $this->modx->getOption('site_start');
 
         if (is_readable($rmf)) {
             $resourceMap = include $rmf;
@@ -243,6 +244,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         }
 
         foreach ($resourceMap as $pageTitle => $id) {
+            if ($id == $siteStart) continue;
+
             $this->modx->updateCollection('modResource', array('parent' => 0), array('parent' => $id));
             $this->modx->removeObject('modResource', array('id' => $id));
         }

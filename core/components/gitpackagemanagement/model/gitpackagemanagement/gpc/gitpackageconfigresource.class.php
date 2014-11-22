@@ -52,6 +52,24 @@ class GitPackageConfigResource {
             $this->alias = $res->cleanAlias($this->pagetitle);
         }
 
+        if (isset($config['setAsHome']) && $config['setAsHome'] == 1) {
+            $id = $this->modx->getOption('site_start');
+
+            $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
+
+            if (is_readable($rmf)) {
+                $resourceMap = include $rmf;
+            } else {
+                $resourceMap = array();
+            }
+
+            if (!isset($resourceMap[$this->pagetitle])) {
+                $resourceMap[$this->pagetitle] = $id;
+            }
+
+            file_put_contents($rmf, '<?php return ' . var_export($resourceMap, true) . ';');
+        }
+
         if (isset($config['parent'])) {
             $this->parent = $config['parent'];
         }

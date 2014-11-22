@@ -107,6 +107,9 @@ $attr = array(
 $vehicle = $builder->createVehicle($category,$attr);
 
 $modx->log(modX::LOG_LEVEL_INFO,'Adding file resolvers to category...');
+$vehicle->resolve('php',array(
+    'source' => $sources['resolvers'] . 'resolve.remove_tables.php',
+));
 $vehicle->resolve('file',array(
     'source' => $sources['source_assets'],
     'target' => "return MODX_ASSETS_PATH . 'components/';",

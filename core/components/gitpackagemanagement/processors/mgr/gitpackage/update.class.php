@@ -533,6 +533,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $this->resourceMap = $this->getResourceMap();
         $toRemove = $this->resourceMap;
+        $siteStart = $this->modx->getOption('site_start');
 
         foreach ($resources as $resource) {
             if (isset($this->resourceMap[$resource->getPagetitle()])) {
@@ -552,6 +553,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         foreach ($toRemove as $pageTitle => $resource) {
             unset($this->resourceMap[$pageTitle]);
+
+            if ($resource == $siteStart) continue;
 
             /** @var modResource $modResource */
             $modResource = $this->modx->getObject('modResource', $resource);
