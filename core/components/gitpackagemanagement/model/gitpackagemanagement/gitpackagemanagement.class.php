@@ -7,87 +7,63 @@
 class GitPackageManagement {
     /** @var \modX $modx */
     public $modx;
+    public $namespace = 'gitpackagemanagement';
     /** @var array $config */
-    public $config = array();
+    public $options = array();
     /** @var array $chunks */
     public $chunks = array();
     /** @var string $configPath */
     public $configPath = '/_build/config.json';
 
-    function __construct(modX &$modx,array $config = array()) {
+    function __construct(modX &$modx,array $options = array()) {
         $this->modx =& $modx;
+        $this->namespace = $this->getOption('namespace', $options, 'gitpackagemanagement');
 
-        $corePath = $this->modx->getOption('gitpackagemanagement.core_path',$config,$this->modx->getOption('core_path').'components/gitpackagemanagement/');
-        $assetsUrl = $this->modx->getOption('gitpackagemanagement.assets_url',$config,$this->modx->getOption('assets_url').'components/gitpackagemanagement/');
+        $corePath = $this->getOption('core_path', $options, $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/gitpackagemanagement/');
+        $assetsPath = $this->getOption('assets_path', $options, $this->modx->getOption('assets_path', null, MODX_ASSETS_PATH) . 'components/gitpackagemanagement/');
+        $assetsUrl = $this->getOption('assets_url', $options, $this->modx->getOption('assets_url', null, MODX_ASSETS_URL) . 'components/gitpackagemanagement/');
         $connectorUrl = $assetsUrl.'connector.php';
 
-        $this->config = array_merge(array(
+        $this->options = array_merge(array(
+            'assetsPath' => $assetsPath,
             'assetsUrl' => $assetsUrl,
-            'cssUrl' => $assetsUrl.'css/',
-            'jsUrl' => $assetsUrl.'js/',
-            'imagesUrl' => $assetsUrl.'images/',
-
+            'cssUrl' => $assetsUrl . 'css/',
+            'jsUrl' => $assetsUrl . 'js/',
+            'imagesUrl' => $assetsUrl . 'images/',
             'connectorUrl' => $connectorUrl,
-
             'corePath' => $corePath,
-            'modelPath' => $corePath.'model/',
-            'chunksPath' => $corePath.'elements/chunks/',
-            'chunkSuffix' => '.chunk.tpl',
-            'snippetsPath' => $corePath.'elements/snippets/',
-            'processorsPath' => $corePath.'processors/',
-            'templatesPath' => $corePath.'templates/',
-        ),$config);
+            'modelPath' => $corePath . 'model/',
+            'chunksPath' => $corePath . 'elements/chunks/',
+            'snippetsPath' => $corePath . 'elements/snippets/',
+            'processorsPath' => $corePath . 'processors/',
+            'templatesPath' => $corePath . 'templates/',
+        ),$options);
 
-        $this->modx->addPackage('gitpackagemanagement',$this->config['modelPath']);
+        $this->modx->addPackage('gitpackagemanagement', $this->getOption('modelPath'));
         $this->modx->lexicon->load('gitpackagemanagement:default');
 
     }
 
     /**
-     * Gets a Chunk and caches it; also falls back to file-based templates
-     * for easier debugging.
+     * Get a local configuration option or a namespaced system setting by key.
      *
-     * @access public
-     * @param string $name The name of the Chunk
-     * @param array $properties The properties for the Chunk
-     * @return string The processed content of the Chunk
+     * @param string $key The option key to search for.
+     * @param array $options An array of options that override local options.
+     * @param mixed $default The default value returned if the option is not found locally or as a
+     * namespaced system setting; by default this value is null.
+     * @return mixed The option value or the default value specified.
      */
-    public function getChunk($name,array $properties = array()) {
-        $chunk = null;
-        if (!isset($this->chunks[$name])) {
-            $chunk = $this->modx->getObject('modChunk',array('name' => $name),true);
-            if (empty($chunk)) {
-                $chunk = $this->_getTplChunk($name,$this->config['chunkSuffix']);
-                if ($chunk == false) return false;
+    public function getOption($key, $options = array(), $default = null) {
+        $option = $default;
+        if (!empty($key) && is_string($key)) {
+            if ($options != null && array_key_exists($key, $options)) {
+                $option = $options[$key];
+            } elseif (array_key_exists($key, $this->options)) {
+                $option = $this->options[$key];
+            } elseif (array_key_exists("{$this->namespace}.{$key}", $this->modx->config)) {
+                $option = $this->modx->getOption("{$this->namespace}.{$key}");
             }
-            $this->chunks[$name] = $chunk->getContent();
-        } else {
-            $o = $this->chunks[$name];
-            $chunk = $this->modx->newObject('modChunk');
-            $chunk->setContent($o);
         }
-        $chunk->setCacheable(false);
-        return $chunk->process($properties);
-    }
-    /**
-     * Returns a modChunk object from a template file.
-     *
-     * @access private
-     * @param string $name The name of the Chunk. Will parse to name.chunk.tpl by default.
-     * @param string $suffix The suffix to add to the chunk filename.
-     * @return modChunk/boolean Returns the modChunk object if found, otherwise
-     * false.
-     */
-    private function _getTplChunk($name,$suffix = '.chunk.tpl') {
-        $chunk = false;
-        $f = $this->config['chunksPath'].strtolower($name).$suffix;
-        if (file_exists($f)) {
-            $o = file_get_contents($f);
-            /** @var modChunk $chunk */
-            $chunk = $this->modx->newObject('modChunk');
-            $chunk->set('name',$name);
-            $chunk->setContent($o);
-        }
-        return $chunk;
+        return $option;
     }
 }

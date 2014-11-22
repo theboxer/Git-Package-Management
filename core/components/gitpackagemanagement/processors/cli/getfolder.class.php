@@ -15,12 +15,12 @@ class GitPackageManagementCLIGetFolderProcessor extends modObjectProcessor {
     public function process() {
         $key = $this->getProperty('2', 0);
         if (empty($key)) {
-            return $this->failure('no key');
+            return $this->failure();
         }
 
         $this->object = $this->modx->getObject('GitPackage', array('key' => $key));
         if (!$this->object) {
-            return $this->failure('no object');
+            return $this->failure();
         }
 
         return $this->success($this->object->dir_name);

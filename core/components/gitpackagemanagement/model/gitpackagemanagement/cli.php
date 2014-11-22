@@ -9,10 +9,16 @@ require_once MODX_CORE_PATH . 'config/' . MODX_CONFIG_KEY . '.inc.php';
 require_once MODX_CONNECTORS_PATH . 'index.php';
 
 $corePath = $modx->getOption('gitpackagemanagement.core_path',null,$modx->getOption('core_path').'components/gitpackagemanagement/');
-require_once $corePath.'model/gitpackagemanagement/gitpackagemanagement.class.php';
-$modx->gitpackagemanagement = new GitPackageManagement($modx);
 
-$modx->lexicon->load('gitpackagemanagement:default');
+/** @var GitPackageManagement $gpm */
+$gpm = $modx->getService(
+    'gitpackagemanagement',
+    'GitPackageManagement',
+    $corePath . 'model/gitpackagemanagement/',
+    array(
+        'core_path' => $corePath
+    )
+);
 
 $version = $modx->getVersionData();
 if (version_compare($version['full_version'],'2.1.1-pl') >= 0) {
@@ -30,7 +36,7 @@ $_REQUEST['HTTP_MODAUTH'] = $_SERVER['HTTP_MODAUTH'];
 $modx->request->loadErrorHandler();
 
 /* handle request */
-$path = $modx->getOption('processorsPath', $modx->gitpackagemanagement->config, $corePath . 'processors/') . 'cli/';
+$path = $gpm->getOption('processorsPath') . 'cli/';
 
 $action = str_replace('.', '', $argv[1]);
 
