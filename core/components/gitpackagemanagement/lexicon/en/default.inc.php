@@ -11,7 +11,6 @@ $_lang['gitpackagemanagement.search'] = 'Search';
 $_lang['gitpackagemanagement.packages'] = 'Packages';
 $_lang['gitpackagemanagement.intro_msg'] = 'Manage packages downloaded from GIT.';
 
-
 //Packages
 $_lang['gitpackagemanagement.url'] = 'Url';
 $_lang['gitpackagemanagement.folder'] = 'Folder';
@@ -29,6 +28,7 @@ $_lang['gitpackagemanagement.update_package_success'] = 'The package was success
 $_lang['gitpackagemanagement.delete_package_folder'] = 'Delete package folder';
 $_lang['gitpackagemanagement.key'] = 'Key';
 $_lang['gitpackagemanagement.build_schema'] = 'Build schema';
+$_lang['gitpackagemanagement.update_mask'] = 'Updating package';
 
 //Options
 $_lang['setting_gitpackagemanagement.packages_dir'] = 'Packages directory';

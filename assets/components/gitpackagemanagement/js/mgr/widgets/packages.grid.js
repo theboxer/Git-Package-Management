@@ -66,6 +66,9 @@ GitPackageManagement.grid.Packages = function(config) {
                 },scope:this}
             }
         }]
+        ,listeners: {
+            'render': {fn: this.renderListener, scope:this }
+        }
     });
     GitPackageManagement.grid.Packages.superclass.constructor.call(this,config);
 };
@@ -101,6 +104,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     }
 
     ,updatePackage: function(){
+        this.updateMask.show();
         MODx.Ajax.request({
             url: GitPackageManagement.config.connectorUrl
             ,params: {
@@ -110,6 +114,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             }
             ,listeners: {
                 'success':{fn:function(r) {
+                    this.updateMask.hide();
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
                 },scope:this}
@@ -118,6 +123,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     }
 
     ,updatePackageAndDatabase: function(){
+        this.updateMask.show();
         MODx.Ajax.request({
             url: GitPackageManagement.config.connectorUrl
             ,params: {
@@ -129,6 +135,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             }
             ,listeners: {
                 'success':{fn:function(r) {
+                    this.updateMask.hide();
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
                 },scope:this}
@@ -137,6 +144,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     }
 
     ,updatePackageAndAlterDatabase: function(){
+        this.updateMask.show();
         MODx.Ajax.request({
             url: GitPackageManagement.config.connectorUrl
             ,params: {
@@ -148,6 +156,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             }
             ,listeners: {
                 'success':{fn:function(r) {
+                    this.updateMask.hide();
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
                 },scope:this}
@@ -156,6 +165,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     }
 
     ,buildSchema: function(){
+        this.updateMask.show();
         MODx.Ajax.request({
             url: GitPackageManagement.config.connectorUrl
             ,params: {
@@ -164,6 +174,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             }
             ,listeners: {
                 'success':{fn:function(r) {
+                    this.updateMask.hide();
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
                 },scope:this}
@@ -233,5 +244,8 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
         this.refresh();
     }
 
+    ,renderListener: function() {
+        this.updateMask = new Ext.LoadMask(this.el, {msg: _('gitpackagemanagement.update_mask')});
+    }
 });
 Ext.reg('gitpackagemanagement-grid-packages',GitPackageManagement.grid.Packages);
