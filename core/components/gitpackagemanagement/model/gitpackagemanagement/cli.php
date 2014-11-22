@@ -35,16 +35,10 @@ $_REQUEST['HTTP_MODAUTH'] = $_SERVER['HTTP_MODAUTH'];
 
 $modx->request->loadErrorHandler();
 
-/* handle request */
-$path = $gpm->getOption('processorsPath') . 'cli/';
-
 $action = str_replace('.', '', $argv[1]);
 
 /** @var modProcessorResponse $response */
-$response = $modx->runProcessor($action, $argv, array(
-    'processors_path' => $path,
-    'location' => '',
-));
+$response = $gpm->runProcessor($action, $argv, 'cli');
 
 if (empty($response)) {
     return;

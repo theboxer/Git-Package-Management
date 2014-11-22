@@ -514,12 +514,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     }
 
     private function buildSchema() {
-        $corePath = $this->modx->getOption('gitpackagemanagement.core_path',null,$this->modx->getOption('core_path').'components/gitpackagemanagement/');
-        $path = $this->modx->getOption('processorsPath', $this->modx->gitpackagemanagement->config, $corePath . 'processors/');
-        $this->modx->runProcessor('mgr/gitpackage/buildschema', $this->getProperties(), array(
-            'processors_path' => $path,
-            'location' => '',
-        ));
+        $this->modx->gitpackagemanagement->runProcessor('mgr/gitpackage/buildschema', $this->getProperties());
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';

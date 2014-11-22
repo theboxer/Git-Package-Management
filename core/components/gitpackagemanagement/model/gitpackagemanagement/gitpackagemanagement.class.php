@@ -66,4 +66,13 @@ class GitPackageManagement {
         }
         return $option;
     }
+
+    public function runProcessor($action = '', $scriptProperties = array(), $location = '') {
+        $path = $this->getOption('processorsPath');
+
+        return $this->modx->runProcessor($action, $scriptProperties, array(
+            'processors_path' => $path,
+            'location' => $location,
+        ));
+    }
 }
