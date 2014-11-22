@@ -118,6 +118,10 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
                 },scope:this}
+                ,'failure':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), r.message);
+                },scope:this}
             }
         });
     }
@@ -138,6 +142,10 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     this.updateMask.hide();
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
+                },scope:this}
+                ,'failure':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), r.message);
                 },scope:this}
             }
         });
@@ -160,6 +168,10 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
                 },scope:this}
+                ,'failure':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), r.message);
+                },scope:this}
             }
         });
     }
@@ -177,6 +189,10 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     this.updateMask.hide();
                     MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
                     this.refresh();
+                },scope:this}
+                ,'failure':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), r.message);
                 },scope:this}
             }
         });

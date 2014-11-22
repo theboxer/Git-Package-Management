@@ -135,6 +135,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             return false;
         }
 
+        $dependencies = $this->config->checkDependencies();
+        if ($dependencies !== true) {
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_dependencies'));
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Dependencies are not matching!');
+
+            foreach ($dependencies as $dependency) {
+                $this->modx->log(modX::LOG_LEVEL_ERROR, 'Package ' . $dependency . ' not found!');
+            }
+
+            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            return false;
+        }
+
         $this->object->set('config', $this->modx->toJSON($configContent));
         $this->object->save();
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Config file is valid.');

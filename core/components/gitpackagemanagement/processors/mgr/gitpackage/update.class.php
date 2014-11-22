@@ -45,6 +45,16 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
         }
 
+        $dependencies = $this->newConfig->checkDependencies();
+        if ($dependencies !== true) {
+            $msg = '<strong>Dependencies check failed!</strong><br />';
+            foreach ($dependencies as $dependency) {
+                $msg .= 'Package ' . $dependency . ' not found!<br />';
+            }
+
+            return $msg;
+        }
+
         $this->oldConfig = new GitPackageConfig($this->modx, $packagePath);
         $this->oldConfig->parseConfig($this->modx->fromJSON($this->object->config));
 

@@ -42,6 +42,7 @@ class GitPackageConfig {
     private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array());
     /** @var GitPackageConfigResource[] $resources */
     private $resources = array();
+    private $dependencies = array();
 
     /**
      * @param modX $modx
@@ -153,6 +154,10 @@ class GitPackageConfig {
             if($this->setDatabase($config['database']) == false){
                 return false;
             }
+        }
+
+        if (isset($config['dependencies'])){
+            $this->dependencies = $config['dependencies'];
         }
 
         if(isset($config['extensionPackage'])){
@@ -441,5 +446,22 @@ class GitPackageConfig {
         }
 
         return $assetsFolder . $this->getLowCaseName() . '/';
+    }
+
+    public function checkDependencies() {
+        $failed = array();
+
+        foreach ($this->dependencies as $dependency) {
+            $found = $this->modx->getCount('transport.modTransportPackage', array('package_name' => $dependency));
+            if ($found == 0) {
+                $failed[] = $dependency;
+            }
+        }
+
+        if (count($failed) == 0) {
+            return true;
+        }
+
+        return $failed;
     }
 }
