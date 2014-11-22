@@ -10,7 +10,7 @@ $settings = array(
     array(
         'key' => 'packages_dir',
         'value' => '',
-        'name' => 'Packages directory (absolute path, slash at the end)'
+        'name' => 'Packages directory (absolute path)'
     ),
     array(
         'key' => 'packages_base_url',

@@ -11,7 +11,7 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor {
     public $object;
     /** @var GitPackageConfig $config */
     public $config;
-
+    public $packagePath = null;
 
     public function process() {
         $id = $this->getProperty('id');
@@ -20,12 +20,12 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor {
         $this->object = $this->modx->getObject('GitPackage', array('id' => $id));
         if (!$this->object) return $this->failure();
 
-        $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
-        if($packagePath == null){
+        $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
+        if($this->packagePath == null){
             return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
         }
 
-        $packagePath .= $this->object->dir_name;
+        $packagePath = $this->packagePath . $this->object->dir_name;
 
         $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
         if(!file_exists($configFile)){
@@ -48,8 +48,7 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor {
     }
 
     private function buildSchema() {
-        $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
-        $modelPath = $packagePath . $this->object->dir_name . "/core/components/" . $this->config->getLowCaseName() . "/" . 'model/';
+        $modelPath = $this->packagePath . $this->object->dir_name . "/core/components/" . $this->config->getLowCaseName() . "/" . 'model/';
         $modelPath = str_replace('\\', '/', $modelPath);
 
         $manager = $this->modx->getManager();

@@ -20,15 +20,15 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private $category;
     private $recreateDatabase = 0;
     private $alterDatabase = 0;
+    public $packagePath = null;
 
     public function beforeSet() {
-
-        $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
-        if($packagePath == null){
+        $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
+        if($this->packagePath == null){
             return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
         }
 
-        $packagePath .= $this->object->dir_name;
+        $packagePath = $this->packagePath . $this->object->dir_name;
 
         $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
         if(!file_exists($configFile)){
@@ -158,8 +158,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $extPackage = $this->newConfig->getExtensionPackage();
         if($extPackage !== false){
-            $packagePath = $this->modx->getOption('gitpackagemanagement.packages_dir',null,null);
-            $modelPath = $packagePath . $this->object->dir_name . "/core/components/" . $this->newConfig->getLowCaseName() . "/" . 'model/';
+            $modelPath = $this->packagePath . $this->object->dir_name . "/core/components/" . $this->newConfig->getLowCaseName() . "/" . 'model/';
             $modelPath = str_replace('\\', '/', $modelPath);
             if($extPackage === true){
                 $this->modx->addExtensionPackage($this->newConfig->getLowCaseName(),$modelPath);
