@@ -73,6 +73,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
 
     private function uninstallPackage() {
         $this->removeElements();
+        $this->removeResources();
         $this->removeTables();
         $this->removeExtensionPackage();
         $this->removeMenus();
@@ -227,6 +228,24 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor {
         $results = array();
         $partitions = array ('menu' => array ());
         $this->modx->cacheManager->refresh($partitions, $results);
+    }
+
+    private function removeResources() {
+        $assetsFolder = $this->config->getAssetsFolder();
+        $rmf = $assetsFolder . 'resourcemap.php';
+
+        if (is_readable($rmf)) {
+            $resourceMap = include $rmf;
+            unlink($rmf);
+            rmdir($assetsFolder);
+        } else {
+            $resourceMap = array();
+        }
+
+        foreach ($resourceMap as $pageTitle => $id) {
+            $this->modx->updateCollection('modResource', array('parent' => 0), array('parent' => $id));
+            $this->modx->removeObject('modResource', array('id' => $id));
+        }
     }
 }
 return 'GitPackageManagementRemoveProcessor';

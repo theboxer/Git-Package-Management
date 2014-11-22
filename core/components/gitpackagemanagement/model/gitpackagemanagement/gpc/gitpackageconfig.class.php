@@ -10,6 +10,7 @@ require_once 'gitpackageconfigelementchunk.class.php';
 require_once 'gitpackageconfigelementsnippet.class.php';
 require_once 'gitpackageconfigelementtemplate.class.php';
 require_once 'gitpackageconfigelementtv.class.php';
+require_once 'gitpackageconfigresource.class.php';
 
 
 class GitPackageConfig {
@@ -39,6 +40,8 @@ class GitPackageConfig {
     private $extensionPackage = null;
     /** @var array $elements Array with all elements */
     private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array());
+    /** @var GitPackageConfigResource[] $resources */
+    private $resources = array();
 
     /**
      * @param modX $modx
@@ -136,6 +139,12 @@ class GitPackageConfig {
                     if($this->setTVElements($config['package']['elements']['tvs']) == false){
                         return false;
                     }
+                }
+            }
+
+            if(isset($config['package']['resources'])){
+                if($this->setResources($config['package']['resources']) == false){
+                    return false;
                 }
             }
         }
@@ -295,6 +304,21 @@ class GitPackageConfig {
     }
 
     /**
+     * Parse and validate resources array
+     * @param $resources Array
+     * @return bool
+     */
+    private function setResources($resources){
+        foreach ($resources as $resource){
+            $p = new GitPackageConfigResource($this->modx, $this);
+            if($p->fromArray($resource) == false) return false;
+            $this->resources[] = $p;
+        }
+
+        return true;
+    }
+
+    /**
      * Returns array of GitPackageConfigAction objects
      * @return GitPackageConfigAction[]
      */
@@ -392,5 +416,30 @@ class GitPackageConfig {
      */
     public function getPackagePath() {
         return $this->packagePath;
+    }
+
+    /**
+     * Return array with all resources
+     *
+     * @return GitPackageConfigResource[]
+     */
+    public function getResources() {
+        return $this->resources;
+    }
+
+    public function getAssetsFolder() {
+        $assetsFolder = $this->modx->gitpackagemanagement->getOption('assetsPath');
+
+        if (!is_dir($assetsFolder . 'packages')) {
+            mkdir($assetsFolder . 'packages');
+        }
+
+        $assetsFolder .= 'packages/';
+
+        if (!is_dir($assetsFolder . $this->getLowCaseName())) {
+            mkdir($assetsFolder . $this->getLowCaseName());
+        }
+
+        return $assetsFolder . $this->getLowCaseName() . '/';
     }
 }

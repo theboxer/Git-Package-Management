@@ -5,6 +5,9 @@ config.core.php
 nbproject
 .project
 
+assets/components/gitpackagemanagement/packages/*
+!assets/components/gitpackagemanagement/packages/.gitignore
+
 _packages/*.*
 !_packages/.gitignore
 !_packages/*.zip

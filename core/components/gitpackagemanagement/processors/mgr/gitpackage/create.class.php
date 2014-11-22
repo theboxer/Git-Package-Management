@@ -29,6 +29,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
    /** @var bool $installFromDirectory */
     private $installFromDirectory = false;
 
+    private $resourceMap = array();
+
     public function beforeSave() {
 //        $url = $this->getProperty('url');
         $folderName = $this->getProperty('folderName');
@@ -188,6 +190,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->addExtensionPackage();
         $this->clearCache();
         $this->createElements();
+        $this->createResources();
     }
 
     /**
@@ -540,6 +543,45 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         } else {
             return true;
         }
+    }
+
+    private function createResources() {
+        $resources = $this->config->getResources();
+
+        $this->resourceMap = array();
+
+        foreach ($resources as $resource) {
+            $this->createResource($resource);
+        }
+
+        $this->setResourceMap();
+    }
+
+    /**
+     * @param GitPackageConfigResource $resource
+     */
+    private function createResource($resource) {
+        $res = $this->modx->runProcessor('resource/create', $resource->toArray());
+        $resObject = $res->getObject();
+
+        if ($resObject && isset($resObject['id'])) {
+            /** @var modResource $modResource */
+            $modResource = $this->modx->getObject('modResource', array('id' => $resObject['id']));
+
+            if ($modResource) {
+                $this->resourceMap[$modResource->pagetitle] = $modResource->id;
+
+                $tvs = $resource->getTvs();
+                foreach ($tvs as $tv) {
+                    $modResource->setTVValue($tv['name'], $tv['value']);
+                }
+            }
+        }
+    }
+
+    private function setResourceMap() {
+        $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
+        file_put_contents($rmf, '<?php return ' . var_export($this->resourceMap, true) . ';');
     }
 }
 return 'GitPackageManagementCreateProcessor';

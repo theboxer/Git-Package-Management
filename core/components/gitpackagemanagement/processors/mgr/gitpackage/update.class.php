@@ -20,7 +20,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private $category;
     private $recreateDatabase = 0;
     private $alterDatabase = 0;
-    public $packagePath = null;
+    private $packagePath = null;
+    private $resourceMap = array();
 
     public function beforeSet() {
         $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
@@ -82,6 +83,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->updateExtensionPackage();
         $this->updateSystemSettings();
         $this->updateElements();
+        $this->updateResources();
         $this->clearCache();
 
         return true;
@@ -514,6 +516,104 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
     private function buildSchema() {
         $this->modx->gitpackagemanagement->runProcessor('mgr/gitpackage/buildschema', $this->getProperties());
+    }
+
+    private function updateResources() {
+        $resources = $this->newConfig->getResources();
+
+        $this->resourceMap = $this->getResourceMap();
+        $toRemove = $this->resourceMap;
+
+        foreach ($resources as $resource) {
+            if (isset($this->resourceMap[$resource->getPagetitle()])) {
+                unset($toRemove[$resource->getPagetitle()]);
+
+                $exists = $this->modx->getObject('modResource', array('id' => $this->resourceMap[$resource->getPagetitle()]));
+                if ($exists) {
+                    $resource->setId($exists->id);
+                    $this->updateResource($resource);
+                } else {
+                    $this->createResource($resource);
+                }
+            } else {
+                $this->createResource($resource);
+            }
+        }
+
+        foreach ($toRemove as $pageTitle => $resource) {
+            unset($this->resourceMap[$pageTitle]);
+
+            /** @var modResource $modResource */
+            $modResource = $this->modx->getObject('modResource', $resource);
+            if ($modResource) {
+                $this->modx->updateCollection('modResource', array('parent' => 0), array('parent' => $resource));
+
+                $modResource->remove();
+            }
+        }
+
+        $this->setResourceMap();
+    }
+
+    /**
+     * @param GitPackageConfigResource $resource
+     */
+    private function createResource($resource) {
+        $res = $this->modx->runProcessor('resource/create', $resource->toArray());
+        $resObject = $res->getObject();
+
+        if ($resObject && isset($resObject['id'])) {
+            /** @var modResource $modResource */
+            $modResource = $this->modx->getObject('modResource', array('id' => $resObject['id']));
+
+            if ($modResource) {
+                $this->resourceMap[$modResource->pagetitle] = $modResource->id;
+
+                $tvs = $resource->getTvs();
+                foreach ($tvs as $tv) {
+                    $modResource->setTVValue($tv['name'], $tv['value']);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param GitPackageConfigResource $resource
+     */
+    private function updateResource($resource) {
+        $res = $this->modx->runProcessor('resource/update', $resource->toArray());
+        $resObject = $res->getObject();
+
+        if ($resObject && isset($resObject['id'])) {
+            /** @var modResource $modResource */
+            $modResource = $this->modx->getObject('modResource', array('id' => $resObject['id']));
+
+            if ($modResource) {
+                $this->resourceMap[$modResource->pagetitle] = $modResource->id;
+
+                $tvs = $resource->getTvs();
+                foreach ($tvs as $tv) {
+                    $modResource->setTVValue($tv['name'], $tv['value']);
+                }
+            }
+        }
+    }
+
+    private function getResourceMap() {
+        $rmf = $this->newConfig->getAssetsFolder() . 'resourcemap.php';
+
+        if (is_readable($rmf)) {
+            $content = include $rmf;
+        } else {
+            $content = array();
+        }
+
+        return $content;
+    }
+
+    private function setResourceMap() {
+        $rmf = $this->newConfig->getAssetsFolder() . 'resourcemap.php';
+        file_put_contents($rmf, '<?php return ' . var_export($this->resourceMap, true) . ';');
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';
