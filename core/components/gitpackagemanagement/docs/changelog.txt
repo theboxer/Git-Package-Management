@@ -1,5 +1,8 @@
 Changelog for GitPackageManagement.
 
+- Added build schema option
+- Added preserve package option that will copy assets & core files to MODX directory
+- Added ability to add Resources
 - Update indexes when altering table
 - Fixed removing not-used tables
 - Added an option to alter database
