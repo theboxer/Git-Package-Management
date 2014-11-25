@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.8.0 alpha
+==============
 - Added build schema option
 - Added preserve package option that will copy assets & core files to MODX directory
 - Added ability to add Resources
