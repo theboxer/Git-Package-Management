@@ -75,4 +75,50 @@ class GitPackageManagement {
             'location' => $location,
         ));
     }
+
+    public function stream_copy($src, $dest) {
+        $fsrc = fopen($src,'r');
+        $fdest = fopen($dest,'w+');
+
+        $len = stream_copy_to_stream($fsrc,$fdest);
+
+        fclose($fsrc);
+        fclose($fdest);
+
+        return $len;
+    }
+
+    public function recurse_copy($src,$dst) {
+        $dir = opendir($src);
+        @mkdir($dst);
+        while(false !== ( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if ( is_dir($src . '/' . $file) ) {
+                    $this->recurse_copy($src . '/' . $file,$dst . '/' . $file);
+                }
+                else {
+                    $this->stream_copy($src . '/' . $file,$dst . '/' . $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+
+    public function deleteDir($dirPath) {
+        if (! is_dir($dirPath)) {
+            return;
+        }
+        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
+    }
 }

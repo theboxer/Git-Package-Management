@@ -29,6 +29,7 @@ $_lang['gitpackagemanagement.delete_package_folder'] = 'Delete package folder';
 $_lang['gitpackagemanagement.key'] = 'Key';
 $_lang['gitpackagemanagement.build_schema'] = 'Build schema';
 $_lang['gitpackagemanagement.update_mask'] = 'Updating package';
+$_lang['gitpackagemanagement.preserve_package'] = 'Preserve package';
 
 //Options
 $_lang['setting_gitpackagemanagement.packages_dir'] = 'Packages directory';
