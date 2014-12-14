@@ -453,7 +453,9 @@ class GitPackageConfig {
 
         foreach ($this->dependencies as $dependency) {
             $found = $this->modx->getCount('transport.modTransportPackage', array('package_name' => $dependency));
-            if ($found == 0) {
+            $foundInGPM = $this->modx->getCount('GitPackage', array('name' => $dependency, 'OR:dir_name:=' => $dependency));
+
+            if ($found == 0 && $foundInGPM == 0) {
                 $failed[] = $dependency;
             }
         }
