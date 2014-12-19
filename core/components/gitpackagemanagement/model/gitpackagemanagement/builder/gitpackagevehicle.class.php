@@ -33,6 +33,14 @@ class GitPackageVehicle {
         return $this;
     }
 
+    public function addPHPResolver($filePath) {
+        $this->vehicle->resolve('php', array(
+            'source' => $filePath,
+        ));
+
+        return $this;
+    }
+
     public function addTableResolver($packagePath, $tables) {
         if (!is_dir($packagePath . '_build/gpm_resolvers')) {
             mkdir($packagePath . '_build/gpm_resolvers');
@@ -44,11 +52,7 @@ class GitPackageVehicle {
 
         file_put_contents($packagePath . '_build/gpm_resolvers/gpm.resolve.tables.php', $resolverContent);
 
-        $this->vehicle->resolve('php',array(
-            'source' => $packagePath . '_build/gpm_resolvers/gpm.resolve.tables.php',
-        ));
-
-        return $this;
+        return $this->addPHPResolver($packagePath . '_build/gpm_resolvers/gpm.resolve.tables.php');
     }
 
     public function getVehicle() {
