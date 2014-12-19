@@ -73,14 +73,48 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $this->builder->registerNamespace($this->config->getLowCaseName(), false, true, '{core_path}components/' . $this->config->getLowCaseName() . '/','{assets_path}components/' . $this->config->getLowCaseName() . '/');
 
-        $vehicle = $this->addCategory()->addAssetsResolver($this->assetsPath)->addCoreResolver($this->corePath);
+        $vehicle = $this->addCategory();
+
+        $buildOptions = $this->config->getBuild();
+        $resolvers = $buildOptions->getResolvers();
+
+        $resolversDir = $resolvers['resolversDir'];
+        $resolversDir = trim($resolversDir, '/');
+        $resolversDir = $this->packagePath . '_build/' . $resolversDir . '/';
+
+        $before = $resolvers['before'];
+        foreach($before as $script) {
+            $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
+        }
+
+        if ($resolvers['resolveAssets']) {
+            $vehicle->addAssetsResolver($this->assetsPath);
+        }
+
+        if ($resolvers['resolveCore']) {
+            $vehicle->addCoreResolver($this->corePath);
+        }
 
         $db = $this->config->getDatabase();
         if ($db != null) {
             $tables = $db->getTables();
             if (!empty($tables)) {
-                $vehicle->addTableResolver($this->packagePath, $tables);
+                $vehicle->addTableResolver($this->packagePath . '_build/gpm_resolvers', $tables);
             }
+        }
+
+        $extensionPackage = $this->config->getExtensionPackage();
+        if ($extensionPackage !== false) {
+            if ($extensionPackage === true) {
+                $vehicle->addExtensionPackageResolver($this->packagePath . '_build/gpm_resolvers');
+            } else {
+                $vehicle->addExtensionPackageResolver($this->packagePath . '_build/gpm_resolvers', $extensionPackage['serviceName'], $extensionPackage['serviceClass']);
+            }
+        }
+
+        $after = $resolvers['after'];
+        foreach($after as $script) {
+            $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
         }
 
         $this->builder->putVehicle($vehicle);

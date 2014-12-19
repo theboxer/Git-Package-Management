@@ -42,21 +42,36 @@ class GitPackageVehicle {
     }
 
     public function addTableResolver($packagePath, $tables) {
-        if (!is_dir($packagePath . '_build/gpm_resolvers')) {
-            mkdir($packagePath . '_build/gpm_resolvers');
+        if (!is_dir($packagePath)) {
+            mkdir($packagePath);
         }
 
         $this->smarty->assign('tables', $tables);
 
         $resolverContent = $this->smarty->fetch('tables_resolver.tpl');
 
-        file_put_contents($packagePath . '_build/gpm_resolvers/gpm.resolve.tables.php', $resolverContent);
+        file_put_contents($packagePath . '/gpm.resolve.tables.php', $resolverContent);
 
-        return $this->addPHPResolver($packagePath . '_build/gpm_resolvers/gpm.resolve.tables.php');
+        return $this->addPHPResolver($packagePath . '/gpm.resolve.tables.php');
     }
 
     public function getVehicle() {
         return $this->vehicle;
+    }
+
+    public function addExtensionPackageResolver($packagePath, $serviceName = null, $serviceClass = null) {
+        if (!is_dir($packagePath)) {
+            mkdir($packagePath);
+        }
+
+        $this->smarty->assign('serviceName', $serviceName);
+        $this->smarty->assign('serviceClass', $serviceClass);
+
+        $resolverContent = $this->smarty->fetch('extension_package_resolver.tpl');
+
+        file_put_contents($packagePath . '/gpm.resolve.extension_package.php', $resolverContent);
+
+        return $this->addPHPResolver($packagePath .'/gpm.resolve.extension_package.php');
     }
 
 }

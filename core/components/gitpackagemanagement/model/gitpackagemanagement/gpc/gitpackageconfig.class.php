@@ -11,6 +11,7 @@ require_once 'gitpackageconfigelementsnippet.class.php';
 require_once 'gitpackageconfigelementtemplate.class.php';
 require_once 'gitpackageconfigelementtv.class.php';
 require_once 'gitpackageconfigresource.class.php';
+require_once 'gitpackageconfigbuild.class.php';
 
 
 class GitPackageConfig {
@@ -43,6 +44,8 @@ class GitPackageConfig {
     /** @var GitPackageConfigResource[] $resources */
     private $resources = array();
     private $dependencies = array();
+    /** @var GitPackageConfigBuild $build */
+    private $build = null;
 
     /**
      * @param modX $modx
@@ -155,6 +158,11 @@ class GitPackageConfig {
                 return false;
             }
         }
+
+        if($this->setBuild($config['build']) == false){
+            return false;
+        }
+
 
         if (isset($config['dependencies'])){
             $this->dependencies = $config['dependencies'];
@@ -304,6 +312,18 @@ class GitPackageConfig {
     private function setDatabase($database) {
         $this->database = new GitPackageConfigDatabase($this->modx);
         if($this->database->fromArray($database) == false) return false;
+
+        return true;
+    }
+
+    /**
+     * Set build options
+     * @param $build
+     * @return bool
+     */
+    private function setBuild($build) {
+        $this->build = new GitPackageConfigBuild($this->modx);
+        if($this->build->fromArray($build) == false) return false;
 
         return true;
     }
@@ -465,5 +485,12 @@ class GitPackageConfig {
         }
 
         return $failed;
+    }
+
+    /**
+     * @return GitPackageConfigBuild
+     */
+    public function getBuild() {
+        return $this->build;
     }
 }
