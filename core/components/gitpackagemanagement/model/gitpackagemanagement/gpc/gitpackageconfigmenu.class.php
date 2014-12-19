@@ -12,6 +12,8 @@ class GitPackageConfigMenu {
     private $params;
     private $handler;
     private $action;
+    /** @var GitPackageConfigAction $action */
+    private $actionObject = null;
 
     public function __construct(modX &$modx, $gitPackageConfig) {
         $this->modx =& $modx;
@@ -120,10 +122,18 @@ class GitPackageConfigMenu {
         foreach($this->gitPackageConfig->getActions() as $action){
             if($action->getId() != $givenAction) continue;
             $this->action = $givenAction;
+            $this->actionObject = $action;
 
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * @return GitPackageConfigAction|null
+     */
+    public function getActionObject() {
+        return $this->actionObject;
     }
 }
