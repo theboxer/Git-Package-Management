@@ -75,7 +75,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $vehicle = $this->addCategory();
 
-        $resolver = $this->config->getBuild()->getResolver();
+        $buildOptions = $this->config->getBuild();
+        $resolver = $buildOptions->getResolver();
 
         $resolversDir = $resolver->getResolversDir();
         $resolversDir = trim($resolversDir, '/');
@@ -120,14 +121,33 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $this->addMenus();
         $this->addSystemSettings();
 
-        $this->builder->setPackageAttributes(array(
-            'license' => file_get_contents($this->corePath . 'docs/license.txt'),
-            'readme' => file_get_contents($this->corePath . 'docs/readme.txt'),
-            'changelog' => file_get_contents($this->corePath . 'docs/changelog.txt'),
-//            'setup-options' => array(
-//                'source' => $sources['build'].'setup.options.php',
-//            ),
-        ));
+        $packageAttributes = array();
+
+        $license = ltrim($buildOptions->getLicense(), '/');
+        if (!empty($license) && file_exists($this->corePath . $license)) {
+            $packageAttributes['license'] = file_get_contents($this->corePath . $license);
+        }
+
+        $readme = ltrim($buildOptions->getReadme(), '/');
+        if (!empty($readme) && file_exists($this->corePath . $readme)) {
+            $packageAttributes['readme'] = file_get_contents($this->corePath . $readme);
+        }
+
+        $changeLog = ltrim($buildOptions->getChangeLog(), '/');
+        if (!empty($changeLog) && file_exists($this->corePath . $changeLog)) {
+            $packageAttributes['changelog'] = file_get_contents($this->corePath . $changeLog);
+        }
+
+        $setupOptions = $buildOptions->getSetupOptions();
+        if (!empty($setupOptions) && isset($setupOptions['source']) && !empty($setupOptions['source'])) {
+            $file = $this->packagePath . '_build/' . $setupOptions['source'];
+            if (file_exists($file)) {
+                $setupOptions['source'] = $file;
+                $packageAttributes['setup-options'] = $setupOptions;
+            }
+        }
+
+        $this->builder->setPackageAttributes($packageAttributes);
 
         $this->builder->pack();
 
