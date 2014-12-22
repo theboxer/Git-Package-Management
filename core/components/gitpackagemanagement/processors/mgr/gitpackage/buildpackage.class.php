@@ -75,23 +75,22 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $vehicle = $this->addCategory();
 
-        $buildOptions = $this->config->getBuild();
-        $resolvers = $buildOptions->getResolvers();
+        $resolver = $this->config->getBuild()->getResolver();
 
-        $resolversDir = $resolvers['resolversDir'];
+        $resolversDir = $resolver->getResolversDir();
         $resolversDir = trim($resolversDir, '/');
         $resolversDir = $this->packagePath . '_build/' . $resolversDir . '/';
 
-        $before = $resolvers['before'];
+        $before = $resolver->getBefore();
         foreach($before as $script) {
             $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
         }
 
-        if ($resolvers['resolveAssets']) {
+        if (is_dir($this->assetsPath)) {
             $vehicle->addAssetsResolver($this->assetsPath);
         }
 
-        if ($resolvers['resolveCore']) {
+        if (is_dir($this->corePath)) {
             $vehicle->addCoreResolver($this->corePath);
         }
 
@@ -112,7 +111,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             }
         }
 
-        $after = $resolvers['after'];
+        $after = $resolver->getAfter();
         foreach($after as $script) {
             $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
         }

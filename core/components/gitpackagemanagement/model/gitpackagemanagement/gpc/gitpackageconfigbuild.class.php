@@ -2,55 +2,35 @@
 
 class GitPackageConfigBuild {
     private $modx;
-    private $resolvers = array(
-        'resolveAssets' => true,
-        'resolveCore' => true,
-        'resolversDir' => 'resolvers',
-        'before' => array(),
-        'after' => array()
-    );
+    /** @var GitPackageConfigBuildResolver $resolver */
+    private $resolver;
 
     public function __construct(modX &$modx) {
         $this->modx =& $modx;
     }
 
     public function fromArray($config) {
-        if(isset($config['resolvers']['resolveAssets'])){
-            $this->resolvers['resolveAssets'] = $config['resolvers']['resolveAssets'];
-        }
+        $this->resolver = new GitPackageConfigBuildResolver($this->modx);
 
-        if(isset($config['resolvers']['resolveCore'])){
-            $this->resolvers['resolveCore'] = $config['resolvers']['resolveCore'];
-        }
-
-        if(isset($config['resolvers']['resolversDir'])){
-            $this->resolvers['resolversDir'] = $config['resolvers']['resolversDir'];
-        }
-
-        if(isset($config['resolvers']['before'])){
-            $this->resolvers['before'] = $config['resolvers']['before'];
-        }
-
-        if(isset($config['resolvers']['after'])){
-            $this->resolvers['after'] = $config['resolvers']['after'];
+        if(isset($config['resolver'])){
+            $this->resolver->fromArray($config['resolver']);
         }
 
         return true;
     }
 
     /**
-     * @return array
+     * @return GitPackageConfigBuildResolver
      */
-    public function getResolvers() {
-        return $this->resolvers;
+    public function getResolver() {
+        return $this->resolver;
     }
 
     /**
-     * @param array $resolvers
+     * @param GitPackageConfigBuildResolver $resolver
      */
-    public function setResolvers($resolvers) {
-        $this->resolvers = $resolvers;
+    public function setResolver($resolver) {
+        $this->resolver = $resolver;
     }
-
 
 }

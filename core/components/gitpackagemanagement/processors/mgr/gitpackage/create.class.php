@@ -38,13 +38,14 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         /**
          * Check if is set packages dir in MODx system settings
          */
-        $packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
+        $packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/');
         if($packagePath == null){
             $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
             $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
             return false;
         }
+        $packagePath .=  '/';
 
         /**
          * Check if is filled folder name

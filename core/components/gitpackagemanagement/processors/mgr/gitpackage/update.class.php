@@ -24,10 +24,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private $resourceMap = array();
 
     public function beforeSet() {
-        $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
+        $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/');
         if($this->packagePath == null){
             return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
         }
+        $this->packagePath .=  '/';
 
         $packagePath = $this->packagePath . $this->object->dir_name;
 

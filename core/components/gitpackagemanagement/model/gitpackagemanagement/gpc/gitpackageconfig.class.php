@@ -12,6 +12,7 @@ require_once 'gitpackageconfigelementtemplate.class.php';
 require_once 'gitpackageconfigelementtv.class.php';
 require_once 'gitpackageconfigresource.class.php';
 require_once 'gitpackageconfigbuild.class.php';
+require_once 'gitpackageconfigbuildresolver.class.php';
 
 
 class GitPackageConfig {
