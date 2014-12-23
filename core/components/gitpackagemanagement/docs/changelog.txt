@@ -1,5 +1,9 @@
 Changelog for GitPackageManagement.
 
+- Fixed updating TVs
+- Added build section to the config file
+- Added build package option
+
 GitPackageManagement 0.8.0 alpha
 ==============
 - Added build schema option
