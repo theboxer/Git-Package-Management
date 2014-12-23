@@ -46,13 +46,18 @@ class GitPackageVehicle {
             mkdir($packagePath);
         }
 
+        $resolver = $packagePath . '/gpm.resolve.tables.php';
+        if (file_exists($resolver)) {
+            unlink($resolver);
+        }
+
         $this->smarty->assign('tables', $tables);
 
         $resolverContent = $this->smarty->fetch('tables_resolver.tpl');
 
-        file_put_contents($packagePath . '/gpm.resolve.tables.php', $resolverContent);
+        file_put_contents($resolver, $resolverContent);
 
-        return $this->addPHPResolver($packagePath . '/gpm.resolve.tables.php');
+        return $this->addPHPResolver($resolver);
     }
 
     public function getVehicle() {
@@ -64,14 +69,37 @@ class GitPackageVehicle {
             mkdir($packagePath);
         }
 
+        $resolver = $packagePath . '/gpm.resolve.extension_package.php';
+        if (file_exists($resolver)) {
+            unlink($resolver);
+        }
+
         $this->smarty->assign('serviceName', $serviceName);
         $this->smarty->assign('serviceClass', $serviceClass);
 
         $resolverContent = $this->smarty->fetch('extension_package_resolver.tpl');
 
-        file_put_contents($packagePath . '/gpm.resolve.extension_package.php', $resolverContent);
+        file_put_contents($resolver, $resolverContent);
 
-        return $this->addPHPResolver($packagePath .'/gpm.resolve.extension_package.php');
+        return $this->addPHPResolver($resolver);
     }
 
+    public function addTVResolver($packagePath, $tvMap) {
+        if (!is_dir($packagePath)) {
+            mkdir($packagePath);
+        }
+
+        $resolver = $packagePath . '/gpm.resolve.tv_templates.php';
+        if (file_exists($resolver)) {
+            unlink($resolver);
+        }
+
+        $this->smarty->assign('tvMap', var_export($tvMap, true));
+
+        $resolverContent = $this->smarty->fetch('tv_templates_resolver.tpl');
+
+        file_put_contents($resolver, $resolverContent);
+
+        return $this->addPHPResolver($resolver);
+    }
 }

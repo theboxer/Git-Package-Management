@@ -4,9 +4,9 @@ class GitPackageConfigBuild {
     private $modx;
     /** @var GitPackageConfigBuildResolver $resolver */
     private $resolver;
-    private $readme = 'docs/license.txt';
+    private $readme = 'docs/readme.txt';
     private $license = 'docs/license.txt';
-    private $changeLog = 'docs/license.txt';
+    private $changeLog = 'docs/changelog.txt';
     private $setupOptions = array();
 
     public function __construct(modX &$modx) {

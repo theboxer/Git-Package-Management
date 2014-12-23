@@ -3,7 +3,7 @@ require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/model/gitpackagema
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/model/gitpackagemanagement/builder/gitpackagebuilder.class.php';
 /**
  * Clone git repository and install it
- * 
+ *
  * @package gitpackagemanagement
  * @subpackage processors
  */
@@ -19,6 +19,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
     private $assetsPath;
     /** @var modSmarty $smarty */
     private $smarty;
+    private $tvMap = array();
 
     public function prepare(){
         $id = $this->getProperty('id');
@@ -61,7 +62,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $this->setPaths();
 
-        $this->builder = new GitPackageBuilder($this->modx, $this->smarty);
+        $this->builder = new GitPackageBuilder($this->modx, $this->smarty, $this->packagePath);
 
         $version = explode('-', $this->config->getVersion());
         if (count($version) == 1) {
@@ -110,6 +111,10 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             } else {
                 $vehicle->addExtensionPackageResolver($this->packagePath . '_build/gpm_resolvers', $extensionPackage['serviceName'], $extensionPackage['serviceClass']);
             }
+        }
+
+        if (!empty($this->tvMap)) {
+            $vehicle->addTVResolver($this->packagePath . '_build/gpm_resolvers', $this->tvMap);
         }
 
         $after = $resolver->getAfter();
@@ -172,7 +177,32 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $category = $this->modx->newObject('modCategory');
         $category->set('category', $this->config->getName());
 
-        return $this->builder->addCategory($category, $this->getSnippets(), $this->getChunks(), $this->getPlugins());
+        $snippets = $this->getSnippets();
+        if (!empty($snippets)) {
+            $category->addMany($snippets, 'Snippets');
+        }
+
+        $chunks = $this->getChunks();
+        if (!empty($chunks)) {
+            $category->addMany($chunks, 'Chunks');
+        }
+
+        $plugins = $this->getPlugins();
+        if (!empty($plugins)) {
+            $category->addMany($plugins, 'Plugins');
+        }
+
+        $templates = $this->getTemplates();
+        if (!empty($templates)) {
+            $category->addMany($templates, 'Templates');
+        }
+
+        $templateVariables = $this->getTemplateVariables();
+        if (!empty($templateVariables)) {
+            $category->addMany($templateVariables, 'TemplateVars');
+        }
+
+        return $this->builder->createVehicle($category, 'category');
     }
 
     private function getSnippets() {
@@ -213,6 +243,47 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         }
 
         return $chunks;
+    }
+
+    private function getTemplates() {
+        $templates = array();
+
+        /** @var GitPackageConfigElementTemplate[] $configTemplates */
+        $configTemplates = $this->config->getElements('templates');
+        if(count($configTemplates) > 0){
+            $path = $this->corePath . 'elements/templates/';
+
+            foreach($configTemplates as $configTemplate){
+                $templateObject = $this->modx->newObject('modTemplate');
+                $templateObject->set('templatename', $configTemplate->getName());
+                $templateObject->set('content', $this->builder->getFileContent($path . $configTemplate->getFile()));
+
+                $templates[] = $templateObject;
+            }
+        }
+
+        return $templates;
+    }
+
+    private function getTemplateVariables() {
+        $templateVariables = array();
+
+        /** @var GitPackageConfigElementTV[] $configTVs */
+        $configTVs = $this->config->getElements('tvs');
+        if(count($configTVs) > 0){
+            foreach($configTVs as $configTV){
+                $tvObject = $this->modx->newObject('modTemplateVar');
+                $tvObject->set('name', $configTV->getName());
+                $tvObject->set('caption', $configTV->getCaption());
+                $tvObject->set('description', $configTV->getDescription());
+                $tvObject->set('type', $configTV->getInputType());
+
+                $this->tvMap[$configTV->getName()] = $configTV->getTemplates();
+                $templateVariables[] = $tvObject;
+            }
+        }
+
+        return $templateVariables;
     }
 
     private function getPlugins() {

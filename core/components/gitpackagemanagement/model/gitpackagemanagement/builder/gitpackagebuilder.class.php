@@ -10,14 +10,17 @@ class GitPackageBuilder {
     private $attributes = array();
     /** @var modSmarty $smarty */
     private $smarty;
+    /** @var string $packagePath */
+    private $packagePath;
 
     /**
      * @param modX $modx
      * @param modSmarty $smarty
      */
-    public function __construct(modX &$modx, modSmarty $smarty) {
+    public function __construct(modX &$modx, modSmarty $smarty, $packagePath) {
         $this->modx =& $modx;
         $this->smarty = $smarty;
+        $this->packagePath = $packagePath;
 
         $this->setBuilder();
         $this->setAttributes();
@@ -95,29 +98,6 @@ class GitPackageBuilder {
 
     private function getAttributes($type){
         return $this->attributes[$type];
-    }
-
-    /**
-     * @param modCategory $category
-     * @param array $snippets
-     * @param array $chunks
-     * @param array $plugins
-     * @return GitPackageVehicle
-     */
-    public function addCategory($category, $snippets = array(), $chunks = array(), $plugins = array()) {
-        if (!empty($snippets)) {
-            $category->addMany($snippets);
-        }
-
-        if (!empty($chunks)) {
-            $category->addMany($chunks);
-        }
-
-        if (!empty($plugins)) {
-            $category->addMany($plugins);
-        }
-
-        return new GitPackageVehicle($this->builder, $this->smarty, $category, $this->getAttributes('category'));
     }
 
     public function registerNamespace($ns = 'core', $autoIncludes = true, $packageNamespace = true, $path = '', $assetsPath = ''){
