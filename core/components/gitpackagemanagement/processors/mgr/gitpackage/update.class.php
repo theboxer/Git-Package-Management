@@ -344,7 +344,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
             foreach($templates as $template){
                 $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
-                $templateTVObject->set('tmplvarid', $tv->id);
+                $templateTVObject->set('tmplvarid', $tvObject->id);
                 $templateTVObject->set('templateid', $template->id);
                 $templateTVObject->save();
             }
