@@ -13,6 +13,8 @@ abstract class GitPackageConfigElement{
     protected $type;
     /** @var string $extension */
     protected $extension;
+    /** @var array $properties */
+    protected $properties = array();
 
     public function __construct(modX &$modx, GitPackageConfig $config) {
         $this->modx =& $modx;
@@ -29,8 +31,13 @@ abstract class GitPackageConfigElement{
 
         if(isset($config['file'])){
             $this->file = $config['file'];
-        }else{
+        } else {
             $this->file = strtolower($this->name).'.'.$this->type . '.' . $this->extension;
+        }
+
+        if (isset($config['properties']) && is_array($config['properties'])) {
+            $propertiesSet = $this->setProperties($config['properties']);
+            if ($propertiesSet === false) return false;
         }
 
         if ($this->checkFile() == false) {
@@ -58,5 +65,61 @@ abstract class GitPackageConfigElement{
 
     public function getName() {
         return $this->name;
+    }
+
+    public function getProperties() {
+        return $this->properties;
+    }
+
+    protected function setProperties($properties) {
+        foreach ($properties as $property) {
+            $prop = array();
+
+            if (isset($property['name'])) {
+                $prop['name'] = $property['name'];
+            } else {
+                return false;
+            }
+
+            if (isset($property['description'])) {
+                $prop['desc'] = $property['description'];
+            } else {
+                $prop['desc'] = $this->config->getLowCaseName() . '.' . strtolower($this->getName()) . '.' . $prop['name'];
+            }
+
+            if (isset($property['type'])) {
+                $prop['type'] = $property['type'];
+            } else {
+                $prop['type'] = 'textfield';
+            }
+
+            if (isset($property['options'])) {
+                $prop['options'] = $property['options'];
+            } else {
+                $prop['options'] = '';
+            }
+
+            if (isset($property['value'])) {
+                $prop['value'] = $property['value'];
+            } else {
+                $prop['value'] = '';
+            }
+
+            if (isset($property['lexicon'])) {
+                $prop['lexicon'] = $property['lexicon'];
+            } else {
+                $prop['lexicon'] = $this->config->getLowCaseName() . ':properties';
+            }
+
+            if (isset($property['area'])) {
+                $prop['area'] = $property['area'];
+            } else {
+                $prop['area'] = '';
+            }
+
+            $this->properties[] = $prop;
+        }
+
+        return true;
     }
 }

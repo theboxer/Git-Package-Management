@@ -218,6 +218,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $snippetObject->set('name', $configSnippet->getName());
                 $snippetObject->set('snippet', $this->builder->getFileContent($path . $configSnippet->getFile()));
 
+                $snippetObject->setProperties($configSnippet->getProperties());
                 $snippets[] = $snippetObject;
             }
         }
@@ -238,6 +239,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $chunkObject->set('name', $configChunk->getName());
                 $chunkObject->set('snippet', $this->builder->getFileContent($path . $configChunk->getFile()));
 
+                $chunkObject->setProperties($configChunk->getProperties());
                 $chunks[] = $chunkObject;
             }
         }
@@ -258,6 +260,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $templateObject->set('templatename', $configTemplate->getName());
                 $templateObject->set('content', $this->builder->getFileContent($path . $configTemplate->getFile()));
 
+                $templateObject->setProperties($configTemplate->getProperties());
                 $templates[] = $templateObject;
             }
         }
@@ -278,6 +281,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $tvObject->set('description', $configTV->getDescription());
                 $tvObject->set('type', $configTV->getInputType());
 
+                $tvObject->setProperties($configTV->getProperties());
                 $this->tvMap[$configTV->getName()] = $configTV->getTemplates();
                 $templateVariables[] = $tvObject;
             }
@@ -314,6 +318,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                     $pluginObject->addMany($eventObjects);
                 }
 
+                $pluginObject->setProperties($configPlugin->getProperties());
                 $plugins[] = $pluginObject;
             }
         }

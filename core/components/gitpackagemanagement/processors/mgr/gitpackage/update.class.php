@@ -247,6 +247,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         foreach($this->newConfig->getElements($configType) as $name => $element){
             if($type == 'Template'){
+                /** @var modElement $elementObject */
                 $elementObject = $this->modx->getObject('mod'.$type, array('templatename' => $name));
             }else{
                 $elementObject = $this->modx->getObject('mod'.$type, array('name' => $name));
@@ -287,6 +288,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $elementObject->addMany($events, 'PluginEvents');
             }
 
+            $elementObject->setProperties($element->getProperties());
             $elementObject->save();
 
             if(isset($notUsedElements[$name])){
@@ -339,6 +341,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $oldTemplate->remove();
             }
 
+            $tvObject->setProperties($tvObject->getProperties());
             $tvObject->save();
 
             $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
