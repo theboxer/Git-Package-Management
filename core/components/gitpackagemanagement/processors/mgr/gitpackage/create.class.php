@@ -402,6 +402,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             foreach($plugins as $plugin){
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
+                $pluginObject->set('description', $plugin->getDescription());
                 $pluginObject->set('static', 1);
                 $pluginObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/plugins/' . $plugin->getFile());
                 $pluginObject->set('category', $this->category->id);
@@ -437,6 +438,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             foreach($snippets as $snippet){
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
+                $snippetObject->set('description', $snippet->getDescription());
                 $snippetObject->set('static', 1);
                 $snippetObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/snippets/' . $snippet->getFile());
                 $snippetObject->set('category', $this->category->id);
@@ -459,6 +461,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             foreach($chunks as $chunk){
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $chunk->getName());
+                $chunkObject->set('description', $chunk->getDescription());
                 $chunkObject->set('static', 1);
                 $chunkObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/chunks/' . $chunk->getFile());
                 $chunkObject->set('category', $this->category->id);
@@ -481,6 +484,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             foreach($templates as $template){
                 $templatesObject = $this->modx->newObject('modTemplate');
                 $templatesObject->set('templatename', $template->getName());
+                $templatesObject->set('description', $template->getDescription());
                 $templatesObject->set('static', 1);
                 $templatesObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/templates/' . $template->getFile());
                 $templatesObject->set('category', $this->category->id);

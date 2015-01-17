@@ -216,6 +216,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             foreach($configSnippets as $configSnippet){
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $configSnippet->getName());
+                $snippetObject->set('description', $configSnippet->getDescription());
                 $snippetObject->set('snippet', $this->builder->getFileContent($path . $configSnippet->getFile()));
 
                 $snippetObject->setProperties($configSnippet->getProperties());
@@ -237,6 +238,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             foreach($configChunks as $configChunk){
                 $chunkObject = $this->modx->newObject('modSnippet');
                 $chunkObject->set('name', $configChunk->getName());
+                $chunkObject->set('description', $configChunk->getDescription());
                 $chunkObject->set('snippet', $this->builder->getFileContent($path . $configChunk->getFile()));
 
                 $chunkObject->setProperties($configChunk->getProperties());
@@ -258,6 +260,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             foreach($configTemplates as $configTemplate){
                 $templateObject = $this->modx->newObject('modTemplate');
                 $templateObject->set('templatename', $configTemplate->getName());
+                $templateObject->set('description', $configTemplate->getDescription());
                 $templateObject->set('content', $this->builder->getFileContent($path . $configTemplate->getFile()));
 
                 $templateObject->setProperties($configTemplate->getProperties());
@@ -301,6 +304,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             foreach($configPlugins as $configPlugin){
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $configPlugin->getName());
+                $pluginObject->set('description', $configPlugin->getDescription());
                 $pluginObject->set('plugincode', $this->builder->getFileContent($path . $configPlugin->getFile()));
 
                 $events = $configPlugin->getEvents();
@@ -374,7 +378,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 'key' => $setting->getNamespacedKey(),
                 'value' => $setting->getValue(),
                 'xtype' => $setting->getType(),
-                'namespace' => $setting->getNamespace(),
+                'namespace' => $this->config->getLowCaseName(),
                 'area' => $setting->getArea(),
             ), '', true, true);
 

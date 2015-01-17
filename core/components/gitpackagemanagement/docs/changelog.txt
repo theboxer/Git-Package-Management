@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Added descriptions to elements
 - Added option to add properties to elements
 
 GitPackageManagement 0.9.0 alpha

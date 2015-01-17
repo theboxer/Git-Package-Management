@@ -7,6 +7,8 @@ abstract class GitPackageConfigElement{
     protected $config;
     /** @var string $name */
     protected $name;
+    /** @var string $description */
+    protected $description = '';
     /** @var string $file */
     protected $file;
     /** @var string $type */
@@ -27,6 +29,10 @@ abstract class GitPackageConfigElement{
         }else{
             $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: '.$this->type.' - name is not set');
             return false;
+        }
+
+        if (isset($config['description'])) {
+            $this->description = $config['description'];
         }
 
         if(isset($config['file'])){
@@ -69,6 +75,10 @@ abstract class GitPackageConfigElement{
 
     public function getProperties() {
         return $this->properties;
+    }
+
+    public function getDescription() {
+        return $this->description;
     }
 
     protected function setProperties($properties) {

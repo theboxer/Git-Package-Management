@@ -4,7 +4,6 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     protected $type = 'TV';
     protected $caption = null;
     protected $inputType = 'text';
-    protected $description = '';
     protected $templates = array();
 
     public function fromArray($config) {
@@ -25,10 +24,6 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
             $this->inputType = $config['type'];
         }
 
-        if(isset($config['description'])){
-            $this->description = $config['description'];
-        }
-
         if(isset($config['templates'])){
             if(is_array($config['templates'])){
                 $this->templates = $config['templates'];
@@ -46,13 +41,6 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
      */
     public function getCaption() {
         return $this->caption;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription() {
-        return $this->description;
     }
 
     /**

@@ -259,14 +259,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 }else{
                     $elementObject->set('name', $element->getName());
                 }
-                $elementObject->set('static', 1);
-                $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
-                $elementObject->set('category', $this->category);
-            }else{
-                $elementObject->set('static', 1);
-                $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
-                $elementObject->set('category', $this->category);
             }
+
+            $elementObject->set('static', 1);
+            $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
+            $elementObject->set('category', $this->category);
+            $elementObject->set('description', $element->getDescription());
 
             if($type == 'Plugin'){
                 /** @var modPluginEvent[] $oldEvents */
@@ -323,16 +321,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if (!$tvObject){
                 $tvObject = $this->modx->newObject('modTemplateVar');
                 $tvObject->set('name', $tv->getName());
-                $tvObject->set('caption', $tv->getCaption());
-                $tvObject->set('description', $tv->getDescription());
-                $tvObject->set('type', $tv->getInputType());
-                $tvObject->set('category', $this->category);
-            }else{
-                $tvObject->set('caption', $tv->getCaption());
-                $tvObject->set('description', $tv->getDescription());
-                $tvObject->set('type', $tv->getInputType());
-                $tvObject->set('category', $this->category);
             }
+
+            $tvObject->set('caption', $tv->getCaption());
+            $tvObject->set('description', $tv->getDescription());
+            $tvObject->set('type', $tv->getInputType());
+            $tvObject->set('category', $this->category);
 
             /** @var modTemplateVarTemplate[] $oldTemplates */
             $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
