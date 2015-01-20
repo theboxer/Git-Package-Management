@@ -258,7 +258,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     ,'beforeSubmit': {fn:function() {
                         var topic = '/gitpackageinstall/';
                         var register = 'mgr';
-                        if(this.console == null){
+                        if(this.console === null || this.console.isDestroyed){
                             this.console = MODx.load({
                                 xtype: 'modx-console'
                                 ,register: register
@@ -286,7 +286,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     ,'beforeSubmit': {fn:function() {
                         var topic = '/gitpackageuninstall/';
                         var register = 'mgr';
-                        if(this.console == null){
+                        if(this.console == null || this.console.isDestroyed){
                             this.console = MODx.load({
                                 xtype: 'modx-console'
                                 ,register: register
