@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Fixed creating menu for 2.3
 - Added descriptions to elements
 - Added option to add properties to elements
 

@@ -360,6 +360,9 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 ),'',true,true);
 
                 $menuObject->addOne($actionObject);
+            } else {
+                $menuObject->set('action', $menu->getAction());
+                $menuObject->set('namespace', $this->config->getLowCaseName());
             }
 
             $vehicle = $this->builder->createVehicle($menuObject, 'menu');
