@@ -1,5 +1,8 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.10.0 alpha
+==============
+- Fixed showing console two times in a row
 - Fixed creating menu for 2.3
 - Added descriptions to elements
 - Added option to add properties to elements
