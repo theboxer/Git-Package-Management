@@ -500,7 +500,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $tableName = $this->modx->getTableName($table);
         $tableName = str_replace('`', '', $tableName);
 
-        $c = $this->modx->prepare("SELECT DISTINCT INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema = :dbName AND table_name = :tableName");
+        $c = $this->modx->prepare("SELECT DISTINCT INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema = :dbName AND table_name = :tableName AND INDEX_NAME != 'PRIMARY'");
 
         $c->bindParam(':dbName', $this->modx->getOption('dbname'));
         $c->bindParam(':tableName', $tableName);
@@ -518,6 +518,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
 
         foreach ($indexes as $index) {
+            if ($index == 'PRIMARY') continue;
             $m->addIndex($table, $index);
         }
     }
