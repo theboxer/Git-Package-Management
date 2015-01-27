@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+- Fixed building chunks
+
 GitPackageManagement 0.10.0 alpha
 ==============
 - Fixed showing console two times in a row

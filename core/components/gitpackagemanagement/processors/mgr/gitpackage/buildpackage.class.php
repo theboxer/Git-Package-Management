@@ -236,7 +236,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $path = $this->corePath . 'elements/chunks/';
 
             foreach($configChunks as $configChunk){
-                $chunkObject = $this->modx->newObject('modSnippet');
+                $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $configChunk->getName());
                 $chunkObject->set('description', $configChunk->getDescription());
                 $chunkObject->set('snippet', $this->builder->getFileContent($path . $configChunk->getFile()));
