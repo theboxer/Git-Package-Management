@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.10.1 alpha
+==============
 - Fixed building chunks
 
 GitPackageManagement 0.10.0 alpha
