@@ -52,3 +52,6 @@ $_lang['gitpackagemanagement.package_err_ccln'] = 'You can not update your packa
 $_lang['gitpackagemanagement.package_err_bc_nw'] = 'Build config is not writable. Please make [[+package]]/_build/build.config.php writable to continue.';
 $_lang['gitpackagemanagement.package_err_cc_nw'] = 'Core config is not writable. Please make [[+package]]/config.core.php writable to continue.';
 $_lang['gitpackagemanagement.package_err_dependencies'] = 'Dependencies check failed!';
+
+$_lang['setting_gitpackagemanagement.enable_debug'] = 'Enable remote debugging';
+$_lang['setting_gitpackagemanagement.enable_debug_desc'] = 'By activating this setting, the snippet/plugin code is executed different and could be remote debugged.';

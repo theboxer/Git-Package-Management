@@ -261,8 +261,19 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 }
             }
 
-            $elementObject->set('static', 1);
-            $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
+            if ($this->modx->gitpackagemanagement->getOption('enable_debug') && ($type == 'Plugin' || $type == 'Snippet')) {
+                if($type == 'Plugin') {
+                    $elementObject->set('plugincode', 'include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . 'elements/' . $configType . '/' . $element->getFile() . '");');
+                }
+                else {
+                    $elementObject->set('snippet', 'return include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . 'elements/' . $configType . '/' . $element->getFile() . '");');
+                }
+                $elementObject->set('static', 0);
+                $elementObject->set('static_file', '');
+            } else {
+                $elementObject->set('static', 1);
+                $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
+            }
             $elementObject->set('category', $this->category);
             $elementObject->set('description', $element->getDescription());
 
