@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Fixed extension package resolver
 - Better error handling
 
 GitPackageManagement 0.10.1 alpha
