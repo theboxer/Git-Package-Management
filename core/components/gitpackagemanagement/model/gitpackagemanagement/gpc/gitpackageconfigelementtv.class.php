@@ -10,7 +10,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
         if(isset($config['caption'])){
             $this->caption = $config['caption'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: '.$this->type.' - caption is not set');
+            $this->config->error->addError('Elements: ' . $this->type . ' - caption is not set', true);
             return false;
         }
 
@@ -28,7 +28,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
             if(is_array($config['templates'])){
                 $this->templates = $config['templates'];
             }else{
-                $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: '.$this->type.' - templates are not an array');
+                $this->config->error->addError('Elements: ' . $this->type . ' - templates are not an array', true);
                 return false;
             }
         }

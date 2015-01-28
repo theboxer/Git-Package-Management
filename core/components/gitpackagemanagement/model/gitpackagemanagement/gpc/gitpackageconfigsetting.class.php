@@ -5,7 +5,7 @@ class GitPackageConfigSetting {
     private $key;
     private $type;
     private $area;
-    private $value;
+    private $value = '';
     private $namespace;
     /** @var GitPackageConfig $gitPackageConfig */
     private $gitPackageConfig;
@@ -19,7 +19,7 @@ class GitPackageConfigSetting {
         if(isset($config['key'])){
             $this->key = $config['key'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Settings - key is not set');
+            $this->gitPackageConfig->error->addError('Settings - key is not set', true);
             return false;
         }
 
@@ -43,9 +43,6 @@ class GitPackageConfigSetting {
 
         if(isset($config['value'])){
             $this->value = $config['value'];
-        }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Settings - value is not set');
-            return false;
         }
 
         return true;

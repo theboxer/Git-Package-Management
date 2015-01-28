@@ -19,14 +19,14 @@ class GitPackageConfigAction {
         if(isset($config['id'])){
             $this->id = $config['id'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Actions - id is not set');
+            $this->gitPackageConfig->error->addError('Actions - id is not set', true);
             return false;
         }
 
         if(isset($config['controller'])){
             $this->controller = $config['controller'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Actions - controller is not set');
+            $this->gitPackageConfig->error->addError('Actions - controller is not set', true);
             return false;
         }
 

@@ -41,7 +41,7 @@ class GitPackageConfigResource {
         if (isset($config['pagetitle'])) {
             $this->pagetitle = $config['pagetitle'];
         } else {
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Resources - pagetitle is not set');
+            $this->config->error->addError('Resources - pagetitle is not set', true);
             return false;
         }
 
@@ -153,7 +153,7 @@ class GitPackageConfigResource {
         if (isset($config['tvs']) && is_array($config['tvs'])) {
             foreach ($config['tvs'] as $tv) {
                 if (!isset($tv['name'])) {
-                    $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Resources - TV - name is not set');
+                    $this->config->error->addError('Resources - TV - name is not set', true);
                     return false;
                 }
 
@@ -177,7 +177,7 @@ class GitPackageConfigResource {
         if (isset($config['others']) && is_array($config['others'])) {
             foreach ($config['others'] as $other) {
                 if (!isset($tv['name'])) {
-                    $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Resources - Other - name is not set');
+                    $this->config->error->addError('Resources - Other - name is not set', true);
                     return false;
                 }
 

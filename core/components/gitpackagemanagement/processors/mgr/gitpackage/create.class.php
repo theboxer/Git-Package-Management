@@ -130,9 +130,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $configContent = $this->modx->fromJSON(file_get_contents($configFile));
         $this->config = new GitPackageConfig($this->modx, $package);
         if($this->config->parseConfig($configContent) == false) {
-            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
+            $this->addFieldError('folderName', $this->modx->lexicon('Config file is invalid.'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Config file is invalid.');
             $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+
             return false;
         }
 

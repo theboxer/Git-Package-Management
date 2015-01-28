@@ -9,7 +9,7 @@ class GitPackageConfigElementPlugin extends GitPackageConfigElement{
         if(isset($config['events'])){
             $this->events = $config['events'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: plugin - events are not set');
+            $this->config->error->addError('Elements: plugin - events are not set', true);
             return false;
         }
 

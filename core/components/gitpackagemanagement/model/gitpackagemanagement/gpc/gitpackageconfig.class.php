@@ -1,23 +1,9 @@
 <?php
-
-require_once 'gitpackageconfigelement.php';
-require_once 'gitpackageconfigaction.class.php';
-require_once 'gitpackageconfigmenu.class.php';
-require_once 'gitpackageconfigsetting.class.php';
-require_once 'gitpackageconfigdatabase.class.php';
-require_once 'gitpackageconfigelementplugin.class.php';
-require_once 'gitpackageconfigelementchunk.class.php';
-require_once 'gitpackageconfigelementsnippet.class.php';
-require_once 'gitpackageconfigelementtemplate.class.php';
-require_once 'gitpackageconfigelementtv.class.php';
-require_once 'gitpackageconfigresource.class.php';
-require_once 'gitpackageconfigbuild.class.php';
-require_once 'gitpackageconfigbuildresolver.class.php';
-
-
 class GitPackageConfig {
     /** @var modX $modx */
     private $modx;
+    /** @var GitPackageManagement $gpm */
+    private $gpm;
     /** @var string $packagePath */
     private $packagePath;
     /** @var string $name Package name  */
@@ -47,6 +33,8 @@ class GitPackageConfig {
     private $dependencies = array();
     /** @var GitPackageConfigBuild $build */
     private $build = null;
+    /** @var GitPackageError $error */
+    public $error;
 
     /**
      * @param modX $modx
@@ -54,7 +42,26 @@ class GitPackageConfig {
      */
     public function __construct(modX &$modx, $packagePath) {
         $this->modx =& $modx;
+        $this->gpm =& $this->modx->gitpackagemanagement;
         $this->packagePath = $packagePath;
+
+        $this->modx->loadClass('GitPackageConfigAction', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigMenu', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigSetting', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigDatabase', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElement', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElementPlugin', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElementChunk', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElementTemplate', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElementTV', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElementSnippet', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigResource', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigBuild', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigBuildResolver', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+
+        $this->modx->loadClass('GitPackageError', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpe/', true, true);
+
+        $this->error = new GitPackageError($this->modx);
     }
 
     /**
@@ -66,22 +73,19 @@ class GitPackageConfig {
         if(isset($config['name'])){
             $this->name = $config['name'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Name is not set');
-            return false;
+            $this->error->addError('Name is not set', true);
         }
 
         if(isset($config['lowCaseName'])){
             $this->lowCaseName = $config['lowCaseName'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] LowCaseName is not set');
-            return false;
+            $this->error->addError('LowCaseName is not set', true);
         }
 
         if(isset($config['author'])){
             $this->author = $config['author'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Author is not set');
-            return false;
+            $this->error->addError('Author is not set', true);
         }
 
         if(isset($config['description'])){
@@ -93,77 +97,55 @@ class GitPackageConfig {
         if(isset($config['version'])){
             $this->version = $config['version'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Version is not set');
-            return false;
+            $this->error->addError('Version is not set', true);
         }
+
+        if ($this->error->hasErrors()) return false;
 
         if(isset($config['package'])){
             if(isset($config['package']['actions'])){
-                if($this->setActions($config['package']['actions']) == false){
-                    return false;
-                }
+                $this->setActions($config['package']['actions']);
             }
             if(isset($config['package']['menus'])){
-                if($this->setMenus($config['package']['menus']) == false){
-                    return false;
-                }
+                $this->setMenus($config['package']['menus']);
             }
 
             if(isset($config['package']['systemSettings'])){
-                if($this->setSettings($config['package']['systemSettings']) == false){
-                    return false;
-                }
+                $this->setSettings($config['package']['systemSettings']);
             }
 
             if(isset($config['package']['elements'])){
                 if(isset($config['package']['elements']['plugins'])){
-                    if($this->setPluginElements($config['package']['elements']['plugins']) == false){
-                        return false;
-                    }
+                    $this->setPluginElements($config['package']['elements']['plugins']);
                 }
 
                 if(isset($config['package']['elements']['snippets'])){
-                    if($this->setSnippetElements($config['package']['elements']['snippets']) == false){
-                        return false;
-                    }
+                    $this->setSnippetElements($config['package']['elements']['snippets']);
                 }
 
                 if(isset($config['package']['elements']['chunks'])){
-                    if($this->setChunkElements($config['package']['elements']['chunks']) == false){
-                        return false;
-                    }
+                    $this->setChunkElements($config['package']['elements']['chunks']);
                 }
 
                 if(isset($config['package']['elements']['templates'])){
-                    if($this->setTemplateElements($config['package']['elements']['templates']) == false){
-                        return false;
-                    }
+                    $this->setTemplateElements($config['package']['elements']['templates']);
                 }
 
                 if(isset($config['package']['elements']['tvs'])){
-                    if($this->setTVElements($config['package']['elements']['tvs']) == false){
-                        return false;
-                    }
+                    $this->setTVElements($config['package']['elements']['tvs']);
                 }
             }
 
             if(isset($config['package']['resources'])){
-                if($this->setResources($config['package']['resources']) == false){
-                    return false;
-                }
+                $this->setResources($config['package']['resources']);
             }
         }
 
         if(isset($config['database'])){
-            if($this->setDatabase($config['database']) == false){
-                return false;
-            }
+            $this->setDatabase($config['database']);
         }
 
-        if($this->setBuild($config['build']) == false){
-            return false;
-        }
-
+        $this->setBuild();
 
         if (isset($config['dependencies'])){
             $this->dependencies = $config['dependencies'];
@@ -182,7 +164,7 @@ class GitPackageConfig {
             $this->extensionPackage = false;
         }
 
-        return true;
+        return !$this->error->hasErrors();
     }
 
     /**
@@ -319,10 +301,10 @@ class GitPackageConfig {
 
     /**
      * Set build options
-     * @param $build
      * @return bool
      */
-    private function setBuild($build) {
+    private function setBuild() {
+        $build = isset($config['build']) ? $config['build'] : array();
         $this->build = new GitPackageConfigBuild($this->modx);
         if($this->build->fromArray($build) == false) return false;
 

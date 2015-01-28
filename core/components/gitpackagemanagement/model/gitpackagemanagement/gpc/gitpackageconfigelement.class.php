@@ -27,7 +27,7 @@ abstract class GitPackageConfigElement{
         if(isset($config['name'])){
             $this->name = $config['name'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: '.$this->type.' - name is not set');
+            $this->config->error->addError('Elements: ' . $this->type . ' - name is not set', true);
             return false;
         }
 
@@ -58,7 +58,7 @@ abstract class GitPackageConfigElement{
         $file .= '/core/components/'.$this->config->getLowCaseName().'/elements/' . $this->type . 's/' . $this->file;
 
         if(!file_exists($file)){
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Elements: ' . $file . ' - file does not exists');
+            $this->config->error->addError('Elements: ' . $file . ' - file does not exists', true);
             return false;
         }
 

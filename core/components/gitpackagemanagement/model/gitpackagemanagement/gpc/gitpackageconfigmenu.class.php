@@ -24,7 +24,7 @@ class GitPackageConfigMenu {
         if(isset($config['text'])){
             $this->text = $config['text'];
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - text is not set');
+            $this->gitPackageConfig->error->addError('Menus - text is not set', true);
             return false;
         }
 
@@ -68,11 +68,11 @@ class GitPackageConfigMenu {
             $action = $this->setAction($config['action']);
 
             if ($action === false) {
-                $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - action not exist');
+                $this->gitPackageConfig->error->addError('Menus - action not exist', true);
                 return false;
             }
         }else{
-            $this->modx->log(MODx::LOG_LEVEL_ERROR, '[GitPackageManagement] Menus - action is not set');
+            $this->gitPackageConfig->error->addError('Menus - action is not set', true);
             return false;
         }
 
