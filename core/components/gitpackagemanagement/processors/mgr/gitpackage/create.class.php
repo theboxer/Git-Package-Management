@@ -404,8 +404,15 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('description', $plugin->getDescription());
-                $pluginObject->set('static', 1);
-                $pluginObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/plugins/' . $plugin->getFile());
+                if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
+                    $pluginObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . 'elements/plugins/' . $plugin->getFile() . '");');
+                    $pluginObject->set('static', 0);
+                    $pluginObject->set('static_file', '');
+                } else {
+                    $pluginObject->set('snippet', '');
+                    $pluginObject->set('static', 1);
+                    $pluginObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/plugins/' . $plugin->getFile());
+                }
                 $pluginObject->set('category', $this->category->id);
                 $pluginObject->save();
 
@@ -440,8 +447,15 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
                 $snippetObject->set('description', $snippet->getDescription());
-                $snippetObject->set('static', 1);
-                $snippetObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/snippets/' . $snippet->getFile());
+                if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
+                    $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . 'elements/snippets/' . $snippet->getFile() . '");');
+                    $snippetObject->set('static', 0);
+                    $snippetObject->set('static_file', '');
+                } else {
+                    $snippetObject->set('snippet', '');
+                    $snippetObject->set('static', 1);
+                    $snippetObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/snippets/' . $snippet->getFile());
+                }
                 $snippetObject->set('category', $this->category->id);
                 $snippetObject->save();
 
