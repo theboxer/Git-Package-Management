@@ -340,7 +340,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $tvObject->set('description', $tv->getDescription());
             $tvObject->set('type', $tv->getInputType());
             $tvObject->set('category', $this->category);
-            $tvObject->set('elements', $tv->getInputOptionvalues());
+            $tvObject->set('elements', $tv->getInputOptionValues());
             $tvObject->set('default_text', $tv->getDefaultValue());
 
             /** @var modTemplateVarTemplate[] $oldTemplates */

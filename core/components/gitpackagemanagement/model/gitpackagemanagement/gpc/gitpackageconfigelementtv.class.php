@@ -56,7 +56,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     /**
      * @return string
      */
-    public function getInputOptionvalues() {
+    public function getInputOptionValues() {
         return $this->inputOptionValues;
     }
 

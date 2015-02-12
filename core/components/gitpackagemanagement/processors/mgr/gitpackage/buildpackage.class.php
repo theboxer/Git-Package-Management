@@ -283,7 +283,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $tvObject->set('caption', $configTV->getCaption());
                 $tvObject->set('description', $configTV->getDescription());
                 $tvObject->set('type', $configTV->getInputType());
-                $tvObject->set('elements', $configTV->getInputOptionvalues());
+                $tvObject->set('elements', $configTV->getInputOptionValues());
                 $tvObject->set('default_text', $configTV->getDefaultValue());
 
                 $tvObject->setProperties($configTV->getProperties());
