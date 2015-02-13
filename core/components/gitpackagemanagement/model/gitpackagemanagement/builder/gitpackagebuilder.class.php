@@ -114,6 +114,9 @@ class GitPackageBuilder {
 
     public function pack() {
         $this->builder->pack();
+        if ($this->modx->gitpackagemanagement->getOption('remove_extracted_package')) {
+            $this->modx->gitpackagemanagement->deleteDir($this->builder->directory . $this->builder->signature . '/');
+        }
     }
 
 
