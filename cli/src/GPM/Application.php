@@ -9,6 +9,13 @@ class Application extends \Symfony\Component\Console\Application
     /** @var \GitPackageManagement $gpm */
     public $gpm;
 
+    protected static $name = 'GPM CLI';
+    protected static $version = '1.0.0';
+
+    public function __construct(){
+        parent::__construct(self::$name, self::$version);
+    }
+
     protected function getDefaultCommands()
     {
         $commands = parent::getDefaultCommands();
