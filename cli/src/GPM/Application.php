@@ -16,6 +16,7 @@ class Application extends \Symfony\Component\Console\Application
         $commands[] = new Commands\Package\Install();
         $commands[] = new Commands\Package\Update();
         $commands[] = new Commands\Package\Build();
+        $commands[] = new Commands\Package\Delete();
 
         return $commands;
     }
