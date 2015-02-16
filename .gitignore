@@ -8,6 +8,8 @@ nbproject
 assets/components/gitpackagemanagement/packages/*
 !assets/components/gitpackagemanagement/packages/.gitignore
 
+cli/vendor
+
 _packages/*.*
 !_packages/.gitignore
 !_packages/*.zip
