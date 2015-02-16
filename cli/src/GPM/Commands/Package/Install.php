@@ -15,7 +15,7 @@ class Install extends GPMCommand
             ->setName('package:install')
             ->setDescription('Install a new package')
             ->addOption(
-                'folder',
+                'dir',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Name of the folder with package'
@@ -25,9 +25,9 @@ class Install extends GPMCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $folder = $input->getOption('folder');
+        $folder = $input->getOption('dir');
         if (empty($folder)) {
-            $this->error($output, 'Option folder is required.');
+            $this->error($output, 'Option dir is required.');
             return;
         }
 
