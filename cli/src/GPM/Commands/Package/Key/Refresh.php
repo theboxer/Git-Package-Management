@@ -1,38 +1,24 @@
 <?php
-namespace GPM\Commands\Package;
+namespace GPM\Commands\Package\Key;
 
 use GPM\Commands\GPMCommand;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Update extends GPMCommand
+class Refresh extends GPMCommand
 {
     protected function configure()
     {
         $this
-            ->setName('package:update')
-            ->setDescription('Update a package')
+            ->setName('package:key:refresh')
+            ->setDescription('Generate random package\'s key.')
             ->addOption(
                 'pkg',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Package name'
-            )
-            ->addOption(
-                'updateDB',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'If passed database will be updated. Possible options: alter, recreate or empty value',
-                ''
-            )
-            ->addOption(
-                'schema',
-                null,
-                InputOption::VALUE_NONE,
-                'If passed XML schema will be build'
+                'Package or folder name'
             )
             ->addOption(
                 'useKey',
@@ -64,23 +50,9 @@ class Update extends GPMCommand
             return;
         }
 
-        $db = $input->getOption('updateDB');
+        $pkg->set('key', '');
+        $pkg->save();
 
-        $options = array(
-            'id' => $pkg->id,
-            'recreateDatabase' => (int) ($db == 'recreate'),
-            'alterDatabase' => (int) ($db == 'alter'),
-            'buildSchema' => (int) $input->getOption('schema'),
-        );
-
-        /** @var \modProcessorResponse $response */
-        $response = $this->getApplication()->gpm->runProcessor('mgr/gitpackage/update', $options);
-
-        if (!$response->isError()) {
-            $output->writeln('Package updated.');
-        } else {
-            $this->error($output, $response->getMessage());
-        }
-
+        $output->writeln($pkg->key);
     }
 }

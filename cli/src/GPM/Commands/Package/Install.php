@@ -13,7 +13,7 @@ class Install extends GPMCommand
     {
         $this
             ->setName('package:install')
-            ->setDescription('Install new package')
+            ->setDescription('Install a new package')
             ->addOption(
                 'folder',
                 null,
