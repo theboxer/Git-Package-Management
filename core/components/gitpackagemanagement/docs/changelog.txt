@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Add default value and input options to TV
 - Fixed extension package resolver
 - Better error handling
 

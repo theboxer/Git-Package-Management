@@ -3,6 +3,8 @@
 class GitPackageConfigElementTV extends GitPackageConfigElement{
     protected $type = 'TV';
     protected $caption = null;
+    protected $inputOptionValues = '';
+    protected $defaultValue = '';
     protected $inputType = 'text';
     protected $templates = array();
 
@@ -12,6 +14,14 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
         }else{
             $this->config->error->addError('Elements: ' . $this->type . ' - caption is not set', true);
             return false;
+        }
+
+        if(isset($config['inputOptionValues'])){
+            $this->inputOptionValues = $config['inputOptionValues'];
+        }
+
+        if(isset($config['defaultValue'])){
+            $this->defaultValue = $config['defaultValue'];
         }
 
         if(isset($config['name'])){
@@ -41,6 +51,20 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
      */
     public function getCaption() {
         return $this->caption;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInputOptionValues() {
+        return $this->inputOptionValues;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue() {
+        return $this->defaultValue;
     }
 
     /**
