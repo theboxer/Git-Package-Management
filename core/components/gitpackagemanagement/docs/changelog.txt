@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Add input properties to TV also to build
 - Add input properties to TV
 - Don't create build config anymore
 - Add default value and input options to TV
