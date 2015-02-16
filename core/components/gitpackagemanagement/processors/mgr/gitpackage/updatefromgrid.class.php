@@ -1,5 +1,5 @@
 <?php
-class TaggerGroupUpdateFromGridProcessor extends modObjectUpdateProcessor {
+class GitPackageManagementUpdatePackageFromGridProcessor extends modObjectUpdateProcessor {
     public $classKey = 'GitPackage';
     public $languageTopics = array('gitpackagemanagement:default');
     public $objectType = 'gitpackagemanagement.package';
@@ -24,4 +24,4 @@ class TaggerGroupUpdateFromGridProcessor extends modObjectUpdateProcessor {
     }
 }
 
-return 'TaggerGroupUpdateFromGridProcessor';
+return 'GitPackageManagementUpdatePackageFromGridProcessor';
