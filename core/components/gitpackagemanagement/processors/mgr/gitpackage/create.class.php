@@ -168,28 +168,6 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         file_put_contents($package . '/config.core.php', $coreConfigContent);
 
         $this->modx->log(modX::LOG_LEVEL_INFO, 'config.core.php file created.');
-
-        $buildConfigContent = "<?php\n" .
-                              "/**\n" .
-                              "* Define the MODX path constants necessary for installation\n" .
-                              "*\n" .
-                              "* @package " . $this->config->getLowCaseName() . "\n" .
-                              "* @subpackage build\n" .
-                              "*/\n" .
-                              "define('MODX_BASE_PATH', '".MODX_BASE_PATH."');\n" .
-                              "define('MODX_CORE_PATH', MODX_BASE_PATH . 'core/');\n" .
-                              "define('MODX_MANAGER_PATH', MODX_BASE_PATH . 'manager/');\n" .
-                              "define('MODX_CONNECTORS_PATH', MODX_BASE_PATH . 'connectors/');\n" .
-                              "define('MODX_ASSETS_PATH', MODX_BASE_PATH . 'assets/');\n\n" .
-                              "define('MODX_BASE_URL','".MODX_BASE_URL."');\n" .
-                              "define('MODX_CORE_URL', MODX_BASE_URL . 'core/');\n" .
-                              "define('MODX_MANAGER_URL', MODX_BASE_URL . 'manager/');\n" .
-                              "define('MODX_CONNECTORS_URL', MODX_BASE_URL . 'connectors/');\n" .
-                              "define('MODX_ASSETS_URL', MODX_BASE_URL . 'assets/');";
-        file_put_contents($package . '/_build/build.config.php', $buildConfigContent);
-
-        $this->modx->log(modX::LOG_LEVEL_INFO, '_build/build.config.php file created.');
-
     }
 
     /**
