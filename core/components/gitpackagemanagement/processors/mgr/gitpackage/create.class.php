@@ -108,7 +108,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->object->set('description', $this->config->getDescription());
             $this->object->set('author', $this->config->getAuthor());
             $this->object->set('name', $this->config->getName());
-            $this->object->Set('dir_name', $folderName);
+            $this->object->set('dir_name', $folderName);
         }
 
         $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');

@@ -1,0 +1,60 @@
+{
+  "name": "GitPackageManagement",
+  "lowCaseName": "gitpackagemanagement",
+  "description": "Developer tool for creating components.",
+  "author": "John Peca",
+  "version": "0.10.1",
+  "package": {
+    "actions": [
+      {
+        "id": 1,
+        "controller": "index"
+      }
+    ],
+    "menus": [
+      {
+        "text": "gitpackagemanagement",
+        "description": "gitpackagemanagement.menu_desc",
+        "action": 1
+      }
+    ],
+    "systemSettings": [
+      {
+        "key": "packages_dir",
+        "value": "",
+        "area": "Paths"
+      },
+      {
+        "key": "packages_base_url",
+        "value": "/",
+        "area": "Paths"
+      },
+      {
+        "key": "enable_debug",
+        "value": "0",
+        "type": "combo-boolean",
+        "area": "system"
+      },
+      {
+        "key": "remove_extracted_package",
+        "value": "0",
+        "type": "combo-boolean",
+        "area": "system"
+      }
+    ]
+  },
+  "database": {
+    "tables": [
+      "GitPackage"
+    ]
+  },
+  "build": {
+    "resolver": {
+      "before": ["resolve.remove_tables.php"],
+      "after": ["setupoptions.resolver.php"]
+    },
+    "setupOptions":{
+      "source": "setup.options.php"
+    }
+  }
+}
