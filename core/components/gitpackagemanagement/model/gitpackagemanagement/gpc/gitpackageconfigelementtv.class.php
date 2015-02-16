@@ -7,6 +7,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     protected $defaultValue = '';
     protected $inputType = 'text';
     protected $templates = array();
+    private $inputProperties = array();
 
     public function fromArray($config) {
         if(isset($config['caption'])){
@@ -32,6 +33,10 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
 
         if(isset($config['type'])){
             $this->inputType = $config['type'];
+        }
+
+        if(isset($config['inputProperties'])){
+            $this->inputProperties = $config['inputProperties'];
         }
 
         if(isset($config['templates'])){
@@ -79,6 +84,10 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
      */
     public function getTemplates() {
         return $this->templates;
+    }
+
+    public function getInputProperties() {
+        return $this->inputProperties;
     }
 
 

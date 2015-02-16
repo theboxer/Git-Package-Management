@@ -343,6 +343,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $tvObject->set('elements', $tv->getInputOptionValues());
             $tvObject->set('default_text', $tv->getDefaultValue());
 
+            $inputProperties = $tv->getInputProperties();
+            if (!empty($inputProperties)) {
+                $tvObject->set('input_properties',$inputProperties);
+            }
+
             /** @var modTemplateVarTemplate[] $oldTemplates */
             $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
 

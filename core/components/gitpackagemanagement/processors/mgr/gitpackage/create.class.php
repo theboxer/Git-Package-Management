@@ -507,6 +507,12 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->set('category', $this->category->id);
                 $tvObject->set('elements', $tv->getInputOptionValues());
                 $tvObject->set('default_text', $tv->getDefaultValue());
+
+                $inputProperties = $tv->getInputProperties();
+                if (!empty($inputProperties)) {
+                    $tvObject->set('input_properties',$inputProperties);
+                }
+
                 $tvObject->save();
 
                 $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
