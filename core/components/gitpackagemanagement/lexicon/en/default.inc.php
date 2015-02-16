@@ -37,6 +37,10 @@ $_lang['setting_gitpackagemanagement.packages_dir'] = 'Packages directory';
 $_lang['setting_gitpackagemanagement.packages_dir_desc'] = 'Path to the directory where you store packages.';
 $_lang['setting_gitpackagemanagement.packages_base_url'] = 'Packages base URL';
 $_lang['setting_gitpackagemanagement.packages_base_url_desc'] = 'Base URL for packages directory. Default is <strong>/</strong>';
+$_lang['setting_gitpackagemanagement.enable_debug'] = 'Enable remote debugging';
+$_lang['setting_gitpackagemanagement.enable_debug_desc'] = 'By activating this setting, the local created snippet/plugin code is executed different and could be remote debugged.';
+$_lang['setting_gitpackagemanagement.remove_extracted_package'] = 'Remove extracted transport package';
+$_lang['setting_gitpackagemanagement.remove_extracted_package'] = 'By activating this setting, the extracted transport package are removed after building.';
 
 //Errors
 $_lang['gitpackagemanagement.package_err_ns_folder_name'] = 'You have to enter folder name.';
@@ -53,5 +57,3 @@ $_lang['gitpackagemanagement.package_err_bc_nw'] = 'Build config is not writable
 $_lang['gitpackagemanagement.package_err_cc_nw'] = 'Core config is not writable. Please make [[+package]]/config.core.php writable to continue.';
 $_lang['gitpackagemanagement.package_err_dependencies'] = 'Dependencies check failed!';
 
-$_lang['setting_gitpackagemanagement.enable_debug'] = 'Enable remote debugging';
-$_lang['setting_gitpackagemanagement.enable_debug_desc'] = 'By activating this setting, the local created snippet/plugin code is executed different and could be remote debugged.';
