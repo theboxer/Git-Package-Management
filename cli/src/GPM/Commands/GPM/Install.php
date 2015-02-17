@@ -90,12 +90,29 @@ class Install extends GPMCommand
         $fs = new Filesystem();
         $fs->dumpFile($packagesDir . $dir . '/config.core.php', $configFileContent);
 
-        if($fs->exists($packagesDir . $dir . '/config.core.php') && $this->getApplication()->modx === null) {
-            require_once $packagesDir . $dir . '/config.core.php';
-            $modx = include 'IncludeMODX.php';
+        if($fs->exists($packagesDir . $dir . '/config.core.php') && $this->getApplication()->gpm === null) {
+            if (isset($GLOBALS['modx']) && $GLOBALS['modx'] instanceof \modX) {
+                $modx = $GLOBALS['modx'];
+            } else {
+                require_once $packagesDir . $dir . '/config.core.php';
+                /** @var \modX $modx */
+                $modx = include 'IncludeMODX.php';
+            }
+
+            $corePath = $packagesDir . $dir . '/core/components/gitpackagemanagement/';
+
+            /** @var \GitPackageManagement $gpm */
+            $gpm = $modx->getService(
+                'gitpackagemanagement',
+                'GitPackageManagement',
+                $corePath . 'model/gitpackagemanagement/',
+                array(
+                    'core_path' => $corePath
+                )
+            );
 
             $this->getApplication()->setMODX($modx);
-            $this->getApplication()->loadGPM();
+            $this->getApplication()->setGPM($gpm);
         }
 
         $this->modx = $this->getApplication()->modx;
@@ -273,6 +290,15 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     protected function clearCache()
     {
+        $this->modx->cacheManager->delete('system_settings/config', array('cache_key' => ''));
+        $results = array();
+        $partitions = array ('menu' => array ());
+        $this->modx->cacheManager->refresh($partitions, $results);
+
+        $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.core_path', $this->packageCorePath);
+        $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath);
+        $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl);
+
         $this->modx->runProcessor('system/clearcache');
     }
 }

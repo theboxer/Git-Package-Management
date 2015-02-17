@@ -39,6 +39,11 @@ class Application extends \Symfony\Component\Console\Application
         $this->modx = $modx;
     }
 
+    public function setGPM($gpm)
+    {
+        $this->gpm = $gpm;
+    }
+
     public function loadGPM()
     {
         $corePath = $this->modx->getOption('gitpackagemanagement.core_path',null,$this->modx->getOption('core_path').'components/gitpackagemanagement/');
