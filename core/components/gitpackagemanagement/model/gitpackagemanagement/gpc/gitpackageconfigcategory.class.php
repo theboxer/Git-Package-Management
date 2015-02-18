@@ -81,9 +81,11 @@ class GitPackageConfigCategory
     {
         if (empty($this->parent)) return null;
 
-        if (!isset($this->config->getCategories()[$this->parent])) return null;
+        $categories = $this->config->getCategories();
 
-        return $this->config->getCategories()[$this->parent];
+        if (!isset($categories[$this->parent])) return null;
+
+        return $categories[$this->parent];
     }
 
 }
