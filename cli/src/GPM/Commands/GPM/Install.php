@@ -61,6 +61,7 @@ class Install extends GPMCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $currentLocation = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+        $currentLocation = str_replace('\\', '/', $currentLocation);
 
         $corePath = $input->getOption('corePath');
         if (empty($corePath)) {
@@ -68,21 +69,23 @@ class Install extends GPMCommand
             return;
         }
 
-        $corePath = rtrim($corePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $corePath = str_replace('\\', '/', $corePath);
+        $corePath = rtrim($corePath, '/') . '/';
 
         $configKey = $input->getOption('configKey');
 
         $dir = $input->getOption('dir');
         if (empty($dir)) {
-            $dir = explode(DIRECTORY_SEPARATOR, $currentLocation);
+            $dir = explode('/', $currentLocation);
             $dir = array_pop($dir);
         }
 
         $packagesDir = $input->getOption('packagesDir');
         if (empty($packagesDir)) {
-            $packagesDir = dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))) . DIRECTORY_SEPARATOR;
+            $packagesDir = str_replace('\\', '/', dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))))) . '/';
         } else {
-            $packagesDir = rtrim($packagesDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $packagesDir = str_replace('\\', '/', $packagesDir);
+            $packagesDir = rtrim($packagesDir, '/') . '/';
         }
 
         $packagesBaseUrl = $input->getOption('packagesBaseUrl');
@@ -90,24 +93,24 @@ class Install extends GPMCommand
         $configFileContent = $this->getConfigFileContent($corePath, $configKey);
 
         $fs = new Filesystem();
-        $fs->dumpFile($packagesDir . $dir . DIRECTORY_SEPARATOR . 'config.core.php', $configFileContent);
+        $fs->dumpFile($packagesDir . $dir . '/config.core.php', $configFileContent);
 
-        if($fs->exists($packagesDir . $dir . DIRECTORY_SEPARATOR . 'config.core.php') && $this->getApplication()->gpm === null) {
+        if($fs->exists($packagesDir . $dir . '/config.core.php') && $this->getApplication()->gpm === null) {
             if (isset($GLOBALS['modx']) && $GLOBALS['modx'] instanceof \modX) {
                 $modx = $GLOBALS['modx'];
             } else {
-                require_once $packagesDir . $dir . DIRECTORY_SEPARATOR . 'config.core.php';
+                require_once $packagesDir . $dir . '/config.core.php';
                 /** @var \modX $modx */
                 $modx = include 'IncludeMODX.php';
             }
 
-            $corePath = $packagesDir . $dir . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'gitpackagemanagement' . DIRECTORY_SEPARATOR;
+            $corePath = $packagesDir . $dir . '/core/components/gitpackagemanagement/';
 
             /** @var \GitPackageManagement $gpm */
             $gpm = $modx->getService(
                 'gitpackagemanagement',
                 'GitPackageManagement',
-                $corePath . 'model' . DIRECTORY_SEPARATOR . 'gitpackagemanagement' . DIRECTORY_SEPARATOR,
+                $corePath . 'model/gitpackagemanagement/',
                 array(
                     'core_path' => $corePath
                 )
