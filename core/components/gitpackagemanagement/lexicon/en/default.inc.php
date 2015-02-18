@@ -40,7 +40,7 @@ $_lang['setting_gitpackagemanagement.packages_base_url_desc'] = 'Base URL for pa
 $_lang['setting_gitpackagemanagement.enable_debug'] = 'Enable remote debugging';
 $_lang['setting_gitpackagemanagement.enable_debug_desc'] = 'By activating this setting, the local created snippet/plugin code is executed different and could be remote debugged.';
 $_lang['setting_gitpackagemanagement.remove_extracted_package'] = 'Remove extracted transport package';
-$_lang['setting_gitpackagemanagement.remove_extracted_package'] = 'By activating this setting, the extracted transport package are removed after building.';
+$_lang['setting_gitpackagemanagement.remove_extracted_package_desc'] = 'By activating this setting, the extracted transport package are removed after building.';
 
 //Errors
 $_lang['gitpackagemanagement.package_err_ns_folder_name'] = 'You have to enter folder name.';
