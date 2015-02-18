@@ -379,16 +379,16 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
             $parent = $category->getParentObject();
             if (!empty($parent)) {
-                $catId = $this->modx->gitpackagemanagement->findCategory($parent->getParents(), $this->category);
+                $catId = $this->modx->gitpackagemanagement->findCategory($parent->getParents(), $this->category->id);
                 /** @var modCategory $parentObject */
                 $parentObject = $this->modx->getObject('modCategory', $catId);
                 if ($parentObject) {
                     $parent = $parentObject->id;
                 } else {
-                    $parent = $this->category;
+                    $parent = $this->category->id;
                 }
             } else {
-                $parent = $this->category;
+                $parent = $this->category->id;
             }
 
             $categoryObject->set('parent', $parent);
@@ -423,10 +423,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     if (isset($this->categoriesMap[$category])) {
                         $category = $this->categoriesMap[$category];
                     } else {
-                        $category = $this->category;
+                        $category = $this->category->id;
                     }
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
                 $pluginObject->set('category', $category);
 
@@ -478,10 +478,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     if (isset($this->categoriesMap[$category])) {
                         $category = $this->categoriesMap[$category];
                     } else {
-                        $category = $this->category;
+                        $category = $this->category->id;
                     }
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
                 $snippetObject->set('category', $category);
 
@@ -513,10 +513,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     if (isset($this->categoriesMap[$category])) {
                         $category = $this->categoriesMap[$category];
                     } else {
-                        $category = $this->category;
+                        $category = $this->category->id;
                     }
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
                 $chunkObject->set('category', $category);
 
@@ -548,10 +548,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     if (isset($this->categoriesMap[$category])) {
                         $category = $this->categoriesMap[$category];
                     } else {
-                        $category = $this->category;
+                        $category = $this->category->id;
                     }
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
                 $templatesObject->set('category', $category);
 
@@ -584,10 +584,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     if (isset($this->categoriesMap[$category])) {
                         $category = $this->categoriesMap[$category];
                     } else {
-                        $category = $this->category;
+                        $category = $this->category->id;
                     }
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
                 $tvObject->set('category', $category);
 

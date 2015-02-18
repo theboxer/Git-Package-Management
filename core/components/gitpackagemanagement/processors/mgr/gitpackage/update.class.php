@@ -93,10 +93,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         /** @var modCategory category */
         $this->category = $this->modx->getObject('modCategory', array('category' => $this->newConfig->getName()));
-        if($this->category){
-            $this->category = $this->category->id;
-        }else{
-            $this->category = 0;
+        if(!$this->category){
+            $this->category = $this->modx->newObject('modCategory');
+            $this->category->set('category', $this->newConfig->getName());
+            $this->category->save();
         }
 
         $this->updateDatabase();
@@ -287,10 +287,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 if (isset($this->categoriesMap[$category])) {
                     $category = $this->categoriesMap[$category];
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
             } else {
-                $category = $this->category;
+                $category = $this->category->id;
             }
 
             $elementObject->set('category', $category);
@@ -362,10 +362,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 if (isset($this->categoriesMap[$category])) {
                     $category = $this->categoriesMap[$category];
                 } else {
-                    $category = $this->category;
+                    $category = $this->category->id;
                 }
             } else {
-                $category = $this->category;
+                $category = $this->category->id;
             }
 
             $tvObject->set('category', $category);
@@ -686,7 +686,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         /** @var GitPackageConfigCategory[] $categories */
         $categories = $this->newConfig->getCategories();
         foreach($categories as $name => $category){
-            $catId = $this->modx->gitpackagemanagement->findCategory($category->getParents(), $this->category);
+            $catId = $this->modx->gitpackagemanagement->findCategory($category->getParents(), $this->category->id);
 
             /** @var modCategory $categoryObject */
             $categoryObject = $this->modx->getObject('modCategory', $catId);
@@ -698,16 +698,16 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $parent = $category->getParentObject();
             if (!empty($parent)) {
-                $catId = $this->modx->gitpackagemanagement->findCategory($parent->getParents(), $this->category);
+                $catId = $this->modx->gitpackagemanagement->findCategory($parent->getParents(), $this->category->id);
                 /** @var modCategory $parentObject */
                 $parentObject = $this->modx->getObject('modCategory', $catId);
                 if ($parentObject) {
                     $parent = $parentObject->id;
                 } else {
-                    $parent = $this->category;
+                    $parent = $this->category->id;
                 }
             } else {
-                $parent = $this->category;
+                $parent = $this->category->id;
             }
 
             $categoryObject->set('parent', $parent);
