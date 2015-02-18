@@ -197,4 +197,16 @@ class GitPackageManagement {
         }
         return $result;
     }
+
+    public function findCategory(array $path, $root)
+    {
+        $currentParent = $root;
+        $category = null;
+        foreach ($path as $name) {
+            $category = $this->modx->getObject('modCategory', array('parent' => $currentParent, 'category' => $name));
+            $currentParent = $category->id;
+        }
+
+        return $category->id;
+    }
 }

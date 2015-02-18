@@ -202,22 +202,72 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $category->addMany($templateVariables, 'TemplateVars');
         }
 
+        $categories = $this->getCategories();
+        if (!empty($categories)) {
+            $category->addMany($categories, 'Children');
+        }
+
         return $this->builder->createVehicle($category, 'category');
     }
 
-    private function getSnippets() {
+    private function getCategories($parent = null) {
+        $cats = $this->getCategoriesForParent($parent);
+        $retCategories = array();
+
+        foreach ($cats as $cat) {
+            /** @var modCategory $category */
+            $category = $this->modx->newObject('modCategory');
+            $category->set('category', $cat->getName());
+
+            $snippets = $this->getSnippets($cat->getName());
+            if (!empty($snippets)) {
+                $category->addMany($snippets, 'Snippets');
+            }
+
+            $chunks = $this->getChunks($cat->getName());
+            if (!empty($chunks)) {
+                $category->addMany($chunks, 'Chunks');
+            }
+
+            $plugins = $this->getPlugins($cat->getName());
+            if (!empty($plugins)) {
+                $category->addMany($plugins, 'Plugins');
+            }
+
+            $templates = $this->getTemplates($cat->getName());
+            if (!empty($templates)) {
+                $category->addMany($templates, 'Templates');
+            }
+
+            $templateVariables = $this->getTemplateVariables($cat->getName());
+            if (!empty($templateVariables)) {
+                $category->addMany($templateVariables, 'TemplateVars');
+            }
+
+            $categories = $this->getCategories($cat->getName());
+            if (!empty($categories)) {
+                $category->addMany($categories, 'Children');
+            }
+
+            $retCategories[] = $category;
+        }
+
+        return $retCategories;
+    }
+
+    private function getSnippets($category = null) {
         $snippets = array();
 
         /** @var GitPackageConfigElementSnippet[] $configSnippets */
         $configSnippets = $this->config->getElements('snippets');
         if(count($configSnippets) > 0){
-            $path = $this->corePath . 'elements/snippets/';
-
             foreach($configSnippets as $configSnippet){
+                if ($configSnippet->getCategory() != $category) continue;
+
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $configSnippet->getName());
                 $snippetObject->set('description', $configSnippet->getDescription());
-                $snippetObject->set('snippet', $this->builder->getFileContent($path . $configSnippet->getFile()));
+                $snippetObject->set('snippet', $this->builder->getFileContent($this->corePath . $configSnippet->getFilePath()));
 
                 $snippetObject->setProperties($configSnippet->getProperties());
                 $snippets[] = $snippetObject;
@@ -227,41 +277,41 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         return $snippets;
     }
 
-    private function getChunks() {
+    private function getChunks($category = null) {
         $chunks = array();
 
         /** @var GitPackageConfigElementChunk[] $configChunks */
         $configChunks = $this->config->getElements('chunks');
         if(count($configChunks) > 0){
-            $path = $this->corePath . 'elements/chunks/';
-
             foreach($configChunks as $configChunk){
+                if ($configChunk->getCategory() != $category) continue;
+
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $configChunk->getName());
                 $chunkObject->set('description', $configChunk->getDescription());
-                $chunkObject->set('snippet', $this->builder->getFileContent($path . $configChunk->getFile()));
+                $chunkObject->set('snippet', $this->builder->getFileContent($this->corePath . $configChunk->getFilePath()));
 
                 $chunkObject->setProperties($configChunk->getProperties());
                 $chunks[] = $chunkObject;
             }
         }
-
+        
         return $chunks;
     }
 
-    private function getTemplates() {
+    private function getTemplates($category = null) {
         $templates = array();
 
         /** @var GitPackageConfigElementTemplate[] $configTemplates */
         $configTemplates = $this->config->getElements('templates');
         if(count($configTemplates) > 0){
-            $path = $this->corePath . 'elements/templates/';
-
             foreach($configTemplates as $configTemplate){
+                if ($configTemplate->getCategory() != $category) continue;
+
                 $templateObject = $this->modx->newObject('modTemplate');
                 $templateObject->set('templatename', $configTemplate->getName());
                 $templateObject->set('description', $configTemplate->getDescription());
-                $templateObject->set('content', $this->builder->getFileContent($path . $configTemplate->getFile()));
+                $templateObject->set('content', $this->builder->getFileContent($this->corePath . $configTemplate->getFilePath()));
 
                 $templateObject->setProperties($configTemplate->getProperties());
                 $templates[] = $templateObject;
@@ -271,13 +321,15 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         return $templates;
     }
 
-    private function getTemplateVariables() {
+    private function getTemplateVariables($category = null) {
         $templateVariables = array();
 
         /** @var GitPackageConfigElementTV[] $configTVs */
         $configTVs = $this->config->getElements('tvs');
         if(count($configTVs) > 0){
             foreach($configTVs as $configTV){
+                if ($configTV->getCategory() != $category) continue;
+
                 $tvObject = $this->modx->newObject('modTemplateVar');
                 $tvObject->set('name', $configTV->getName());
                 $tvObject->set('caption', $configTV->getCaption());
@@ -300,19 +352,20 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         return $templateVariables;
     }
 
-    private function getPlugins() {
+    private function getPlugins($category = null) {
         $plugins = array();
 
         /** @var GitPackageConfigElementPlugin[] $configPlugins */
         $configPlugins = $this->config->getElements('plugins');
         if(count($configPlugins) > 0){
-            $path = $this->corePath . 'elements/plugins/';
 
             foreach($configPlugins as $configPlugin){
+                if ($configPlugin->getCategory() != $category) continue;
+
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $configPlugin->getName());
                 $pluginObject->set('description', $configPlugin->getDescription());
-                $pluginObject->set('plugincode', $this->builder->getFileContent($path . $configPlugin->getFile()));
+                $pluginObject->set('plugincode', $this->builder->getFileContent($this->corePath . $configPlugin->getFilePath()));
 
                 $events = $configPlugin->getEvents();
                 if (count($events) > 0) {
@@ -402,6 +455,23 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $this->smarty->setTemplatePath($this->modx->gitpackagemanagement->getOption('templatesPath') . '/gitpackagebuild/');
 
         $this->smarty->assign('lowercasename', $this->config->getLowCaseName());
+    }
+
+    /**
+     * @param $parent
+     * @return GitPackageConfigCategory[]
+     */
+    private function getCategoriesForParent($parent)
+    {
+        $categories = array();
+        $allCategories = $this->config->getCategories();
+        foreach ($allCategories as $category) {
+            if ($category->getParent() == $parent) {
+                $categories[] = $category;
+            }
+        }
+
+        return $categories;
     }
 }
 return 'GitPackageManagementBuildPackageProcessor';

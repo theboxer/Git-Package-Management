@@ -17,6 +17,10 @@ abstract class GitPackageConfigElement{
     protected $extension;
     /** @var array $properties */
     protected $properties = array();
+    /** @var string $category */
+    protected $category;
+    /** @var string $filePath */
+    private $filePath;
 
     public function __construct(modX &$modx, GitPackageConfig $config) {
         $this->modx =& $modx;
@@ -46,6 +50,16 @@ abstract class GitPackageConfigElement{
             if ($propertiesSet === false) return false;
         }
 
+        if (isset($config['category'])) {
+            $currentCategories = array_keys($this->config->getCategories());
+            if (!in_array($config['category'], $currentCategories)) {
+                $this->config->error->addError('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist', true);
+                return false;
+            }
+
+            $this->category = $config['category'];
+        }
+
         if ($this->checkFile() == false) {
             return false;
         }
@@ -54,19 +68,45 @@ abstract class GitPackageConfigElement{
     }
 
     protected function checkFile() {
-        $file = $this->config->getPackagePath();
-        $file .= '/core/components/'.$this->config->getLowCaseName().'/elements/' . $this->type . 's/' . $this->file;
+        $filePaths = array(
+            'elements/' . $this->type . 's/' . $this->file
+        );
 
-        if(!file_exists($file)){
+        if (!empty($this->category)) {
+            $categories = $this->config->getCategories();
+            $categoryPath =  '/' . str_replace(' ', '_', strtolower(implode('/', $categories[$this->category]->getParents()))) . '/';
+
+            $filePaths[] = 'elements/' . $this->type . 's' . $categoryPath . $this->file;
+        }
+
+        $file = $this->config->getPackagePath();
+        $file .= '/core/components/'.$this->config->getLowCaseName().'/';
+
+        $exists = false;
+        foreach ($filePaths as $filePath) {
+            $finalFile = $file . $filePath;
+            if(file_exists($finalFile)) {
+                $exists = $filePath;
+                break;
+            }
+        }
+
+        if($exists === false){
             $this->config->error->addError('Elements: ' . $file . ' - file does not exists', true);
             return false;
         }
+
+        $this->filePath = $exists;
 
         return true;
     }
 
     public function getFile() {
         return $this->file;
+    }
+
+    public function getFilePath() {
+        return $this->filePath;
     }
 
     public function getName() {
@@ -132,4 +172,13 @@ abstract class GitPackageConfigElement{
 
         return true;
     }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
 }

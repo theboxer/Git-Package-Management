@@ -26,6 +26,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /** @var modCategory $category */
     private $category = null;
 
+    private $categoriesMap = array();
+
    /** @var bool $installFromDirectory */
     private $installFromDirectory = false;
 
@@ -347,7 +349,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      */
     private function createElements(){
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements started');
-        $this->createCategory();
+        $this->createCategories();
         $this->createPlugins();
         $this->createChunks();
         $this->createSnippets();
@@ -357,9 +359,9 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     }
 
     /**
-     * Create category for elements
+     * Create categories for elements
      */
-    private function createCategory() {
+    private function createCategories() {
         $category = $this->modx->getObject('modCategory', array('category' => $this->config->getName()));
         if(!$category){
             $category = $this->modx->newObject('modCategory');
@@ -368,6 +370,30 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         }
 
         $this->category = $category;
+
+        /** @var GitPackageConfigCategory[] $categories */
+        $categories = $this->config->getCategories();
+        foreach ($categories as $category) {
+            $categoryObject = $this->modx->newObject('modCategory');
+            $categoryObject->set('category', $category->getName());
+
+            $parent = $category->getParentObject();
+            if (!empty($parent)) {
+                $catId = $this->modx->gitpackagemanagement->findCategory($parent->getParents(), $this->category);
+                /** @var modCategory $parentObject */
+                $parentObject = $this->modx->getObject('modCategory', $catId);
+                if ($parentObject) {
+                    $parent = $parentObject->id;
+                } else {
+                    $parent = $this->category;
+                }
+            } else {
+                $parent = $this->category;
+            }
+
+            $categoryObject->set('parent', $parent);
+            $this->categoriesMap[$category->getName()] = $categoryObject->id;
+        }
     }
 
     /**
@@ -383,15 +409,27 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('description', $plugin->getDescription());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $pluginObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . 'elements/plugins/' . $plugin->getFile() . '");');
+                    $pluginObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $plugin->getFilePath() . '");');
                     $pluginObject->set('static', 0);
                     $pluginObject->set('static_file', '');
                 } else {
                     $pluginObject->set('snippet', '');
                     $pluginObject->set('static', 1);
-                    $pluginObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/plugins/' . $plugin->getFile());
+                    $pluginObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $plugin->getFilePath());
                 }
-                $pluginObject->set('category', $this->category->id);
+
+                $category = $plugin->getCategory();
+                if (!empty($category)) {
+                    if (isset($this->categoriesMap[$category])) {
+                        $category = $this->categoriesMap[$category];
+                    } else {
+                        $category = $this->category;
+                    }
+                } else {
+                    $category = $this->category;
+                }
+                $pluginObject->set('category', $category);
+
                 $pluginObject->save();
 
                 $events = array();
@@ -426,15 +464,27 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $snippetObject->set('name', $snippet->getName());
                 $snippetObject->set('description', $snippet->getDescription());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . 'elements/snippets/' . $snippet->getFile() . '");');
+                    $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $snippet->getFilePath() . '");');
                     $snippetObject->set('static', 0);
                     $snippetObject->set('static_file', '');
                 } else {
                     $snippetObject->set('snippet', '');
                     $snippetObject->set('static', 1);
-                    $snippetObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/snippets/' . $snippet->getFile());
+                    $snippetObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $snippet->getFilePath());
                 }
-                $snippetObject->set('category', $this->category->id);
+
+                $category = $snippet->getCategory();
+                if (!empty($category)) {
+                    if (isset($this->categoriesMap[$category])) {
+                        $category = $this->categoriesMap[$category];
+                    } else {
+                        $category = $this->category;
+                    }
+                } else {
+                    $category = $this->category;
+                }
+                $snippetObject->set('category', $category);
+
                 $snippetObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Snippet ' . $snippet->getName() . ' created.');
@@ -456,8 +506,20 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $chunkObject->set('name', $chunk->getName());
                 $chunkObject->set('description', $chunk->getDescription());
                 $chunkObject->set('static', 1);
-                $chunkObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/chunks/' . $chunk->getFile());
-                $chunkObject->set('category', $this->category->id);
+                $chunkObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $chunk->getFilePath());
+
+                $category = $chunk->getCategory();
+                if (!empty($category)) {
+                    if (isset($this->categoriesMap[$category])) {
+                        $category = $this->categoriesMap[$category];
+                    } else {
+                        $category = $this->category;
+                    }
+                } else {
+                    $category = $this->category;
+                }
+                $chunkObject->set('category', $category);
+
                 $chunkObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Chunk ' . $chunk->getName() . ' created.');
@@ -479,8 +541,20 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('description', $template->getDescription());
                 $templatesObject->set('static', 1);
-                $templatesObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]elements/templates/' . $template->getFile());
-                $templatesObject->set('category', $this->category->id);
+                $templatesObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $template->getFilePath());
+
+                $category = $template->getCategory();
+                if (!empty($category)) {
+                    if (isset($this->categoriesMap[$category])) {
+                        $category = $this->categoriesMap[$category];
+                    } else {
+                        $category = $this->category;
+                    }
+                } else {
+                    $category = $this->category;
+                }
+                $templatesObject->set('category', $category);
+
                 $templatesObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Template ' . $template->getName() . ' created.');
@@ -504,7 +578,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->set('caption', $tv->getCaption());
                 $tvObject->set('description', $tv->getDescription());
                 $tvObject->set('type', $tv->getInputType());
-                $tvObject->set('category', $this->category->id);
+
+                $category = $tv->getCategory();
+                if (!empty($category)) {
+                    if (isset($this->categoriesMap[$category])) {
+                        $category = $this->categoriesMap[$category];
+                    } else {
+                        $category = $this->category;
+                    }
+                } else {
+                    $category = $this->category;
+                }
+                $tvObject->set('category', $category);
+
                 $tvObject->set('elements', $tv->getInputOptionValues());
                 $tvObject->set('default_text', $tv->getDefaultValue());
 

@@ -33,6 +33,8 @@ class GitPackageConfig {
     private $dependencies = array();
     /** @var GitPackageConfigBuild $build */
     private $build = null;
+    /** @var GitPackageConfigCategory[] $categories */
+    private $categories = array();
     /** @var GitPackageError $error */
     public $error;
 
@@ -58,6 +60,7 @@ class GitPackageConfig {
         $this->modx->loadClass('GitPackageConfigResource', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigBuild', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigBuildResolver', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigCategory', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
 
         $this->modx->loadClass('GitPackageError', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpe/', true, true);
 
@@ -115,6 +118,10 @@ class GitPackageConfig {
             }
 
             if(isset($config['package']['elements'])){
+                if(isset($config['package']['elements']['categories'])){
+                    $this->setCategories($config['package']['elements']['categories']);
+                }
+
                 if(isset($config['package']['elements']['plugins'])){
                     $this->setPluginElements($config['package']['elements']['plugins']);
                 }
@@ -177,6 +184,21 @@ class GitPackageConfig {
             $p = new GitPackageConfigElementPlugin($this->modx, $this);
             if($p->fromArray($plugin) == false) return false;
             $this->elements['plugins'][$p->getName()] = $p;
+        }
+
+        return true;
+    }
+
+    /**
+     * Parse and validate categories array
+     * @param $categories Array
+     * @return bool
+     */
+    private function setCategories($categories){
+        foreach ($categories as $category){
+            $c = new GitPackageConfigCategory($this->modx, $this);
+            if($c->fromArray($category) == false) return false;
+            $this->categories[$c->getName()] = $c;
         }
 
         return true;
@@ -475,5 +497,13 @@ class GitPackageConfig {
      */
     public function getBuild() {
         return $this->build;
+    }
+
+    /**
+     * @return GitPackageConfigCategory[]
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }

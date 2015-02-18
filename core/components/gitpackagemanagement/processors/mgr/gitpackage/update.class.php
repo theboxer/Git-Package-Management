@@ -18,6 +18,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     /** @var GitPackageConfig $oldConfig */
     private $newConfig;
     private $category;
+    private $categoriesMap = array();
     private $recreateDatabase = 0;
     private $alterDatabase = 0;
     private $packagePath = null;
@@ -90,11 +91,24 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->object->set('description', $this->newConfig->getDescription());
         $this->object->set('version', $this->newConfig->getVersion());
 
+        /** @var modCategory category */
+        $this->category = $this->modx->getObject('modCategory', array('category' => $this->newConfig->getName()));
+        if($this->category){
+            $this->category = $this->category->id;
+        }else{
+            $this->category = 0;
+        }
+
         $this->updateDatabase();
         $this->updateActionsAndMenus();
         $this->updateExtensionPackage();
         $this->updateSystemSettings();
+
+        $notUsedCategories = array();
+        $this->updateCategories($notUsedCategories);
         $this->updateElements();
+        $this->removeNotUsedCategories($notUsedCategories);
+
         $this->updateResources();
         $this->clearCache();
 
@@ -226,14 +240,6 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     }
 
     private function updateElements() {
-        /** @var modCategory category */
-        $this->category = $this->modx->getObject('modCategory', array('category' => $this->newConfig->getName()));
-        if($this->category){
-            $this->category = $this->category->id;
-        }else{
-            $this->category = 0;
-        }
-
         $this->updateElement('Chunk');
         $this->updateElement('Snippet');
         $this->updateElement('Template');
@@ -264,19 +270,30 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             if ($this->modx->gitpackagemanagement->getOption('enable_debug') && ($type == 'Plugin' || $type == 'Snippet')) {
                 if($type == 'Plugin') {
-                    $elementObject->set('plugincode', 'include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . 'elements/' . $configType . '/' . $element->getFile() . '");');
+                    $elementObject->set('plugincode', 'include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . $element->getFilePath() . '");');
                 } else {
-                    $elementObject->set('snippet', 'return include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . 'elements/' . $configType . '/' . $element->getFile() . '");');
+                    $elementObject->set('snippet', 'return include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . $element->getFilePath() . '");');
                 }
 
                 $elementObject->set('static', 0);
                 $elementObject->set('static_file', '');
             } else {
                 $elementObject->set('static', 1);
-                $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]elements/' . $configType . '/' . $element->getFile());
+                $elementObject->set('static_file', '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]' . $element->getFilePath());
             }
 
-            $elementObject->set('category', $this->category);
+            $category = $element->getCategory();
+            if (!empty($category)) {
+                if (isset($this->categoriesMap[$category])) {
+                    $category = $this->categoriesMap[$category];
+                } else {
+                    $category = $this->category;
+                }
+            } else {
+                $category = $this->category;
+            }
+
+            $elementObject->set('category', $category);
             $elementObject->set('description', $element->getDescription());
 
             if($type == 'Plugin'){
@@ -339,7 +356,20 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $tvObject->set('caption', $tv->getCaption());
             $tvObject->set('description', $tv->getDescription());
             $tvObject->set('type', $tv->getInputType());
-            $tvObject->set('category', $this->category);
+
+            $category = $tv->getCategory();
+            if (!empty($category)) {
+                if (isset($this->categoriesMap[$category])) {
+                    $category = $this->categoriesMap[$category];
+                } else {
+                    $category = $this->category;
+                }
+            } else {
+                $category = $this->category;
+            }
+
+            $tvObject->set('category', $category);
+
             $tvObject->set('elements', $tv->getInputOptionValues());
             $tvObject->set('default_text', $tv->getDefaultValue());
 
@@ -646,6 +676,64 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private function setResourceMap() {
         $rmf = $this->newConfig->getAssetsFolder() . 'resourcemap.php';
         file_put_contents($rmf, '<?php return ' . var_export($this->resourceMap, true) . ';');
+    }
+
+    private function updateCategories(&$notUsedCategories)
+    {
+        $notUsedCategories = array_keys($this->oldConfig->getCategories());
+        $notUsedCategories = array_flip($notUsedCategories);
+
+        /** @var GitPackageConfigCategory[] $categories */
+        $categories = $this->newConfig->getCategories();
+        foreach($categories as $name => $category){
+            $catId = $this->modx->gitpackagemanagement->findCategory($category->getParents(), $this->category);
+
+            /** @var modCategory $categoryObject */
+            $categoryObject = $this->modx->getObject('modCategory', $catId);
+
+            if (!$categoryObject){
+                $categoryObject = $this->modx->newObject('modCategory');
+                $categoryObject->set('category', $category->getName());
+            }
+
+            $parent = $category->getParentObject();
+            if (!empty($parent)) {
+                $catId = $this->modx->gitpackagemanagement->findCategory($parent->getParents(), $this->category);
+                /** @var modCategory $parentObject */
+                $parentObject = $this->modx->getObject('modCategory', $catId);
+                if ($parentObject) {
+                    $parent = $parentObject->id;
+                } else {
+                    $parent = $this->category;
+                }
+            } else {
+                $parent = $this->category;
+            }
+
+            $categoryObject->set('parent', $parent);
+
+            $categoryObject->save();
+
+            $this->categoriesMap[$name] = $categoryObject->id;
+
+            if(isset($notUsedCategories[$name])){
+                unset($notUsedCategories[$name]);
+            }
+        }
+
+        return true;
+    }
+
+    private function removeNotUsedCategories($notUsedCategories)
+    {
+        foreach($notUsedCategories as $name => $value){
+            /** @var modCategory $category */
+            $category = $this->modx->getObject('modCategory', array('category' => $name));
+
+            if ($category) {
+                $category->remove();
+            }
+        }
     }
 }
 return 'GitPackageManagementUpdatePackageProcessor';
