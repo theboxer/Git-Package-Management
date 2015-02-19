@@ -303,7 +303,5 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.core_path', $this->packageCorePath);
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath);
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl);
-
-        $this->modx->runProcessor('system/clearcache');
     }
 }
