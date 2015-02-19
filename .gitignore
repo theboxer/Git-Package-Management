@@ -9,6 +9,7 @@ assets/components/gitpackagemanagement/packages/*
 !assets/components/gitpackagemanagement/packages/.gitignore
 
 cli/vendor
+core/components/gitpackagemanagement/site
 
 _packages/*.*
 !_packages/.gitignore
