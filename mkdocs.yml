@@ -1,6 +1,7 @@
 site_name: Git Package Management
 docs_dir: core/components/gitpackagemanagement/docs
 site_dir: core/components/gitpackagemanagement/site
+repo_url: https://github.com/TheBoxer/Git-Package-Management
 pages:
 - [index.md, Home]
 - [directory-structure.md, General, Directory structure]
