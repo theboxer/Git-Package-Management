@@ -63,6 +63,12 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $this->setPaths();
 
         $this->builder = new GitPackageBuilder($this->modx, $this->smarty, $this->packagePath);
+        $buildOptions = $this->config->getBuild();
+
+        $objectAttributes = $buildOptions->getAttributes();
+        foreach ($objectAttributes as $element => $attributes) {
+            $this->builder->updateCategoryAttribute($element, $attributes);
+        }
 
         $version = explode('-', $this->config->getVersion());
         if (count($version) == 1) {
@@ -76,7 +82,6 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $vehicle = $this->addCategory();
 
-        $buildOptions = $this->config->getBuild();
         $resolver = $buildOptions->getResolver();
 
         $resolversDir = $resolver->getResolversDir();

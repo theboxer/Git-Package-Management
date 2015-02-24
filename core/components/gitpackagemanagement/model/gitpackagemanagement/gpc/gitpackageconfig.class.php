@@ -152,7 +152,7 @@ class GitPackageConfig {
             $this->setDatabase($config['database']);
         }
 
-        $this->setBuild();
+        $this->setBuild($config);
 
         if (isset($config['dependencies'])){
             $this->dependencies = $config['dependencies'];
@@ -325,7 +325,7 @@ class GitPackageConfig {
      * Set build options
      * @return bool
      */
-    private function setBuild() {
+    private function setBuild($config) {
         $build = isset($config['build']) ? $config['build'] : array();
         $this->build = new GitPackageConfigBuild($this->modx);
         if($this->build->fromArray($build) == false) return false;

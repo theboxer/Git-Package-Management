@@ -23,7 +23,7 @@ In this case set [Packages directory](system-settings/#packages-directory) to `/
 
 ## Separate MODX, separate packages
 
-Localhost `http://localhost` points to `/var/www/` directory, where is located MODX directory.  
+Localhost `http://localhost` points to `/var/www/` directory, where the MODX directory is located.  
 All packages are located in `/var/www/packages/`.
 
 - var

@@ -8,6 +8,7 @@ class GitPackageConfigBuild {
     private $license = 'docs/license.txt';
     private $changeLog = 'docs/changelog.txt';
     private $setupOptions = array();
+    private $attributes = array();
 
     public function __construct(modX &$modx) {
         $this->modx =& $modx;
@@ -33,6 +34,14 @@ class GitPackageConfigBuild {
 
         if(isset($config['setupOptions'])){
             $this->setupOptions = $config['setupOptions'];
+        }
+
+        if(isset($config['attributes']) && is_array($config['attributes'])){
+            foreach ($config['attributes'] as $key => $attributes) {
+                if (is_array($attributes)) {
+                    $this->attributes[$key] = $attributes;
+                }
+            }
         }
 
         return true;
@@ -106,6 +115,10 @@ class GitPackageConfigBuild {
      */
     public function setSetupOptions($setupOptions) {
         $this->setupOptions = $setupOptions;
+    }
+
+    public function getAttributes(){
+        return $this->attributes;
     }
 
 }

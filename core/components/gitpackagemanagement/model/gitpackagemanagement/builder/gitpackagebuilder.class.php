@@ -16,6 +16,7 @@ class GitPackageBuilder {
     /**
      * @param modX $modx
      * @param modSmarty $smarty
+     * @param $packagePath
      */
     public function __construct(modX &$modx, modSmarty $smarty, $packagePath) {
         $this->modx =& $modx;
@@ -30,6 +31,17 @@ class GitPackageBuilder {
         $this->modx->loadClass('transport.modPackageBuilder','',false, true);
         $this->builder = new modPackageBuilder($this->modx);
 
+    }
+
+    public function updateCategoryAttribute($element, $attributes)
+    {
+        $element[0] = strtoupper($element[0]);
+
+        foreach ($attributes as $key => $value) {
+            if (isset($this->attributes['category'][xPDOTransport::RELATED_OBJECT_ATTRIBUTES][$element])) {
+                $this->attributes['category'][xPDOTransport::RELATED_OBJECT_ATTRIBUTES][$element][$key] = $value;
+            }
+        }
     }
 
     private function setAttributes() {
