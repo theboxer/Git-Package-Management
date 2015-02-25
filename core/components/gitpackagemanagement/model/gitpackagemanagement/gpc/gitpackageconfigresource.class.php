@@ -221,10 +221,22 @@ class GitPackageConfigResource {
         $resource['alias'] = $this->alias;
 
         if (is_string($this->parent)) {
-            /** @var modResource $parent */
-            $parent = $this->modx->getObject('modResource', array('pagetitle' => $this->parent));
-            if ($parent) {
-                $resource['parent'] = $parent->id;
+            $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
+
+            if (is_readable($rmf)) {
+                $map = include $rmf;
+            } else {
+                $map = array();
+            }
+
+            if (isset($map[$this->parent])) {
+                $resource['parent'] = $map[$this->parent];
+            } else {
+                /** @var modResource $parent */
+                $parent = $this->modx->getObject('modResource', array('pagetitle' => $this->parent));
+                if ($parent) {
+                    $resource['parent'] = $parent->id;
+                }
             }
         } else {
             if ($this->parent != 0) {
@@ -435,14 +447,14 @@ class GitPackageConfigResource {
      * @return string
      */
     public function getContentType() {
-        return $this->contentType;
+        return $this->content_type;
     }
 
     /**
      * @param string $contentType
      */
     public function setContentType($contentType) {
-        $this->contentType = $contentType;
+        $this->content_type = $contentType;
     }
 
     /**
