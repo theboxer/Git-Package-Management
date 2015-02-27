@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Add an option to specify path to XML schema
 - Add support for categories
 - Add input properties to TV also to build
 - Add input properties to TV

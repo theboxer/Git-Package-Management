@@ -77,7 +77,9 @@ EOD;
  * [+phpdoc-package+]
  */
 EOD;
-        $generator->parseSchema($modelPath . 'schema/' . $this->config->getLowCaseName() . '.mysql.schema.xml', $modelPath);
+
+        $buildOptions = $this->config->getBuild();
+        $generator->parseSchema($this->packagePath . $this->object->dir_name . $buildOptions->getSchemaPath(), $modelPath);
     }
 }
 return 'GitPackageManagementBuildSchemaProcessor';

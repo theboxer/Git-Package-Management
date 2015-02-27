@@ -327,7 +327,7 @@ class GitPackageConfig {
      */
     private function setBuild($config) {
         $build = isset($config['build']) ? $config['build'] : array();
-        $this->build = new GitPackageConfigBuild($this->modx);
+        $this->build = new GitPackageConfigBuild($this->modx, $this);
         if($this->build->fromArray($build) == false) return false;
 
         return true;

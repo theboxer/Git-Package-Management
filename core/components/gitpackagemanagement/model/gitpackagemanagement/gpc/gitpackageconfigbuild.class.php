@@ -2,17 +2,21 @@
 
 class GitPackageConfigBuild {
     private $modx;
+    /** @var GitPackageConfig $config */
+    private $config;
     /** @var GitPackageConfigBuildResolver $resolver */
     private $resolver;
     private $readme = 'docs/readme.txt';
     private $license = 'docs/license.txt';
     private $changeLog = 'docs/changelog.txt';
+    private $schemaPath = '';
     private $setupOptions = array();
     private $attributes = array();
 
-    public function __construct(modX &$modx) {
+    public function __construct(modX &$modx, GitPackageConfig $config) {
         $this->modx =& $modx;
         $this->resolver = new GitPackageConfigBuildResolver($this->modx);
+        $this->config = $config;
     }
 
     public function fromArray($config) {
@@ -34,6 +38,12 @@ class GitPackageConfigBuild {
 
         if(isset($config['setupOptions'])){
             $this->setupOptions = $config['setupOptions'];
+        }
+
+        if(isset($config['schemaPath'])){
+            $this->schemaPath = '/' . ltrim($config['schemaPath'], '/');
+        } else {
+            $this->schemaPath = '/core/components/' . $this->config->getLowCaseName() . '/' . 'model/schema/' . $this->config->getLowCaseName() . '.mysql.schema.xml';
         }
 
         if(isset($config['attributes']) && is_array($config['attributes'])){
@@ -119,6 +129,11 @@ class GitPackageConfigBuild {
 
     public function getAttributes(){
         return $this->attributes;
+    }
+
+    public function getSchemaPath()
+    {
+        return $this->schemaPath;
     }
 
 }
