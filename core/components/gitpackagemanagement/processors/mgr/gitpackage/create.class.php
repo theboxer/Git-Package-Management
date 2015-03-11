@@ -409,7 +409,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('description', $plugin->getDescription());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $pluginObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $plugin->getFilePath() . '");');
+                    $pluginObject->set('plugincode', 'include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $plugin->getFilePath() . '");');
                     $pluginObject->set('static', 0);
                     $pluginObject->set('static_file', '');
                 } else {
