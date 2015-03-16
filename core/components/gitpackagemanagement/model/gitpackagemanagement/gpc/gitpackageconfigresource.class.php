@@ -271,7 +271,7 @@ class GitPackageConfigResource {
         }
 
         if ($this->template !== null) {
-            if ($this->template != 0) {
+            if ($this->template !== 0) {
                 $template = $this->modx->getObject('modTemplate', array('templatename' => $this->template));
                 if ($template) {
                     $resource['template'] = $template->id;
