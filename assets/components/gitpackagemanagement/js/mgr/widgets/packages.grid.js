@@ -99,6 +99,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             text: _('gitpackagemanagement.build_package')
             ,handler: this.buildPackage
         });m.push({
+            text: _('gitpackagemanagement.build_package_publish')
+            ,handler: this.buildPackagePublish
+        });m.push({
             text: _('gitpackagemanagement.preserve_package')
             ,handler: this.preservePackage
         });
@@ -248,7 +251,29 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             }
         });
     }
-    
+
+    ,buildPackagePublish: function(){
+        this.updateMask.show();
+        MODx.Ajax.request({
+            url: GitPackageManagement.config.connectorUrl
+            ,params: {
+                action: 'mgr/gitpackage/buildpackagepublish'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
+                    this.refresh();
+                },scope:this}
+                ,'failure':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.update_package'), r.message);
+                },scope:this}
+            }
+        });
+    }
+
     ,createItem: function(btn,e) {
         if (!this.windows.addPackage) {
             this.windows.addPackage = MODx.load({
