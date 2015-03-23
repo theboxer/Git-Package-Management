@@ -2,7 +2,7 @@
 /**
  * Resolve linking TVs and Templates
  *
- * THIS RESOLVER IS AUTOMATICALY GENERATED, NO CHANGES WILL APPLY
+ * THIS RESOLVER IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
  * @package {{$lowercasename}}
  * @subpackage build
