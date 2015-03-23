@@ -509,10 +509,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private function updateTableColumns($table) {
         $tableName = $this->modx->getTableName($table);
         $tableName = str_replace('`', '', $tableName);
+        $dbname = $this->modx->getOption('dbname');
 
         $c = $this->modx->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = :dbName AND table_name = :tableName");
 
-        $c->bindParam(':dbName', $this->modx->getOption('dbname'));
+        $c->bindParam(':dbName', $dbname);
         $c->bindParam(':tableName', $tableName);
         $c->execute();
 
@@ -549,10 +550,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $tableName = $this->modx->getTableName($table);
         $tableName = str_replace('`', '', $tableName);
+        $dbname = $this->modx->getOption('dbname');
 
         $c = $this->modx->prepare("SELECT DISTINCT INDEX_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema = :dbName AND table_name = :tableName AND INDEX_NAME != 'PRIMARY'");
 
-        $c->bindParam(':dbName', $this->modx->getOption('dbname'));
+        $c->bindParam(':dbName', $dbname);
         $c->bindParam(':tableName', $tableName);
         $c->execute();
 
