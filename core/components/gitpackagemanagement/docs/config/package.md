@@ -409,7 +409,7 @@ Here you can specify all system settings that you need for your component. Note 
             "key": "test_key",
             "type": "textfield",
             "area": "default",
-            "value": "it works",
+            "value": "it works"
         }]
     }
 }
