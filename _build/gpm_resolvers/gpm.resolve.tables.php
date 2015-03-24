@@ -4,7 +4,7 @@
  *
  * THIS RESOLVER IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
- * @package {{$lowercasename}}
+ * @package gitpackagemanagement
  * @subpackage build
  */
 
@@ -13,14 +13,12 @@ if ($object->xpdo) {
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
-            $modelPath = $modx->getOption('{{$lowercasename}}.core_path', null, $modx->getOption('core_path') . 'components/{{$lowercasename}}/') . 'model/';
-            $modx->addPackage('{{$lowercasename}}', $modelPath);
+            $modelPath = $modx->getOption('gitpackagemanagement.core_path', null, $modx->getOption('core_path') . 'components/gitpackagemanagement/') . 'model/';
+            $modx->addPackage('gitpackagemanagement', $modelPath);
 
             $manager = $modx->getManager();
 
-{foreach from=$tables item=table}
-            $manager->createObjectContainer('{{$table}}');
-{/foreach}
+            $manager->createObjectContainer('GitPackage');
 
             break;
     }
