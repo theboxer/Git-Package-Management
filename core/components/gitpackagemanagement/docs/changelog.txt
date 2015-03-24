@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+GitPackageManagement 0.11.0 alpha
+==============
 - Add an option to specify path to XML schema
 - Add support for categories
 - Add input properties to TV also to build

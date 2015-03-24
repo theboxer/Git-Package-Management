@@ -31,6 +31,7 @@ class GitPackageConfigResource {
     private $hidemenu = null;
     private $hide_children_in_tree = 0;
     private $show_in_tree = 1;
+    private $setAsHome = 0;
 
     public function __construct(modX &$modx, $gitPackageConfig) {
         $this->modx =& $modx;
@@ -52,22 +53,8 @@ class GitPackageConfigResource {
             $this->alias = $res->cleanAlias($this->pagetitle);
         }
 
-        if (isset($config['setAsHome']) && $config['setAsHome'] == 1) {
-            $id = $this->modx->getOption('site_start');
-
-            $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
-
-            if (is_readable($rmf)) {
-                $resourceMap = include $rmf;
-            } else {
-                $resourceMap = array();
-            }
-
-            if (!isset($resourceMap[$this->pagetitle])) {
-                $resourceMap[$this->pagetitle] = $id;
-            }
-
-            file_put_contents($rmf, '<?php return ' . var_export($resourceMap, true) . ';');
+        if (isset($config['setAsHome'])) {
+            $this->setAsHome = intval($config['setAsHome']);
         }
 
         if (isset($config['parent'])) {
@@ -262,6 +249,26 @@ class GitPackageConfigResource {
         $resource['hide_children_in_tree'] = $this->hide_children_in_tree;
         $resource['show_in_tree'] = $this->show_in_tree;
 
+        if ($this->setAsHome == 1) {
+            $id = $this->modx->getOption('site_start');
+
+            $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
+
+            if (is_readable($rmf)) {
+                $resourceMap = include $rmf;
+            } else {
+                $resourceMap = array();
+            }
+
+            if (!isset($resourceMap[$this->pagetitle])) {
+                $resourceMap[$this->pagetitle] = $id;
+            }
+
+            file_put_contents($rmf, '<?php return ' . var_export($resourceMap, true) . ';');
+
+            $this->id = $id;
+        }
+
         if ($this->id > 0) {
             $resource['id'] = $this->id;
         }
@@ -271,7 +278,7 @@ class GitPackageConfigResource {
         }
 
         if ($this->template !== null) {
-            if ($this->template !== 0) {
+            if ($this->template != 0) {
                 $template = $this->modx->getObject('modTemplate', array('templatename' => $this->template));
                 if ($template) {
                     $resource['template'] = $template->id;
@@ -288,6 +295,63 @@ class GitPackageConfigResource {
             }
         } else {
             $resource['content_type'] = $this->modx->getOption('default_content_type', null, 1);
+        }
+
+        if ($this->published !== null) {
+            $resource['published'] = $this->published;
+        }
+
+        if ($this->menuindex !== null) {
+            $resource['menuindex'] = $this->menuindex;
+        }
+
+        if ($this->hidemenu !== null) {
+            $resource['hidemenu'] = $this->hidemenu;
+        }
+
+        if ($this->cacheable !== null) {
+            $resource['cacheable'] = $this->cacheable;
+        }
+
+        if ($this->searchable !== null) {
+            $resource['searchable'] = $this->searchable;
+        }
+
+        if ($this->richtext !== null) {
+            $resource['richtext'] = $this->richtext;
+        }
+
+        return $resource;
+    }
+
+    public function toRawArray() {
+        $resource = array();
+
+        $resource['pagetitle'] = $this->pagetitle;
+        $resource['alias'] = $this->alias;
+        $resource['parent'] = $this->parent;
+        $resource['content'] = $this->content;
+        $resource['context_key'] = $this->context_key;
+        $resource['class_key'] = $this->class_key;
+        $resource['longtitle'] = $this->longtitle;
+        $resource['description'] = $this->description;
+        $resource['isfolder'] = $this->isfolder;
+        $resource['introtext'] = $this->introtext;
+        $resource['deleted'] = $this->deleted;
+        $resource['menutitle'] = $this->menutitle;
+        $resource['hide_children_in_tree'] = $this->hide_children_in_tree;
+        $resource['show_in_tree'] = $this->show_in_tree;
+        $resource['set_as_home'] = $this->setAsHome;
+        $resource['tvs'] = $this->tvs;
+
+        foreach ($this->others as $other) {
+            $resource[$other['name']] = $other['value'];
+        }
+
+        $resource['template'] = $this->template;
+
+        if ($this->content_type !== null) {
+                $resource['content_type'] = $this->content_type;
         }
 
         if ($this->published !== null) {

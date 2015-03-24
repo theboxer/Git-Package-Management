@@ -122,6 +122,19 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle->addTVResolver($this->packagePath . '_build/gpm_resolvers', $this->tvMap);
         }
 
+        $resources = $this->config->getResources();
+        $resourcesArray = array();
+
+        foreach ($resources as $resource) {
+            $resourcesArray[] = $resource->toRawArray();
+        }
+
+        if (!empty($resourcesArray)) {
+            $vehicle->addResourceResolver($this->packagePath . '_build/gpm_resolvers', $resourcesArray);
+        }
+        
+        $this->addSystemSettings();
+
         $after = $resolver->getAfter();
         foreach($after as $script) {
             $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
@@ -129,7 +142,6 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $this->builder->putVehicle($vehicle);
         $this->addMenus();
-        $this->addSystemSettings();
 
         $packageAttributes = array();
 
