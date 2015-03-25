@@ -392,6 +392,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             }
 
             $categoryObject->set('parent', $parent);
+            $categoryObject->save();
             $this->categoriesMap[$category->getName()] = $categoryObject->id;
         }
     }
