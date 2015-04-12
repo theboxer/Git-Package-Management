@@ -2,7 +2,7 @@
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/model/gitpackagemanagement/gpc/gitpackageconfig.class.php';
 /**
  * Clone git repository and install it
- * 
+ *
  * @package gitpackagemanagement
  * @subpackage processors
  */
@@ -593,11 +593,17 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->set('category', $category);
 
                 $tvObject->set('elements', $tv->getInputOptionValues());
+                $tvObject->set('rank', $tv->getSortOrder());
                 $tvObject->set('default_text', $tv->getDefaultValue());
 
                 $inputProperties = $tv->getInputProperties();
                 if (!empty($inputProperties)) {
                     $tvObject->set('input_properties',$inputProperties);
+                }
+
+                $outputProperties = $tv->getOutputProperties();
+                if (!empty($outputProperties)) {
+                    $tvObject->set('output_properties',$outputProperties[0]);
                 }
 
                 $tvObject->save();
