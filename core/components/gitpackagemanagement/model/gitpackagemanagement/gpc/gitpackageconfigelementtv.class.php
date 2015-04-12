@@ -6,6 +6,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     protected $inputOptionValues = '';
     protected $defaultValue = '';
     protected $inputType = 'text';
+    protected $sortOrder = '0';
     protected $templates = array();
     private $inputProperties = array();
 
@@ -39,6 +40,10 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
             $this->inputProperties = $config['inputProperties'];
         }
 
+        if(isset($config['sortOrder'])){
+            $this->sortOrder = $config['sortOrder'];
+        }
+
         if(isset($config['templates'])){
             if(is_array($config['templates'])){
                 $this->templates = $config['templates'];
@@ -63,6 +68,13 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
      */
     public function getInputOptionValues() {
         return $this->inputOptionValues;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder() {
+        return $this->sortOrder;
     }
 
     /**

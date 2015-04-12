@@ -593,6 +593,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->set('category', $category);
 
                 $tvObject->set('elements', $tv->getInputOptionValues());
+                $tvObject->set('rank', $tv->getSortOrder());
                 $tvObject->set('default_text', $tv->getDefaultValue());
 
                 $inputProperties = $tv->getInputProperties();
