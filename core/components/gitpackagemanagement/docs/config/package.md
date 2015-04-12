@@ -198,6 +198,7 @@ In this section we create some elements. During the installation, all elements a
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
     - **description** (optional) - Description of the property
+    - **icon** (optional) - Icon in the Resource Tree for resources using that Template (MODX 2.3+). Choose them from: http://fortawesome.github.io/Font-Awesome/icons/
     - **type** (optional, default: textfield) - Type of property
     - **options** (optional) - Property options
     - **value** (optional) - Property default value
@@ -212,6 +213,7 @@ In this section we create some elements. During the installation, all elements a
             "templates": [{
                 "name": "PackageTemplate",
                 "file": "packagetemplate.template.tpl",
+                "icon": "icon-beer",
                 "properties": [{
                     "name": "testproperty",
                     "value": "testvalue"
