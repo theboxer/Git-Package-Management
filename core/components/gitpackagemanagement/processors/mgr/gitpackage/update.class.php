@@ -255,7 +255,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         foreach($this->newConfig->getElements($configType) as $name => $element){
             if($type == 'Template'){
                 /** @var modElement $elementObject */
-                $elementObject = $this->modx->getObject('mod'.$type, array('templatename' => $name));
+                $elementObject = $this->modx->getObject('mod'.$type, array('templatename' => $name));                
             }else{
                 $elementObject = $this->modx->getObject('mod'.$type, array('name' => $name));
             }
@@ -267,7 +267,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                     $elementObject->set('name', $element->getName());
                 }
             }
-
+            if($type == 'Template'){
+                $elementObject->set('icon', $element->getIcon());
+            }
+            
             if ($this->modx->gitpackagemanagement->getOption('enable_debug') && ($type == 'Plugin' || $type == 'Snippet')) {
                 if($type == 'Plugin') {
                     $elementObject->set('plugincode', 'include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . $element->getFilePath() . '");');
