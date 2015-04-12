@@ -379,6 +379,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $tvObject->set('input_properties',$inputProperties);
             }
 
+            $outputProperties = $tv->getOutputProperties();
+            if (!empty($outputProperties)) {
+                $tvObject->set('output_properties',$outputProperties[0]);
+            }
+
             /** @var modTemplateVarTemplate[] $oldTemplates */
             $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
 

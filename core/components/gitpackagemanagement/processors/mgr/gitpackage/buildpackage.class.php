@@ -132,7 +132,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         if (!empty($resourcesArray)) {
             $vehicle->addResourceResolver($this->packagePath . '_build/gpm_resolvers', $resourcesArray);
         }
-        
+
         $this->addSystemSettings();
 
         $after = $resolver->getAfter();
@@ -312,7 +312,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $chunks[] = $chunkObject;
             }
         }
-        
+
         return $chunks;
     }
 
@@ -359,6 +359,11 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $inputProperties = $configTV->getInputProperties();
                 if (!empty($inputProperties)) {
                     $tvObject->set('input_properties',$inputProperties);
+                }
+
+                $outputProperties = $configTV->getOutputProperties();
+                if (!empty($outputProperties)) {
+                    $tvObject->set('output_properties',$outputProperties[0]);
                 }
 
                 $tvObject->setProperties($configTV->getProperties());
