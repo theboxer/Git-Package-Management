@@ -256,6 +256,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if($type == 'Template'){
                 /** @var modElement $elementObject */
                 $elementObject = $this->modx->getObject('mod'.$type, array('templatename' => $name));
+                $elementObject->set('icon', $element->getIcon());
             }else{
                 $elementObject = $this->modx->getObject('mod'.$type, array('name' => $name));
             }

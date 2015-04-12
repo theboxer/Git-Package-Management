@@ -328,6 +328,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $templateObject = $this->modx->newObject('modTemplate');
                 $templateObject->set('templatename', $configTemplate->getName());
                 $templateObject->set('description', $configTemplate->getDescription());
+                $templateObject->set('icon', $configTemplate->getIcon());
                 $templateObject->set('content', $this->builder->getFileContent($this->corePath . $configTemplate->getFilePath()));
 
                 $templateObject->setProperties($configTemplate->getProperties());
