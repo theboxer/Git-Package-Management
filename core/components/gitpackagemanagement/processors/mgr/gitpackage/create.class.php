@@ -2,7 +2,7 @@
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/model/gitpackagemanagement/gpc/gitpackageconfig.class.php';
 /**
  * Clone git repository and install it
- * 
+ *
  * @package gitpackagemanagement
  * @subpackage processors
  */
@@ -392,6 +392,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             }
 
             $categoryObject->set('parent', $parent);
+            $categoryObject->save();
             $this->categoriesMap[$category->getName()] = $categoryObject->id;
         }
     }
@@ -538,9 +539,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating templates:');
             foreach($templates as $template){
                 $templatesObject = $this->modx->newObject('modTemplate');
-                $templatesObject->set('templatename', $template->getName());
+                $templatesObject->set('templatename', $template->getName());                
                 $templatesObject->set('description', $template->getDescription());
                 $templatesObject->set('static', 1);
+                $templatesObject->set('icon', $template->getIcon());
                 $templatesObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $template->getFilePath());
 
                 $category = $template->getCategory();
@@ -592,11 +594,17 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->set('category', $category);
 
                 $tvObject->set('elements', $tv->getInputOptionValues());
+                $tvObject->set('rank', $tv->getSortOrder());
                 $tvObject->set('default_text', $tv->getDefaultValue());
 
                 $inputProperties = $tv->getInputProperties();
                 if (!empty($inputProperties)) {
                     $tvObject->set('input_properties',$inputProperties);
+                }
+
+                $outputProperties = $tv->getOutputProperties();
+                if (!empty($outputProperties)) {
+                    $tvObject->set('output_properties',$outputProperties[0]);
                 }
 
                 $tvObject->save();

@@ -44,7 +44,7 @@ Define resolver options here
 ```json
 {
     "resolver":{
-        "resolverDir": "resolver",
+        "resolversDir": "resolvers",
         "after": ["resolve.customresolver.php"],        
     }
 }
