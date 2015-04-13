@@ -38,11 +38,11 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
         }
 
         if(isset($config['inputProperties'])){
-            $this->inputProperties = $config['inputProperties'];
+            $this->inputProperties = is_array($config['inputProperties']) ? $this->modx->toJSON($config['inputProperties']) : $config['inputProperties'];
         }
 
         if(isset($config['outputProperties'])){
-            $this->outputProperties = $config['outputProperties'];
+            $this->inputProperties = is_array($config['outputProperties']) ? $this->modx->toJSON($config['outputProperties']) : $config['outputProperties'];
         }
 
         if(isset($config['sortOrder'])){
