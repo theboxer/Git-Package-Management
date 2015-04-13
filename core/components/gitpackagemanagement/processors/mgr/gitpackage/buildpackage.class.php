@@ -132,7 +132,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         if (!empty($resourcesArray)) {
             $vehicle->addResourceResolver($this->packagePath . '_build/gpm_resolvers', $resourcesArray);
         }
-        
+
         $this->addSystemSettings();
 
         $after = $resolver->getAfter();
@@ -312,7 +312,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $chunks[] = $chunkObject;
             }
         }
-        
+
         return $chunks;
     }
 
@@ -328,6 +328,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $templateObject = $this->modx->newObject('modTemplate');
                 $templateObject->set('templatename', $configTemplate->getName());
                 $templateObject->set('description', $configTemplate->getDescription());
+                $templateObject->set('icon', $configTemplate->getIcon());
                 $templateObject->set('content', $this->builder->getFileContent($this->corePath . $configTemplate->getFilePath()));
 
                 $templateObject->setProperties($configTemplate->getProperties());
@@ -353,11 +354,17 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $tvObject->set('description', $configTV->getDescription());
                 $tvObject->set('type', $configTV->getInputType());
                 $tvObject->set('elements', $configTV->getInputOptionValues());
+                $tvObject->set('rank', $configTV->getSortOrder());
                 $tvObject->set('default_text', $configTV->getDefaultValue());
 
                 $inputProperties = $configTV->getInputProperties();
                 if (!empty($inputProperties)) {
                     $tvObject->set('input_properties',$inputProperties);
+                }
+
+                $outputProperties = $configTV->getOutputProperties();
+                if (!empty($outputProperties)) {
+                    $tvObject->set('output_properties',$outputProperties[0]);
                 }
 
                 $tvObject->setProperties($configTV->getProperties());

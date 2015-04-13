@@ -198,6 +198,7 @@ In this section we create some elements. During the installation, all elements a
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
     - **description** (optional) - Description of the property
+    - **icon** (optional) - Icon in the Resource Tree for resources using that Template (MODX 2.3+). Choose them from: http://fortawesome.github.io/Font-Awesome/icons/
     - **type** (optional, default: textfield) - Type of property
     - **options** (optional) - Property options
     - **value** (optional) - Property default value
@@ -212,6 +213,7 @@ In this section we create some elements. During the installation, all elements a
             "templates": [{
                 "name": "PackageTemplate",
                 "file": "packagetemplate.template.tpl",
+                "icon": "icon-beer",
                 "properties": [{
                     "name": "testproperty",
                     "value": "testvalue"
@@ -287,6 +289,7 @@ In this section we create some elements. During the installation, all elements a
 - **description** (optional, default: null) - TV's description
 - **defaultValue** (optional, default: null) - Default value of the TV
 - **inputOptionValues** (optional, default: null) - Input options, for example items for single select list
+- **sortOrder** (optional, default: 0) - If you're using more than one TV, this will determine which appear at the top (1 = top, bigger numbers sink to the bottom)
 - **templates** (required) - Array of template names for which will be this TV allowed
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
@@ -297,6 +300,7 @@ In this section we create some elements. During the installation, all elements a
     - **lexicon** (optional, default:strtolower($lowCaseName$):properties) - Lexicon topic for description
     - **area** (optional) - Area of the property
 - **inputProperties** (optional) - Object with input properties, list of available properties depends on TV type
+- **outputProperties** (optional) - Object with output properties, list of available properties depends on output type (e.g. `delimiter`; `format`; `tagname`, `tagid`, `class`, `style`, `attrib`; ...)
 
 #### Example
 ```json
@@ -317,7 +321,10 @@ In this section we create some elements. During the installation, all elements a
                 }],
                 "inputProperties": [{
                     "allowBlank": false
-                }]
+                }],
+                "outputProperties": [{
+                    "delimiter": ","
+                }]                
             }]
         }
     }
@@ -409,7 +416,7 @@ Here you can specify all system settings that you need for your component. Note 
             "key": "test_key",
             "type": "textfield",
             "area": "default",
-            "value": "it works",
+            "value": "it works"
         }]
     }
 }

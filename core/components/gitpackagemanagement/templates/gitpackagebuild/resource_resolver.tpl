@@ -136,7 +136,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             }
 
             if ($resource['template'] !== null) {
-                if ($resource['template'] != 0) {
+                if ($resource['template'] !== 0) {
                     $template = $modx->getObject('modTemplate', array('templatename' => $resource['template']));
                     if ($template) {
                         $resource['template'] = $template->id;
