@@ -12,7 +12,10 @@ class GitPackageManagementBuildPackagePublishProcessor extends GitPackageManagem
 
     public function process() {
 
-        parent::process();
+        $process = parent::process();
+        if ($process !== true) {
+            return $process;
+        };
 
         $source = $this->config->getPackagePath() . '/_packages/' . $this->builder->getTPBuilder()->getSignature() . '.transport.zip';
         $target = MODX_BASE_PATH . 'extras/_packages/' . $this->builder->getTPBuilder()->getSignature() . '.transport.zip';
