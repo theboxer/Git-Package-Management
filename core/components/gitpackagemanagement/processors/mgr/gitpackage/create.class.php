@@ -431,6 +431,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 }
                 $pluginObject->set('category', $category);
 
+                $pluginObject->setProperties($plugin->getProperties());
                 $pluginObject->save();
 
                 $events = array();
@@ -486,6 +487,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 }
                 $snippetObject->set('category', $category);
 
+                $snippetObject->setProperties($snippet->getProperties());
                 $snippetObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Snippet ' . $snippet->getName() . ' created.');
@@ -521,6 +523,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 }
                 $chunkObject->set('category', $category);
 
+                $chunkObject->setProperties($chunk->getProperties());
                 $chunkObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Chunk ' . $chunk->getName() . ' created.');
@@ -557,6 +560,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 }
                 $templatesObject->set('category', $category);
 
+                $templatesObject->setProperties($template->getProperties());
                 $templatesObject->save();
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Template ' . $template->getName() . ' created.');
@@ -607,6 +611,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     $tvObject->set('output_properties',$outputProperties[0]);
                 }
 
+                $tvObject->setProperties($tv->getProperties());
                 $tvObject->save();
 
                 $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
