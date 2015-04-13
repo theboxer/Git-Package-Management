@@ -144,7 +144,7 @@ abstract class GitPackageConfigElement{
             }
 
             if (isset($property['options'])) {
-                $prop['options'] = $property['options'];
+                $prop['options'] = is_array($property['options']) ? $this->modx->toJSON($property['options']) : $property['options'];
             } else {
                 $prop['options'] = '';
             }
