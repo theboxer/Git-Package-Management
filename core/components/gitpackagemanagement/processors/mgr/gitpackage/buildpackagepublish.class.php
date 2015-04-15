@@ -13,7 +13,7 @@ class GitPackageManagementBuildPackagePublishProcessor extends GitPackageManagem
     public function process() {
 
         $process = parent::process();
-        if ($process !== true) {
+        if ($process['success'] !== true) {
             return $process;
         };
 
