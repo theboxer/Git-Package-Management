@@ -92,7 +92,7 @@ abstract class GitPackageConfigElement{
         }
 
         if($exists === false){
-            $this->config->error->addError('Elements: ' . $file . ' - file does not exists', true);
+            $this->config->error->addError('Elements: ' . $finalFile . ' - file does not exists', true);
             return false;
         }
 
