@@ -16,18 +16,18 @@ class GitPackageVehicle {
     }
 
     public function addAssetsResolver($assetsPath){
-        $this->vehicle->resolve('file',array(
-            'source' => $assetsPath,
-            'target' => "return MODX_ASSETS_PATH . 'components/';",
-        ));
-
-        return $this;
+        return $this->addFileResolver($assetsPath, "return MODX_ASSETS_PATH . 'components/';");
     }
 
     public function addCoreResolver($corePath) {
+        return $this->addFileResolver($corePath, "return MODX_CORE_PATH . 'components/';");
+    }
+
+    public function addFileResolver($source, $target)
+    {
         $this->vehicle->resolve('file',array(
-            'source' => $corePath,
-            'target' => "return MODX_CORE_PATH . 'components/';",
+            'source' => $source,
+            'target' => $target,
         ));
 
         return $this;
