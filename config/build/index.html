@@ -194,12 +194,20 @@
 <li><strong>resolversDir</strong> (optional, default: resolvers) - Directory for custom resolvers</li>
 <li><strong>before</strong> (optional, default: empty array) - Array with paths to resolvers, which will be executed before assets &amp; core file resolvers</li>
 <li><strong>after</strong> (optional, default: empty array) - Array with paths to resolvers, which will be executed after assets &amp; core file resolvers</li>
+<li><strong>files</strong> (optional, default: empty array) - Array with source and target, used to create a file resolver. (File resolvers for assets &amp; core are created automatically)<ul>
+<li>Available placeholders for source item: [[+assetsPath]], [[+corePath]], [[+packagePath]]</li>
+</ul>
+</li>
 </ul>
 <h4 id="example_1">Example</h4>
 <pre><code class="json">{
     &quot;resolver&quot;:{
         &quot;resolversDir&quot;: &quot;resolvers&quot;,
-        &quot;after&quot;: [&quot;resolve.customresolver.php&quot;],        
+        &quot;after&quot;: [&quot;resolve.customresolver.php&quot;],
+        &quot;files&quot;: [{
+            &quot;source&quot;: &quot;[[+packagePath]]/move_under_assets&quot;,
+            &quot;target&quot;: &quot;return MODX_ASSETS_PATH . 'components/';&quot;
+        }]
     }
 }
 </code></pre>
