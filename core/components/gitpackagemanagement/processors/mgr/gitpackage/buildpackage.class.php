@@ -101,6 +101,11 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle->addCoreResolver($this->corePath);
         }
 
+        $fileResolvers = $resolver->getFileResolvers();
+        foreach ($fileResolvers as $fileResolver) {
+            $vehicle->addFileResolver($fileResolver['source'], $fileResolver['target']);
+        }
+
         $db = $this->config->getDatabase();
         if ($db != null) {
             $tables = $db->getTables();

@@ -5,7 +5,7 @@ class GitPackageConfigBuildResolver {
     private $resolversDir = 'resolvers';
     private $before = array();
     private $after = array();
-    private $file = array();
+    private $files = array();
 
     public function __construct(modX &$modx) {
         $this->modx =& $modx;
@@ -24,11 +24,11 @@ class GitPackageConfigBuildResolver {
             $this->after = $config['after'];
         }
 
-        if(isset($config['file']) && is_array($config['file'])) {
-            foreach ($config['file'] as $file) {
+        if(isset($config['files']) && is_array($config['files'])) {
+            foreach ($config['files'] as $file) {
                 if (!isset($file['source']) || !isset($file['target'])) continue;
 
-                $this->file[] = array(
+                $this->files[] = array(
                     'source' => $file['source'],
                     'target' => $file['target']
                 );
@@ -54,7 +54,7 @@ class GitPackageConfigBuildResolver {
 
     public function getFileResolvers()
     {
-        return $this->file;
+        return $this->files;
     }
 
     /**
