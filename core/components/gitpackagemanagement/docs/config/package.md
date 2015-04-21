@@ -108,6 +108,7 @@ In this section we create some elements. During the installation, all elements a
 
 #### Available properties:
 - **name** (required) - Chunk's name
+- **category** (optional) - Name of category defined in **categories** element
 - **file** (optional, default: strtolower($name$).chunk.tpl) - Chunk's filename with extension
 - **properties** (optional) - An array of objects, where each object has those properties:
      - **name** (required) - Name of the property
@@ -151,6 +152,7 @@ In this section we create some elements. During the installation, all elements a
 
 #### Available properties:
 - **name** (required) - Snippet's name
+- **category** (optional) - Name of category defined in **categories** element
 - **file** (optional, default: strtolower($name$).snippet.php) - Snippet's filename with extension
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
@@ -194,6 +196,7 @@ In this section we create some elements. During the installation, all elements a
 
 #### Available properties:
 - **name** (required) - Template's name
+- **category** (optional) - Name of category defined in **categories** element
 - **file** (optional, default: strtolower($name$).template.tpl) - Template's filename with extension
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
@@ -239,6 +242,7 @@ In this section we create some elements. During the installation, all elements a
 
 #### Available properties:
 - **name** (required) - Plugin's name
+- **category** (optional) - Name of category defined in **categories** element
 - **file** (optional, default: strtolower($name$).plugin.php) - Plugin's filename with extension
 - **events** (required) - Array of events
 - **properties** (optional) - An array of objects, where each object has those properties:
@@ -285,6 +289,7 @@ In this section we create some elements. During the installation, all elements a
 #### Available properties:
 - **caption** (required) - TV's caption
 - **name** (optional, default: strtolower($caption$)) - TV's name
+- **category** (optional) - Name of category defined in **categories** element
 - **type** (optional, default: text) - TV's type
 - **description** (optional, default: null) - TV's description
 - **defaultValue** (optional, default: null) - Default value of the TV
@@ -325,6 +330,40 @@ In this section we create some elements. During the installation, all elements a
                 "outputProperties": [{
                     "delimiter": ","
                 }]                
+            }]
+        }
+    }
+}
+```
+
+### Categories
+Category with name of the package is created automatically and all categories defined here will be nested under it.
+
+**Wrapper:** categories (array)
+```json
+{
+    "package":{
+        "elements": {
+            "categories": []
+        }
+    }
+}
+```
+
+#### Available properties:
+- **name** (required) - Category's name
+- **parent** (optional) - Name of category that will be used as a parent
+
+#### Example
+```json
+{
+    "package":{
+        "elements": {
+            "categories": [{
+                "name": "First category"
+            },{
+                "name": "Second category",
+                "parent": "First category"
             }]
         }
     }
