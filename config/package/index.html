@@ -102,19 +102,21 @@
                             
                                 <li><a class="toctree-l3" href="#template-variables">Template Variables</a></li>
                             
+                                <li><a class="toctree-l3" href="#categories">Categories</a></li>
+                            
                         
                             <li class="toctree-l2"><a href="#resources">Resources</a></li>
-                            
-                                <li><a class="toctree-l3" href="#available-properties_7">Available properties:</a></li>
-                            
-                                <li><a class="toctree-l3" href="#example_7">Example</a></li>
-                            
-                        
-                            <li class="toctree-l2"><a href="#system-settings">System settings</a></li>
                             
                                 <li><a class="toctree-l3" href="#available-properties_8">Available properties:</a></li>
                             
                                 <li><a class="toctree-l3" href="#example_8">Example</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="#system-settings">System settings</a></li>
+                            
+                                <li><a class="toctree-l3" href="#available-properties_9">Available properties:</a></li>
+                            
+                                <li><a class="toctree-l3" href="#example_9">Example</a></li>
                             
                         
                         </ul>
@@ -283,6 +285,7 @@
 <h4 id="available-properties_2">Available properties:</h4>
 <ul>
 <li><strong>name</strong> (required) - Chunk's name</li>
+<li><strong>category</strong> (optional) - Name of category defined in <strong>categories</strong> element</li>
 <li><strong>file</strong> (optional, default: strtolower($name$).chunk.tpl) - Chunk's filename with extension</li>
 <li><strong>properties</strong> (optional) - An array of objects, where each object has those properties:<ul>
 <li><strong>name</strong> (required) - Name of the property</li>
@@ -326,6 +329,7 @@
 <h4 id="available-properties_3">Available properties:</h4>
 <ul>
 <li><strong>name</strong> (required) - Snippet's name</li>
+<li><strong>category</strong> (optional) - Name of category defined in <strong>categories</strong> element</li>
 <li><strong>file</strong> (optional, default: strtolower($name$).snippet.php) - Snippet's filename with extension</li>
 <li><strong>properties</strong> (optional) - An array of objects, where each object has those properties:<ul>
 <li><strong>name</strong> (required) - Name of the property</li>
@@ -369,6 +373,7 @@
 <h4 id="available-properties_4">Available properties:</h4>
 <ul>
 <li><strong>name</strong> (required) - Template's name</li>
+<li><strong>category</strong> (optional) - Name of category defined in <strong>categories</strong> element</li>
 <li><strong>file</strong> (optional, default: strtolower($name$).template.tpl) - Template's filename with extension</li>
 <li><strong>properties</strong> (optional) - An array of objects, where each object has those properties:<ul>
 <li><strong>name</strong> (required) - Name of the property</li>
@@ -414,6 +419,7 @@
 <h4 id="available-properties_5">Available properties:</h4>
 <ul>
 <li><strong>name</strong> (required) - Plugin's name</li>
+<li><strong>category</strong> (optional) - Name of category defined in <strong>categories</strong> element</li>
 <li><strong>file</strong> (optional, default: strtolower($name$).plugin.php) - Plugin's filename with extension</li>
 <li><strong>events</strong> (required) - Array of events</li>
 <li><strong>properties</strong> (optional) - An array of objects, where each object has those properties:<ul>
@@ -460,6 +466,7 @@
 <ul>
 <li><strong>caption</strong> (required) - TV's caption</li>
 <li><strong>name</strong> (optional, default: strtolower($caption$)) - TV's name</li>
+<li><strong>category</strong> (optional) - Name of category defined in <strong>categories</strong> element</li>
 <li><strong>type</strong> (optional, default: text) - TV's type</li>
 <li><strong>description</strong> (optional, default: null) - TV's description</li>
 <li><strong>defaultValue</strong> (optional, default: null) - Default value of the TV</li>
@@ -507,6 +514,38 @@
 }
 </code></pre>
 
+<h3 id="categories">Categories</h3>
+<p>Category with name of the package is created automatically and all categories defined here will be nested under it.</p>
+<p><strong>Wrapper:</strong> categories (array)</p>
+<pre><code class="json">{
+    &quot;package&quot;:{
+        &quot;elements&quot;: {
+            &quot;categories&quot;: []
+        }
+    }
+}
+</code></pre>
+
+<h4 id="available-properties_7">Available properties:</h4>
+<ul>
+<li><strong>name</strong> (required) - Category's name</li>
+<li><strong>parent</strong> (optional) - Name of category that will be used as a parent</li>
+</ul>
+<h4 id="example_7">Example</h4>
+<pre><code class="json">{
+    &quot;package&quot;:{
+        &quot;elements&quot;: {
+            &quot;categories&quot;: [{
+                &quot;name&quot;: &quot;First category&quot;
+            },{
+                &quot;name&quot;: &quot;Second category&quot;,
+                &quot;parent&quot;: &quot;First category&quot;
+            }]
+        }
+    }
+}
+</code></pre>
+
 <h2 id="resources">Resources</h2>
 <p>Here you can specify Resources that should be created. Note that this is only one way process, so all changes to those Resources from MODX Manager will be lost during package update process.</p>
 <p><strong>Wrapper:</strong> resources (array)</p>
@@ -517,7 +556,7 @@
 }
 </code></pre>
 
-<h4 id="available-properties_7">Available properties:</h4>
+<h4 id="available-properties_8">Available properties:</h4>
 <ul>
 <li><strong>pagetitle</strong> (required) - Page title</li>
 <li><strong>longtitle</strong> (optional) - Long title</li>
@@ -547,7 +586,7 @@
 <li><strong>others</strong> (optional) - Array of name &amp; value pair that will be sent to Resource's create &amp; update processor</li>
 <li><strong>setAsHome</strong> (optional) - 1/0 to link this Resource with Resource that is set as site_start</li>
 </ul>
-<h4 id="example_7">Example</h4>
+<h4 id="example_8">Example</h4>
 <pre><code class="json">{
     &quot;package&quot;:{
         &quot;resources&quot;: [{
@@ -573,7 +612,7 @@
 }
 </code></pre>
 
-<h4 id="available-properties_8">Available properties:</h4>
+<h4 id="available-properties_9">Available properties:</h4>
 <ul>
 <li><strong>key</strong> (required) - Setting's key</li>
 <li><strong>namespace</strong> (optional, default: lowCaseName) - Setting's namespace (will be used only as a prefix for the key)</li>
@@ -581,7 +620,7 @@
 <li><strong>area</strong> (optional, default: default) - Setting's area</li>
 <li><strong>value</strong> (required) - Setting's value</li>
 </ul>
-<h4 id="example_8">Example</h4>
+<h4 id="example_9">Example</h4>
 <pre><code class="json">{
     &quot;package&quot;:{
         &quot;systemSettings&quot;: [{
