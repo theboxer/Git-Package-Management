@@ -39,13 +39,19 @@ Define resolver options here
 * **resolversDir** (optional, default: resolvers) - Directory for custom resolvers
 * **before** (optional, default: empty array) - Array with paths to resolvers, which will be executed before assets & core file resolvers
 * **after** (optional, default: empty array) - Array with paths to resolvers, which will be executed after assets & core file resolvers
+* **files** (optional, default: empty array) - Array with source and target, used to create a file resolver. (File resolvers for assets & core are created automatically)
+    * Available placeholders for source item: [[+assetsPath]], [[+corePath]], [[+packagePath]]
 
 #### Example
 ```json
 {
     "resolver":{
         "resolversDir": "resolvers",
-        "after": ["resolve.customresolver.php"],        
+        "after": ["resolve.customresolver.php"],
+        "files": [{
+            "source": "[[+packagePath]]/move_under_assets",
+            "target": "return MODX_ASSETS_PATH . 'components/';"
+        }]
     }
 }
 ```
