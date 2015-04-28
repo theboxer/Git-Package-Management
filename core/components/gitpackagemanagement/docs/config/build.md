@@ -9,9 +9,9 @@ Define build options here.
 
 #### Available properties:
 * **resolver** (optional) - Resolver options
-* **readMe** (optional, default: docs/readme.txt) - Path to readme file
+* **readme** (optional, default: docs/readme.txt) - Path to readme file
 * **license** (optional, default: docs/license.txt) - Path to license file
-* **changeLog** (optional, default: docs/changelog.txt) - Path to change log file
+* **changelog** (optional, default: docs/changelog.txt) - Path to change log file
 * **schemaPath** (optional, default: /core/components/$lowCaseName$/model/schema/$lowCaseName$.mysql.schema.xml) - Path to the XML schema file
 * **setupOptions** (optional) - Setup options object
 
