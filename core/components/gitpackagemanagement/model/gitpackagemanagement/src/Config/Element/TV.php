@@ -1,7 +1,7 @@
 <?php
 namespace GPM\Config\Element;
 
-class TV extends Element
+final class TV extends Element
 {
     protected $type = 'TV';
     protected $caption = null;
@@ -9,18 +9,19 @@ class TV extends Element
     protected $defaultValue = '';
     protected $inputType = 'text';
     protected $sortOrder = '0';
-    protected $templates = array();
+    protected $templates = [];
     protected $category;
-    private $inputProperties = array();
-    private $outputProperties = array();
+    protected $inputProperties = [];
+    protected $outputProperties = [];
+
+    protected $section = 'Elements: TV';
+    protected $required = ['caption'];
 
     public function fromArray($config)
     {
-        if (isset($config['caption'])) {
-            $this->caption = $config['caption'];
-        } else {
-            throw new \Exception('Elements: ' . $this->type . ' - caption is not set');
-        }
+        $this->validate($config);
+        
+        $this->caption = $config['caption'];
 
         if (isset($config['inputOptionValues'])) {
             $this->inputOptionValues = $config['inputOptionValues'];

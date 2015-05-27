@@ -1,81 +1,64 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Util\Validator;
+
 class Menu
 {
-    private $modx;
-    /* @var $gitPackageConfig Config */
-    private $gitPackageConfig;
-    private $text;
-    private $description;
-    private $parent;
-    private $icon;
-    private $menuIndex;
-    private $params;
-    private $handler;
-    private $action;
+    use Validator;
+    
+    /* @var $config Config */
+    protected $config;
+    protected $text;
+    protected $description = '';
+    protected $parent = 'components';
+    protected $icon = '';
+    protected $menuIndex = 0;
+    protected $params = '';
+    protected $handler = '';
+    protected $action;
     /** @var Action $action */
-    private $actionObject = null;
+    protected $actionObject = null;
+    
+    protected $section = 'Menus';
+    protected $required = ['text', 'action'];
 
-    public function __construct(\modX &$modx, $gitPackageConfig)
+    public function __construct($config)
     {
-        $this->modx =& $modx;
-        $this->gitPackageConfig = $gitPackageConfig;
+        $this->config = $config;
     }
 
     public function fromArray($config)
     {
-        if (isset($config['text'])) {
-            $this->text = $config['text'];
-        } else {
-            throw new \Exception('Menus - text is not set');
-        }
+        $this->validate($config);
+        
+        $this->text = $config['text'];
 
         if (isset($config['description'])) {
             $this->description = $config['description'];
-        } else {
-            $this->description = '';
         }
 
         if (isset($config['parent'])) {
             $this->parent = $config['parent'];
-        } else {
-            $this->parent = 'components';
         }
 
         if (isset($config['icon'])) {
             $this->icon = $config['icon'];
-        } else {
-            $this->icon = '';
         }
 
         if (isset($config['menuIndex'])) {
             $this->menuIndex = $config['menuIndex'];
-        } else {
-            $this->menuIndex = 0;
         }
 
         if (isset($config['params'])) {
             $this->params = $config['params'];
-        } else {
-            $this->params = '';
         }
 
         if (isset($config['handler'])) {
             $this->handler = $config['handler'];
-        } else {
-            $this->handler = '';
         }
-
-        if (isset($config['action'])) {
-            $action = $this->setAction($config['action']);
-
-            if ($action === false) {
-                throw new \Exception('Menus - action not exist');
-            }
-        } else {
-            throw new \Exception('Menus - action is not set');
-        }
+        
+        $this->setAction($config['action']);
 
         return true;
     }
@@ -129,7 +112,7 @@ class Menu
             return true;
         }
 
-        foreach ($this->gitPackageConfig->getActions() as $action) {
+        foreach ($this->config->getActions() as $action) {
             if ($action->getId() != $givenAction) continue;
             $this->action = $givenAction;
             $this->actionObject = $action;
@@ -137,7 +120,7 @@ class Menu
             return true;
         }
 
-        return false;
+        throw new \Exception('Menus - action not exist');
     }
 
     /**

@@ -1,11 +1,13 @@
 <?php
 namespace GPM\Config\Element;
 
-class Template extends Element
+final class Template extends Element
 {
     protected $type = 'template';
     protected $extension = 'tpl';
     protected $icon = '';
+
+    protected $section = 'Elements: Template';
 
     public function fromArray($config)
     {

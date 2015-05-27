@@ -1,8 +1,10 @@
 <?php
 namespace GPM\Config\Element;
 
-class Chunk extends Element
+final class Chunk extends Element
 {
     protected $type = 'chunk';
     protected $extension = 'tpl';
+
+    protected $section = 'Elements: Chunk';
 }

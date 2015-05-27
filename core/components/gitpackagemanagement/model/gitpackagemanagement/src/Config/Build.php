@@ -3,7 +3,6 @@ namespace GPM\Config;
 
 class Build
 {
-    private $modx;
     /** @var Config $config */
     private $config;
     /** @var Build\Resolver $resolver */
@@ -12,13 +11,12 @@ class Build
     private $license = 'docs/license.txt';
     private $changelog = 'docs/changelog.txt';
     private $schemaPath = '';
-    private $setupOptions = array();
-    private $attributes = array();
+    private $setupOptions = [];
+    private $attributes = [];
 
-    public function __construct(\modX &$modx, Config $config)
+    public function __construct(Config $config)
     {
-        $this->modx =& $modx;
-        $this->resolver = new Build\Resolver($this->modx);
+        $this->resolver = new Build\Resolver();
         $this->config = $config;
     }
 

@@ -1,53 +1,59 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Util\Validator;
+
 class Resource
 {
-    private $modx;
+    use Validator;
+    
+    /** @var \modX $modx */
+    protected $modx;
     /* @var $config Config */
-    private $config;
+    protected $config;
 
-    private $pagetitle;
-    private $alias = '';
-    private $parent = 0;
-    private $tvs = array();
-    private $others = array();
-    private $content = '';
-    private $suffix = '.html';
-    private $id = 0;
-    private $context_key = 'web';
-    private $template = null;
-    private $class_key = 'modDocument';
-    private $content_type = null;
-    private $longtitle = '';
-    private $description = '';
-    private $introtext = '';
-    private $published = null;
-    private $isfolder = 0;
-    private $richtext = null;
-    private $menuindex = null;
-    private $searchable = null;
-    private $cacheable = null;
-    private $deleted = 0;
-    private $menutitle = '';
-    private $hidemenu = null;
-    private $hide_children_in_tree = 0;
-    private $show_in_tree = 1;
-    private $setAsHome = 0;
+    protected $pagetitle;
+    protected $alias = '';
+    protected $parent = 0;
+    protected $tvs = array();
+    protected $others = array();
+    protected $content = '';
+    protected $suffix = '.html';
+    protected $id = 0;
+    protected $context_key = 'web';
+    protected $template = null;
+    protected $class_key = 'modDocument';
+    protected $content_type = null;
+    protected $longtitle = '';
+    protected $description = '';
+    protected $introtext = '';
+    protected $published = null;
+    protected $isfolder = 0;
+    protected $richtext = null;
+    protected $menuindex = null;
+    protected $searchable = null;
+    protected $cacheable = null;
+    protected $deleted = 0;
+    protected $menutitle = '';
+    protected $hidemenu = null;
+    protected $hide_children_in_tree = 0;
+    protected $show_in_tree = 1;
+    protected $setAsHome = 0;
 
-    public function __construct(\modX &$modx, $gitPackageConfig)
+    protected $section = 'Resources';
+    protected $required = ['pagetitle'];
+
+    public function __construct($config, \modX &$modx)
     {
         $this->modx =& $modx;
-        $this->config = $gitPackageConfig;
+        $this->config = $config;
     }
 
     public function fromArray($config)
     {
-        if (isset($config['pagetitle'])) {
-            $this->pagetitle = $config['pagetitle'];
-        } else {
-            throw new \Exception('Resources - pagetitle is not set');
-        }
+        $this->validate($config);
+        
+        $this->pagetitle = $config['pagetitle'];
 
         if (isset($config['alias'])) {
             $this->alias = $config['alias'];
@@ -204,7 +210,7 @@ class Resource
 
     public function toArray()
     {
-        $resource = array();
+        $resource = [];
 
         $resource['pagetitle'] = $this->pagetitle;
         $resource['alias'] = $this->alias;
@@ -215,14 +221,14 @@ class Resource
             if (is_readable($rmf)) {
                 $map = include $rmf;
             } else {
-                $map = array();
+                $map = [];
             }
 
             if (isset($map[$this->parent])) {
                 $resource['parent'] = $map[$this->parent];
             } else {
                 /** @var \modResource $parent */
-                $parent = $this->modx->getObject('modResource', array('pagetitle' => $this->parent));
+                $parent = $this->modx->getObject('modResource', ['pagetitle' => $this->parent]);
                 if ($parent) {
                     $resource['parent'] = $parent->id;
                 }
@@ -230,7 +236,7 @@ class Resource
         } else {
             if ($this->parent != 0) {
                 /** @var \modResource $parent */
-                $parent = $this->modx->getObject('modResource', array('id' => $this->parent));
+                $parent = $this->modx->getObject('modResource', ['id' => $this->parent]);
                 if ($parent) {
                     $resource['parent'] = $parent->id;
                 }
@@ -259,7 +265,7 @@ class Resource
             if (is_readable($rmf)) {
                 $resourceMap = include $rmf;
             } else {
-                $resourceMap = array();
+                $resourceMap = [];
             }
 
             if (!isset($resourceMap[$this->pagetitle])) {
@@ -281,7 +287,7 @@ class Resource
 
         if ($this->template !== null) {
             if ($this->template !== 0) {
-                $template = $this->modx->getObject('modTemplate', array('templatename' => $this->template));
+                $template = $this->modx->getObject('modTemplate', ['templatename' => $this->template]);
                 if ($template) {
                     $resource['template'] = $template->id;
                 }
@@ -291,7 +297,7 @@ class Resource
         }
 
         if ($this->content_type !== null) {
-            $content_type = $this->modx->getObject('modContentType', array('name' => $this->content_type));
+            $content_type = $this->modx->getObject('modContentType', ['name' => $this->content_type]);
             if ($content_type) {
                 $resource['content_type'] = $content_type->id;
             }
@@ -328,7 +334,7 @@ class Resource
 
     public function toRawArray()
     {
-        $resource = array();
+        $resource = [];
 
         $resource['pagetitle'] = $this->pagetitle;
         $resource['alias'] = $this->alias;

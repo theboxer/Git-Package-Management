@@ -1,16 +1,11 @@
 <?php
 namespace GPM\Config\Build;
 
-class Resolver {
-    private $modx;
+final class Resolver {
     private $resolversDir = 'resolvers';
-    private $before = array();
-    private $after = array();
-    private $files = array();
-
-    public function __construct(\modX &$modx) {
-        $this->modx =& $modx;
-    }
+    private $before = [];
+    private $after = [];
+    private $files = [];
 
     public function fromArray($config) {
         if(isset($config['resolversDir'])){
@@ -29,10 +24,10 @@ class Resolver {
             foreach ($config['files'] as $file) {
                 if (!isset($file['source']) || !isset($file['target'])) continue;
 
-                $this->files[] = array(
+                $this->files[] = [
                     'source' => $file['source'],
                     'target' => $file['target']
-                );
+                ];
             }
         }
 

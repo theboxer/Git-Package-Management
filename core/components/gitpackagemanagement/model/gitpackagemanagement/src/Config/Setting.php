@@ -1,41 +1,40 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Util\Validator;
+
 class Setting
 {
-    private $modx;
-    private $key;
-    private $type;
-    private $area;
-    private $value = '';
-    private $namespace;
+    use Validator;
+    
+    protected $key;
+    protected $type = 'textfield';
+    protected $area = 'default';
+    protected $value = '';
+    protected $namespace;
     /** @var Config $config */
     private $config;
+    
+    protected $section = 'Settings';
+    protected $required = ['key'];
 
-    public function __construct(\modX &$modx, $config)
+    public function __construct($config)
     {
-        $this->modx =& $modx;
         $this->config = $config;
     }
 
     public function fromArray($config)
     {
-        if (isset($config['key'])) {
-            $this->key = $config['key'];
-        } else {
-            throw new \Exception('Settings - key is not set');
-        }
+        $this->validate($config);
+        
+        $this->key = $config['key'];
 
         if (isset($config['type'])) {
             $this->type = $config['type'];
-        } else {
-            $this->type = 'textfield';
         }
 
         if (isset($config['area'])) {
             $this->area = $config['area'];
-        } else {
-            $this->area = 'default';
         }
 
         if (isset($config['namespace'])) {

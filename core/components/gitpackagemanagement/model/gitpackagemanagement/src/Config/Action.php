@@ -1,41 +1,36 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Util\Validator;
 class Action
 {
-    private $modx;
+    use Validator;
+    
     /* @var $config Config */
-    private $config;
-    private $id;
-    private $controller;
-    private $hasLayout;
-    private $langTopics;
-    private $assets;
+    protected $config;
+    protected $id;
+    protected $controller;
+    protected $hasLayout = 1;
+    protected $langTopics;
+    protected $assets = '';
+    
+    protected $section = 'Actions';
+    protected $required = ['id', 'controller'];
 
-    public function __construct(\modX &$modx, $gitPackageConfig)
+    public function __construct($config)
     {
-        $this->modx =& $modx;
-        $this->config = $gitPackageConfig;
+        $this->config = $config;
     }
 
     public function fromArray($config)
     {
-        if (isset($config['id'])) {
-            $this->id = $config['id'];
-        } else {
-            throw new \Exception('Actions - id is not set');
-        }
-
-        if (isset($config['controller'])) {
-            $this->controller = $config['controller'];
-        } else {
-            throw new \Exception('Actions - controller is not set');
-        }
+        $this->validate($config);
+        
+        $this->id = $config['id'];
+        $this->controller = $config['controller'];
 
         if (isset($config['hasLayout'])) {
             $this->hasLayout = $config['hasLayout'];
-        } else {
-            $this->hasLayout = 1;
         }
 
         if (isset($config['langTopics'])) {
@@ -46,8 +41,6 @@ class Action
 
         if (isset($config['assets'])) {
             $this->assets = $config['assets'];
-        } else {
-            $this->assets = '';
         }
 
         return true;

@@ -5,7 +5,7 @@ class Error {
     /** @var \modX $modx */
     public $modx;
     /** @var array $errors */
-    private $errors = array();
+    private $errors = [];
 
     public function __construct(\modX &$modx){
         $this->modx =& $modx;

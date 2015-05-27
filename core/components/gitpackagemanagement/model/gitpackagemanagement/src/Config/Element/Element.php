@@ -2,10 +2,12 @@
 namespace GPM\Config\Element;
 
 use GPM\Config\Config;
+use GPM\Util\Validator;
 
-abstract class Element{
-    /** @var \modX $modx */
-    protected $modx;
+abstract class Element
+{
+    use Validator;
+    
     /** @var Config $config */
     protected $config;
     /** @var string $name */
@@ -19,36 +21,38 @@ abstract class Element{
     /** @var string $extension */
     protected $extension;
     /** @var array $properties */
-    protected $properties = array();
+    protected $properties = [];
     /** @var string $category */
     protected $category;
     /** @var string $filePath */
-    private $filePath;
+    protected $filePath;
+    
+    protected $section = 'Elements';
+    protected $required = ['name'];
 
-    public function __construct(\modX &$modx, Config $config) {
-        $this->modx =& $modx;
+    public function __construct(Config $config)
+    {
         $this->config = $config;
     }
 
-    public function fromArray($config) {
-        if(isset($config['name'])){
-            $this->name = $config['name'];
-        }else{
-            throw new \Exception('Elements: ' . $this->type . ' - name is not set');
-        }
+    public function fromArray($config)
+    {
+        $this->validate($config);
+        
+        $this->name = $config['name'];
 
         if (isset($config['description'])) {
             $this->description = $config['description'];
         }
 
-        if(isset($config['file'])){
+        if (isset($config['file'])) {
             $this->file = $config['file'];
         } else {
-            $this->file = strtolower($this->name).'.'.$this->type . '.' . $this->extension;
+            $this->file = strtolower($this->name) . '.' . $this->type . '.' . $this->extension;
         }
 
         if (isset($config['properties']) && is_array($config['properties'])) {
-           $this->setProperties($config['properties']);
+            $this->setProperties($config['properties']);
         }
 
         if (isset($config['category'])) {
@@ -67,31 +71,32 @@ abstract class Element{
         return true;
     }
 
-    protected function checkFile() {
-        $filePaths = array(
+    protected function checkFile()
+    {
+        $filePaths = [
             'elements/' . $this->type . 's/' . $this->file
-        );
+        ];
 
         if (!empty($this->category)) {
             $categories = $this->config->getCategories();
-            $categoryPath =  '/' . str_replace(' ', '_', strtolower(implode('/', $categories[$this->category]->getParents()))) . '/';
+            $categoryPath = '/' . str_replace(' ', '_', strtolower(implode('/', $categories[$this->category]->getParents()))) . '/';
 
             $filePaths[] = 'elements/' . $this->type . 's' . $categoryPath . $this->file;
         }
 
         $file = $this->config->getPackagePath();
-        $file .= '/core/components/'.$this->config->getLowCaseName().'/';
+        $file .= '/core/components/' . $this->config->getLowCaseName() . '/';
 
         $exists = false;
         foreach ($filePaths as $filePath) {
             $finalFile = $file . $filePath;
-            if(file_exists($finalFile)) {
+            if (file_exists($finalFile)) {
                 $exists = $filePath;
                 break;
             }
         }
 
-        if($exists === false){
+        if ($exists === false) {
             throw new \Exception('Elements: ' . $this->type . ' - ' . $finalFile . ' - file does not exists');
         }
 
@@ -100,29 +105,35 @@ abstract class Element{
         return true;
     }
 
-    public function getFile() {
+    public function getFile()
+    {
         return $this->file;
     }
 
-    public function getFilePath() {
+    public function getFilePath()
+    {
         return $this->filePath;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function getProperties() {
+    public function getProperties()
+    {
         return $this->properties;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
-    protected function setProperties($properties) {
+    protected function setProperties($properties)
+    {
         foreach ($properties as $property) {
-            $prop = array();
+            $prop = [];
 
             if (isset($property['name'])) {
                 $prop['name'] = $property['name'];

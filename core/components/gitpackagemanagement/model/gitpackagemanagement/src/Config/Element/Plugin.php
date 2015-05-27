@@ -1,11 +1,13 @@
 <?php
 namespace GPM\Config\Element;
 
-class Plugin extends Element
+final class Plugin extends Element
 {
     protected $type = 'plugin';
     protected $extension = 'php';
-    protected $events = array();
+    protected $events = [];
+
+    protected $section = 'Elements: Plugin';
 
     public function fromArray($config)
     {

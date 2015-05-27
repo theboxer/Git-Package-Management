@@ -1,30 +1,34 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Util\Validator;
+
 class Category
 {
-    private $modx;
+    use Validator;
+    
     /* @var $config Config */
-    private $config;
-    private $name;
-    private $parent = null;
+    protected $config;
+    protected $name;
+    protected $parent = null;
 
-    public function __construct(\modX &$modx, $gitPackageConfig)
+    protected $section = 'Categories';
+    protected $required = ['name'];
+
+    public function __construct($config)
     {
-        $this->modx =& $modx;
-        $this->config = $gitPackageConfig;
+        $this->config = $config;
     }
 
     public function fromArray($config)
     {
-        if (isset($config['name'])) {
-            $this->name = $config['name'];
-        } else {
-            throw new \Exception('Categories - name is not set');
-        }
+        $this->validate($config);
+        
+        $this->name = $config['name'];
 
         if (isset($config['parent'])) {
             $currentCategories = array_keys($this->config->getCategories());
+            
             if (!in_array($config['parent'], $currentCategories)) {
                 throw new \Exception('Categories - parent category does not exist');
             }
@@ -56,7 +60,7 @@ class Category
      */
     public function getParents()
     {
-        $parents = array($this->name);
+        $parents = [$this->name];
 
         if ($this->parent == null || $this->parent == '') return $parents;
 
