@@ -1,17 +1,20 @@
 <?php
 namespace GPM\Config;
 
-class Database {
+class Database
+{
     private $modx;
     private $prefix;
     private $tables;
     private $simpleObjects;
 
-    public function __construct(\modX &$modx) {
+    public function __construct(\modX &$modx)
+    {
         $this->modx =& $modx;
     }
 
-    public function fromArray($config) {
+    public function fromArray($config)
+    {
         if (isset($config['prefix'])) {
             $this->prefix = $config['prefix'];
         } else {
@@ -33,15 +36,18 @@ class Database {
         return true;
     }
 
-    public function getPrefix() {
+    public function getPrefix()
+    {
         return $this->prefix;
     }
 
-    public function getTables() {
+    public function getTables()
+    {
         return $this->tables;
     }
 
-    public function getSimpleObjects() {
+    public function getSimpleObjects()
+    {
         return $this->simpleObjects;
     }
 

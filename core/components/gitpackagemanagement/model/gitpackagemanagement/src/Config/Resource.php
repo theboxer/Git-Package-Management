@@ -1,7 +1,8 @@
 <?php
 namespace GPM\Config;
 
-class Resource {
+class Resource
+{
     private $modx;
     /* @var $config Config */
     private $config;
@@ -34,17 +35,18 @@ class Resource {
     private $show_in_tree = 1;
     private $setAsHome = 0;
 
-    public function __construct(\modX &$modx, $gitPackageConfig) {
+    public function __construct(\modX &$modx, $gitPackageConfig)
+    {
         $this->modx =& $modx;
         $this->config = $gitPackageConfig;
     }
 
-    public function fromArray($config) {
+    public function fromArray($config)
+    {
         if (isset($config['pagetitle'])) {
             $this->pagetitle = $config['pagetitle'];
         } else {
-            $this->config->error->addError('Resources - pagetitle is not set', true);
-            return false;
+            throw new \Exception('Resources - pagetitle is not set');
         }
 
         if (isset($config['alias'])) {
@@ -141,8 +143,7 @@ class Resource {
         if (isset($config['tvs']) && is_array($config['tvs'])) {
             foreach ($config['tvs'] as $tv) {
                 if (!isset($tv['name'])) {
-                    $this->config->error->addError('Resources - TV - name is not set', true);
-                    return false;
+                    throw new \Exception('Resources - TV - name is not set');
                 }
 
                 if (!isset($tv['value'])) {
@@ -151,9 +152,9 @@ class Resource {
 
                 if (isset($tv['file'])) {
                     $file = $this->config->getPackagePath();
-                    $file .= '/core/components/'.$this->config->getLowCaseName().'/resources/' . $tv['file'];
+                    $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $tv['file'];
 
-                    if(file_exists($file)){
+                    if (file_exists($file)) {
                         $tv['value'] = file_get_contents($file);
                     }
                 }
@@ -165,8 +166,7 @@ class Resource {
         if (isset($config['others']) && is_array($config['others'])) {
             foreach ($config['others'] as $other) {
                 if (!isset($tv['name'])) {
-                    $this->config->error->addError('Resources - Other - name is not set', true);
-                    return false;
+                    throw new \Exception('Resources - Other - name is not set');
                 }
 
                 if (!isset($other['value'])) {
@@ -179,9 +179,9 @@ class Resource {
 
         if (!isset($config['content']) && !isset($config['file'])) {
             $file = $this->config->getPackagePath();
-            $file .= '/core/components/'.$this->config->getLowCaseName().'/resources/' . $this->alias . $this->suffix;
+            $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $this->alias . $this->suffix;
 
-            if(file_exists($file)){
+            if (file_exists($file)) {
                 $this->content = file_get_contents($file);
             }
         } else {
@@ -191,9 +191,9 @@ class Resource {
 
             if (isset($config['file'])) {
                 $file = $this->config->getPackagePath();
-                $file .= '/core/components/'.$this->config->getLowCaseName().'/resources/' . $config['file'];
+                $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $config['file'];
 
-                if(file_exists($file)){
+                if (file_exists($file)) {
                     $this->content = file_get_contents($file);
                 }
             }
@@ -202,7 +202,8 @@ class Resource {
         return true;
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         $resource = array();
 
         $resource['pagetitle'] = $this->pagetitle;
@@ -325,7 +326,8 @@ class Resource {
         return $resource;
     }
 
-    public function toRawArray() {
+    public function toRawArray()
+    {
         $resource = array();
 
         $resource['pagetitle'] = $this->pagetitle;
@@ -352,7 +354,7 @@ class Resource {
         $resource['template'] = $this->template;
 
         if ($this->content_type !== null) {
-                $resource['content_type'] = $this->content_type;
+            $resource['content_type'] = $this->content_type;
         }
 
         if ($this->published !== null) {
@@ -385,364 +387,416 @@ class Resource {
     /**
      * @return string
      */
-    public function getAlias() {
+    public function getAlias()
+    {
         return $this->alias;
     }
 
     /**
      * @param string $alias
      */
-    public function setAlias($alias) {
+    public function setAlias($alias)
+    {
         $this->alias = $alias;
     }
 
     /**
      * @return mixed
      */
-    public function getPagetitle() {
+    public function getPagetitle()
+    {
         return $this->pagetitle;
     }
 
     /**
      * @param mixed $pagetitle
      */
-    public function setPagetitle($pagetitle) {
+    public function setPagetitle($pagetitle)
+    {
         $this->pagetitle = $pagetitle;
     }
 
     /**
      * @return int|string
      */
-    public function getParent() {
+    public function getParent()
+    {
         return $this->parent;
     }
 
     /**
      * @param int|string $parent
      */
-    public function setParent($parent) {
+    public function setParent($parent)
+    {
         $this->parent = $parent;
     }
 
     /**
      * @return array
      */
-    public function getTvs() {
+    public function getTvs()
+    {
         return $this->tvs;
     }
 
     /**
      * @param array $tvs
      */
-    public function setTvs($tvs) {
+    public function setTvs($tvs)
+    {
         $this->tvs = $tvs;
     }
 
     /**
      * @return null
      */
-    public function getCacheable() {
+    public function getCacheable()
+    {
         return $this->cacheable;
     }
 
     /**
      * @param null $cacheable
      */
-    public function setCacheable($cacheable) {
+    public function setCacheable($cacheable)
+    {
         $this->cacheable = $cacheable;
     }
 
     /**
      * @return string
      */
-    public function getClassKey() {
+    public function getClassKey()
+    {
         return $this->class_key;
     }
 
     /**
      * @param string $class_key
      */
-    public function setClassKey($class_key) {
+    public function setClassKey($class_key)
+    {
         $this->class_key = $class_key;
     }
 
     /**
      * @return string
      */
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
     /**
      * @param string $content
      */
-    public function setContent($content) {
+    public function setContent($content)
+    {
         $this->content = $content;
     }
 
     /**
      * @return string
      */
-    public function getContentType() {
+    public function getContentType()
+    {
         return $this->content_type;
     }
 
     /**
      * @param string $contentType
      */
-    public function setContentType($contentType) {
+    public function setContentType($contentType)
+    {
         $this->content_type = $contentType;
     }
 
     /**
      * @return string
      */
-    public function getContextKey() {
+    public function getContextKey()
+    {
         return $this->context_key;
     }
 
     /**
      * @param string $context_key
      */
-    public function setContextKey($context_key) {
+    public function setContextKey($context_key)
+    {
         $this->context_key = $context_key;
     }
 
     /**
      * @return int
      */
-    public function getDeleted() {
+    public function getDeleted()
+    {
         return $this->deleted;
     }
 
     /**
      * @param int $deleted
      */
-    public function setDeleted($deleted) {
+    public function setDeleted($deleted)
+    {
         $this->deleted = $deleted;
     }
 
     /**
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
     /**
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
     }
 
     /**
      * @return int
      */
-    public function getHideChildrenInTree() {
+    public function getHideChildrenInTree()
+    {
         return $this->hide_children_in_tree;
     }
 
     /**
      * @param int $hide_children_in_tree
      */
-    public function setHideChildrenInTree($hide_children_in_tree) {
+    public function setHideChildrenInTree($hide_children_in_tree)
+    {
         $this->hide_children_in_tree = $hide_children_in_tree;
     }
 
     /**
      * @return null
      */
-    public function getHidemenu() {
+    public function getHidemenu()
+    {
         return $this->hidemenu;
     }
 
     /**
      * @param null $hidemenu
      */
-    public function setHidemenu($hidemenu) {
+    public function setHidemenu($hidemenu)
+    {
         $this->hidemenu = $hidemenu;
     }
 
     /**
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @param int $id
      */
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
     }
 
     /**
      * @return string
      */
-    public function getIntrotext() {
+    public function getIntrotext()
+    {
         return $this->introtext;
     }
 
     /**
      * @param string $introtext
      */
-    public function setIntrotext($introtext) {
+    public function setIntrotext($introtext)
+    {
         $this->introtext = $introtext;
     }
 
     /**
      * @return int
      */
-    public function getIsfolder() {
+    public function getIsfolder()
+    {
         return $this->isfolder;
     }
 
     /**
      * @param int $isfolder
      */
-    public function setIsfolder($isfolder) {
+    public function setIsfolder($isfolder)
+    {
         $this->isfolder = $isfolder;
     }
 
     /**
      * @return string
      */
-    public function getLongtitle() {
+    public function getLongtitle()
+    {
         return $this->longtitle;
     }
 
     /**
      * @param string $longtitle
      */
-    public function setLongtitle($longtitle) {
+    public function setLongtitle($longtitle)
+    {
         $this->longtitle = $longtitle;
     }
 
     /**
      * @return null
      */
-    public function getMenuindex() {
+    public function getMenuindex()
+    {
         return $this->menuindex;
     }
 
     /**
      * @param null $menuindex
      */
-    public function setMenuindex($menuindex) {
+    public function setMenuindex($menuindex)
+    {
         $this->menuindex = $menuindex;
     }
 
     /**
      * @return string
      */
-    public function getMenutitle() {
+    public function getMenutitle()
+    {
         return $this->menutitle;
     }
 
     /**
      * @param string $menutitle
      */
-    public function setMenutitle($menutitle) {
+    public function setMenutitle($menutitle)
+    {
         $this->menutitle = $menutitle;
     }
 
     /**
      * @return array
      */
-    public function getOthers() {
+    public function getOthers()
+    {
         return $this->others;
     }
 
     /**
      * @param array $others
      */
-    public function setOthers($others) {
+    public function setOthers($others)
+    {
         $this->others = $others;
     }
 
     /**
      * @return null
      */
-    public function getPublished() {
+    public function getPublished()
+    {
         return $this->published;
     }
 
     /**
      * @param null $published
      */
-    public function setPublished($published) {
+    public function setPublished($published)
+    {
         $this->published = $published;
     }
 
     /**
      * @return null
      */
-    public function getRichtext() {
+    public function getRichtext()
+    {
         return $this->richtext;
     }
 
     /**
      * @param null $richtext
      */
-    public function setRichtext($richtext) {
+    public function setRichtext($richtext)
+    {
         $this->richtext = $richtext;
     }
 
     /**
      * @return null
      */
-    public function getSearchable() {
+    public function getSearchable()
+    {
         return $this->searchable;
     }
 
     /**
      * @param null $searchable
      */
-    public function setSearchable($searchable) {
+    public function setSearchable($searchable)
+    {
         $this->searchable = $searchable;
     }
 
     /**
      * @return int
      */
-    public function getShowInTree() {
+    public function getShowInTree()
+    {
         return $this->show_in_tree;
     }
 
     /**
      * @param int $show_in_tree
      */
-    public function setShowInTree($show_in_tree) {
+    public function setShowInTree($show_in_tree)
+    {
         $this->show_in_tree = $show_in_tree;
     }
 
     /**
      * @return string
      */
-    public function getSuffix() {
+    public function getSuffix()
+    {
         return $this->suffix;
     }
 
     /**
      * @param string $suffix
      */
-    public function setSuffix($suffix) {
+    public function setSuffix($suffix)
+    {
         $this->suffix = $suffix;
     }
 
     /**
      * @return null
      */
-    public function getTemplate() {
+    public function getTemplate()
+    {
         return $this->template;
     }
 
     /**
      * @param null $template
      */
-    public function setTemplate($template) {
+    public function setTemplate($template)
+    {
         $this->template = $template;
     }
 

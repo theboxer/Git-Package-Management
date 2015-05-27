@@ -1,7 +1,8 @@
 <?php
 namespace GPM\Config;
 
-class Menu {
+class Menu
+{
     private $modx;
     /* @var $gitPackageConfig Config */
     private $gitPackageConfig;
@@ -16,112 +17,120 @@ class Menu {
     /** @var Action $action */
     private $actionObject = null;
 
-    public function __construct(\modX &$modx, $gitPackageConfig) {
+    public function __construct(\modX &$modx, $gitPackageConfig)
+    {
         $this->modx =& $modx;
         $this->gitPackageConfig = $gitPackageConfig;
     }
 
-    public function fromArray($config) {
-        if(isset($config['text'])){
+    public function fromArray($config)
+    {
+        if (isset($config['text'])) {
             $this->text = $config['text'];
-        }else{
-            $this->gitPackageConfig->error->addError('Menus - text is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Menus - text is not set');
         }
 
-        if(isset($config['description'])){
+        if (isset($config['description'])) {
             $this->description = $config['description'];
-        }else{
+        } else {
             $this->description = '';
         }
 
-        if(isset($config['parent'])){
+        if (isset($config['parent'])) {
             $this->parent = $config['parent'];
-        }else{
+        } else {
             $this->parent = 'components';
         }
 
-        if(isset($config['icon'])){
+        if (isset($config['icon'])) {
             $this->icon = $config['icon'];
-        }else{
+        } else {
             $this->icon = '';
         }
 
-        if(isset($config['menuIndex'])){
+        if (isset($config['menuIndex'])) {
             $this->menuIndex = $config['menuIndex'];
-        }else{
+        } else {
             $this->menuIndex = 0;
         }
 
-        if(isset($config['params'])){
+        if (isset($config['params'])) {
             $this->params = $config['params'];
-        }else{
+        } else {
             $this->params = '';
         }
 
-        if(isset($config['handler'])){
+        if (isset($config['handler'])) {
             $this->handler = $config['handler'];
-        }else{
+        } else {
             $this->handler = '';
         }
 
-        if(isset($config['action'])){
+        if (isset($config['action'])) {
             $action = $this->setAction($config['action']);
 
             if ($action === false) {
-                $this->gitPackageConfig->error->addError('Menus - action not exist', true);
-                return false;
+                throw new \Exception('Menus - action not exist');
             }
-        }else{
-            $this->gitPackageConfig->error->addError('Menus - action is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Menus - action is not set');
         }
 
         return true;
     }
 
-    public function getAction() {
+    public function getAction()
+    {
         return $this->action;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
-    public function getHandler() {
+    public function getHandler()
+    {
         return $this->handler;
     }
 
-    public function getIcon() {
+    public function getIcon()
+    {
         return $this->icon;
     }
 
-    public function getMenuIndex() {
+    public function getMenuIndex()
+    {
         return $this->menuIndex;
     }
 
-    public function getParams() {
+    public function getParams()
+    {
         return $this->params;
     }
 
-    public function getParent() {
+    public function getParent()
+    {
         return $this->parent;
     }
 
-    public function getText() {
+    public function getText()
+    {
         return $this->text;
     }
 
-    public function setAction($givenAction) {
+    public function setAction($givenAction)
+    {
 
-        if(is_string($givenAction)) {
+        if (is_string($givenAction)) {
             $this->action = $givenAction;
 
             return true;
         }
 
-        foreach($this->gitPackageConfig->getActions() as $action){
-            if($action->getId() != $givenAction) continue;
+        foreach ($this->gitPackageConfig->getActions() as $action) {
+            if ($action->getId() != $givenAction) continue;
             $this->action = $givenAction;
             $this->actionObject = $action;
 
@@ -134,7 +143,8 @@ class Menu {
     /**
      * @return Action|null
      */
-    public function getActionObject() {
+    public function getActionObject()
+    {
         return $this->actionObject;
     }
 }

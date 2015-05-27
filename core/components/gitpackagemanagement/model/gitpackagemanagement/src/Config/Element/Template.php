@@ -1,12 +1,14 @@
 <?php
 namespace GPM\Config\Element;
 
-class Template extends Element{
+class Template extends Element
+{
     protected $type = 'template';
     protected $extension = 'tpl';
     protected $icon = '';
 
-    public function fromArray($config) {
+    public function fromArray($config)
+    {
         if (isset($config['icon'])) {
             $this->icon = $config['icon'];
         }
@@ -14,7 +16,8 @@ class Template extends Element{
         return parent::fromArray($config);
     }
 
-    public function getIcon() {
+    public function getIcon()
+    {
         return $this->icon;
     }
 }

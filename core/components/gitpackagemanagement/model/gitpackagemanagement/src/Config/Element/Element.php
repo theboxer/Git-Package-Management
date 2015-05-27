@@ -34,8 +34,7 @@ abstract class Element{
         if(isset($config['name'])){
             $this->name = $config['name'];
         }else{
-            $this->config->error->addError('Elements: ' . $this->type . ' - name is not set', true);
-            return false;
+            throw new \Exception('Elements: ' . $this->type . ' - name is not set');
         }
 
         if (isset($config['description'])) {
@@ -49,15 +48,13 @@ abstract class Element{
         }
 
         if (isset($config['properties']) && is_array($config['properties'])) {
-            $propertiesSet = $this->setProperties($config['properties']);
-            if ($propertiesSet === false) return false;
+           $this->setProperties($config['properties']);
         }
 
         if (isset($config['category'])) {
             $currentCategories = array_keys($this->config->getCategories());
             if (!in_array($config['category'], $currentCategories)) {
-                $this->config->error->addError('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist', true);
-                return false;
+                throw new \Exception('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist');
             }
 
             $this->category = $config['category'];
@@ -95,8 +92,7 @@ abstract class Element{
         }
 
         if($exists === false){
-            $this->config->error->addError('Elements: ' . $finalFile . ' - file does not exists', true);
-            return false;
+            throw new \Exception('Elements: ' . $this->type . ' - ' . $finalFile . ' - file does not exists');
         }
 
         $this->filePath = $exists;
@@ -131,7 +127,7 @@ abstract class Element{
             if (isset($property['name'])) {
                 $prop['name'] = $property['name'];
             } else {
-                return false;
+                throw new \Exception('Elements: ' . $this->type . ' - properties: names is required');
             }
 
             if (isset($property['description'])) {

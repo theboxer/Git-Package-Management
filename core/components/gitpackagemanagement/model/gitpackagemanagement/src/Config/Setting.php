@@ -1,7 +1,8 @@
 <?php
 namespace GPM\Config;
 
-class Setting {
+class Setting
+{
     private $modx;
     private $key;
     private $type;
@@ -11,57 +12,62 @@ class Setting {
     /** @var Config $config */
     private $config;
 
-    public function __construct(\modX &$modx, $config) {
+    public function __construct(\modX &$modx, $config)
+    {
         $this->modx =& $modx;
         $this->config = $config;
     }
 
-    public function fromArray($config) {
-        if(isset($config['key'])){
+    public function fromArray($config)
+    {
+        if (isset($config['key'])) {
             $this->key = $config['key'];
-        }else{
-            $this->config->error->addError('Settings - key is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Settings - key is not set');
         }
 
-        if(isset($config['type'])){
+        if (isset($config['type'])) {
             $this->type = $config['type'];
-        }else{
+        } else {
             $this->type = 'textfield';
         }
 
-        if(isset($config['area'])){
+        if (isset($config['area'])) {
             $this->area = $config['area'];
-        }else{
+        } else {
             $this->area = 'default';
         }
 
-        if(isset($config['namespace'])){
+        if (isset($config['namespace'])) {
             $this->namespace = $config['namespace'];
-        }else{
+        } else {
             $this->namespace = $this->config->getLowCaseName();
         }
 
-        if(isset($config['value'])){
+        if (isset($config['value'])) {
             $this->value = $config['value'];
         }
 
         return true;
     }
 
-    public function getNamespace() {
+    public function getNamespace()
+    {
         return $this->namespace;
     }
 
-    public function getArea() {
+    public function getArea()
+    {
         return $this->area;
     }
 
-    public function getKey() {
+    public function getKey()
+    {
         return $this->key;
     }
 
-    public function getNamespacedKey() {
+    public function getNamespacedKey()
+    {
         if ($this->namespace == '') {
             return $this->key;
         }
@@ -69,11 +75,13 @@ class Setting {
         return $this->namespace . '.' . $this->key;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 

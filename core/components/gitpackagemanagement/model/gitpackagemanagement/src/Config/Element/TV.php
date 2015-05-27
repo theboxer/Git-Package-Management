@@ -1,7 +1,8 @@
 <?php
 namespace GPM\Config\Element;
 
-class TV extends Element{
+class TV extends Element
+{
     protected $type = 'TV';
     protected $caption = null;
     protected $inputOptionValues = '';
@@ -13,58 +14,56 @@ class TV extends Element{
     private $inputProperties = array();
     private $outputProperties = array();
 
-    public function fromArray($config) {
-        if(isset($config['caption'])){
+    public function fromArray($config)
+    {
+        if (isset($config['caption'])) {
             $this->caption = $config['caption'];
-        }else{
-            $this->config->error->addError('Elements: ' . $this->type . ' - caption is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Elements: ' . $this->type . ' - caption is not set');
         }
 
-        if(isset($config['inputOptionValues'])){
+        if (isset($config['inputOptionValues'])) {
             $this->inputOptionValues = $config['inputOptionValues'];
         }
 
-        if(isset($config['defaultValue'])){
+        if (isset($config['defaultValue'])) {
             $this->defaultValue = $config['defaultValue'];
         }
 
-        if(isset($config['name'])){
+        if (isset($config['name'])) {
             $this->name = $config['name'];
-        }else{
+        } else {
             $this->name = strtolower($this->caption);
         }
 
-        if(isset($config['type'])){
+        if (isset($config['type'])) {
             $this->inputType = $config['type'];
         }
 
-        if(isset($config['inputProperties'])){
+        if (isset($config['inputProperties'])) {
             $this->inputProperties = $config['inputProperties'];
         }
 
-        if(isset($config['outputProperties'])){
+        if (isset($config['outputProperties'])) {
             $this->outputProperties = $config['outputProperties'];
         }
 
-        if(isset($config['sortOrder'])){
+        if (isset($config['sortOrder'])) {
             $this->sortOrder = $config['sortOrder'];
         }
 
-        if(isset($config['templates'])){
-            if(is_array($config['templates'])){
+        if (isset($config['templates'])) {
+            if (is_array($config['templates'])) {
                 $this->templates = $config['templates'];
-            }else{
-                $this->config->error->addError('Elements: ' . $this->type . ' - templates are not an array', true);
-                return false;
+            } else {
+                throw new \Exception('Elements: ' . $this->type . ' - templates are not an array');
             }
         }
 
         if (isset($config['category'])) {
             $currentCategories = array_keys($this->config->getCategories());
             if (!in_array($config['category'], $currentCategories)) {
-                $this->config->error->addError('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist', true);
-                return false;
+                throw new \Exception('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist');
             }
 
             $this->category = $config['category'];
@@ -76,50 +75,58 @@ class TV extends Element{
     /**
      * @return null
      */
-    public function getCaption() {
+    public function getCaption()
+    {
         return $this->caption;
     }
 
     /**
      * @return string
      */
-    public function getInputOptionValues() {
+    public function getInputOptionValues()
+    {
         return $this->inputOptionValues;
     }
 
     /**
      * @return int
      */
-    public function getSortOrder() {
+    public function getSortOrder()
+    {
         return $this->sortOrder;
     }
 
     /**
      * @return string
      */
-    public function getDefaultValue() {
+    public function getDefaultValue()
+    {
         return $this->defaultValue;
     }
 
     /**
      * @return string
      */
-    public function getInputType() {
+    public function getInputType()
+    {
         return $this->inputType;
     }
 
     /**
      * @return array
      */
-    public function getTemplates() {
+    public function getTemplates()
+    {
         return $this->templates;
     }
 
-    public function getInputProperties() {
+    public function getInputProperties()
+    {
         return $this->inputProperties;
     }
 
-    public function getOutputProperties() {
+    public function getOutputProperties()
+    {
         return $this->outputProperties;
     }
 

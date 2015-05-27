@@ -6,40 +6,40 @@ use GPM\Error\Error;
 class Config
 {
     /** @var \modX $modx */
-    private $modx;
+    protected $modx;
     /** @var \GitPackageManagement $gpm */
-    private $gpm;
+    protected $gpm;
     /** @var string $packagePath */
-    private $packagePath;
+    protected $packagePath;
     /** @var string $name Package name */
-    private $name = null;
+    protected $name = null;
     /** @var string $lowCaseName Package low case name */
-    private $lowCaseName = null;
+    protected $lowCaseName = null;
     /** @var string $author Package author */
-    private $author = null;
+    protected $author = null;
     /** @var string $version Package current version */
-    private $version = null;
+    protected $version = null;
     /** @var string $description Package description */
-    private $description = null;
+    protected $description = null;
     /** @var Action[] $action Array with package's actions */
-    private $actions = array();
+    protected $actions = array();
     /** @var Menu[] $menus Array with package's menus */
-    private $menus = array();
+    protected $menus = array();
     /** @var Setting[] $settings Array with package's settings */
-    private $settings = array();
+    protected $settings = array();
     /** @var Database $database Object with package's database information */
-    private $database = null;
+    protected $database = null;
     /** @var array $extensionPackage Array with extensionPackage information */
-    private $extensionPackage = null;
+    protected $extensionPackage = false;
     /** @var array $elements Array with all elements */
-    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array());
+    protected $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array());
     /** @var Resource[] $resources */
-    private $resources = array();
-    private $dependencies = array();
+    protected $resources = array();
+    protected $dependencies = array();
     /** @var Build $build */
-    private $build = null;
+    protected $build = null;
     /** @var Category[] $categories */
-    private $categories = array();
+    protected $categories = array();
     /** @var Error $error */
     public $error;
 
@@ -63,102 +63,30 @@ class Config
      */
     public function parseConfig($config)
     {
-        if (isset($config['name'])) {
-            $this->name = $config['name'];
-        } else {
-            $this->error->addError('Name is not set', true);
-        }
-
-        if (isset($config['lowCaseName'])) {
-            $this->lowCaseName = $config['lowCaseName'];
-        } else {
-            $this->error->addError('LowCaseName is not set', true);
-        }
-
-        if (isset($config['author'])) {
-            $this->author = $config['author'];
-        } else {
-            $this->error->addError('Author is not set', true);
-        }
-
-        if (isset($config['description'])) {
-            $this->description = $config['description'];
-        } else {
-            $this->description = '';
-        }
-
-        if (isset($config['version'])) {
-            $this->version = $config['version'];
-        } else {
-            $this->error->addError('Version is not set', true);
-        }
+        $this->setGlobals($config);
 
         if ($this->error->hasErrors()) return false;
 
         if (isset($config['package'])) {
-            if (isset($config['package']['actions'])) {
-                $this->setActions($config['package']['actions']);
-            }
-            if (isset($config['package']['menus'])) {
-                $this->setMenus($config['package']['menus']);
-            }
-
-            if (isset($config['package']['systemSettings'])) {
-                $this->setSettings($config['package']['systemSettings']);
-            }
-
-            if (isset($config['package']['elements'])) {
-                if (isset($config['package']['elements']['categories'])) {
-                    $this->setCategories($config['package']['elements']['categories']);
-                }
-
-                if (isset($config['package']['elements']['plugins'])) {
-                    $this->setPluginElements($config['package']['elements']['plugins']);
-                }
-
-                if (isset($config['package']['elements']['snippets'])) {
-                    $this->setSnippetElements($config['package']['elements']['snippets']);
-                }
-
-                if (isset($config['package']['elements']['chunks'])) {
-                    $this->setChunkElements($config['package']['elements']['chunks']);
-                }
-
-                if (isset($config['package']['elements']['templates'])) {
-                    $this->setTemplateElements($config['package']['elements']['templates']);
-                }
-
-                if (isset($config['package']['elements']['tvs'])) {
-                    $this->setTVElements($config['package']['elements']['tvs']);
-                }
-            }
-
-            if (isset($config['package']['resources'])) {
-                $this->setResources($config['package']['resources']);
-            }
+            $this->setPackage($config['package']);
         }
 
         if (isset($config['database'])) {
             $this->setDatabase($config['database']);
         }
 
-        $this->setBuild($config);
+        if (!isset($config['build'])) {
+            $config['build'] = array();
+        }
+
+        $this->setBuild($config['build']);
 
         if (isset($config['dependencies'])) {
             $this->dependencies = $config['dependencies'];
         }
 
         if (isset($config['extensionPackage'])) {
-            if (!isset($config['extensionPackage']['serviceName']) && !isset($config['extensionPackage']['serviceClass'])) {
-                $this->extensionPackage = true;
-            } else if ((!isset($config['extensionPackage']['serviceClass']) && isset($config['extensionPackage']['serviceClass'])) || (isset($config['extensionPackage']['serviceClass']) && !isset($config['extensionPackage']['serviceClass']))) {
-                $this->extensionPackage = false;
-            } else {
-                $this->extensionPackage['serviceName'] = $config['extensionPackage']['serviceName'];
-                $this->extensionPackage['serviceClass'] = $config['extensionPackage']['serviceClass'];
-            }
-        } else {
-            $this->extensionPackage = false;
+            $this->setExtensionPackage($config['extensionPackage']);
         }
 
         return !$this->error->hasErrors();
@@ -173,7 +101,13 @@ class Config
     {
         foreach ($plugins as $plugin) {
             $p = new Element\Plugin($this->modx, $this);
-            if ($p->fromArray($plugin) == false) return false;
+
+            try {
+                $p->fromArray($plugin);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->elements['plugins'][$p->getName()] = $p;
         }
 
@@ -189,7 +123,13 @@ class Config
     {
         foreach ($categories as $category) {
             $c = new Category($this->modx, $this);
-            if ($c->fromArray($category) == false) return false;
+
+            try {
+                $c->fromArray($category);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->categories[$c->getName()] = $c;
         }
 
@@ -205,7 +145,13 @@ class Config
     {
         foreach ($snippets as $snippet) {
             $p = new Element\Snippet($this->modx, $this);
-            if ($p->fromArray($snippet) == false) return false;
+
+            try {
+                $p->fromArray($snippet);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->elements['snippets'][$p->getName()] = $p;
         }
 
@@ -221,7 +167,13 @@ class Config
     {
         foreach ($chunks as $chunk) {
             $p = new Element\Chunk($this->modx, $this);
-            if ($p->fromArray($chunk) == false) return false;
+
+            try {
+                $p->fromArray($chunk);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->elements['chunks'][$p->getName()] = $p;
         }
 
@@ -237,7 +189,13 @@ class Config
     {
         foreach ($templates as $template) {
             $p = new Element\Template($this->modx, $this);
-            if ($p->fromArray($template) == false) return false;
+
+            try {
+                $p->fromArray($template);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->elements['templates'][$p->getName()] = $p;
         }
 
@@ -253,7 +211,13 @@ class Config
     {
         foreach ($tvs as $tv) {
             $p = new Element\TV($this->modx, $this);
-            if ($p->fromArray($tv) == false) return false;
+
+            try {
+                $p->fromArray($tv);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->elements['tvs'][$p->getName()] = $p;
         }
 
@@ -269,7 +233,13 @@ class Config
     {
         foreach ($actions as $action) {
             $a = new Action($this->modx, $this);
-            if ($a->fromArray($action) == false) return false;
+
+            try {
+                $a->fromArray($action);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+
             $this->actions[] = $a;
         }
 
@@ -285,7 +255,13 @@ class Config
     {
         foreach ($menus as $menu) {
             $m = new Menu($this->modx, $this);
-            if ($m->fromArray($menu) == false) return false;
+            
+            try {
+                $m->fromArray($menu);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+            
             $this->menus[] = $m;
         }
 
@@ -301,7 +277,13 @@ class Config
     {
         foreach ($settings as $setting) {
             $s = new Setting($this->modx, $this);
-            if ($s->fromArray($setting) == false) return false;
+            
+            try {
+                $s->fromArray($setting);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+            
             $this->settings[$s->getNamespacedKey()] = $s;
         }
 
@@ -316,20 +298,30 @@ class Config
     private function setDatabase($database)
     {
         $this->database = new Database($this->modx);
-        if ($this->database->fromArray($database) == false) return false;
+        
+        try {
+            $this->database->fromArray($database);
+        } catch (\Exception $e) {
+            $this->error->addError($e->getMessage(), true);
+        }
 
         return true;
     }
 
     /**
      * Set build options
+     * @param $build
      * @return bool
      */
-    private function setBuild($config)
+    private function setBuild($build)
     {
-        $build = isset($config['build']) ? $config['build'] : array();
         $this->build = new Build($this->modx, $this);
-        if ($this->build->fromArray($build) == false) return false;
+        
+        try {
+            $this->build->fromArray($build);
+        } catch (\Exception $e) {
+            $this->error->addError($e->getMessage(), true);
+        }
 
         return true;
     }
@@ -343,7 +335,13 @@ class Config
     {
         foreach ($resources as $resource) {
             $p = new Resource($this->modx, $this);
-            if ($p->fromArray($resource) == false) return false;
+            
+            try {
+                $p->fromArray($resource);
+            } catch (\Exception $e) {
+                $this->error->addError($e->getMessage(), true);
+            }
+            
             $this->resources[] = $p;
         }
 
@@ -523,5 +521,103 @@ class Config
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * @param $elements
+     * @throws \Exception
+     */
+    protected function setElements($elements)
+    {
+        if (isset($elements['categories'])) {
+            $this->setCategories($elements['categories']);
+        }
+
+        if (isset($elements['plugins'])) {
+            $this->setPluginElements($elements['plugins']);
+        }
+
+        if (isset($elements['snippets'])) {
+            $this->setSnippetElements($elements['snippets']);
+        }
+
+        if (isset($elements['chunks'])) {
+            $this->setChunkElements($elements['chunks']);
+        }
+
+        if (isset($elements['templates'])) {
+            $this->setTemplateElements($elements['templates']);
+        }
+
+        if (isset($elements['tvs'])) {
+            $this->setTVElements($elements['tvs']);
+        }
+    }
+
+    protected function setPackage($package)
+    {
+        if (isset($package['actions'])) {
+            $this->setActions($package['actions']);
+        }
+        if (isset($package['menus'])) {
+            $this->setMenus($package['menus']);
+        }
+
+        if (isset($package['systemSettings'])) {
+            $this->setSettings($package['systemSettings']);
+        }
+
+        if (isset($package['elements'])) {
+            $this->setElements($package['elements']);
+        }
+
+        if (isset($package['resources'])) {
+            $this->setResources($package['resources']);
+        }
+    }
+
+    protected function setExtensionPackage($extensionPackage)
+    {
+        if (!isset($extensionPackage['serviceName']) && !isset($extensionPackage['serviceClass'])) {
+            $this->extensionPackage = true;
+        } else if ((!isset($extensionPackage['serviceClass']) && isset($extensionPackage['serviceClass'])) || (isset($extensionPackage['serviceClass']) && !isset($extensionPackage['serviceClass']))) {
+            $this->extensionPackage = false;
+        } else {
+            $this->extensionPackage['serviceName'] = $extensionPackage['serviceName'];
+            $this->extensionPackage['serviceClass'] = $extensionPackage['serviceClass'];
+        }
+    }
+
+    protected function setGlobals($config)
+    {
+        if (isset($config['name'])) {
+            $this->name = $config['name'];
+        } else {
+            $this->error->addError('Name is not set', true);
+        }
+
+        if (isset($config['lowCaseName'])) {
+            $this->lowCaseName = $config['lowCaseName'];
+        } else {
+            $this->error->addError('LowCaseName is not set', true);
+        }
+
+        if (isset($config['author'])) {
+            $this->author = $config['author'];
+        } else {
+            $this->error->addError('Author is not set', true);
+        }
+
+        if (isset($config['description'])) {
+            $this->description = $config['description'];
+        } else {
+            $this->description = '';
+        }
+
+        if (isset($config['version'])) {
+            $this->version = $config['version'];
+        } else {
+            $this->error->addError('Version is not set', true);
+        }
     }
 }

@@ -17,18 +17,16 @@ class Category
 
     public function fromArray($config)
     {
-        if(isset($config['name'])){
+        if (isset($config['name'])) {
             $this->name = $config['name'];
-        }else{
-            $this->config->error->addError('Categories - name is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Categories - name is not set');
         }
 
-        if(isset($config['parent'])) {
+        if (isset($config['parent'])) {
             $currentCategories = array_keys($this->config->getCategories());
             if (!in_array($config['parent'], $currentCategories)) {
-                $this->config->error->addError('Categories - parent category does not exist', true);
-                return false;
+                throw new \Exception('Categories - parent category does not exist');
             }
 
             $this->parent = $config['parent'];

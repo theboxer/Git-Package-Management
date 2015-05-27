@@ -1,7 +1,8 @@
 <?php
 namespace GPM\Config;
 
-class Action {
+class Action
+{
     private $modx;
     /* @var $config Config */
     private $config;
@@ -11,64 +12,69 @@ class Action {
     private $langTopics;
     private $assets;
 
-    public function __construct(\modX &$modx, $gitPackageConfig) {
+    public function __construct(\modX &$modx, $gitPackageConfig)
+    {
         $this->modx =& $modx;
         $this->config = $gitPackageConfig;
     }
 
-    public function fromArray($config) {
-        if(isset($config['id'])){
+    public function fromArray($config)
+    {
+        if (isset($config['id'])) {
             $this->id = $config['id'];
-        }else{
-            $this->config->error->addError('Actions - id is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Actions - id is not set');
         }
 
-        if(isset($config['controller'])){
+        if (isset($config['controller'])) {
             $this->controller = $config['controller'];
-        }else{
-            $this->config->error->addError('Actions - controller is not set', true);
-            return false;
+        } else {
+            throw new \Exception('Actions - controller is not set');
         }
 
-        if(isset($config['hasLayout'])){
+        if (isset($config['hasLayout'])) {
             $this->hasLayout = $config['hasLayout'];
-        }else{
+        } else {
             $this->hasLayout = 1;
         }
 
-        if(isset($config['langTopics'])){
+        if (isset($config['langTopics'])) {
             $this->langTopics = $config['langTopics'];
-        }else{
-            $this->langTopics = $this->config->getLowCaseName().':default';
+        } else {
+            $this->langTopics = $this->config->getLowCaseName() . ':default';
         }
 
-        if(isset($config['assets'])){
+        if (isset($config['assets'])) {
             $this->assets = $config['assets'];
-        }else{
+        } else {
             $this->assets = '';
         }
 
         return true;
     }
 
-    public function getAssets() {
+    public function getAssets()
+    {
         return $this->assets;
     }
 
-    public function getController() {
+    public function getController()
+    {
         return $this->controller;
     }
 
-    public function getHasLayout() {
+    public function getHasLayout()
+    {
         return $this->hasLayout;
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getLangTopics() {
+    public function getLangTopics()
+    {
         return $this->langTopics;
     }
 

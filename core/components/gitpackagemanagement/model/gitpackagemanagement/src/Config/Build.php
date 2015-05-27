@@ -1,7 +1,8 @@
 <?php
 namespace GPM\Config;
 
-class Build {
+class Build
+{
     private $modx;
     /** @var Config $config */
     private $config;
@@ -14,40 +15,42 @@ class Build {
     private $setupOptions = array();
     private $attributes = array();
 
-    public function __construct(\modX &$modx, Config $config) {
+    public function __construct(\modX &$modx, Config $config)
+    {
         $this->modx =& $modx;
         $this->resolver = new Build\Resolver($this->modx);
         $this->config = $config;
     }
 
-    public function fromArray($config) {
-        if(isset($config['resolver'])){
+    public function fromArray($config)
+    {
+        if (isset($config['resolver'])) {
             $this->resolver->fromArray($config['resolver']);
         }
 
-        if(isset($config['readme'])){
+        if (isset($config['readme'])) {
             $this->readme = $config['readme'];
         }
 
-        if(isset($config['license'])){
+        if (isset($config['license'])) {
             $this->license = $config['license'];
         }
 
-        if(isset($config['changelog'])){
+        if (isset($config['changelog'])) {
             $this->changelog = $config['changelog'];
         }
 
-        if(isset($config['setupOptions'])){
+        if (isset($config['setupOptions'])) {
             $this->setupOptions = $config['setupOptions'];
         }
 
-        if(isset($config['schemaPath'])){
+        if (isset($config['schemaPath'])) {
             $this->schemaPath = '/' . ltrim($config['schemaPath'], '/');
         } else {
             $this->schemaPath = '/core/components/' . $this->config->getLowCaseName() . '/' . 'model/schema/' . $this->config->getLowCaseName() . '.mysql.schema.xml';
         }
 
-        if(isset($config['attributes']) && is_array($config['attributes'])){
+        if (isset($config['attributes']) && is_array($config['attributes'])) {
             foreach ($config['attributes'] as $key => $attributes) {
                 if (is_array($attributes)) {
                     $this->attributes[$key] = $attributes;
@@ -61,74 +64,85 @@ class Build {
     /**
      * @return Build\Resolver
      */
-    public function getResolver() {
+    public function getResolver()
+    {
         return $this->resolver;
     }
 
     /**
      * @param Build\Resolver $resolver
      */
-    public function setResolver($resolver) {
+    public function setResolver($resolver)
+    {
         $this->resolver = $resolver;
     }
 
     /**
      * @return string
      */
-    public function getReadme() {
+    public function getReadme()
+    {
         return $this->readme;
     }
 
     /**
      * @param string $readme
      */
-    public function setReadme($readme) {
+    public function setReadme($readme)
+    {
         $this->readme = $readme;
     }
 
     /**
      * @return string
      */
-    public function getLicense() {
+    public function getLicense()
+    {
         return $this->license;
     }
 
     /**
      * @param string $license
      */
-    public function setLicense($license) {
+    public function setLicense($license)
+    {
         $this->license = $license;
     }
 
     /**
      * @return string
      */
-    public function getChangeLog() {
+    public function getChangeLog()
+    {
         return $this->changelog;
     }
 
     /**
      * @param string $changeLog
      */
-    public function setChangeLog($changeLog) {
+    public function setChangeLog($changeLog)
+    {
         $this->changeLog = $changeLog;
     }
 
     /**
      * @return array
      */
-    public function getSetupOptions() {
+    public function getSetupOptions()
+    {
         return $this->setupOptions;
     }
 
     /**
      * @param array $setupOptions
      */
-    public function setSetupOptions($setupOptions) {
+    public function setSetupOptions($setupOptions)
+    {
         $this->setupOptions = $setupOptions;
     }
 
-    public function getAttributes(){
+    public function getAttributes()
+    {
         return $this->attributes;
     }
 
