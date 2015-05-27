@@ -8,7 +8,7 @@ nbproject
 assets/components/gitpackagemanagement/packages/*
 !assets/components/gitpackagemanagement/packages/.gitignore
 
-cli/vendor
+core/components/gitpackagemanagement/model/vendor
 _build/site
 
 _packages/*.*

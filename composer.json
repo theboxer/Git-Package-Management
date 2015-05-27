@@ -1,0 +1,27 @@
+{
+  "name": "theboxer/git-package-management",
+  "description": "Git Package Management for MODX",
+  "minimum-stability": "dev",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "John Peca",
+      "email": "pecajan@gmail.com"
+    }
+  ],
+  "config": {
+    "vendor-dir": "core/components/gitpackagemanagement/model/vendor"
+  },
+  "require": {
+    "php": ">=5.4",
+    "symfony/console": "~2.7",
+    "symfony/filesystem": "~2.7"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "GPM\\": "core/components/gitpackagemanagement/model/gitpackagemanagement/src/"
+    }
+  }
+}

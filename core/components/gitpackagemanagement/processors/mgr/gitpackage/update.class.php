@@ -1,5 +1,4 @@
 <?php
-require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/model/gitpackagemanagement/gpc/gitpackageconfig.class.php';
 /**
  * Update a config file in database
  *

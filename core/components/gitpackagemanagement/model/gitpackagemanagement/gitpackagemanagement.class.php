@@ -41,7 +41,7 @@ class GitPackageManagement {
 
         $this->modx->addPackage('gitpackagemanagement', $this->getOption('modelPath'));
         $this->modx->lexicon->load('gitpackagemanagement:default');
-
+        $this->autoload();
     }
 
     /**
@@ -208,5 +208,10 @@ class GitPackageManagement {
         }
 
         return $category->id;
+    }
+
+    protected function autoload()
+    {
+        require_once $this->getOption('modelPath') . 'vendor/autoload.php';
     }
 }
