@@ -28,7 +28,7 @@ abstract class Element
     protected $filePath;
     
     protected $section = 'Elements';
-    protected $required = ['name'];
+    protected $validations = ['name', 'category:categoryExists'];
 
     public function __construct(Config $config)
     {
@@ -56,11 +56,6 @@ abstract class Element
         }
 
         if (isset($config['category'])) {
-            $currentCategories = array_keys($this->config->getCategories());
-            if (!in_array($config['category'], $currentCategories)) {
-                throw new \Exception('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist');
-            }
-
             $this->category = $config['category'];
         }
 
@@ -97,7 +92,7 @@ abstract class Element
         }
 
         if ($exists === false) {
-            throw new \Exception('Elements: ' . $this->type . ' - ' . $finalFile . ' - file does not exists');
+            throw new \Exception($this->generateMsg('file', $finalFile . ' file does not exists'));
         }
 
         $this->filePath = $exists;

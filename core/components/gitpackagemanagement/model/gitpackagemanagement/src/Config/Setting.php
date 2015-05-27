@@ -16,7 +16,7 @@ class Setting
     private $config;
     
     protected $section = 'Settings';
-    protected $required = ['key'];
+    protected $validations = ['key'];
 
     public function __construct($config)
     {

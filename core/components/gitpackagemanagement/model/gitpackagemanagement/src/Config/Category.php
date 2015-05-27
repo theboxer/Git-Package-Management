@@ -13,7 +13,7 @@ class Category
     protected $parent = null;
 
     protected $section = 'Categories';
-    protected $required = ['name'];
+    protected $validations = ['name', 'parent:categoryExists'];
 
     public function __construct($config)
     {
@@ -27,12 +27,6 @@ class Category
         $this->name = $config['name'];
 
         if (isset($config['parent'])) {
-            $currentCategories = array_keys($this->config->getCategories());
-            
-            if (!in_array($config['parent'], $currentCategories)) {
-                throw new \Exception('Categories - parent category does not exist');
-            }
-
             $this->parent = $config['parent'];
         }
 

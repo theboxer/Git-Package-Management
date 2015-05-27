@@ -15,7 +15,7 @@ final class TV extends Element
     protected $outputProperties = [];
 
     protected $section = 'Elements: TV';
-    protected $required = ['caption'];
+    protected $validations = ['caption', 'templates:array', 'category:categoryExists'];
 
     public function fromArray($config)
     {
@@ -54,19 +54,10 @@ final class TV extends Element
         }
 
         if (isset($config['templates'])) {
-            if (is_array($config['templates'])) {
-                $this->templates = $config['templates'];
-            } else {
-                throw new \Exception('Elements: ' . $this->type . ' - templates are not an array');
-            }
+            $this->templates = $config['templates'];
         }
 
         if (isset($config['category'])) {
-            $currentCategories = array_keys($this->config->getCategories());
-            if (!in_array($config['category'], $currentCategories)) {
-                throw new \Exception('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist');
-            }
-
             $this->category = $config['category'];
         }
 

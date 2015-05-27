@@ -41,7 +41,7 @@ class Resource
     protected $setAsHome = 0;
 
     protected $section = 'Resources';
-    protected $required = ['pagetitle'];
+    protected $validations = ['pagetitle'];
 
     public function __construct($config, \modX &$modx)
     {

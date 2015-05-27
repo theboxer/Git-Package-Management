@@ -15,7 +15,7 @@ class Action
     protected $assets = '';
     
     protected $section = 'Actions';
-    protected $required = ['id', 'controller'];
+    protected $validations = ['id', 'controller'];
 
     public function __construct($config)
     {

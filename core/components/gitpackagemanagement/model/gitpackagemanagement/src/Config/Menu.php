@@ -21,7 +21,7 @@ class Menu
     protected $actionObject = null;
     
     protected $section = 'Menus';
-    protected $required = ['text', 'action'];
+    protected $validations = ['text', 'action'];
 
     public function __construct($config)
     {
