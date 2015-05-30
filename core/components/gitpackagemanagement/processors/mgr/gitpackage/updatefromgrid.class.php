@@ -1,12 +1,15 @@
 <?php
-class GitPackageManagementUpdatePackageFromGridProcessor extends modObjectUpdateProcessor {
+
+class GitPackageManagementUpdatePackageFromGridProcessor extends modObjectUpdateProcessor
+{
     public $classKey = 'GitPackage';
     public $languageTopics = array('gitpackagemanagement:default');
     public $objectType = 'gitpackagemanagement.package';
     /** @var GitPackage $object */
     public $object;
 
-    public function initialize() {
+    public function initialize()
+    {
         $data = $this->getProperty('data');
         if (empty($data)) return $this->modx->lexicon('invalid_data');
         $data = $this->modx->fromJSON($data);
@@ -16,7 +19,8 @@ class GitPackageManagementUpdatePackageFromGridProcessor extends modObjectUpdate
         return parent::initialize();
     }
 
-    public function beforeSave() {
+    public function beforeSave()
+    {
         $key = trim($this->getProperty('key', ''));
         $this->object->set('key', $key);
 

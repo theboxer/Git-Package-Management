@@ -1,16 +1,18 @@
 <?php
+
 /**
  * Clone git repository and install it
  *
  * @package gitpackagemanagement
  * @subpackage processors
  */
-class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
+class GitPackageManagementCreateProcessor extends modObjectCreateProcessor
+{
     public $classKey = 'GitPackage';
     public $languageTopics = array('gitpackagemanagement:default');
     public $objectType = 'gitpackagemanagement.package';
 
-    /** @var GitPackageConfig $config **/
+    /** @var \GPM\Config\Config $config * */
     private $config = null;
 
     /** @var string $packageCorePath */
@@ -27,12 +29,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
     private $categoriesMap = array();
 
-   /** @var bool $installFromDirectory */
+    /** @var bool $installFromDirectory */
     private $installFromDirectory = false;
 
     private $resourceMap = array();
 
-    public function beforeSave() {
+    public function beforeSave()
+    {
 //        $url = $this->getProperty('url');
         $folderName = $this->getProperty('folderName');
 
@@ -40,19 +43,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
          * Check if is set packages dir in MODx system settings
          */
         $packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/');
-        if($packagePath == null){
+        if ($packagePath == null) {
             $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
-            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'COMPLETED');
             return false;
         }
-        $packagePath .=  '/';
+        $packagePath .= '/';
 
         /**
          * Check if is filled folder name
          */
         if (empty($folderName)) {
-            $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
         }
 
@@ -60,27 +63,27 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
          * Check if build config and core config are writable
          */
         if (!$this->checkConfig($packagePath . $folderName . '/config.core.php')) {
-            $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $packagePath . $folderName)));
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $packagePath . $folderName)));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $packagePath . $folderName)));
         }
 
         if (!$this->checkConfig($packagePath . $folderName . '/_build/build.config.php')) {
-            $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
+            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
         }
 
         /**
          * If no error was added in block above, cloning and installation part begins
          */
-        if(!$this->hasErrors()){
+        if (!$this->hasErrors()) {
             /**
              * Parse config file to objects
              */
-            if($this->setConfig($packagePath . $folderName) == false) {
+            if ($this->setConfig($packagePath . $folderName) == false) {
                 return false;
             }
 
-            /** @var string packageCorePath Path to core of cloned repository*/
+            /** @var string packageCorePath Path to core of cloned repository */
             $this->packageCorePath = $packagePath . $folderName . "/core/components/" . $this->config->getLowCaseName() . "/";
             $this->packageCorePath = str_replace('\\', '/', $this->packageCorePath);
 
@@ -89,7 +92,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->packageAssetsPath = str_replace('\\', '/', $this->packageAssetsPath);
 
             /** @var string $packagesUrl Base url for packages directory */
-            $packagesUrl = $this->modx->getOption('gitpackagemanagement.packages_base_url',null,null);
+            $packagesUrl = $this->modx->getOption('gitpackagemanagement.packages_base_url', null, null);
 
             /** @var string packageAssetsUrl URL of assets of cloned repository */
             $this->packageAssetsUrl = $packagesUrl . $folderName . '/assets/components/' . $this->config->getLowCaseName() . '/';
@@ -110,7 +113,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->object->set('dir_name', $folderName);
         }
 
-        $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+        $this->modx->log(modX::LOG_LEVEL_INFO, 'COMPLETED');
 
         return parent::beforeSave();
     }
@@ -120,20 +123,21 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @param $package string Path to folder of cloned repository
      * @return bool
      */
-    private function setConfig($package){
+    private function setConfig($package)
+    {
         $configFile = $package . $this->modx->gitpackagemanagement->configPath;
-        if(!file_exists($configFile)){
+        if (!file_exists($configFile)) {
             $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf'));
 
             return false;
         }
 
         $configContent = $this->modx->fromJSON(file_get_contents($configFile));
-        $this->config = new GitPackageConfig($this->modx, $package);
-        if($this->config->parseConfig($configContent) == false) {
+        $this->config = new \GPM\Config\Config($this->modx, $package);
+        if ($this->config->parseConfig($configContent) == false) {
             $this->addFieldError('folderName', $this->modx->lexicon('Config file is invalid.'));
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Config file is invalid.');
-            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'COMPLETED');
 
             return false;
         }
@@ -147,7 +151,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $this->modx->log(modX::LOG_LEVEL_ERROR, 'Package ' . $dependency . ' not found!');
             }
 
-            $this->modx->log(modX::LOG_LEVEL_INFO,'COMPLETED');
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'COMPLETED');
             return false;
         }
 
@@ -162,10 +166,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Create config.core.php and build.config.php
      * @param $package string Path to folder of cloned repository
      */
-    private function createConfigFiles($package){
+    private function createConfigFiles($package)
+    {
         $coreConfigContent = "<?php\n" .
-                             "define('MODX_CORE_PATH', '".str_replace('\\', '\\\\', MODX_CORE_PATH)."');\n" .
-                             "define('MODX_CONFIG_KEY', '".MODX_CONFIG_KEY."');";
+            "define('MODX_CORE_PATH', '" . str_replace('\\', '\\\\', MODX_CORE_PATH) . "');\n" .
+            "define('MODX_CONFIG_KEY', '" . MODX_CONFIG_KEY . "');";
         file_put_contents($package . '/config.core.php', $coreConfigContent);
 
         $this->modx->log(modX::LOG_LEVEL_INFO, 'config.core.php file created.');
@@ -175,7 +180,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * Install package from $package folder
      * @param $package string Path to folder of cloned repository
      */
-    private function installPackage($package){
+    private function installPackage($package)
+    {
         $this->createConfigFiles($package);
         $this->createNamespace();
         $this->createMenusAndActions();
@@ -190,18 +196,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Add extension package if extension package block is in config.json
      */
-    private function addExtensionPackage(){
+    private function addExtensionPackage()
+    {
         $extPackage = $this->config->getExtensionPackage();
-        if($extPackage !== false){
+        if ($extPackage !== false) {
             $modelPath = $this->packageCorePath . 'model/';
             $modelPath = str_replace('\\', '/', $modelPath);
-            if($extPackage === true){
-                $this->modx->addExtensionPackage($this->config->getLowCaseName(),$modelPath);
-            }else{
-                $this->modx->addExtensionPackage($this->config->getLowCaseName(),$modelPath, array(
-                      'serviceName' => $extPackage['serviceName'],
-                      'serviceClass' => $extPackage['serviceClass']
-                 ));
+            if ($extPackage === true) {
+                $this->modx->addExtensionPackage($this->config->getLowCaseName(), $modelPath);
+            } else {
+                $this->modx->addExtensionPackage($this->config->getLowCaseName(), $modelPath, array(
+                    'serviceName' => $extPackage['serviceName'],
+                    'serviceClass' => $extPackage['serviceClass']
+                ));
             }
         }
     }
@@ -209,38 +216,40 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create namespace with lowCaseName (from config)
      */
-    private function createNamespace(){
+    private function createNamespace()
+    {
         $ns = $this->modx->newObject('modNamespace');
         $ns->set('name', $this->config->getLowCaseName());
         $ns->set('path', $this->packageCorePath);
         $ns->set('assets_path', $this->packageAssetsPath);
         $ns->save();
 
-        $this->modx->log(modX::LOG_LEVEL_INFO, 'Namespace '. $this->config->getLowCaseName() . ' created');
+        $this->modx->log(modX::LOG_LEVEL_INFO, 'Namespace ' . $this->config->getLowCaseName() . ' created');
     }
 
     /**
      * Create actions, if actions block is in config
      * Create menus, if menus block is in config and action used in menu has been already created
      */
-    private function createMenusAndActions(){
+    private function createMenusAndActions()
+    {
         $actions = array();
         $menus = array();
 
         /**
          * Create actions if any
          */
-        if(count($this->config->getActions()) > 0){
-            foreach($this->config->getActions() as $act){
+        if (count($this->config->getActions()) > 0) {
+            foreach ($this->config->getActions() as $act) {
                 /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
-                        'namespace' => $this->config->getLowCaseName(),
-                        'controller' => $act->getController(),
-                        'haslayout' => $act->getHasLayout(),
-                        'lang_topics' => $act->getLangTopics(),
-                        'assets' => $act->getAssets(),
-                   ),'',true,true);
+                    'namespace' => $this->config->getLowCaseName(),
+                    'controller' => $act->getController(),
+                    'haslayout' => $act->getHasLayout(),
+                    'lang_topics' => $act->getLangTopics(),
+                    'assets' => $act->getAssets(),
+                ), '', true, true);
                 $actions[$act->getId()]->save();
             }
 
@@ -250,19 +259,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         /**
          * Crete menus if any
          */
-        if(count($this->config->getMenus()) > 0){
-            foreach($this->config->getMenus() as $i => $men){
+        if (count($this->config->getMenus()) > 0) {
+            foreach ($this->config->getMenus() as $i => $men) {
                 /** @var modMenu[] $menus */
                 $menus[$i] = $this->modx->newObject('modMenu');
                 $menus[$i]->fromArray(array(
-                          'text' => $men->getText(),
-                          'parent' => $men->getParent(),
-                          'description' => $men->getDescription(),
-                          'icon' => $men->getIcon(),
-                          'menuindex' => $men->getMenuIndex(),
-                          'params' => $men->getParams(),
-                          'handler' => $men->getHandler(),
-                     ),'',true,true);
+                    'text' => $men->getText(),
+                    'parent' => $men->getParent(),
+                    'description' => $men->getDescription(),
+                    'icon' => $men->getIcon(),
+                    'menuindex' => $men->getMenuIndex(),
+                    'params' => $men->getParams(),
+                    'handler' => $men->getHandler(),
+                ), '', true, true);
 
                 if (isset($actions[$men->getAction()])) {
                     $menus[$i]->addOne($actions[$men->getAction()]);
@@ -281,13 +290,14 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create system settings, core_path and assets_url are created automatically
      */
-    private function createSystemSettings() {
+    private function createSystemSettings()
+    {
         $this->createSystemSetting($this->config->getLowCaseName() . '.core_path', $this->packageCorePath, 'textfield', 'Git Package Management Settings');
         $this->createSystemSetting($this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath, 'textfield', 'Git Package Management Settings');
         $this->createSystemSetting($this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl, 'textfield', 'Git Package Management Settings');
 
-        /** @var $setting GitPackageConfigSetting */
-        foreach($this->config->getSettings() as $setting){
+        /** @var $setting \GPM\Config\Setting */
+        foreach ($this->config->getSettings() as $setting) {
             $this->createSystemSetting($setting->getNamespacedKey(), $setting->getValue(), $setting->getType(), $setting->getArea());
         }
 
@@ -302,9 +312,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @param string $xtype string
      * @param string $area string
      */
-    private function createSystemSetting($key, $value, $xtype = 'textfield', $area = 'default'){
-        $ct = $this->modx->getObject('modSystemSetting',array('key' => $key));
-        if (!$ct){
+    private function createSystemSetting($key, $value, $xtype = 'textfield', $area = 'default')
+    {
+        $ct = $this->modx->getObject('modSystemSetting', array('key' => $key));
+        if (!$ct) {
             /** @var modSystemSetting $setting */
             $setting = $this->modx->newObject('modSystemSetting');
             $setting->set('key', $key);
@@ -313,7 +324,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $setting->set('area', $area);
             $setting->set('xtype', $xtype);
             $setting->save();
-        }else{
+        } else {
             $ct->set('value', $value);
             $ct->set('namespace', $this->config->getLowCaseName());
             $ct->set('area', $area);
@@ -325,9 +336,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create tables in database, if database block is in config
      */
-    private function createTables() {
-        if($this->config->getDatabase() != null){
-            $modelPath = $this->packageCorePath.'model/';
+    private function createTables()
+    {
+        if ($this->config->getDatabase() != null) {
+            $modelPath = $this->packageCorePath . 'model/';
             $this->modx->addPackage($this->config->getLowCaseName(), $modelPath, $this->config->getDatabase()->getPrefix());
 
             foreach ($this->config->getDatabase()->getSimpleObjects() as $simpleObject) {
@@ -337,7 +349,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $manager = $this->modx->getManager();
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating tables:');
 
-            foreach($this->config->getDatabase()->getTables() as $table){
+            foreach ($this->config->getDatabase()->getTables() as $table) {
                 $manager->createObjectContainer($table);
             }
         }
@@ -346,7 +358,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create category. Create plugins, chunks and snippets and insert all of them to created category.
      */
-    private function createElements(){
+    private function createElements()
+    {
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements started');
         $this->createCategories();
         $this->createPlugins();
@@ -360,9 +373,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create categories for elements
      */
-    private function createCategories() {
+    private function createCategories()
+    {
         $category = $this->modx->getObject('modCategory', array('category' => $this->config->getName()));
-        if(!$category){
+        if (!$category) {
             $category = $this->modx->newObject('modCategory');
             $category->set('category', $this->config->getName());
             $category->save();
@@ -370,7 +384,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
         $this->category = $category;
 
-        /** @var GitPackageConfigCategory[] $categories */
+        /** @var \GPM\Config\Category[] $categories */
         $categories = $this->config->getCategories();
         foreach ($categories as $category) {
             $categoryObject = $this->modx->newObject('modCategory');
@@ -399,12 +413,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create plugins if any
      */
-    private function createPlugins(){
-        /** @var GitPackageConfigElementPlugin[] $plugins */
+    private function createPlugins()
+    {
+        /** @var \GPM\Config\Element\Plugin[] $plugins */
         $plugins = $this->config->getElements('plugins');
-        if(count($plugins) > 0){
+        if (count($plugins) > 0) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating plugins:');
-            foreach($plugins as $plugin){
+            foreach ($plugins as $plugin) {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('description', $plugin->getDescription());
@@ -435,13 +450,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
                 $events = array();
 
-                foreach($plugin->getEvents() as $event){
-                    $events[$event]= $this->modx->newObject('modPluginEvent');
+                foreach ($plugin->getEvents() as $event) {
+                    $events[$event] = $this->modx->newObject('modPluginEvent');
                     $events[$event]->fromArray(array(
-                          'event' => $event,
-                          'priority' => 0,
-                          'propertyset' => 0,
-                     ),'',true,true);
+                        'event' => $event,
+                        'priority' => 0,
+                        'propertyset' => 0,
+                    ), '', true, true);
                 }
 
                 $pluginObject->addMany($events);
@@ -455,12 +470,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create snippets if any
      */
-    private function createSnippets(){
-        /** @var GitPackageConfigElementSnippet[] $snippets */
+    private function createSnippets()
+    {
+        /** @var \GPM\Config\Element\Snippet[] $snippets */
         $snippets = $this->config->getElements('snippets');
-        if(count($snippets) > 0){
+        if (count($snippets) > 0) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating snippets:');
-            foreach($snippets as $snippet){
+            foreach ($snippets as $snippet) {
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
                 $snippetObject->set('description', $snippet->getDescription());
@@ -498,12 +514,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create chunks if any
      */
-    private function createChunks(){
-        /** @var GitPackageConfigElementChunk[] $chunks */
+    private function createChunks()
+    {
+        /** @var \GPM\Config\Element\Chunk[] $chunks */
         $chunks = $this->config->getElements('chunks');
-        if(count($chunks) > 0){
+        if (count($chunks) > 0) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating chunks:');
-            foreach($chunks as $chunk){
+            foreach ($chunks as $chunk) {
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $chunk->getName());
                 $chunkObject->set('description', $chunk->getDescription());
@@ -534,14 +551,15 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create templates if any
      */
-    private function createTemplates(){
-        /** @var GitPackageConfigElementTemplate[] $templates */
+    private function createTemplates()
+    {
+        /** @var \GPM\Config\Element\Template[] $templates */
         $templates = $this->config->getElements('templates');
-        if(count($templates) > 0){
+        if (count($templates) > 0) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating templates:');
-            foreach($templates as $template){
+            foreach ($templates as $template) {
                 $templatesObject = $this->modx->newObject('modTemplate');
-                $templatesObject->set('templatename', $template->getName());                
+                $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('description', $template->getDescription());
                 $templatesObject->set('static', 1);
                 $templatesObject->set('icon', $template->getIcon());
@@ -571,12 +589,13 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Create tvs if any
      */
-    private function createTVs(){
-        /** @var GitPackageConfigElementTV[] $tvs */
+    private function createTVs()
+    {
+        /** @var \GPM\Config\Element\TV[] $tvs */
         $tvs = $this->config->getElements('tvs');
-        if(count($tvs) > 0){
+        if (count($tvs) > 0) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating TVs:');
-            foreach($tvs as $tv){
+            foreach ($tvs as $tv) {
                 /** @var modTemplateVar $tvObject */
                 $tvObject = $this->modx->newObject('modTemplateVar');
                 $tvObject->set('name', $tv->getName());
@@ -602,19 +621,19 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
                 $inputProperties = $tv->getInputProperties();
                 if (!empty($inputProperties)) {
-                    $tvObject->set('input_properties',$inputProperties);
+                    $tvObject->set('input_properties', $inputProperties);
                 }
 
                 $outputProperties = $tv->getOutputProperties();
                 if (!empty($outputProperties)) {
-                    $tvObject->set('output_properties',$outputProperties[0]);
+                    $tvObject->set('output_properties', $outputProperties[0]);
                 }
 
                 $tvObject->setProperties($tv->getProperties());
                 $tvObject->save();
 
                 $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
-                foreach($templates as $template){
+                foreach ($templates as $template) {
                     $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
                     $templateTVObject->set('tmplvarid', $tvObject->id);
                     $templateTVObject->set('templateid', $template->id);
@@ -630,10 +649,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     /**
      * Clears MODX cache and sets placeholders
      */
-    private function clearCache() {
+    private function clearCache()
+    {
         $this->modx->cacheManager->delete('system_settings/config', array('cache_key' => ''));
         $results = array();
-        $partitions = array ('menu' => array ());
+        $partitions = array('menu' => array());
         $this->modx->cacheManager->refresh($partitions, $results);
 
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.core_path', $this->packageCorePath);
@@ -647,7 +667,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
      * @param $config
      * @return bool
      */
-    private function checkConfig($config) {
+    private function checkConfig($config)
+    {
         if (!file_exists($config)) {
             /* make an attempt to create the file */
             @ $hnd = fopen($config, 'w');
@@ -662,7 +683,8 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         }
     }
 
-    private function createResources() {
+    private function createResources()
+    {
         $resources = $this->config->getResources();
 
         $this->resourceMap = array();
@@ -675,9 +697,10 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     }
 
     /**
-     * @param GitPackageConfigResource $resource
+     * @param \GPM\Config\Resource $resource
      */
-    private function createResource($resource) {
+    private function createResource($resource)
+    {
         $res = $this->modx->runProcessor('resource/create', $resource->toArray());
         $resObject = $res->getObject();
 
@@ -696,9 +719,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         }
     }
 
-    private function setResourceMap() {
+    private function setResourceMap()
+    {
         $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
         file_put_contents($rmf, '<?php return ' . var_export($this->resourceMap, true) . ';');
     }
 }
+
 return 'GitPackageManagementCreateProcessor';
