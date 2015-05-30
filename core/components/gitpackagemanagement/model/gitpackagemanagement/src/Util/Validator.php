@@ -5,14 +5,13 @@ namespace GPM\Util;
  * Class Validator
  * 
  * @property \GPM\Config\Config $config
+ * @property array $validations
+ * @property string $section
  * 
  * @package GPM\Util
  */
 trait Validator
 {
-    protected $section = '';
-    protected $validations = [];
-
     protected function validate($config)
     {
         foreach ($this->validations as $validation) {
@@ -33,13 +32,13 @@ trait Validator
     }
     
     protected function presentValidator($config, $field) {
-        if (!isset($config['field'])) {
+        if (!isset($config[$field])) {
             throw new \Exception($this->generateMsg($field, 'is not set'));
         }
     }
     
     protected function requiredValidator($config, $field) {
-        if (empty($config['field'])) {
+        if (empty($config[$field])) {
             throw new \Exception($this->generateMsg($field, 'is empty'));
         }
     }

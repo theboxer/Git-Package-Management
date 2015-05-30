@@ -12,9 +12,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     public $objectType = 'gitpackagemanagement.package';
     /** @var GitPackage $object */
     public $object;
-    /** @var GitPackageConfig $oldConfig */
+    /** @var \GPM\Config\Config $oldConfig */
     private $oldConfig;
-    /** @var GitPackageConfig $oldConfig */
+    /** @var \GPM\Config\Config $oldConfig */
     private $newConfig;
     private $category;
     private $categoriesMap = array();
@@ -41,7 +41,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $config = $this->modx->fromJSON($config);
 
-        $this->newConfig = new GitPackageConfig($this->modx, $packagePath);
+        $this->newConfig = new \GPM\Config\Config($this->modx, $packagePath);
         $this->newConfig->parseConfig($config);
         if ($this->newConfig->error->hasErrors()) {
             return implode('<br />', $this->newConfig->error->getErrors());
@@ -57,7 +57,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             return $msg;
         }
 
-        $this->oldConfig = new GitPackageConfig($this->modx, $packagePath);
+        $this->oldConfig = new \GPM\Config\Config($this->modx, $packagePath);
         $this->oldConfig->parseConfig($this->modx->fromJSON($this->object->config));
 
         $this->recreateDatabase = $this->getProperty('recreateDatabase', 0);
