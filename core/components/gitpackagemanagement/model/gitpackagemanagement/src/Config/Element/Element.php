@@ -48,7 +48,7 @@ abstract class Element
         if (isset($config['file'])) {
             $this->file = $config['file'];
         } else {
-            $this->file = strtolower($this->name) . '.' . $this->type . '.' . $this->extension;
+            $this->file = $this->name . '.' . $this->type . '.' . $this->extension;
         }
 
         if (isset($config['properties']) && is_array($config['properties'])) {
@@ -69,18 +69,20 @@ abstract class Element
     protected function checkFile()
     {
         $filePaths = [
-            'elements/' . $this->type . 's/' . $this->file
+            $this->file,
+            strtolower($this->file),
         ];
 
         if (!empty($this->category)) {
             $categories = $this->config->getCategories();
-            $categoryPath = '/' . str_replace(' ', '_', strtolower(implode('/', $categories[$this->category]->getParents()))) . '/';
+            $categoryPath = '/' . str_replace(' ', '_', implode('/', $categories[$this->category]->getParents())) . '/';
 
-            $filePaths[] = 'elements/' . $this->type . 's' . $categoryPath . $this->file;
+            $filePaths[] = $categoryPath . $this->file;
+            $filePaths[] = strtolower($categoryPath . $this->file);
         }
-
+        
         $file = $this->config->getPackagePath();
-        $file .= '/core/components/' . $this->config->getLowCaseName() . '/';
+        $file .= '/core/components/' . $this->config->getLowCaseName() . '/elements/' . $this->type . 's/';
 
         $exists = false;
         foreach ($filePaths as $filePath) {
