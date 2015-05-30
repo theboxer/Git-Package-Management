@@ -208,6 +208,10 @@ class Config
      */
     protected function setActions($actions)
     {
+        if (is_string($actions)) {
+            $actions = $this->loadFile($actions);
+        }
+        
         foreach ($actions as $action) {
             $a = new Action($this);
 
@@ -230,6 +234,10 @@ class Config
      */
     protected function setMenus($menus)
     {
+        if (is_string($menus)) {
+            $menus = $this->loadFile($menus);
+        }
+        
         foreach ($menus as $menu) {
             $m = new Menu($this);
 
@@ -252,6 +260,10 @@ class Config
      */
     protected function setSettings($settings)
     {
+        if (is_string($settings)) {
+            $settings = $this->loadFile($settings);
+        }
+        
         foreach ($settings as $setting) {
             $s = new Setting($this);
 
@@ -327,6 +339,10 @@ class Config
      */
     protected function setCategories($categories)
     {
+        if (is_string($categories)) {
+            $categories = $this->loadFile($categories);
+        }
+        
         foreach ($categories as $category) {
             $c = new Category($this);
 
@@ -349,6 +365,10 @@ class Config
      */
     protected function setPluginElements($plugins)
     {
+        if (is_string($plugins)) {
+            $plugins = $this->loadFile($plugins);
+        }
+        
         foreach ($plugins as $plugin) {
             $p = new Element\Plugin($this);
 
@@ -371,6 +391,10 @@ class Config
      */
     protected function setSnippetElements($snippets)
     {
+        if (is_string($snippets)) {
+            $snippets = $this->loadFile($snippets);
+        }
+        
         foreach ($snippets as $snippet) {
             $p = new Element\Snippet($this);
 
@@ -393,6 +417,10 @@ class Config
      */
     protected function setChunkElements($chunks)
     {
+        if (is_string($chunks)) {
+            $chunks = $this->loadFile($chunks);
+        }
+        
         foreach ($chunks as $chunk) {
             $p = new Element\Chunk($this);
 
@@ -415,6 +443,10 @@ class Config
      */
     protected function setTemplateElements($templates)
     {
+        if (is_string($templates)) {
+            $templates = $this->loadFile($templates);
+        }
+        
         foreach ($templates as $template) {
             $p = new Element\Template($this);
 
@@ -437,6 +469,10 @@ class Config
      */
     protected function setTVElements($tvs)
     {
+        if (is_string($tvs)) {
+            $tvs = $this->loadFile($tvs);
+        }
+        
         foreach ($tvs as $tv) {
             $p = new Element\TV($this);
 
@@ -625,6 +661,25 @@ class Config
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * @param string $actions
+     * @return array
+     */
+    protected function loadFile($actions)
+    {
+        $file = $this->packagePath . '/_build/' . $actions;
+        if (file_exists($file)) {
+            $fileContent = file_get_contents($file);
+            $fileContent = $this->modx->fromJSON($fileContent);
+            
+            if (!is_array($fileContent)) return [];
+
+            return $fileContent;
+        }
+
+        return [];
     }
 
 }
