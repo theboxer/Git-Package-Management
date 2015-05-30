@@ -39,13 +39,13 @@ trait Validator
     
     protected function requiredValidator($config, $field) {
         if (empty($config[$field])) {
-            throw new \Exception($this->generateMsg($field, 'is empty'));
+            throw new \Exception($this->generateMsg($field, 'are empty'));
         }
     }
     
     protected function arrayValidator($config, $field) {
         if (isset($config[$field]) && !is_array($config[$field])) {
-            throw new \Exception($this->generateMsg($field, 'is not an array'));
+            throw new \Exception($this->generateMsg($field, 'are not an array'));
         }
     }
 

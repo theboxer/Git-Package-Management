@@ -8,15 +8,12 @@ final class Plugin extends Element
     protected $events = [];
 
     protected $section = 'Elements: Plugin';
+    protected $validations = ['name', 'category:categoryExists', 'events'];
 
     public function fromArray($config)
     {
-        if (isset($config['events'])) {
-            $this->events = $config['events'];
-        } else {
-            throw new \Exception('Elements: plugin - events are not set');
-        }
-
+        $this->events = $config['events'];
+        
         return parent::fromArray($config);
     }
 
