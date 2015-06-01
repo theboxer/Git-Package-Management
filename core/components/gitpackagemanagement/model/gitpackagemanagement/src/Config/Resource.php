@@ -1,16 +1,10 @@
 <?php
 namespace GPM\Config;
 
-use GPM\Util\Validator;
-
-class Resource
+class Resource extends ConfigObject
 {
-    use Validator;
-    
     /** @var \modX $modx */
     protected $modx;
-    /* @var $config Config */
-    protected $config;
 
     protected $pagetitle;
     protected $alias = '';
@@ -41,23 +35,18 @@ class Resource
     protected $setAsHome = 0;
 
     protected $section = 'Resources';
-    protected $validations = ['pagetitle'];
+    protected $validations = ['pagetitle', 'tvs:array', 'others:array'];
 
     public function __construct($config, \modX &$modx)
     {
         $this->modx =& $modx;
-        $this->config = $config;
+
+        parent::__construct($config);
     }
-
-    public function fromArray($config)
+    
+    protected function setDefaults($config)
     {
-        $this->validate($config);
-        
-        $this->pagetitle = $config['pagetitle'];
-
-        if (isset($config['alias'])) {
-            $this->alias = $config['alias'];
-        } else {
+        if (!isset($config['alias'])) {
             $res = new \modResource($this->modx);
             $this->alias = $res->cleanAlias($this->pagetitle);
         }
@@ -66,52 +55,12 @@ class Resource
             $this->setAsHome = intval($config['setAsHome']);
         }
 
-        if (isset($config['parent'])) {
-            $this->parent = $config['parent'];
-        }
-
-        if (isset($config['suffix'])) {
-            $this->suffix = $config['suffix'];
-        }
-
-        if (isset($config['context_key'])) {
-            $this->context_key = $config['context_key'];
-        }
-
-        if (isset($config['template'])) {
-            $this->template = $config['template'];
-        }
-
-        if (isset($config['class_key'])) {
-            $this->class_key = $config['class_key'];
-        }
-
-        if (isset($config['content_type'])) {
-            $this->content_type = $config['content_type'];
-        }
-
-        if (isset($config['longtitle'])) {
-            $this->longtitle = $config['longtitle'];
-        }
-
-        if (isset($config['description'])) {
-            $this->description = $config['description'];
-        }
-
-        if (isset($config['menutitle'])) {
-            $this->menutitle = $config['menutitle'];
-        }
-
         if (isset($config['published'])) {
             $this->published = intval($config['published']);
         }
 
         if (isset($config['isfolder'])) {
             $this->isfolder = intval($config['isfolder']);
-        }
-
-        if (isset($config['introtext'])) {
-            $this->introtext = $config['introtext'];
         }
 
         if (isset($config['richtext'])) {
@@ -146,43 +95,6 @@ class Resource
             $this->show_in_tree = intval($config['show_in_tree']);
         }
 
-        if (isset($config['tvs']) && is_array($config['tvs'])) {
-            foreach ($config['tvs'] as $tv) {
-                if (!isset($tv['name'])) {
-                    throw new \Exception('Resources - TV - name is not set');
-                }
-
-                if (!isset($tv['value'])) {
-                    $tv['value'] = '';
-                }
-
-                if (isset($tv['file'])) {
-                    $file = $this->config->getPackagePath();
-                    $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $tv['file'];
-
-                    if (file_exists($file)) {
-                        $tv['value'] = file_get_contents($file);
-                    }
-                }
-
-                $this->tvs[$tv['name']] = $tv;
-            }
-        }
-
-        if (isset($config['others']) && is_array($config['others'])) {
-            foreach ($config['others'] as $other) {
-                if (!isset($tv['name'])) {
-                    throw new \Exception('Resources - Other - name is not set');
-                }
-
-                if (!isset($other['value'])) {
-                    $other['value'] = '';
-                }
-
-                $this->others[] = $other;
-            }
-        }
-
         if (!isset($config['content']) && !isset($config['file'])) {
             $file = $this->config->getPackagePath();
             $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $this->alias . $this->suffix;
@@ -204,8 +116,45 @@ class Resource
                 }
             }
         }
+    }
 
-        return true;
+    public function setTvs($tvs)
+    {
+        foreach ($tvs as $tv) {
+            if (!isset($tv['name'])) {
+                throw new \Exception('Resources - TV - name is not set');
+            }
+
+            if (!isset($tv['value'])) {
+                $tv['value'] = '';
+            }
+
+            if (isset($tv['file'])) {
+                $file = $this->config->getPackagePath();
+                $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $tv['file'];
+
+                if (file_exists($file)) {
+                    $tv['value'] = file_get_contents($file);
+                }
+            }
+
+            $this->tvs[$tv['name']] = $tv;
+        }
+    }
+
+    public function setOthers($others)
+    {
+        foreach ($others as $other) {
+            if (!isset($other['name'])) {
+                throw new \Exception('Resources - Other - name is not set');
+            }
+
+            if (!isset($other['value'])) {
+                $other['value'] = '';
+            }
+
+            $this->others[] = $other;
+        }
     }
 
     public function toArray()
@@ -399,27 +348,11 @@ class Resource
     }
 
     /**
-     * @param string $alias
-     */
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-    }
-
-    /**
      * @return mixed
      */
     public function getPagetitle()
     {
         return $this->pagetitle;
-    }
-
-    /**
-     * @param mixed $pagetitle
-     */
-    public function setPagetitle($pagetitle)
-    {
-        $this->pagetitle = $pagetitle;
     }
 
     /**
@@ -431,27 +364,11 @@ class Resource
     }
 
     /**
-     * @param int|string $parent
-     */
-    public function setParent($parent)
-    {
-        $this->parent = $parent;
-    }
-
-    /**
      * @return array
      */
     public function getTvs()
     {
         return $this->tvs;
-    }
-
-    /**
-     * @param array $tvs
-     */
-    public function setTvs($tvs)
-    {
-        $this->tvs = $tvs;
     }
 
     /**
@@ -463,27 +380,11 @@ class Resource
     }
 
     /**
-     * @param null $cacheable
-     */
-    public function setCacheable($cacheable)
-    {
-        $this->cacheable = $cacheable;
-    }
-
-    /**
      * @return string
      */
     public function getClassKey()
     {
         return $this->class_key;
-    }
-
-    /**
-     * @param string $class_key
-     */
-    public function setClassKey($class_key)
-    {
-        $this->class_key = $class_key;
     }
 
     /**
@@ -495,27 +396,11 @@ class Resource
     }
 
     /**
-     * @param string $content
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    /**
      * @return string
      */
     public function getContentType()
     {
         return $this->content_type;
-    }
-
-    /**
-     * @param string $contentType
-     */
-    public function setContentType($contentType)
-    {
-        $this->content_type = $contentType;
     }
 
     /**
@@ -527,27 +412,11 @@ class Resource
     }
 
     /**
-     * @param string $context_key
-     */
-    public function setContextKey($context_key)
-    {
-        $this->context_key = $context_key;
-    }
-
-    /**
      * @return int
      */
     public function getDeleted()
     {
         return $this->deleted;
-    }
-
-    /**
-     * @param int $deleted
-     */
-    public function setDeleted($deleted)
-    {
-        $this->deleted = $deleted;
     }
 
     /**
@@ -559,27 +428,11 @@ class Resource
     }
 
     /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
      * @return int
      */
     public function getHideChildrenInTree()
     {
         return $this->hide_children_in_tree;
-    }
-
-    /**
-     * @param int $hide_children_in_tree
-     */
-    public function setHideChildrenInTree($hide_children_in_tree)
-    {
-        $this->hide_children_in_tree = $hide_children_in_tree;
     }
 
     /**
@@ -591,27 +444,11 @@ class Resource
     }
 
     /**
-     * @param null $hidemenu
-     */
-    public function setHidemenu($hidemenu)
-    {
-        $this->hidemenu = $hidemenu;
-    }
-
-    /**
      * @return int
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**
@@ -623,27 +460,11 @@ class Resource
     }
 
     /**
-     * @param string $introtext
-     */
-    public function setIntrotext($introtext)
-    {
-        $this->introtext = $introtext;
-    }
-
-    /**
      * @return int
      */
     public function getIsfolder()
     {
         return $this->isfolder;
-    }
-
-    /**
-     * @param int $isfolder
-     */
-    public function setIsfolder($isfolder)
-    {
-        $this->isfolder = $isfolder;
     }
 
     /**
@@ -655,27 +476,11 @@ class Resource
     }
 
     /**
-     * @param string $longtitle
-     */
-    public function setLongtitle($longtitle)
-    {
-        $this->longtitle = $longtitle;
-    }
-
-    /**
      * @return null
      */
     public function getMenuindex()
     {
         return $this->menuindex;
-    }
-
-    /**
-     * @param null $menuindex
-     */
-    public function setMenuindex($menuindex)
-    {
-        $this->menuindex = $menuindex;
     }
 
     /**
@@ -687,27 +492,11 @@ class Resource
     }
 
     /**
-     * @param string $menutitle
-     */
-    public function setMenutitle($menutitle)
-    {
-        $this->menutitle = $menutitle;
-    }
-
-    /**
      * @return array
      */
     public function getOthers()
     {
         return $this->others;
-    }
-
-    /**
-     * @param array $others
-     */
-    public function setOthers($others)
-    {
-        $this->others = $others;
     }
 
     /**
@@ -719,27 +508,11 @@ class Resource
     }
 
     /**
-     * @param null $published
-     */
-    public function setPublished($published)
-    {
-        $this->published = $published;
-    }
-
-    /**
      * @return null
      */
     public function getRichtext()
     {
         return $this->richtext;
-    }
-
-    /**
-     * @param null $richtext
-     */
-    public function setRichtext($richtext)
-    {
-        $this->richtext = $richtext;
     }
 
     /**
@@ -751,27 +524,11 @@ class Resource
     }
 
     /**
-     * @param null $searchable
-     */
-    public function setSearchable($searchable)
-    {
-        $this->searchable = $searchable;
-    }
-
-    /**
      * @return int
      */
     public function getShowInTree()
     {
         return $this->show_in_tree;
-    }
-
-    /**
-     * @param int $show_in_tree
-     */
-    public function setShowInTree($show_in_tree)
-    {
-        $this->show_in_tree = $show_in_tree;
     }
 
     /**
@@ -783,14 +540,6 @@ class Resource
     }
 
     /**
-     * @param string $suffix
-     */
-    public function setSuffix($suffix)
-    {
-        $this->suffix = $suffix;
-    }
-
-    /**
      * @return null
      */
     public function getTemplate()
@@ -798,12 +547,8 @@ class Resource
         return $this->template;
     }
 
-    /**
-     * @param null $template
-     */
-    public function setTemplate($template)
+    public function setId($id)
     {
-        $this->template = $template;
+        $this->id = $id;
     }
-
 }

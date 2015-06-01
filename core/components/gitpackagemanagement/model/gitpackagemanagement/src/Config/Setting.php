@@ -1,53 +1,22 @@
 <?php
 namespace GPM\Config;
 
-use GPM\Util\Validator;
-
-class Setting
+class Setting extends ConfigObject
 {
-    use Validator;
-    
     protected $key;
     protected $type = 'textfield';
     protected $area = 'default';
     protected $value = '';
     protected $namespace;
-    /** @var Config $config */
-    private $config;
     
     protected $section = 'Settings';
     protected $validations = ['key'];
 
-    public function __construct($config)
+    protected function setDefaults($config)
     {
-        $this->config = $config;
-    }
-
-    public function fromArray($config)
-    {
-        $this->validate($config);
-        
-        $this->key = $config['key'];
-
-        if (isset($config['type'])) {
-            $this->type = $config['type'];
-        }
-
-        if (isset($config['area'])) {
-            $this->area = $config['area'];
-        }
-
-        if (isset($config['namespace'])) {
-            $this->namespace = $config['namespace'];
-        } else {
+        if (!isset($config['namespace'])) {
             $this->namespace = $this->config->getLowCaseName();
-        }
-
-        if (isset($config['value'])) {
-            $this->value = $config['value'];
-        }
-
-        return true;
+        }    
     }
 
     public function getNamespace()

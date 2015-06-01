@@ -1,10 +1,8 @@
 <?php
 namespace GPM\Config;
 
-class Build
+class Build extends ConfigObject
 {
-    /** @var Config $config */
-    private $config;
     /** @var Build\Resolver $resolver */
     private $resolver;
     private $readme = 'docs/readme.txt';
@@ -13,50 +11,38 @@ class Build
     private $schemaPath = '';
     private $setupOptions = [];
     private $attributes = [];
+    
+    protected $section = 'Build';
+    protected $validators = ['attributes:array'];
 
     public function __construct(Config $config)
     {
         $this->resolver = new Build\Resolver();
-        $this->config = $config;
+
+        parent::__construct($config);
     }
 
-    public function fromArray($config)
+    protected function setDefaults($config)
     {
-        if (isset($config['resolver'])) {
-            $this->resolver->fromArray($config['resolver']);
-        }
-
-        if (isset($config['readme'])) {
-            $this->readme = $config['readme'];
-        }
-
-        if (isset($config['license'])) {
-            $this->license = $config['license'];
-        }
-
-        if (isset($config['changelog'])) {
-            $this->changelog = $config['changelog'];
-        }
-
-        if (isset($config['setupOptions'])) {
-            $this->setupOptions = $config['setupOptions'];
-        }
-
         if (isset($config['schemaPath'])) {
             $this->schemaPath = '/' . ltrim($config['schemaPath'], '/');
         } else {
             $this->schemaPath = '/core/components/' . $this->config->getLowCaseName() . '/' . 'model/schema/' . $this->config->getLowCaseName() . '.mysql.schema.xml';
-        }
+        }   
+    }
 
-        if (isset($config['attributes']) && is_array($config['attributes'])) {
-            foreach ($config['attributes'] as $key => $attributes) {
-                if (is_array($attributes)) {
-                    $this->attributes[$key] = $attributes;
-                }
+    public function setResolver($resolver)
+    {
+        $this->resolver->fromArray($resolver);
+    }
+
+    public function setAttributes($attributes)
+    {
+        foreach ($attributes as $key => $attrs) {
+            if (is_array($attrs)) {
+                $this->attributes[$key] = $attrs;
             }
         }
-
-        return true;
     }
 
     /**
@@ -68,27 +54,11 @@ class Build
     }
 
     /**
-     * @param Build\Resolver $resolver
-     */
-    public function setResolver($resolver)
-    {
-        $this->resolver = $resolver;
-    }
-
-    /**
      * @return string
      */
     public function getReadme()
     {
         return $this->readme;
-    }
-
-    /**
-     * @param string $readme
-     */
-    public function setReadme($readme)
-    {
-        $this->readme = $readme;
     }
 
     /**
@@ -100,14 +70,6 @@ class Build
     }
 
     /**
-     * @param string $license
-     */
-    public function setLicense($license)
-    {
-        $this->license = $license;
-    }
-
-    /**
      * @return string
      */
     public function getChangeLog()
@@ -116,27 +78,11 @@ class Build
     }
 
     /**
-     * @param string $changeLog
-     */
-    public function setChangeLog($changeLog)
-    {
-        $this->changeLog = $changeLog;
-    }
-
-    /**
      * @return array
      */
     public function getSetupOptions()
     {
         return $this->setupOptions;
-    }
-
-    /**
-     * @param array $setupOptions
-     */
-    public function setSetupOptions($setupOptions)
-    {
-        $this->setupOptions = $setupOptions;
     }
 
     public function getAttributes()

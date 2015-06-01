@@ -1,28 +1,14 @@
 <?php
 namespace GPM\Config;
 
-class Database
+class Database extends ConfigObject
 {
     protected $prefix = 'modx_';
     protected $tables = [];
     protected $simpleObjects = [];
-
-    public function fromArray($config)
-    {
-        if (isset($config['prefix'])) {
-            $this->prefix = $config['prefix'];
-        }
-
-        if (isset($config['tables'])) {
-            $this->tables = $config['tables'];
-        }
-
-        if (isset($config['simpleObjects'])) {
-            $this->simpleObjects = $config['simpleObjects'];
-        }
-
-        return true;
-    }
+    
+    protected $section ='Database';
+    protected $validations = ['simpleObjects:array'];
 
     public function getPrefix()
     {

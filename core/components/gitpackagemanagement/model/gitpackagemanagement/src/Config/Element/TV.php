@@ -3,11 +3,11 @@ namespace GPM\Config\Element;
 
 final class TV extends Element
 {
-    protected $type = 'TV';
+    protected $elementType = 'TV';
     protected $caption = null;
     protected $inputOptionValues = '';
     protected $defaultValue = '';
-    protected $inputType = 'text';
+    protected $type = 'text';
     protected $sortOrder = '0';
     protected $templates = [];
     protected $category;
@@ -16,52 +16,12 @@ final class TV extends Element
 
     protected $section = 'Elements: TV';
     protected $validations = ['caption', 'templates:array', 'category:categoryExists'];
-
-    public function fromArray($config)
+    
+    protected function setDefaults($config)
     {
-        $this->validate($config);
-        
-        $this->caption = $config['caption'];
-
-        if (isset($config['inputOptionValues'])) {
-            $this->inputOptionValues = $config['inputOptionValues'];
-        }
-
-        if (isset($config['defaultValue'])) {
-            $this->defaultValue = $config['defaultValue'];
-        }
-
-        if (isset($config['name'])) {
-            $this->name = $config['name'];
-        } else {
+        if (!isset($config['name'])) {
             $this->name = strtolower($this->caption);
         }
-
-        if (isset($config['type'])) {
-            $this->inputType = $config['type'];
-        }
-
-        if (isset($config['inputProperties'])) {
-            $this->inputProperties = $config['inputProperties'];
-        }
-
-        if (isset($config['outputProperties'])) {
-            $this->outputProperties = $config['outputProperties'];
-        }
-
-        if (isset($config['sortOrder'])) {
-            $this->sortOrder = $config['sortOrder'];
-        }
-
-        if (isset($config['templates'])) {
-            $this->templates = $config['templates'];
-        }
-
-        if (isset($config['category'])) {
-            $this->category = $config['category'];
-        }
-
-        return true;
     }
 
     /**
@@ -101,7 +61,7 @@ final class TV extends Element
      */
     public function getInputType()
     {
-        return $this->inputType;
+        return $this->type;
     }
 
     /**

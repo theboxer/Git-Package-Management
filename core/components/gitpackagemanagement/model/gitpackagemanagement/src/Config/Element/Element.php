@@ -1,23 +1,18 @@
 <?php
 namespace GPM\Config\Element;
 
-use GPM\Config\Config;
-use GPM\Util\Validator;
+use GPM\Config\ConfigObject;
 
-abstract class Element
+abstract class Element extends ConfigObject
 {
-    use Validator;
-    
-    /** @var Config $config */
-    protected $config;
     /** @var string $name */
     protected $name;
     /** @var string $description */
     protected $description = '';
     /** @var string $file */
     protected $file;
-    /** @var string $type */
-    protected $type;
+    /** @var string $elementType */
+    protected $elementType;
     /** @var string $extension */
     protected $extension;
     /** @var array $properties */
@@ -28,45 +23,16 @@ abstract class Element
     protected $filePath;
     
     protected $section = 'Elements';
-    protected $validations = ['name', 'category:categoryExists'];
+    protected $validations = ['name', 'category:categoryExists', 'properties:array', 'file:file'];
 
-    public function __construct(Config $config)
+    protected function setDefaults($config)
     {
-        $this->config = $config;
+        if (!isset($config['file'])) {
+            $this->file = $this->name . '.' . $this->elementType . '.' . $this->extension;
+        }    
     }
-
-    public function fromArray($config)
-    {
-        $this->validate($config);
-        
-        $this->name = $config['name'];
-
-        if (isset($config['description'])) {
-            $this->description = $config['description'];
-        }
-
-        if (isset($config['file'])) {
-            $this->file = $config['file'];
-        } else {
-            $this->file = $this->name . '.' . $this->type . '.' . $this->extension;
-        }
-
-        if (isset($config['properties']) && is_array($config['properties'])) {
-            $this->setProperties($config['properties']);
-        }
-
-        if (isset($config['category'])) {
-            $this->category = $config['category'];
-        }
-
-        if ($this->checkFile() == false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    protected function checkFile()
+    
+    protected function fileValidator()
     {
         $filePaths = [
             $this->file,
@@ -82,7 +48,7 @@ abstract class Element
         }
         
         $file = $this->config->getPackagePath();
-        $file .= '/core/components/' . $this->config->getLowCaseName() . '/elements/' . $this->type . 's/';
+        $file .= '/core/components/' . $this->config->getLowCaseName() . '/elements/' . $this->elementType . 's/';
 
         $exists = false;
         foreach ($filePaths as $filePath) {
@@ -98,8 +64,6 @@ abstract class Element
         }
 
         $this->filePath = $exists;
-
-        return true;
     }
 
     public function getFile()
@@ -135,7 +99,7 @@ abstract class Element
             if (isset($property['name'])) {
                 $prop['name'] = $property['name'];
             } else {
-                throw new \Exception('Elements: ' . $this->type . ' - properties: names is required');
+                throw new \Exception('Elements: ' . $this->elementType . ' - properties: names is required');
             }
 
             if (isset($property['description'])) {

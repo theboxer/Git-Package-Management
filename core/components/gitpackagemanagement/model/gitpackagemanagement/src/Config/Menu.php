@@ -1,14 +1,8 @@
 <?php
 namespace GPM\Config;
 
-use GPM\Util\Validator;
-
-class Menu
+class Menu extends ConfigObject
 {
-    use Validator;
-    
-    /* @var $config Config */
-    protected $config;
     protected $text;
     protected $description = '';
     protected $parent = 'components';
@@ -22,46 +16,6 @@ class Menu
     
     protected $section = 'Menus';
     protected $validations = ['text', 'action'];
-
-    public function __construct($config)
-    {
-        $this->config = $config;
-    }
-
-    public function fromArray($config)
-    {
-        $this->validate($config);
-        
-        $this->text = $config['text'];
-
-        if (isset($config['description'])) {
-            $this->description = $config['description'];
-        }
-
-        if (isset($config['parent'])) {
-            $this->parent = $config['parent'];
-        }
-
-        if (isset($config['icon'])) {
-            $this->icon = $config['icon'];
-        }
-
-        if (isset($config['menuIndex'])) {
-            $this->menuIndex = $config['menuIndex'];
-        }
-
-        if (isset($config['params'])) {
-            $this->params = $config['params'];
-        }
-
-        if (isset($config['handler'])) {
-            $this->handler = $config['handler'];
-        }
-        
-        $this->setAction($config['action']);
-
-        return true;
-    }
 
     public function getAction()
     {

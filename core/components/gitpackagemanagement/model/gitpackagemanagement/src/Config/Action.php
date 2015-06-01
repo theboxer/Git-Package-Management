@@ -1,13 +1,8 @@
 <?php
 namespace GPM\Config;
 
-use GPM\Util\Validator;
-class Action
+class Action extends ConfigObject
 {
-    use Validator;
-    
-    /* @var $config Config */
-    protected $config;
     protected $id;
     protected $controller;
     protected $hasLayout = 1;
@@ -17,33 +12,11 @@ class Action
     protected $section = 'Actions';
     protected $validations = ['id', 'controller'];
 
-    public function __construct($config)
+    protected function setDefaults($config)
     {
-        $this->config = $config;
-    }
-
-    public function fromArray($config)
-    {
-        $this->validate($config);
-        
-        $this->id = $config['id'];
-        $this->controller = $config['controller'];
-
-        if (isset($config['hasLayout'])) {
-            $this->hasLayout = $config['hasLayout'];
-        }
-
-        if (isset($config['langTopics'])) {
-            $this->langTopics = $config['langTopics'];
-        } else {
+        if (!isset($config['langTopics'])) {
             $this->langTopics = $this->config->getLowCaseName() . ':default';
-        }
-
-        if (isset($config['assets'])) {
-            $this->assets = $config['assets'];
-        }
-
-        return true;
+        }        
     }
 
     public function getAssets()

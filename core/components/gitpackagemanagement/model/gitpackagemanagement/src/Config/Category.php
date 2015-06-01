@@ -1,37 +1,13 @@
 <?php
 namespace GPM\Config;
 
-use GPM\Util\Validator;
-
-class Category
+class Category extends ConfigObject
 {
-    use Validator;
-    
-    /* @var $config Config */
-    protected $config;
     protected $name;
     protected $parent = null;
 
     protected $section = 'Categories';
     protected $validations = ['name', 'parent:categoryExists'];
-
-    public function __construct($config)
-    {
-        $this->config = $config;
-    }
-
-    public function fromArray($config)
-    {
-        $this->validate($config);
-        
-        $this->name = $config['name'];
-
-        if (isset($config['parent'])) {
-            $this->parent = $config['parent'];
-        }
-
-        return true;
-    }
 
     /**
      * @return mixed
