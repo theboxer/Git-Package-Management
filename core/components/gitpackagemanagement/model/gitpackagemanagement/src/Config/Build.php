@@ -17,7 +17,7 @@ class Build extends ConfigObject
 
     public function __construct(Config $config)
     {
-        $this->resolver = new Build\Resolver();
+        $this->resolver = new Build\Resolver($config);
 
         parent::__construct($config);
     }

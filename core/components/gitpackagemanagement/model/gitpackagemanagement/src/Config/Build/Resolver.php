@@ -1,51 +1,36 @@
 <?php
 namespace GPM\Config\Build;
 
-final class Resolver {
-    private $resolversDir = 'resolvers';
-    private $before = [];
-    private $after = [];
-    private $files = [];
+use GPM\Config\ConfigObject;
 
-    public function fromArray($config) {
-        if(isset($config['resolversDir'])){
-            $this->resolversDir = $config['resolversDir'];
+final class Resolver extends ConfigObject
+{
+    protected $resolversDir = 'resolvers';
+    protected $before = [];
+    protected $after = [];
+    protected $files = [];
+    
+    protected $section = 'Resolved';
+    protected $validations = ['before:array', 'after:array', 'files:array'];
+
+    public function setFiles($files)
+    {
+        foreach ($files as $file) {
+            if (!isset($file['source']) || !isset($file['target'])) continue;
+
+            $this->files[] = [
+                'source' => $file['source'],
+                'target' => $file['target']
+            ];
         }
-
-        if(isset($config['before'])){
-            $this->before = $config['before'];
-        }
-
-        if(isset($config['after'])){
-            $this->after = $config['after'];
-        }
-
-        if(isset($config['files']) && is_array($config['files'])) {
-            foreach ($config['files'] as $file) {
-                if (!isset($file['source']) || !isset($file['target'])) continue;
-
-                $this->files[] = [
-                    'source' => $file['source'],
-                    'target' => $file['target']
-                ];
-            }
-        }
-
-        return true;
     }
 
     /**
      * @return string
      */
-    public function getResolversDir() {
+    public function getResolversDir()
+    {
         return $this->resolversDir;
-    }
-
-    /**
-     * @param string $resolversDir
-     */
-    public function setResolversDir($resolversDir) {
-        $this->resolversDir = $resolversDir;
     }
 
     public function getFileResolvers()
@@ -56,28 +41,16 @@ final class Resolver {
     /**
      * @return array
      */
-    public function getBefore() {
+    public function getBefore()
+    {
         return $this->before;
-    }
-
-    /**
-     * @param array $before
-     */
-    public function setBefore($before) {
-        $this->before = $before;
     }
 
     /**
      * @return array
      */
-    public function getAfter() {
+    public function getAfter()
+    {
         return $this->after;
-    }
-
-    /**
-     * @param array $after
-     */
-    public function setAfter($after) {
-        $this->after = $after;
     }
 }

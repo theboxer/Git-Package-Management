@@ -51,50 +51,6 @@ class Resource extends ConfigObject
             $this->alias = $res->cleanAlias($this->pagetitle);
         }
 
-        if (isset($config['setAsHome'])) {
-            $this->setAsHome = intval($config['setAsHome']);
-        }
-
-        if (isset($config['published'])) {
-            $this->published = intval($config['published']);
-        }
-
-        if (isset($config['isfolder'])) {
-            $this->isfolder = intval($config['isfolder']);
-        }
-
-        if (isset($config['richtext'])) {
-            $this->richtext = intval($config['richtext']);
-        }
-
-        if (isset($config['menuindex'])) {
-            $this->menuindex = intval($config['menuindex']);
-        }
-
-        if (isset($config['searchable'])) {
-            $this->searchable = intval($config['searchable']);
-        }
-
-        if (isset($config['cacheable'])) {
-            $this->cacheable = intval($config['cacheable']);
-        }
-
-        if (isset($config['deleted'])) {
-            $this->deleted = intval($config['deleted']);
-        }
-
-        if (isset($config['hidemenu'])) {
-            $this->hidemenu = intval($config['hidemenu']);
-        }
-
-        if (isset($config['hide_children_in_tree'])) {
-            $this->hide_children_in_tree = intval($config['hide_children_in_tree']);
-        }
-
-        if (isset($config['show_in_tree'])) {
-            $this->show_in_tree = intval($config['show_in_tree']);
-        }
-
         if (!isset($config['content']) && !isset($config['file'])) {
             $file = $this->config->getPackagePath();
             $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $this->alias . $this->suffix;
@@ -116,6 +72,61 @@ class Resource extends ConfigObject
                 }
             }
         }
+    }
+
+    public function setSetAsHome($setAsHome)
+    {
+        $this->setAsHome = intval($setAsHome);
+    }
+    
+    public function setPublished($published)
+    {
+        $this->published = intval($published);
+    }
+    
+    public function setIsfolder($isFolder)
+    {
+        $this->isfolder = intval($isFolder);
+    }
+    
+    public function setRichtext($richtext)
+    {
+        $this->richtext = intval($richtext);
+    }
+    
+    public function setMenuindex($menuindex)
+    {
+        $this->menuindex = intval($menuindex);
+    }
+    
+    public function setSearchable($searchable)
+    {
+        $this->searchable = intval($searchable);
+    }
+    
+    public function setCacheable($cacheable)
+    {
+        $this->cacheable = intval($cacheable);
+    }
+    
+    public function setDeleted($deleted)
+    {
+        $this->deleted = intval($deleted);
+    }
+    
+    public function setHidemenu($hidemenu)
+    {
+        $this->hidemenu = intval($hidemenu);
+    }
+
+    public function setHide_children_in_tree($hide_children_in_tree)
+    {
+        $this->hide_children_in_tree = intval($hide_children_in_tree);
+    }
+    
+    public function setShow_in_tree($show_in_tree)
+    {
+        $this->show_in_tree = intval($show_in_tree);
     }
 
     public function setTvs($tvs)

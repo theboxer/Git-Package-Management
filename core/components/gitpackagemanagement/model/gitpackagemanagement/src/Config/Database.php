@@ -8,7 +8,7 @@ class Database extends ConfigObject
     protected $simpleObjects = [];
     
     protected $section ='Database';
-    protected $validations = ['simpleObjects:array'];
+    protected $validations = ['tables:array', 'simpleObjects:array'];
 
     public function getPrefix()
     {
