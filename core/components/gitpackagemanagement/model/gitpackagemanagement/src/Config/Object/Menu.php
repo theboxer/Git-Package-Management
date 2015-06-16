@@ -1,5 +1,7 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object;
+
+use GPM\Config\ConfigObject;
 
 class Menu extends ConfigObject
 {
@@ -17,6 +19,12 @@ class Menu extends ConfigObject
     protected $section = 'Menus';
     protected $validations = ['text', 'action'];
 
+    public function toArray()
+    {
+        // @TODO
+        return [];
+    }
+    
     public function getAction()
     {
         return $this->action;

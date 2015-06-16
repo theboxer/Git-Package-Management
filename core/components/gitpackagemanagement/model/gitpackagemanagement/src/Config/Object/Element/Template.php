@@ -1,5 +1,5 @@
 <?php
-namespace GPM\Config\Element;
+namespace GPM\Config\Object\Element;
 
 final class Template extends Element
 {
@@ -12,5 +12,14 @@ final class Template extends Element
     public function getIcon()
     {
         return $this->icon;
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        $array['icon'] = $this->getIcon();
+        
+        return $array;
     }
 }

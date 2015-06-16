@@ -1,5 +1,7 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object;
+
+use GPM\Config\ConfigObject;
 
 class Database extends ConfigObject
 {
@@ -10,6 +12,12 @@ class Database extends ConfigObject
     protected $section ='Database';
     protected $validations = ['tables:array', 'simpleObjects:array'];
 
+    public function toArray()
+    {
+        // @TODO
+        return [];
+    }
+    
     public function getPrefix()
     {
         return $this->prefix;

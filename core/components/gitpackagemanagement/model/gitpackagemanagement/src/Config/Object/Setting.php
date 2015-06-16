@@ -1,5 +1,7 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object;
+
+use GPM\Config\ConfigObject;
 
 class Setting extends ConfigObject
 {
@@ -17,6 +19,12 @@ class Setting extends ConfigObject
         if (!isset($config['namespace'])) {
             $this->namespace = $this->config->getLowCaseName();
         }    
+    }
+
+    public function toArray()
+    {
+        // @TODO
+        return [];
     }
 
     public function getNamespace()

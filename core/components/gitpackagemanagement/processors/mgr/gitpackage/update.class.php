@@ -34,17 +34,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $packagePath = $this->packagePath . $this->object->dir_name;
 
-        $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
-        if (!file_exists($configFile)) {
-            return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
-        }
-
-        $config = file_get_contents($configFile);
-
-        $config = $this->modx->fromJSON($config);
-
         $this->newConfig = new \GPM\Config\Config($this->modx, $packagePath);
-        $this->newConfig->parseConfig($config);
+        $this->newConfig->load(new \GPM\Config\Loader\JSON($packagePath));
+        $this->newConfig->loadPart(new \GPM\Config\Loader\File($packagePath, $this->newConfig->getGeneral()->getLowCaseName()), 'snippets');
         if ($this->newConfig->error->hasErrors()) {
             return implode('<br />', $this->newConfig->error->getErrors());
         }

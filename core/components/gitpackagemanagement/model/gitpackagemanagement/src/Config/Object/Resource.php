@@ -1,5 +1,7 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object;
+
+use GPM\Config\ConfigObject;
 
 class Resource extends ConfigObject
 {

@@ -1,5 +1,5 @@
 <?php
-namespace GPM\Config\Build;
+namespace GPM\Config\Object\Build;
 
 use GPM\Config\ConfigObject;
 
@@ -13,6 +13,12 @@ final class Resolver extends ConfigObject
     protected $section = 'Resolved';
     protected $validations = ['before:array', 'after:array', 'files:array'];
 
+    public function toArray()
+    {
+        // @TODO
+        return [];
+    }
+    
     public function setFiles($files)
     {
         foreach ($files as $file) {

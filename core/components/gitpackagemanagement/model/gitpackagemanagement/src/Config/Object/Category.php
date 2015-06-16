@@ -1,5 +1,7 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object;
+
+use GPM\Config\ConfigObject;
 
 class Category extends ConfigObject
 {
@@ -9,6 +11,12 @@ class Category extends ConfigObject
     protected $section = 'Categories';
     protected $validations = ['name', 'parent:categoryExists'];
 
+    public function toArray()
+    {
+        // @TODO
+        return [];
+    }
+    
     /**
      * @return mixed
      */

@@ -1,5 +1,7 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object;
+
+use GPM\Config\ConfigObject;
 
 class Action extends ConfigObject
 {
@@ -17,6 +19,12 @@ class Action extends ConfigObject
         if (!isset($config['langTopics'])) {
             $this->langTopics = $this->config->getLowCaseName() . ':default';
         }        
+    }
+
+    public function toArray()
+    {
+        // @TODO
+        return [];
     }
 
     public function getAssets()

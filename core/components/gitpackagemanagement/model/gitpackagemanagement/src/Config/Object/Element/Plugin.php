@@ -1,5 +1,5 @@
 <?php
-namespace GPM\Config\Element;
+namespace GPM\Config\Object\Element;
 
 final class Plugin extends Element
 {
@@ -13,5 +13,14 @@ final class Plugin extends Element
     public function getEvents()
     {
         return $this->events;
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        $array['events'] = $this->getEvents();
+
+        return $array;
     }
 }

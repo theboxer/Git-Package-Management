@@ -1,5 +1,5 @@
 <?php
-namespace GPM\Config\Element;
+namespace GPM\Config\Object\Element;
 
 final class Chunk extends Element
 {

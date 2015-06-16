@@ -3,20 +3,24 @@ namespace GPM\Config;
 
 abstract class ConfigObject
 {
-    /* @var $config Config */
+    /* @var Config */
     protected $config;
 
     protected $validations = [];
     protected $section = [];
 
-    public function __construct($config)
+    public function __construct(Config $config, $data = null)
     {
         $this->config = $config;
+
+        if ($data !== null) {
+            $this->fromArray($data);
+        }
     }
 
-    public function fromArray($config)
+    public function fromArray($data)
     {
-        foreach ($config as $key => $value) {
+        foreach ($data as $key => $value) {
             if (in_array($key, ['config', 'section', 'validations'])) continue;
 
             if (property_exists($this, $key)) {
@@ -29,10 +33,16 @@ abstract class ConfigObject
             }
         }
 
-        $this->setDefaults($config);
-        $this->validate($config);
+        $this->setDefaults($data);
+        $this->validate($data);
 
         return true;
+    }
+
+    abstract public function toArray();
+
+    protected function setDefaults($config)
+    {
     }
 
     protected function validate($config)
@@ -54,15 +64,23 @@ abstract class ConfigObject
         }
     }
 
-    protected function setDefaults($config)
-    {
-    }
-
     protected function presentValidator($config, $field)
     {
         if (!isset($config[$field])) {
             throw new \Exception($this->generateMsg($field, 'is not set'));
         }
+    }
+
+    protected function generateMsg($field, $msg)
+    {
+        $output = '';
+        if (!empty ($this->section)) {
+            $output .= $this->section . ' - ';
+        }
+
+        $output .= $field . ' ' . $msg;
+
+        return $output;
     }
 
     protected function requiredValidator($config, $field)
@@ -81,23 +99,11 @@ abstract class ConfigObject
 
     protected function categoryExistsValidator($config, $field)
     {
-        if (!isset($config[$field])) return;
+        if (empty($config[$field])) return;
 
         $currentCategories = array_keys($this->config->getCategories());
         if (!in_array($config[$field], $currentCategories)) {
             throw new \Exception($this->generateMsg('category', $config[$field] . ' does not exist'));
         }
-    }
-
-    protected function generateMsg($field, $msg)
-    {
-        $output = '';
-        if (!empty ($this->section)) {
-            $output .= $this->section . ' - ';
-        }
-
-        $output .= $field . ' ' . $msg;
-
-        return $output;
     }
 }

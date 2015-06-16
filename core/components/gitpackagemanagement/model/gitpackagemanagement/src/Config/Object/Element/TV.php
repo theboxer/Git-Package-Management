@@ -1,5 +1,5 @@
 <?php
-namespace GPM\Config\Element;
+namespace GPM\Config\Object\Element;
 
 final class TV extends Element
 {
@@ -19,9 +19,24 @@ final class TV extends Element
     
     protected function setDefaults($config)
     {
-        if (!isset($config['name'])) {
+        if (empty($config['name'])) {
             $this->name = strtolower($this->caption);
         }
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        $array['caption'] = $this->getCaption();
+        $array['inputOptionValues'] = $this->getInputOptionValues();
+        $array['defaultValue'] = $this->getDefaultValue();
+        $array['sortOrder'] = $this->getSortOrder();
+        $array['templates'] = $this->getTemplates();
+        $array['inputProperties'] = $this->getInputProperties();
+        $array['outputProperties'] = $this->getOutputProperties();
+
+        return $array;
     }
 
     /**

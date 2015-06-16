@@ -1,9 +1,12 @@
 <?php
-namespace GPM\Config;
+namespace GPM\Config\Object\Build;
+
+use GPM\Config\Config;
+use GPM\Config\ConfigObject;
 
 class Build extends ConfigObject
 {
-    /** @var Build\Resolver $resolver */
+    /** @var Resolver $resolver */
     private $resolver;
     private $readme = 'docs/readme.txt';
     private $license = 'docs/license.txt';
@@ -17,7 +20,7 @@ class Build extends ConfigObject
 
     public function __construct(Config $config)
     {
-        $this->resolver = new Build\Resolver($config);
+        $this->resolver = new Resolver($config);
 
         parent::__construct($config);
     }
@@ -29,6 +32,12 @@ class Build extends ConfigObject
         } else {
             $this->schemaPath = '/core/components/' . $this->config->getLowCaseName() . '/' . 'model/schema/' . $this->config->getLowCaseName() . '.mysql.schema.xml';
         }   
+    }
+
+    public function toArray()
+    {
+        // @TODO
+        return [];
     }
 
     public function setResolver($resolver)

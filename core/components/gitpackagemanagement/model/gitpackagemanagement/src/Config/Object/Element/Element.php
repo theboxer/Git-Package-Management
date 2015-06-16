@@ -1,5 +1,5 @@
 <?php
-namespace GPM\Config\Element;
+namespace GPM\Config\Object\Element;
 
 use GPM\Config\ConfigObject;
 
@@ -27,7 +27,7 @@ abstract class Element extends ConfigObject
 
     protected function setDefaults($config)
     {
-        if (!isset($config['file'])) {
+        if (empty($config['file'])) {
             $this->file = $this->name . '.' . $this->elementType . '.' . $this->extension;
         }    
     }
@@ -41,14 +41,14 @@ abstract class Element extends ConfigObject
 
         if (!empty($this->category)) {
             $categories = $this->config->getCategories();
-            $categoryPath = '/' . str_replace(' ', '_', implode('/', $categories[$this->category]->getParents())) . '/';
+            $categoryPath = '/' . implode('/', $categories[$this->category]->getParents()) . '/';
 
             $filePaths[] = $categoryPath . $this->file;
             $filePaths[] = strtolower($categoryPath . $this->file);
         }
         
         $file = $this->config->getPackagePath();
-        $file .= '/core/components/' . $this->config->getLowCaseName() . '/elements/' . $this->elementType . 's/';
+        $file .= '/core/components/' . $this->config->getGeneral()->getLowCaseName() . '/elements/' . $this->elementType . 's/';
 
         $exists = false;
         foreach ($filePaths as $filePath) {
@@ -64,6 +64,17 @@ abstract class Element extends ConfigObject
         }
 
         $this->filePath = $exists;
+    }
+
+    public function toArray()
+    {
+        return [
+            'name' => $this->getName(),
+            'category' => $this->getCategory(),
+            'description' => $this->getDescription(),
+            'file' => $this->getFile(),
+            'properties' => $this->getProperties()
+        ];
     }
 
     public function getFile()
@@ -105,7 +116,7 @@ abstract class Element extends ConfigObject
             if (isset($property['description'])) {
                 $prop['desc'] = $property['description'];
             } else {
-                $prop['desc'] = $this->config->getLowCaseName() . '.' . strtolower($this->getName()) . '.' . $prop['name'];
+                $prop['desc'] = $this->config->getGeneral()->getLowCaseName() . '.' . strtolower($this->getName()) . '.' . $prop['name'];
             }
 
             if (isset($property['type'])) {
@@ -129,7 +140,7 @@ abstract class Element extends ConfigObject
             if (isset($property['lexicon'])) {
                 $prop['lexicon'] = $property['lexicon'];
             } else {
-                $prop['lexicon'] = $this->config->getLowCaseName() . ':properties';
+                $prop['lexicon'] = $this->config->getGeneral()->getLowCaseName() . ':properties';
             }
 
             if (isset($property['area'])) {
