@@ -23,8 +23,13 @@ class Setting extends ConfigObject
 
     public function toArray()
     {
-        // @TODO
-        return [];
+        return [
+            'key' => $this->getKey(),
+            'type' => $this->getType(),
+            'area' => $this->getArea(),
+            'value' => $this->getValue(),
+            'namespace' => $this->getNamespace()
+        ];
     }
 
     public function getNamespace()

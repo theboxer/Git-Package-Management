@@ -23,8 +23,13 @@ class General extends ConfigObject
 
     public function toArray()
     {
-        // @TODO
-        return [];
+        return [
+            'name' => $this->getName(),
+            'lowCaseName' => $this->getLowCaseName(),
+            'description' => $this->getDescription(),
+            'author' => $this->getAuthor(),
+            'version' => $this->getVersion()
+        ];
     }
     
     /**

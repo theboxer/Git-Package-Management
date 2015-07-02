@@ -21,8 +21,16 @@ class Menu extends ConfigObject
 
     public function toArray()
     {
-        // @TODO
-        return [];
+        return [
+            'text' => $this->getText(),
+            'description' => $this->getDescription(),
+            'parent' => $this->getParent(),
+            'icon' => $this->getIcon(),
+            'menuIndex' => $this->getMenuIndex(),
+            'params' => $this->getParams(),
+            'handler' => $this->getHandler(),
+            'action' => $this->getAction()
+        ];
     }
     
     public function getAction()

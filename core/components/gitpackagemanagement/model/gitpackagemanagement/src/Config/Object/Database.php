@@ -14,8 +14,11 @@ class Database extends ConfigObject
 
     public function toArray()
     {
-        // @TODO
-        return [];
+        return [
+            'prefix' => $this->getPrefix(),
+            'tables' => $this->getTables(),
+            'simpleObjects' => $this->getSimpleObjects()
+        ];
     }
     
     public function getPrefix()

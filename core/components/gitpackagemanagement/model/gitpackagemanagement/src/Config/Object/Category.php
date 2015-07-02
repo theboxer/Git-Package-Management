@@ -13,8 +13,16 @@ class Category extends ConfigObject
 
     public function toArray()
     {
-        // @TODO
-        return [];
+        $array = [
+            'name' => $this->getName()
+        ];
+        
+        $parent = $this->getParent();
+        if (!empty($parent)) {
+            $array['parent'] = $this->getParent();
+        }
+        
+        return $array;
     }
     
     /**

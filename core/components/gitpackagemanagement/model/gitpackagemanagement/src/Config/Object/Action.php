@@ -23,8 +23,13 @@ class Action extends ConfigObject
 
     public function toArray()
     {
-        // @TODO
-        return [];
+        return [
+            'id' => $this->getId(),
+            'controller' => $this->getController(),
+            'hasLayout' => $this->getHasLayout(),
+            'langTopics' => $this->getLangTopics(),
+            'assets' => $this->getAssets()
+        ];
     }
 
     public function getAssets()
