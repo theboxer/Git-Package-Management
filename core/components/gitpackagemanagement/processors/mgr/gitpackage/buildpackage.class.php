@@ -474,6 +474,35 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         }
     }
 
+    private function addWidgets() {
+        /** @var GitPackageConfigElementWidget[] $widgets */
+        $widgets = $this->config->getSettings();
+        $attributes = array(
+            xPDOTransport::PRESERVE_KEYS => false,
+            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UNIQUE_KEY => array('name'),
+        );
+
+        foreach ($widgets as $widget) {
+            /** @var modSystemSetting $widgetObject */
+            $widgetObject = $this->modx->newObject('modDashboardWidget');
+            $widgetObject->fromArray(array(
+                'name' => $widget->getName(),
+                'description' => $widget->getDescription(),
+                'type' => $widget->getWidgetType(),
+                'content' => ($widget->getWidgetType() == 'file') ?
+                    '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $widget->getFilePath() :
+                    $widget->getFile(),
+                'namespace' => $this->config->getLowCaseName(),
+                'lexicon' => $widget->getLexicon(),
+                'size' => $widget->getSize(),
+            ), '', true, true);
+
+            $vehicle = $this->builder->createVehicle($widgetObject, $attributes);
+            $this->builder->putVehicle($vehicle);
+        }
+    }
+
     private function loadSmarty() {
         $this->smarty = $this->modx->getService('smarty','smarty.modSmarty');
         $this->smarty->setTemplatePath($this->modx->gitpackagemanagement->getOption('templatesPath') . '/gitpackagebuild/');

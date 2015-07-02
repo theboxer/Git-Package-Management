@@ -27,7 +27,7 @@ class GitPackageConfig {
     /** @var array $extensionPackage Array with extensionPackage information */
     private $extensionPackage = null;
     /** @var array $elements Array with all elements */
-    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array());
+    private $elements = array('plugins' => array(), 'snippets' => array(), 'chunks' => array(), 'templates' => array(), 'tvs' => array(), 'widgets' => array());
     /** @var GitPackageConfigResource[] $resources */
     private $resources = array();
     private $dependencies = array();
@@ -57,6 +57,7 @@ class GitPackageConfig {
         $this->modx->loadClass('GitPackageConfigElementTemplate', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigElementTV', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigElementSnippet', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigElementWidget', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigResource', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigBuild', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigBuildResolver', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
@@ -140,6 +141,10 @@ class GitPackageConfig {
 
                 if(isset($config['package']['elements']['tvs'])){
                     $this->setTVElements($config['package']['elements']['tvs']);
+                }
+
+                if(isset($config['package']['elements']['widgets'])){
+                    $this->setWidgetElements($config['package']['elements']['widgets']);
                 }
             }
 
@@ -259,6 +264,21 @@ class GitPackageConfig {
             $p = new GitPackageConfigElementTV($this->modx, $this);
             if($p->fromArray($tv) == false) return false;
             $this->elements['tvs'][$p->getName()] = $p;
+        }
+
+        return true;
+    }
+
+    /**
+     * Parse and validate widgets array
+     * @param $widgets Array
+     * @return bool
+     */
+    private function setWidgetElements($widgets){
+        foreach ($widgets as $widget){
+            $p = new GitPackageConfigElementWidget($this->modx, $this);
+            if($p->fromArray($widget) == false) return false;
+            $this->elements['widgets'][$p->getName()] = $p;
         }
 
         return true;

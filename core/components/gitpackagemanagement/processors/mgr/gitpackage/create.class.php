@@ -355,6 +355,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->createSnippets();
         $this->createTemplates();
         $this->createTVs();
+        $this->createWidgets();
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements finished');
     }
 
@@ -618,6 +619,35 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 }
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'TV ' . $tv->getName() . ' created.');
+            }
+
+        }
+    }
+
+    /**
+     * Create widgets if any
+     */
+    private function createWidgets(){
+        /** @var GitPackageConfigElementWidget[] $widgets */
+        $widgets = $this->config->getElements('widgets');
+        if(count($widgets) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating widgets:');
+            foreach($widgets as $widget){
+                $widgetObject = $this->modx->newObject('modDashboardWidget');
+                $widgetObject->set('name', $widget->getName());
+                $widgetObject->set('description', $widget->getDescription());
+                $widgetObject->set('type', $widget->getWidgetType());
+                $widgetObject->set('content', ($widget->getWidgetType() == 'file') ?
+                    '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $widget->getFilePath() :
+                    $widget->getFile()
+                );
+                $widgetObject->set('namespace', $this->config->getLowCaseName());
+                $widgetObject->set('lexicon', $widget->getLexicon());
+                $widgetObject->set('size', $widget->getSize());
+
+                $widgetObject->save();
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Widget ' . $widget->getName() . ' created.');
             }
 
         }

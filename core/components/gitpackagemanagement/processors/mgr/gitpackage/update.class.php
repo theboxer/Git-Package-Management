@@ -245,6 +245,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->updateElement('Template');
         $this->updateElement('Plugin');
         $this->updateTV();
+        $this->updateWidget();
     }
 
     private function updateElement($type) {
@@ -416,6 +417,49 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             if ($tv) {
                 $tv->remove();
+            }
+        }
+
+        return true;
+    }
+
+    private function updateWidget() {
+        $notUsedElements = array_keys($this->oldConfig->getElements('widgets'));
+        $notUsedElements = array_flip($notUsedElements);
+
+        /** @var GitPackageConfigElementWidget $widget */
+        foreach($this->newConfig->getElements('widgets') as $name => $widget){
+            /** @var modDashboardWidget $widgetObject */
+            $widgetObject = $this->modx->getObject('modDashboardWidget', array('name' => $name));
+
+            if (!$widgetObject){
+                $widgetObject = $this->modx->newObject('modDashboardWidget');
+                $widgetObject->set('name', $widget->getName());
+            }
+
+            $widgetObject->set('description', $widget->getDescription());
+            $widgetObject->set('type', $widget->getWidgetType());
+            $widgetObject->set('content', ($widget->getWidgetType() == 'file') ?
+                '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]' . $widget->getFilePath() :
+                $widget->getFile()
+            );
+            $widgetObject->set('namespace', $this->newConfig->getLowCaseName());
+            $widgetObject->set('lexicon', $widget->getLexicon());
+            $widgetObject->set('size', $widget->getSize());
+
+            $widgetObject->save();
+
+            if(isset($notUsedElements[$name])){
+                unset($notUsedElements[$name]);
+            }
+        }
+
+        foreach($notUsedElements as $name => $value){
+            /** @var modDashboardWidget $widget */
+            $widget = $this->modx->getObject('modDashboardWidget', array('name' => $name));
+
+            if ($widget) {
+                $widget->remove();
             }
         }
 
