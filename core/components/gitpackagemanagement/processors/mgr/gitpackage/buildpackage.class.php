@@ -180,6 +180,14 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             }
         }
 
+        $dependencies = $this->config->getDependencies();
+        if (!empty($dependencies)) {
+            $packageAttributes['requires'] = array();
+            foreach ($dependencies as $dependency) {
+                $packageAttributes['requires'][$dependency['name']] = $dependency['version'];
+            }
+        }
+
         $this->builder->setPackageAttributes($packageAttributes);
 
         $this->builder->pack();
