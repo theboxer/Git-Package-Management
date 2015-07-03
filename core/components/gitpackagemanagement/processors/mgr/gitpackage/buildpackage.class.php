@@ -477,7 +477,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
     private function addWidgets() {
         /** @var GitPackageConfigElementWidget[] $widgets */
-        $widgets = $this->config->getSettings();
+        $widgets = $this->config->getElements('widgets');
         $attributes = array(
             xPDOTransport::PRESERVE_KEYS => false,
             xPDOTransport::UPDATE_OBJECT => true,
