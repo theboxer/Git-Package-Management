@@ -133,6 +133,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle->addResourceResolver($this->packagePath . '_build/gpm_resolvers', $resourcesArray);
         }
 
+        $this->addWidgets();
         $this->addSystemSettings();
 
         $after = $resolver->getAfter();
@@ -491,7 +492,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 'description' => $widget->getDescription(),
                 'type' => $widget->getWidgetType(),
                 'content' => ($widget->getWidgetType() == 'file') ?
-                    '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $widget->getFilePath() :
+                    '[[++core_path]]' . 'components/' . $this->config->getLowCaseName() . '/' . $widget->getFilePath() :
                     $widget->getFile(),
                 'namespace' => $this->config->getLowCaseName(),
                 'lexicon' => $widget->getLexicon(),

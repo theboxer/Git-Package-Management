@@ -439,10 +439,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $widgetObject->set('description', $widget->getDescription());
             $widgetObject->set('type', $widget->getWidgetType());
-            $widgetObject->set('content', ($widget->getWidgetType() == 'file') ?
-                '[[++' . $this->newConfig->getLowCaseName() . '.core_path]]' . $widget->getFilePath() :
-                $widget->getFile()
-            );
+            if ($widget->getWidgetType() == 'file') {
+                $widgetContent = $widget->getPackagePath() . '/core/components/' . $this->newConfig->getLowCaseName() .'/'. $widget->getFilePath();
+            } else {
+                $widgetContent = $widget->getFile();
+            }
+            $widgetObject->set('content', $widgetContent);
             $widgetObject->set('namespace', $this->newConfig->getLowCaseName());
             $widgetObject->set('lexicon', $widget->getLexicon());
             $widgetObject->set('size', $widget->getSize());

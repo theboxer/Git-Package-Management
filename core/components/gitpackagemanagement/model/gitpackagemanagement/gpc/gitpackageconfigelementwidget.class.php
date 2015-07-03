@@ -80,4 +80,11 @@ class GitPackageConfigElementWidget extends GitPackageConfigElement{
         return $this->size;
     }
 
+    /**
+     * @return string
+     */
+    public function getPackagePath() {
+        return $this->config->getPackagePath();
+    }
+
 }

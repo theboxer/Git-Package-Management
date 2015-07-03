@@ -637,10 +637,12 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $widgetObject->set('name', $widget->getName());
                 $widgetObject->set('description', $widget->getDescription());
                 $widgetObject->set('type', $widget->getWidgetType());
-                $widgetObject->set('content', ($widget->getWidgetType() == 'file') ?
-                    '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $widget->getFilePath() :
-                    $widget->getFile()
-                );
+                if ($widget->getWidgetType() == 'file') {
+                    $widgetContent = $widget->getPackagePath() . '/core/components/' . $this->config->getLowCaseName() .'/'. $widget->getFilePath();
+                } else {
+                    $widgetContent = $widget->getFile();
+                }
+                $widgetObject->set('content', $widgetContent);
                 $widgetObject->set('namespace', $this->config->getLowCaseName());
                 $widgetObject->set('lexicon', $widget->getLexicon());
                 $widgetObject->set('size', $widget->getSize());
