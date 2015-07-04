@@ -26,8 +26,8 @@ class GitPackageConfigElementWidget extends GitPackageConfigElement{
         }
 
         if ($this->widgettype == 'file') {
-            if (isset($config['file'])) {
-                $this->file = $config['file'];
+            if (isset($config['content'])) {
+                $this->file = $config['content'];
             } else {
                 $this->file = strtolower($this->name) . '.' . $this->type . '.' . $this->extension;
             }
@@ -35,7 +35,7 @@ class GitPackageConfigElementWidget extends GitPackageConfigElement{
                 return false;
             }
         } else {
-            $this->file = $config['file'];
+            $this->file = $config['content'];
         }
 
         if(isset($config['namespace'])){
