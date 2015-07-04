@@ -9,9 +9,9 @@ Define build options here.
 
 #### Available properties:
 * **resolver** (optional) - Resolver options
-* **readMe** (optional, default: docs/readme.txt) - Path to readme file
+* **readme** (optional, default: docs/readme.txt) - Path to readme file
 * **license** (optional, default: docs/license.txt) - Path to license file
-* **changeLog** (optional, default: docs/changelog.txt) - Path to change log file
+* **changelog** (optional, default: docs/changelog.txt) - Path to change log file
 * **schemaPath** (optional, default: /core/components/$lowCaseName$/model/schema/$lowCaseName$.mysql.schema.xml) - Path to the XML schema file
 * **setupOptions** (optional) - Setup options object
 
@@ -39,13 +39,19 @@ Define resolver options here
 * **resolversDir** (optional, default: resolvers) - Directory for custom resolvers
 * **before** (optional, default: empty array) - Array with paths to resolvers, which will be executed before assets & core file resolvers
 * **after** (optional, default: empty array) - Array with paths to resolvers, which will be executed after assets & core file resolvers
+* **files** (optional, default: empty array) - Array with source and target, used to create a file resolver. (File resolvers for assets & core are created automatically)
+    * Available placeholders for source item: [[+assetsPath]], [[+corePath]], [[+packagePath]]
 
 #### Example
 ```json
 {
     "resolver":{
         "resolversDir": "resolvers",
-        "after": ["resolve.customresolver.php"],        
+        "after": ["resolve.customresolver.php"],
+        "files": [{
+            "source": "[[+packagePath]]/move_under_assets",
+            "target": "return MODX_ASSETS_PATH . 'components/';"
+        }]
     }
 }
 ```

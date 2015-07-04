@@ -8,6 +8,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     protected $inputType = 'text';
     protected $sortOrder = '0';
     protected $templates = array();
+    protected $category;
     private $inputProperties = array();
     private $outputProperties = array();
 
@@ -56,6 +57,16 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
                 $this->config->error->addError('Elements: ' . $this->type . ' - templates are not an array', true);
                 return false;
             }
+        }
+
+        if (isset($config['category'])) {
+            $currentCategories = array_keys($this->config->getCategories());
+            if (!in_array($config['category'], $currentCategories)) {
+                $this->config->error->addError('Elements: ' . $this->type . ' - category: ' . $config['category'] . ' does not exist', true);
+                return false;
+            }
+
+            $this->category = $config['category'];
         }
 
         return true;
@@ -111,4 +122,11 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
         return $this->outputProperties;
     }
 
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
 }

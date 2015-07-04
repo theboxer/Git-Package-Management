@@ -101,6 +101,17 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle->addCoreResolver($this->corePath);
         }
 
+        $fileResolvers = $resolver->getFileResolvers();
+        foreach ($fileResolvers as $fileResolver) {
+            $source = $fileResolver['source'];
+
+            $source = str_replace('[[+corePath]]', $this->corePath, $source);
+            $source = str_replace('[[+assetsPath]]', $this->assetsPath, $source);
+            $source = str_replace('[[+packagePath]]', $this->packagePath, $source);
+
+            $vehicle->addFileResolver($source, $fileResolver['target']);
+        }
+
         $db = $this->config->getDatabase();
         if ($db != null) {
             $tables = $db->getTables();
@@ -167,6 +178,14 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             if (file_exists($file)) {
                 $setupOptions['source'] = $file;
                 $packageAttributes['setup-options'] = $setupOptions;
+            }
+        }
+
+        $dependencies = $this->config->getDependencies();
+        if (!empty($dependencies)) {
+            $packageAttributes['requires'] = array();
+            foreach ($dependencies as $dependency) {
+                $packageAttributes['requires'][$dependency['name']] = $dependency['version'];
             }
         }
 

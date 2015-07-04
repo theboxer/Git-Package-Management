@@ -8,7 +8,7 @@ class GitPackageConfigBuild {
     private $resolver;
     private $readme = 'docs/readme.txt';
     private $license = 'docs/license.txt';
-    private $changeLog = 'docs/changelog.txt';
+    private $changelog = 'docs/changelog.txt';
     private $schemaPath = '';
     private $setupOptions = array();
     private $attributes = array();
@@ -24,7 +24,7 @@ class GitPackageConfigBuild {
             $this->resolver->fromArray($config['resolver']);
         }
 
-        if(isset($config['readMe'])){
+        if(isset($config['readme'])){
             $this->readme = $config['readme'];
         }
 
@@ -32,8 +32,8 @@ class GitPackageConfigBuild {
             $this->license = $config['license'];
         }
 
-        if(isset($config['changeLog'])){
-            $this->changeLog = $config['changelog'];
+        if(isset($config['changelog'])){
+            $this->changelog = $config['changelog'];
         }
 
         if(isset($config['setupOptions'])){
@@ -103,7 +103,7 @@ class GitPackageConfigBuild {
      * @return string
      */
     public function getChangeLog() {
-        return $this->changeLog;
+        return $this->changelog;
     }
 
     /**

@@ -497,11 +497,11 @@ class GitPackageConfig {
         $failed = array();
 
         foreach ($this->dependencies as $dependency) {
-            $found = $this->modx->getCount('transport.modTransportPackage', array('package_name' => $dependency));
-            $foundInGPM = $this->modx->getCount('GitPackage', array('name' => $dependency, 'OR:dir_name:=' => $dependency));
+            $found = $this->modx->getCount('transport.modTransportPackage', array('package_name' => $dependency['name']));
+            $foundInGPM = $this->modx->getCount('GitPackage', array('name' => $dependency['name'], 'OR:dir_name:=' => $dependency['name']));
 
             if ($found == 0 && $foundInGPM == 0) {
-                $failed[] = $dependency;
+                $failed[] = $dependency['name'];
             }
         }
 
@@ -525,5 +525,10 @@ class GitPackageConfig {
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    public function getDependencies()
+    {
+        return $this->dependencies;
     }
 }
