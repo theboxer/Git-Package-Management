@@ -256,7 +256,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         foreach($this->newConfig->getElements($configType) as $name => $element){
             if($type == 'Template'){
                 /** @var modElement $elementObject */
-                $elementObject = $this->modx->getObject('mod'.$type, array('templatename' => $name));                
+                $elementObject = $this->modx->getObject('mod'.$type, array('templatename' => $name));
             }else{
                 $elementObject = $this->modx->getObject('mod'.$type, array('name' => $name));
             }

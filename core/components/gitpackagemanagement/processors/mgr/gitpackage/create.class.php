@@ -543,7 +543,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating templates:');
             foreach($templates as $template){
                 $templatesObject = $this->modx->newObject('modTemplate');
-                $templatesObject->set('templatename', $template->getName());                
+                $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('description', $template->getDescription());
                 $templatesObject->set('static', 1);
                 $templatesObject->set('icon', $template->getIcon());
