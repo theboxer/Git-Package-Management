@@ -35,6 +35,15 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
             $this->name = strtolower($this->caption);
         }
 
+        if (isset($config['description'])) {
+            $this->description = $config['description'];
+        }
+
+        if (isset($config['properties']) && is_array($config['properties'])) {
+            $propertiesSet = $this->setProperties($config['properties']);
+            if ($propertiesSet === false) return false;
+        }
+
         if(isset($config['type'])){
             $this->inputType = $config['type'];
         }
