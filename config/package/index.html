@@ -472,7 +472,8 @@
 <li><strong>defaultValue</strong> (optional, default: null) - Default value of the TV</li>
 <li><strong>inputOptionValues</strong> (optional, default: null) - Input options, for example items for single select list</li>
 <li><strong>sortOrder</strong> (optional, default: 0) - If you're using more than one TV, this will determine which appear at the top (1 = top, bigger numbers sink to the bottom)</li>
-<li><strong>templates</strong> (required) - Array of template names for which will be this TV allowed</li>
+<li><strong>templates</strong> (optional) - Array of template names for which will be this TV allowed</li>
+<li><strong>display</strong> (optional) - Output type</li>
 <li><strong>properties</strong> (optional) - An array of objects, where each object has those properties:<ul>
 <li><strong>name</strong> (required) - Name of the property</li>
 <li><strong>description</strong> (optional) - Description of the property</li>
@@ -484,7 +485,7 @@
 </ul>
 </li>
 <li><strong>inputProperties</strong> (optional) - Object with input properties, list of available properties depends on TV type</li>
-<li><strong>outputProperties</strong> (optional) - Object with output properties, list of available properties depends on output type (e.g. <code>delimiter</code>; <code>format</code>; <code>tagname</code>, <code>tagid</code>, <code>class</code>, <code>style</code>, <code>attrib</code>; ...)</li>
+<li><strong>outputProperties</strong> (optional) - Object with output properties, list of available properties depends on <code>display</code> (e.g. <code>delimiter</code>; <code>format</code>; <code>tagname</code>, <code>tagid</code>, <code>class</code>, <code>style</code>, <code>attrib</code>; ...)</li>
 </ul>
 <h4 id="example_6">Example</h4>
 <pre><code class="json">{
@@ -502,12 +503,12 @@
                     &quot;name&quot;: &quot;testproperty&quot;,
                     &quot;value&quot;: &quot;testvalue&quot;
                 }],
-                &quot;inputProperties&quot;: [{
+                &quot;inputProperties&quot;: {
                     &quot;allowBlank&quot;: false
-                }],
-                &quot;outputProperties&quot;: [{
+                },
+                &quot;outputProperties&quot;: {
                     &quot;delimiter&quot;: &quot;,&quot;
-                }]                
+                }               
             }]
         }
     }
