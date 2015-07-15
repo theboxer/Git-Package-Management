@@ -9,6 +9,7 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     protected $sortOrder = '0';
     protected $templates = array();
     protected $category;
+    protected $display = '';
     private $inputProperties = array();
     private $outputProperties = array();
 
@@ -48,6 +49,10 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
 
         if(isset($config['sortOrder'])){
             $this->sortOrder = $config['sortOrder'];
+        }
+        
+        if(isset($config['display'])){
+            $this->display = $config['display'];
         }
 
         if(isset($config['templates'])){
@@ -128,5 +133,10 @@ class GitPackageConfigElementTV extends GitPackageConfigElement{
     public function getCategory()
     {
         return $this->category;
+    }
+
+    public function getDisplay()
+    {
+        return $this->display;
     }
 }

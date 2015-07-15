@@ -1,5 +1,7 @@
 Changelog for GitPackageManagement.
 
+- Fix setting output properties for TVs
+
 GitPackageManagement 0.11.0 alpha
 ==============
 - Add an option to specify path to XML schema

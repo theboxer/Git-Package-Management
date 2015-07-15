@@ -376,7 +376,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $tvObject->set('elements', $tv->getInputOptionValues());
             $tvObject->set('rank', $tv->getSortOrder());
             $tvObject->set('default_text', $tv->getDefaultValue());
-
+            $tvObject->set('display', $tv->getDisplay());
+            
             $inputProperties = $tv->getInputProperties();
             if (!empty($inputProperties)) {
                 $tvObject->set('input_properties',$inputProperties);
@@ -384,7 +385,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $outputProperties = $tv->getOutputProperties();
             if (!empty($outputProperties)) {
-                $tvObject->set('output_properties',$outputProperties[0]);
+                $tvObject->set('output_properties',$outputProperties);
             }
 
             /** @var modTemplateVarTemplate[] $oldTemplates */

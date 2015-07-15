@@ -295,7 +295,8 @@ In this section we create some elements. During the installation, all elements a
 - **defaultValue** (optional, default: null) - Default value of the TV
 - **inputOptionValues** (optional, default: null) - Input options, for example items for single select list
 - **sortOrder** (optional, default: 0) - If you're using more than one TV, this will determine which appear at the top (1 = top, bigger numbers sink to the bottom)
-- **templates** (required) - Array of template names for which will be this TV allowed
+- **templates** (optional) - Array of template names for which will be this TV allowed
+- **display** (optional) - Output type
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
     - **description** (optional) - Description of the property
@@ -305,7 +306,7 @@ In this section we create some elements. During the installation, all elements a
     - **lexicon** (optional, default:strtolower($lowCaseName$):properties) - Lexicon topic for description
     - **area** (optional) - Area of the property
 - **inputProperties** (optional) - Object with input properties, list of available properties depends on TV type
-- **outputProperties** (optional) - Object with output properties, list of available properties depends on output type (e.g. `delimiter`; `format`; `tagname`, `tagid`, `class`, `style`, `attrib`; ...)
+- **outputProperties** (optional) - Object with output properties, list of available properties depends on `display` (e.g. `delimiter`; `format`; `tagname`, `tagid`, `class`, `style`, `attrib`; ...)
 
 #### Example
 ```json
@@ -324,12 +325,12 @@ In this section we create some elements. During the installation, all elements a
                     "name": "testproperty",
                     "value": "testvalue"
                 }],
-                "inputProperties": [{
+                "inputProperties": {
                     "allowBlank": false
-                }],
-                "outputProperties": [{
+                },
+                "outputProperties": {
                     "delimiter": ","
-                }]                
+                }               
             }]
         }
     }

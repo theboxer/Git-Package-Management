@@ -375,6 +375,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $tvObject->set('elements', $configTV->getInputOptionValues());
                 $tvObject->set('rank', $configTV->getSortOrder());
                 $tvObject->set('default_text', $configTV->getDefaultValue());
+                $tvObject->set('display', $configTV->getDisplay());
 
                 $inputProperties = $configTV->getInputProperties();
                 if (!empty($inputProperties)) {
@@ -383,7 +384,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
                 $outputProperties = $configTV->getOutputProperties();
                 if (!empty($outputProperties)) {
-                    $tvObject->set('output_properties',$outputProperties[0]);
+                    $tvObject->set('output_properties',$outputProperties);
                 }
 
                 $tvObject->setProperties($configTV->getProperties());
