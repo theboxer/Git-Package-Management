@@ -49,8 +49,7 @@ class GitPackageConfigResource {
         if (isset($config['alias'])) {
             $this->alias = $config['alias'];
         } else {
-            $res = new modResource($this->modx);
-            $this->alias = $res->cleanAlias($this->pagetitle);
+            $this->alias = modResource::filterPathSegment($this->modx, $this->pagetitle);
         }
 
         if (isset($config['setAsHome'])) {
@@ -163,11 +162,11 @@ class GitPackageConfigResource {
 
         if (isset($config['others']) && is_array($config['others'])) {
             foreach ($config['others'] as $other) {
-                if (!isset($tv['name'])) {
+                if (!isset($other['name'])) {
                     $this->config->error->addError('Resources - Other - name is not set', true);
                     return false;
                 }
-
+                
                 if (!isset($other['value'])) {
                     $other['value'] = '';
                 }
