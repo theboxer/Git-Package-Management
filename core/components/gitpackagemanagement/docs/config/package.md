@@ -337,6 +337,52 @@ In this section we create some elements. During the installation, all elements a
 }
 ```
 
+### Widgets
+
+**Wrapper:** tvs (array)
+```json
+{
+    "package":{
+        "elements": {
+            "widgets": []
+        }
+    }
+}
+```
+
+lexicon, size
+
+#### Available properties:
+- **name** (required) - Widget title
+- **description** (optional, default: null) - Widget description
+- **type** (optional, default: file) - Widget type. Could be set to: 
+    - `snippet` widgets are MODX Snippets that are run and return their output. content has to be filled with a snippet name. 
+    - `html` widgets are just straight HTML. content has to be filled with HTML code.
+    - `file` widgets are loaded directly from PHP files, which can either return their output or the name of the modDashboardWidgetClass-extended class to load. content has to be filled with the name of a PHP file.
+    - `php` widgets are widgets that are straight PHP in the widget content, similar to a Snippet. content has to be filled with the PHP code (with or without PHP tags).
+- **content** (optional, default: null or strtolower($name$).widget.php for file type) - Widget content
+- **lexicon** (optional, default: strtolower($name$):default) - Widget lexicon
+- **size** (optional, default: half) - Widget size. Could be set to `half`, `full`, `double`
+
+#### Example
+```json
+{
+    "package":{
+        "elements": {
+            "widgets": [{
+                "name": "MyWidget",
+                "description": "This is the best widget",
+                "type": "file",
+                "content": "mywidget.widget.php",
+                "lexicon": "mywidget:default",
+                "size": "half",
+            }]
+        }
+    }
+}
+```
+
+
 ### Categories
 Category with name of the package is created automatically and all categories defined here will be nested under it.
 

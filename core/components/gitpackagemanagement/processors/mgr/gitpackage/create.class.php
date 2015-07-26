@@ -355,6 +355,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         $this->createSnippets();
         $this->createTemplates();
         $this->createTVs();
+        $this->createWidgets();
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating elements finished');
     }
 
@@ -542,7 +543,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating templates:');
             foreach($templates as $template){
                 $templatesObject = $this->modx->newObject('modTemplate');
-                $templatesObject->set('templatename', $template->getName());                
+                $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('description', $template->getDescription());
                 $templatesObject->set('static', 1);
                 $templatesObject->set('icon', $template->getIcon());
@@ -624,6 +625,37 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 }
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'TV ' . $tv->getName() . ' created.');
+            }
+
+        }
+    }
+
+    /**
+     * Create widgets if any
+     */
+    private function createWidgets(){
+        /** @var GitPackageConfigElementWidget[] $widgets */
+        $widgets = $this->config->getElements('widgets');
+        if(count($widgets) > 0){
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Creating widgets:');
+            foreach($widgets as $widget){
+                $widgetObject = $this->modx->newObject('modDashboardWidget');
+                $widgetObject->set('name', $widget->getName());
+                $widgetObject->set('description', $widget->getDescription());
+                $widgetObject->set('type', $widget->getWidgetType());
+                if ($widget->getWidgetType() == 'file') {
+                    $widgetContent = $widget->getPackagePath() . '/core/components/' . $this->config->getLowCaseName() .'/'. $widget->getFilePath();
+                } else {
+                    $widgetContent = $widget->getFile();
+                }
+                $widgetObject->set('content', $widgetContent);
+                $widgetObject->set('namespace', $this->config->getLowCaseName());
+                $widgetObject->set('lexicon', $widget->getLexicon());
+                $widgetObject->set('size', $widget->getSize());
+
+                $widgetObject->save();
+
+                $this->modx->log(modX::LOG_LEVEL_INFO, 'Widget ' . $widget->getName() . ' created.');
             }
 
         }

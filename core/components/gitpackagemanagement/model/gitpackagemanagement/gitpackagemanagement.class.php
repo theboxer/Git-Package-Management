@@ -35,6 +35,7 @@ class GitPackageManagement {
             'modelPath' => $corePath . 'model/',
             'chunksPath' => $corePath . 'elements/chunks/',
             'snippetsPath' => $corePath . 'elements/snippets/',
+            'widgetsPath' => $corePath . 'elements/widgets/',
             'processorsPath' => $corePath . 'processors/',
             'templatesPath' => $corePath . 'templates/',
         ),$options);

@@ -144,6 +144,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle->addResourceResolver($this->packagePath . '_build/gpm_resolvers', $resourcesArray);
         }
 
+        $this->addWidgets();
         $this->addSystemSettings();
 
         $after = $resolver->getAfter();
@@ -490,6 +491,35 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             ), '', true, true);
 
             $vehicle = $this->builder->createVehicle($settingObject, 'setting');
+            $this->builder->putVehicle($vehicle);
+        }
+    }
+
+    private function addWidgets() {
+        /** @var GitPackageConfigElementWidget[] $widgets */
+        $widgets = $this->config->getElements('widgets');
+        $attributes = array(
+            xPDOTransport::PRESERVE_KEYS => false,
+            xPDOTransport::UPDATE_OBJECT => true,
+            xPDOTransport::UNIQUE_KEY => array('name'),
+        );
+
+        foreach ($widgets as $widget) {
+            /** @var modSystemSetting $widgetObject */
+            $widgetObject = $this->modx->newObject('modDashboardWidget');
+            $widgetObject->fromArray(array(
+                'name' => $widget->getName(),
+                'description' => $widget->getDescription(),
+                'type' => $widget->getWidgetType(),
+                'content' => ($widget->getWidgetType() == 'file') ?
+                    '[[++core_path]]' . 'components/' . $this->config->getLowCaseName() . '/' . $widget->getFilePath() :
+                    $widget->getFile(),
+                'namespace' => $this->config->getLowCaseName(),
+                'lexicon' => $widget->getLexicon(),
+                'size' => $widget->getSize(),
+            ), '', true, true);
+
+            $vehicle = $this->builder->createVehicle($widgetObject, $attributes);
             $this->builder->putVehicle($vehicle);
         }
     }
