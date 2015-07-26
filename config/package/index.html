@@ -102,21 +102,23 @@
                             
                                 <li><a class="toctree-l3" href="#template-variables">Template Variables</a></li>
                             
+                                <li><a class="toctree-l3" href="#widgets">Widgets</a></li>
+                            
                                 <li><a class="toctree-l3" href="#categories">Categories</a></li>
                             
                         
                             <li class="toctree-l2"><a href="#resources">Resources</a></li>
                             
-                                <li><a class="toctree-l3" href="#available-properties_8">Available properties:</a></li>
+                                <li><a class="toctree-l3" href="#available-properties_9">Available properties:</a></li>
                             
-                                <li><a class="toctree-l3" href="#example_8">Example</a></li>
+                                <li><a class="toctree-l3" href="#example_9">Example</a></li>
                             
                         
                             <li class="toctree-l2"><a href="#system-settings">System settings</a></li>
                             
-                                <li><a class="toctree-l3" href="#available-properties_9">Available properties:</a></li>
+                                <li><a class="toctree-l3" href="#available-properties_10">Available properties:</a></li>
                             
-                                <li><a class="toctree-l3" href="#example_9">Example</a></li>
+                                <li><a class="toctree-l3" href="#example_10">Example</a></li>
                             
                         
                         </ul>
@@ -515,6 +517,50 @@
 }
 </code></pre>
 
+<h3 id="widgets">Widgets</h3>
+<p><strong>Wrapper:</strong> tvs (array)</p>
+<pre><code class="json">{
+    &quot;package&quot;:{
+        &quot;elements&quot;: {
+            &quot;widgets&quot;: []
+        }
+    }
+}
+</code></pre>
+
+<p>lexicon, size</p>
+<h4 id="available-properties_7">Available properties:</h4>
+<ul>
+<li><strong>name</strong> (required) - Widget title</li>
+<li><strong>description</strong> (optional, default: null) - Widget description</li>
+<li><strong>type</strong> (optional, default: file) - Widget type. Could be set to: <ul>
+<li><code>snippet</code> widgets are MODX Snippets that are run and return their output. content has to be filled with a snippet name. </li>
+<li><code>html</code> widgets are just straight HTML. content has to be filled with HTML code.</li>
+<li><code>file</code> widgets are loaded directly from PHP files, which can either return their output or the name of the modDashboardWidgetClass-extended class to load. content has to be filled with the name of a PHP file.</li>
+<li><code>php</code> widgets are widgets that are straight PHP in the widget content, similar to a Snippet. content has to be filled with the PHP code (with or without PHP tags).</li>
+</ul>
+</li>
+<li><strong>content</strong> (optional, default: null or strtolower($name$).widget.php for file type) - Widget content</li>
+<li><strong>lexicon</strong> (optional, default: strtolower($name$):default) - Widget lexicon</li>
+<li><strong>size</strong> (optional, default: half) - Widget size. Could be set to <code>half</code>, <code>full</code>, <code>double</code></li>
+</ul>
+<h4 id="example_7">Example</h4>
+<pre><code class="json">{
+    &quot;package&quot;:{
+        &quot;elements&quot;: {
+            &quot;widgets&quot;: [{
+                &quot;name&quot;: &quot;MyWidget&quot;,
+                &quot;description&quot;: &quot;This is the best widget&quot;,
+                &quot;type&quot;: &quot;file&quot;,
+                &quot;content&quot;: &quot;mywidget.widget.php&quot;,
+                &quot;lexicon&quot;: &quot;mywidget:default&quot;,
+                &quot;size&quot;: &quot;half&quot;,
+            }]
+        }
+    }
+}
+</code></pre>
+
 <h3 id="categories">Categories</h3>
 <p>Category with name of the package is created automatically and all categories defined here will be nested under it.</p>
 <p><strong>Wrapper:</strong> categories (array)</p>
@@ -527,12 +573,12 @@
 }
 </code></pre>
 
-<h4 id="available-properties_7">Available properties:</h4>
+<h4 id="available-properties_8">Available properties:</h4>
 <ul>
 <li><strong>name</strong> (required) - Category's name</li>
 <li><strong>parent</strong> (optional) - Name of category that will be used as a parent</li>
 </ul>
-<h4 id="example_7">Example</h4>
+<h4 id="example_8">Example</h4>
 <pre><code class="json">{
     &quot;package&quot;:{
         &quot;elements&quot;: {
@@ -557,7 +603,7 @@
 }
 </code></pre>
 
-<h4 id="available-properties_8">Available properties:</h4>
+<h4 id="available-properties_9">Available properties:</h4>
 <ul>
 <li><strong>pagetitle</strong> (required) - Page title</li>
 <li><strong>longtitle</strong> (optional) - Long title</li>
@@ -587,7 +633,7 @@
 <li><strong>others</strong> (optional) - Array of name &amp; value pair that will be sent to Resource's create &amp; update processor</li>
 <li><strong>setAsHome</strong> (optional) - 1/0 to link this Resource with Resource that is set as site_start</li>
 </ul>
-<h4 id="example_8">Example</h4>
+<h4 id="example_9">Example</h4>
 <pre><code class="json">{
     &quot;package&quot;:{
         &quot;resources&quot;: [{
@@ -613,7 +659,7 @@
 }
 </code></pre>
 
-<h4 id="available-properties_9">Available properties:</h4>
+<h4 id="available-properties_10">Available properties:</h4>
 <ul>
 <li><strong>key</strong> (required) - Setting's key</li>
 <li><strong>namespace</strong> (optional, default: lowCaseName) - Setting's namespace (will be used only as a prefix for the key)</li>
@@ -621,7 +667,7 @@
 <li><strong>area</strong> (optional, default: default) - Setting's area</li>
 <li><strong>value</strong> (required) - Setting's value</li>
 </ul>
-<h4 id="example_9">Example</h4>
+<h4 id="example_10">Example</h4>
 <pre><code class="json">{
     &quot;package&quot;:{
         &quot;systemSettings&quot;: [{
