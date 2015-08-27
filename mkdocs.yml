@@ -11,6 +11,7 @@ pages:
 - [config/package.md, Config, Package]
 - [config/database.md, Config, Database]
 - [config/extension-package.md, Config, Extension package]
+- [config/dependencies.md, Config, Dependencies]
 - [config/build.md, Config, Build]
 - [config/examples.md, Config, Examples]
 theme: readthedocs
