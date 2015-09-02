@@ -41,6 +41,10 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $config = file_get_contents($configFile);
 
         $config = $this->modx->fromJSON($config);
+        
+        if (is_null($config)) {
+            return 'JSON config file is not valid.';
+        }
 
         $this->newConfig = new GitPackageConfig($this->modx, $packagePath);
         $this->newConfig->parseConfig($config);
