@@ -1,20 +1,29 @@
 <?php
 namespace GPM\Config\Loader;
 
+use GPM\Config\Object\General;
+use GPM\Config\Parser\Parser;
+
 final class JSON implements iLoader
 {
+    /** @var Parser */
+    private $parser;
+    
     /** @var string */
     private $path = '';
     
     /** @var array */
     private $config = [];
-    
+
     /**
+     * @param Parser $parser
      * @param string $path
+     * @param General $general
      * @throws \Exception
      */
-    public function __construct($path)
+    public function __construct(Parser $parser, $path, General $general = null)
     {
+        $this->parser = $parser;
         $this->path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR . '_build' . DIRECTORY_SEPARATOR;
         $this->config = $this->loadFile('config.json');
         
@@ -48,11 +57,13 @@ final class JSON implements iLoader
     }
 
     /**
-     * Load general info about packge
+     * Load general info about package
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadGeneral()
+    public function loadGeneral($skip = true)
     {
         $general = [];
         
@@ -61,231 +72,381 @@ final class JSON implements iLoader
         if (isset($this->config['description'])) $general['description'] = $this->config['description']; 
         if (isset($this->config['author'])) $general['author'] = $this->config['author']; 
         if (isset($this->config['version'])) $general['version'] = $this->config['version'];
-
-        return $general;
+        
+        return $this->parser->parseGeneral($general);
     }
 
     /**
      * Load Actions
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadActions()
+    public function loadActions($skip = true)
     {
-        if (!isset($this->config['package']['actions'])) return [];
+        if (empty($this->config['package']['actions'])) return true;
 
-        if (is_string($this->config['package']['actions'])) {
-            return $this->loadFile($this->config['package']['actions']);
+        $actions = $this->config['package']['actions'];
+        
+        if (is_string($actions)) {
+            $actions = $this->loadFile($actions);
         }
         
-        return $this->config['package']['actions'];
+        if (!is_array($actions)) {
+            throw new \Exception('Actions are supposed to be an array.');
+        }
+        
+        foreach ($actions as $action) {
+            $this->parser->parseAction($action, $skip);
+        }
+        
+        return true;
     }
 
     /**
      * Load Menus
-     *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadMenus()
+    public function loadMenus($skip = true)
     {
-        if (!isset($this->config['package']['menus'])) return [];
+        if (empty($this->config['package']['menus'])) return true;
 
-        if (is_string($this->config['package']['menus'])) {
-            return $this->loadFile($this->config['package']['menus']);
+        $menus = $this->config['package']['menus'];
+        
+        if (is_string($menus)) {
+            $menus = $this->loadFile($menus);
         }
 
+        if (!is_array($menus)) {
+            throw new \Exception('Menus are supposed to be an array.');
+        }
+
+        foreach ($menus as $menu) {
+            $this->parser->parseMenu($menu, $skip);
+        }
+        
         return $this->config['package']['menus'];
     }
 
     /**
      * Load Categories
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadCategories()
+    public function loadCategories($skip = true)
     {
-        if (!isset($this->config['package']['elements']['categories'])) return [];
+        if (empty($this->config['package']['elements']['categories'])) return true;
 
-        if (is_string($this->config['package']['elements']['categories'])) {
-            return $this->loadFile($this->config['package']['elements']['categories']);
+        $categories = $this->config['package']['elements']['categories'];
+        
+        if (is_string($categories)) {
+            $categories = $this->loadFile($categories);
         }
 
-        return $this->config['package']['elements']['categories'];
+        if (!is_array($categories)) {
+            throw new \Exception('Categories are supposed to be an array.');
+        }
+
+        foreach ($categories as $category) {
+            $this->parser->parseCategory($category, $skip);
+        }
+
+        return true;
     }
-    
+
     /**
      * Load Plugins
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadPlugins()
+    public function loadPlugins($skip = true)
     {
-        if (!isset($this->config['package']['elements']['plugins'])) return [];
+        if (empty($this->config['package']['elements']['plugins'])) return true;
 
-        if (is_string($this->config['package']['elements']['plugins'])) {
-            return $this->loadFile($this->config['package']['elements']['plugins']);
+        $plugins = $this->config['package']['elements']['plugins'];
+        
+        if (is_string($plugins)) {
+            $plugins = $this->loadFile($plugins);
+        }
+
+        if (!is_array($plugins)) {
+            throw new \Exception('Plugins are supposed to be an array.');
+        }
+
+        foreach ($plugins as $plugin) {
+            $this->parser->parsePlugin($plugin, $skip);
         }
         
-        return $this->config['package']['elements']['plugins'];
+        return true;
     }
 
     /**
      * Load Snippets
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadSnippets()
+    public function loadSnippets($skip = true)
     {
-        if (!isset($this->config['package']['elements']['snippets'])) return [];
+        if (empty($this->config['package']['elements']['snippets'])) return true;
 
-        if (is_string($this->config['package']['elements']['snippets'])) {
-            return $this->loadFile($this->config['package']['elements']['snippets']);
+        $snippets = $this->config['package']['elements']['snippets'];
+        
+        if (is_string($snippets)) {
+            $snippets = $this->loadFile($snippets);
         }
 
-        return $this->config['package']['elements']['snippets'];
+        if (!is_array($snippets)) {
+            throw new \Exception('Snippets are supposed to be an array.');
+        }
+
+        foreach ($snippets as $snippet) {
+            $this->parser->parseSnippet($snippet, $skip);
+        }
+
+        return true;
     }
 
     /**
      * Load Chunks
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadChunks()
+    public function loadChunks($skip = true)
     {
-        if (!isset($this->config['package']['elements']['chunks'])) return [];
+        if (empty($this->config['package']['elements']['chunks'])) return true;
 
-        if (is_string($this->config['package']['elements']['chunks'])) {
-            return $this->loadFile($this->config['package']['elements']['chunks']);
+        $chunks = $this->config['package']['elements']['chunks'];
+        
+        if (is_string($chunks)) {
+            $chunks = $this->loadFile($chunks);
         }
 
-        return $this->config['package']['elements']['chunks'];
+        if (!is_array($chunks)) {
+            throw new \Exception('Chunks are supposed to be an array.');
+        }
+
+        foreach ($chunks as $chunk) {
+            $this->parser->parseChunk($chunk, $skip);
+        }
+
+        return true;
     }
 
     /**
      * Load Templates
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadTemplates()
+    public function loadTemplates($skip = true)
     {
-        if (!isset($this->config['package']['elements']['templates'])) return [];
+        if (empty($this->config['package']['elements']['templates'])) return true;
 
-        if (is_string($this->config['package']['elements']['templates'])) {
-            return $this->loadFile($this->config['package']['elements']['templates']);
+        $templates = $this->config['package']['elements']['templates'];
+        
+        if (is_string($templates)) {
+            $templates = $this->loadFile($templates);
         }
 
-        return $this->config['package']['elements']['templates'];
+        if (!is_array($templates)) {
+            throw new \Exception('Templates are supposed to be an array.');
+        }
+
+        foreach ($templates as $template) {
+            $this->parser->parseTemplate($template, $skip);
+        }
+
+        return true;
     }
 
     /**
      * Load TVs
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadTVs()
+    public function loadTVs($skip = true)
     {
-        if (!isset($this->config['package']['elements']['tvs'])) return [];
+        if (empty($this->config['package']['elements']['tvs'])) return true;
 
-        if (is_string($this->config['package']['elements']['tvs'])) {
-            return $this->loadFile($this->config['package']['elements']['tvs']);
+        $tvs = $this->config['package']['elements']['tvs'];
+        
+        if (is_string($tvs)) {
+            $tvs = $this->loadFile($tvs);
         }
 
-        return $this->config['package']['elements']['tvs'];
+        if (!is_array($tvs)) {
+            throw new \Exception('TVs are supposed to be an array.');
+        }
+
+        foreach ($tvs as $tv) {
+            $this->parser->parseTV($tv, $skip);
+        }
+
+        return true;
     }
 
     /**
      * Load Resources
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadResources()
+    public function loadResources($skip = true)
     {
-        if (!isset($this->config['package']['resources'])) return [];
+        if (empty($this->config['package']['resources'])) return true;
 
-        if (is_string($this->config['package']['resources'])) {
-            return $this->loadFile($this->config['package']['resources']);
+        $resources = $this->config['package']['resources'];
+        
+        if (is_string($resources)) {
+            $resources = $this->loadFile($resources);
         }
 
-        return $this->config['package']['resources'];
+        if (!is_array($resources)) {
+            throw new \Exception('Resources are supposed to be an array.');
+        }
+
+        foreach ($resources as $resource) {
+            $this->parser->parseResource($resource, $skip);
+        }
+
+        return true;
     }
 
     /**
      * Load System settings
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadSystemSettings()
+    public function loadSystemSettings($skip = true)
     {
-        if (!isset($this->config['package']['systemSettings'])) return [];
+        if (empty($this->config['package']['systemSettings'])) return true;
 
-        if (is_string($this->config['package']['systemSettings'])) {
-            return $this->loadFile($this->config['package']['systemSettings']);
+        $systemSettings = $this->config['package']['systemSettings'];
+        
+        if (is_string($systemSettings)) {
+            $systemSettings = $this->loadFile($systemSettings);
         }
 
-        return $this->config['package']['systemSettings'];
+        if (!is_array($systemSettings)) {
+            throw new \Exception('System settings are supposed to be an array.');
+        }
+
+        foreach ($systemSettings as $systemSetting) {
+            $this->parser->parseSystemSetting($systemSetting, $skip);
+        }
+
+        return true;
     }
 
     /**
      * Load Database
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadDatabase()
+    public function loadDatabase($skip = true)
     {
-        if (!isset($this->config['database'])) return [];
+        if (empty($this->config['database'])) return true;
 
-        if (is_string($this->config['database'])) {
-            return $this->loadFile($this->config['database']);
+        $database = $this->config['database'];
+        
+        if (is_string($database)) {
+            $database = $this->loadFile($database);
         }
+        
+        $this->parser->parseDatabase($database, $skip);
 
-        return $this->config['database'];
+        return true;
     }
 
     /**
      * Load Extension packages
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadExtensionPackage()
+    public function loadExtensionPackage($skip = true)
     {
-        if (!isset($this->config['extensionPackage'])) return [];
+        if (!isset($this->config['extensionPackage'])) return true;
 
-        if (is_string($this->config['extensionPackage'])) {
-            return $this->loadFile($this->config['extensionPackage']);
+        $extensionPackage = $this->config['extensionPackage'];
+        
+        if (is_string($extensionPackage)) {
+            $extensionPackage = $this->loadFile($extensionPackage);
         }
+        
+        $this->parser->parseExtensionPackage($extensionPackage, $skip);
 
-        return $this->config['extensionPackage'];
+        return true;
     }
 
     /**
      * Load Build
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadBuild()
+    public function loadBuild($skip = true)
     {
-        if (!isset($this->config['build'])) return [];
-
-        if (is_string($this->config['build'])) {
-            return $this->loadFile($this->config['build']);
+        $build = [];
+        if (!empty($this->config['build'])) {
+            $build = $this->config['build'];
         }
 
-        return $this->config['build'];
+        if (is_string($build)) {
+            $build = $this->loadFile($build);
+        }
+
+        $this->parser->parseBuild($build, $skip);
+
+        return true;
     }
-    
+
     /**
      * Load Dependencies
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadDependencies()
+    public function loadDependencies($skip = true)
     {
-        if (!isset($this->config['dependencies'])) return [];
+        if (empty($this->config['dependencies'])) return true;
 
-        if (is_string($this->config['dependencies'])) {
-            return $this->loadFile($this->config['dependencies']);
+        $dependencies = $this->config['dependencies'];
+        
+        if (is_string($dependencies)) {
+            $dependencies = $this->loadFile($dependencies);
         }
 
-        return $this->config['dependencies'];
+        if (!is_array($dependencies)) {
+            throw new \Exception('Dependencies are supposed to be an array.');
+        }
+
+        foreach ($dependencies as $dependency) {
+            $this->parser->parseDependency($dependency, $skip);
+        }
+
+        return true;
     }
 }

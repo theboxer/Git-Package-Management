@@ -5,9 +5,6 @@ use GPM\Config\ConfigObject;
 
 class Resource extends ConfigObject
 {
-    /** @var \modX $modx */
-    protected $modx;
-
     protected $pagetitle;
     protected $alias = '';
     protected $parent = 0;
@@ -39,23 +36,15 @@ class Resource extends ConfigObject
     protected $section = 'Resources';
     protected $validations = ['pagetitle', 'tvs:array', 'others:array'];
 
-    public function __construct($config, \modX &$modx)
-    {
-        $this->modx =& $modx;
-
-        parent::__construct($config);
-    }
-    
     protected function setDefaults($config)
     {
         if (!isset($config['alias'])) {
-            $res = new \modResource($this->modx);
-            $this->alias = $res->cleanAlias($this->pagetitle);
+            $this->alias = \modResource::filterPathSegment($this->config->modx, $this->pagetitle);
         }
 
         if (!isset($config['content']) && !isset($config['file'])) {
             $file = $this->config->getPackagePath();
-            $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $this->alias . $this->suffix;
+            $file .= '/core/components/' . $this->config->general->getLowCaseName() . '/resources/' . $this->alias . $this->suffix;
 
             if (file_exists($file)) {
                 $this->content = file_get_contents($file);
@@ -67,7 +56,7 @@ class Resource extends ConfigObject
 
             if (isset($config['file'])) {
                 $file = $this->config->getPackagePath();
-                $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $config['file'];
+                $file .= '/core/components/' . $this->config->general->getLowCaseName() . '/resources/' . $config['file'];
 
                 if (file_exists($file)) {
                     $this->content = file_get_contents($file);
@@ -144,7 +133,7 @@ class Resource extends ConfigObject
 
             if (isset($tv['file'])) {
                 $file = $this->config->getPackagePath();
-                $file .= '/core/components/' . $this->config->getLowCaseName() . '/resources/' . $tv['file'];
+                $file .= '/core/components/' . $this->config->general->getLowCaseName() . '/resources/' . $tv['file'];
 
                 if (file_exists($file)) {
                     $tv['value'] = file_get_contents($file);
@@ -190,7 +179,7 @@ class Resource extends ConfigObject
                 $resource['parent'] = $map[$this->parent];
             } else {
                 /** @var \modResource $parent */
-                $parent = $this->modx->getObject('modResource', ['pagetitle' => $this->parent]);
+                $parent = $this->config->modx->getObject('modResource', ['pagetitle' => $this->parent]);
                 if ($parent) {
                     $resource['parent'] = $parent->id;
                 }
@@ -198,7 +187,7 @@ class Resource extends ConfigObject
         } else {
             if ($this->parent != 0) {
                 /** @var \modResource $parent */
-                $parent = $this->modx->getObject('modResource', ['id' => $this->parent]);
+                $parent = $this->config->modx->getObject('modResource', ['id' => $this->parent]);
                 if ($parent) {
                     $resource['parent'] = $parent->id;
                 }
@@ -220,7 +209,7 @@ class Resource extends ConfigObject
         $resource['show_in_tree'] = $this->show_in_tree;
 
         if ($this->setAsHome == 1) {
-            $id = $this->modx->getOption('site_start');
+            $id = $this->config->modx->getOption('site_start');
 
             $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
 
@@ -249,7 +238,7 @@ class Resource extends ConfigObject
 
         if ($this->template !== null) {
             if ($this->template !== 0) {
-                $template = $this->modx->getObject('modTemplate', ['templatename' => $this->template]);
+                $template = $this->config->modx->getObject('modTemplate', ['templatename' => $this->template]);
                 if ($template) {
                     $resource['template'] = $template->id;
                 }
@@ -259,12 +248,12 @@ class Resource extends ConfigObject
         }
 
         if ($this->content_type !== null) {
-            $content_type = $this->modx->getObject('modContentType', ['name' => $this->content_type]);
+            $content_type = $this->config->modx->getObject('modContentType', ['name' => $this->content_type]);
             if ($content_type) {
                 $resource['content_type'] = $content_type->id;
             }
         } else {
-            $resource['content_type'] = $this->modx->getOption('default_content_type', null, 1);
+            $resource['content_type'] = $this->config->modx->getOption('default_content_type', null, 1);
         }
 
         if ($this->published !== null) {

@@ -30,7 +30,7 @@ class Build extends ConfigObject
         if (isset($config['schemaPath'])) {
             $this->schemaPath = '/' . ltrim($config['schemaPath'], '/');
         } else {
-            $this->schemaPath = '/core/components/' . $this->config->getLowCaseName() . '/' . 'model/schema/' . $this->config->getLowCaseName() . '.mysql.schema.xml';
+            $this->schemaPath = '/core/components/' . $this->config->general->getLowCaseName() . '/' . 'model/schema/' . $this->config->general->getLowCaseName() . '.mysql.schema.xml';
         }   
     }
 
@@ -55,7 +55,7 @@ class Build extends ConfigObject
     }
 
     /**
-     * @return Build\Resolver
+     * @return Resolver
      */
     public function getResolver()
     {

@@ -18,6 +18,19 @@ abstract class ConfigObject
         }
     }
 
+    public function __sleep()
+    {
+        $serialize = array_flip(array_keys(get_object_vars($this)));
+        unset($serialize['config']);
+
+        return array_flip($serialize);
+    }
+
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
+
     public function fromArray($data)
     {
         foreach ($data as $key => $value) {

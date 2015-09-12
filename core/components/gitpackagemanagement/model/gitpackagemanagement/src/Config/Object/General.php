@@ -5,11 +5,11 @@ use GPM\Config\ConfigObject;
 
 class General extends ConfigObject
 {
-    protected $name;
-    protected $lowCaseName;
-    protected $description = '';
-    protected $author;
-    protected $version;
+    public $name;
+    public $lowCaseName;
+    public $description = '';
+    public $author;
+    public $version;
     
     protected $section = 'General';
     protected $validations = ['name', 'author', 'version'];
@@ -20,6 +20,12 @@ class General extends ConfigObject
             $this->lowCaseName = str_replace(' ', '_', strtolower($this->name));
         }    
     }
+
+    public function test()
+    {
+        echo $this->config->getPackagePath();
+    }
+
 
     public function toArray()
     {

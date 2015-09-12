@@ -10,45 +10,43 @@ class Config
     /** @var Error */
     public $error;
     /** @var \modX */
-    protected $modx;
+    public $modx;
     /** @var \GitPackageManagement */
     protected $gpm;
     /** @var bool */
     protected $log = true;
     /** @var string */
-    protected $packagePath;
+    public $packagePath;
     /** @var Object\General */
-    protected $general;
+    public $general;
     /** @var Object\Action[] */
-    protected $actions;
+    public $actions = [];
     /** @var Object\Menu[] */
-    protected $menus;
+    public $menus = [];
     /** @var Object\Category[] */
-    protected $categories;
+    public $categories = [];
     /** @var Object\Element\Plugin[] */
-    protected $plugins;
+    public $plugins = [];
     /** @var Object\Element\Snippet[] */
-    protected $snippets;
+    public $snippets = [];
     /** @var Object\Element\Chunk[] */
-    protected $chunks;
+    public $chunks = [];
     /** @var Object\Element\Template[] */
-    protected $templates;
+    public $templates = [];
     /** @var Object\Element\TV[] */
-    protected $tvs;
+    public $tvs = [];
     /** @var Object\Resource[] */
-    protected $resources;
+    public $resources = [];
     /** @var Object\Setting[] */
-    protected $systemSettings;
+    public $systemSettings = [];
     /** @var Object\Database */
-    protected $database;
+    public $database = null;
     /** @var Object\ExtensionPackage */
-    protected $extensionPackage;
+    public $extensionPackage = null;
     /** @var Object\Build\Build */
-    protected $build;
+    public $build;
     /** @var Object\Dependency[] */
-    protected $dependencies;
-    /** @var Parser\Parser */
-    protected $parser;
+    public $dependencies = [];
 
     /**
      * @param \modX $modx
@@ -60,10 +58,87 @@ class Config
         $this->modx =& $modx;
         $this->packagePath = $packagePath;
         $this->log = $log;
+    }
 
+    public function init()
+    {
         $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->parser = new Parser\Parser($this->modx, $this);
         $this->error = new Error($this->modx);
+    }
+
+    public function __sleep()
+    {
+        return [
+            'log', 'general', 'actions', 'menus', 
+            'categories', 'plugins', 'snippets', 'chunks', 'templates', 
+            'tvs', 'resources', 'systemSettings', 'database', 'extensionPackage',
+            'build', 'dependencies'
+        ];
+    }
+
+    public static function wakeMe($data, \modX &$modx, $packagePath)
+    {
+        /** @var Config $config */
+        $config = unserialize($data);
+        $config->modx =& $modx;
+        $config->packagePath = $packagePath;
+        $config->init();
+        
+        $config->general->setConfig($config);
+        $config->build->setConfig($config);
+        
+        if ($config->database !== null) $config->database->setConfig($config);
+        if ($config->extensionPackage !== null) $config->extensionPackage->setConfig($config);
+        
+        foreach ($config->actions as $action) {
+            $action->setConfig($config);
+        }
+        
+        foreach ($config->menus as $menu) {
+            $menu->setConfig($config);
+        }
+        
+        foreach ($config->categories as $category) {
+            $category->setConfig($config);
+        }
+        
+        foreach ($config->plugins as $plugin) {
+            $plugin->setConfig($config);
+        }
+        
+        foreach ($config->snippets as $snippet) {
+            $snippet->setConfig($config);
+        }
+        
+        foreach ($config->chunks as $chunk) {
+            $chunk->setConfig($config);
+        }
+        
+        foreach ($config->templates as $template) {
+            $template->setConfig($config);
+        }
+        
+        foreach ($config->tvs as $tv) {
+            $tv->setConfig($config);
+        }
+        
+        foreach ($config->resources as $resource) {
+            $resource->setConfig($config);
+        }
+        
+        foreach ($config->systemSettings as $systemSetting) {
+            $systemSetting->setConfig($config);
+        }
+        
+        foreach ($config->systemSettings as $systemSetting) {
+            $systemSetting->setConfig($config);
+        }
+        
+        foreach ($config->dependencies as $dependency) {
+            $dependency->setConfig($config);
+        }
+        
+        return $config;
     }
 
     public function load(iLoader $loader, $skip = true)
@@ -83,15 +158,12 @@ class Config
         $this->loadPart($loader, 'extensionPackage', $skip);
         $this->loadPart($loader, 'build', $skip);
         $this->loadPart($loader, 'dependencies', $skip);
-
     }
 
     public function loadPart(iLoader $loader, $part, $skip = true)
     {
-        $data = $loader->{'load' . ucfirst($part)}();
-
         try {
-            $this->parser->{'parse' . ucfirst($part)}($this->{$part}, $data, $skip);
+            $loader->{'load' . ucfirst($part)}($skip);
         } catch (\Exception $e) {
             $this->error->addError($e->getMessage(), $this->log);
         }
@@ -132,6 +204,12 @@ class Config
         }
 
         return $assetsFolder . $this->general->getLowCaseName() . '/';
+    }
+
+    public function toJSON()
+    {
+        // @TODO: Implement generating full JSON for storing in DB
+        return '{}';
     }
 
     /**

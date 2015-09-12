@@ -35,8 +35,13 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $packagePath = $this->packagePath . $this->object->dir_name;
 
         $this->newConfig = new \GPM\Config\Config($this->modx, $packagePath);
-        $this->newConfig->load(new \GPM\Config\Loader\JSON($packagePath));
-        $this->newConfig->loadPart(new \GPM\Config\Loader\File($packagePath, $this->newConfig->getGeneral()->getLowCaseName()), 'snippets');
+        
+        
+        $parser = new \GPM\Config\Parser\Parser($this->modx, $this->newConfig);
+        
+        $this->newConfig->load(new \GPM\Config\Loader\JSON($parser, $packagePath));
+
+        $this->newConfig->loadPart(new \GPM\Config\Loader\File($parser, $packagePath, $this->newConfig->general), 'snippets');
         if ($this->newConfig->error->hasErrors()) {
             return implode('<br />', $this->newConfig->error->getErrors());
         }
@@ -51,8 +56,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             return $msg;
         }
 
-        $this->oldConfig = new \GPM\Config\Config($this->modx, $packagePath);
-        $this->oldConfig->parseConfig($this->modx->fromJSON($this->object->config));
+        $this->oldConfig = \GPM\Config\Config::wakeMe($this->object->config, $this->modx, $packagePath);
 
         $this->recreateDatabase = $this->getProperty('recreateDatabase', 0);
         $this->alterDatabase = $this->getProperty('alterDatabase', 0);
@@ -62,7 +66,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             return $update;
         }
 
-        $this->setProperty('config', $this->modx->toJSON($config));
+        $this->setProperty('config', serialize($this->newConfig));
 
         return parent::beforeSet();
     }

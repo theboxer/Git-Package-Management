@@ -1,76 +1,36 @@
 <?php
 namespace GPM\Config\Loader;
 
+use GPM\Config\Object\General;
+use GPM\Config\Parser\Parser;
 use Symfony\Component\Finder\Finder;
 
 final class File implements iLoader
 {
+    /** @var Parser */
+    private $parser;
+    
     /** @var string */
     private $path = '';
+    
     /** @var string */
     private $name = '';
 
     /**
+     * @param Parser $parser
      * @param string $path
-     * @param string $name
+     * @param General $general
+     * @throws \Exception
      */
-    public function __construct($path, $name)
+    public function __construct(Parser $parser, $path, General $general = null)
     {
+        if ($general === null) throw new \Exception('Missing argument General $general');
+        
         $this->path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
-        $this->name = $name;
-    }
-
-    /**
-     * Load general info about packge
-     *
-     * @return array
-     */
-    public function loadGeneral()
-    {
-        return [];
-    }
-
-    /**
-     * Load Actions
-     *
-     * @return array
-     */
-    public function loadActions()
-    {
-        return [];
-    }
-
-    /**
-     * Load Menus
-     *
-     * @return array
-     */
-    public function loadMenus()
-    {
-        return [];
-    }
-
-    /**
-     * Load Categories
-     *
-     * @return array
-     */
-    public function loadCategories()
-    {
-        return [];
+        $this->name = $general->getLowCaseName();
     }
     
-    /**
-     * Load Plugins
-     *
-     * @return array
-     */
-    public function loadPlugins()
-    {
-        return [];
-    }
-
-    public function loadSnippets()
+    public function loadSnippets($skip = true)
     {
         $scannedDir = $this->path . '/core/components/' . $this->name . '/elements/snippets/';
 
@@ -78,8 +38,6 @@ final class File implements iLoader
 
         /** @var \Symfony\Component\Finder\SplFileInfo[] $files */
         $files = $finder->files()->in($scannedDir)->name('*.php');
-
-        $snippets = [];
 
         foreach ($files as $file) {
             $fileName = $file->getFilename();
@@ -98,105 +56,167 @@ final class File implements iLoader
                 $category = array_pop($path);
             }
 
-            $snippetArray = [
+            $this->parser->parseSnippet([
                 'name' => $snippetName,
                 'file' => $fileName,
                 'category' => $category,
-            ];
-
-            $snippets[] = $snippetArray;
+            ], $skip);
         }
 
-        return $snippets;
+        return true;
+    }
+
+    /**
+     * Load general info about package
+     *
+     * @param bool $skip
+     * @return bool
+     */
+    public function loadGeneral($skip = true)
+    {
+        return true;
+    }
+
+    /**
+     * Load Actions
+     *
+     * @param bool $skip
+     * @return bool
+     */
+    public function loadActions($skip = true)
+    {
+        return true;
+    }
+
+    /**
+     * Load Menus
+     *
+     * @param bool $skip
+     * @return bool
+     */
+    public function loadMenus($skip = true)
+    {
+        return true;
+    }
+
+    /**
+     * Load Categories
+     *
+     * @param bool $skip
+     * @return bool
+     */
+    public function loadCategories($skip = true)
+    {
+        return true;
+    }
+
+    /**
+     * Load Plugins
+     *
+     * @param bool $skip
+     * @return bool
+     */
+    public function loadPlugins($skip = true)
+    {
+        return true;
     }
 
     /**
      * Load Chunks
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadChunks()
+    public function loadChunks($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
      * Load Templates
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadTemplates()
+    public function loadTemplates($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
      * Load TVs
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadTVs()
+    public function loadTVs($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
      * Load Resources
      *
+     * @param bool $skip
      * @return array
      */
-    public function loadResources()
+    public function loadResources($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
      * Load System settings
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadSystemSettings()
+    public function loadSystemSettings($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
      * Load Database
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadDatabase()
+    public function loadDatabase($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
-     * Load Extension packages
+     * Load Extension package
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadExtensionPackage()
+    public function loadExtensionPackage($skip = true)
     {
-        return [];
+        return true;
     }
 
     /**
      * Load Build
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadBuild()
+    public function loadBuild($skip = true)
     {
-        return [];
+        return true;
     }
-    
+
     /**
      * Load Dependencies
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
      */
-    public function loadDependencies()
+    public function loadDependencies($skip = true)
     {
-        return [];
+        return true;
     }
 }

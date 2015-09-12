@@ -1,110 +1,149 @@
 <?php
 namespace GPM\Config\Loader;
 
+use GPM\Config\Object\General;
+use GPM\Config\Parser\Parser;
+
 interface iLoader
 {
     /**
-     * Load general info about packge
-     * 
-     * @return array
+     * @param Parser $parser
+     * @param $path
+     * @param General $general
      */
-    public function loadGeneral();
+    public function __construct(Parser $parser, $path, General $general = null);
+    
+    /**
+     * Load general info about package
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
+     */
+    public function loadGeneral($skip = true);
 
     /**
      * Load Actions
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadActions();
+    public function loadActions($skip = true);
 
     /**
      * Load Menus
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadMenus();
+    public function loadMenus($skip = true);
 
     /**
      * Load Categories
      *
-     * @return array
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadCategories();
-        
+    public function loadCategories($skip = true);
+
     /**
      * Load Plugins
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadPlugins();
+    public function loadPlugins($skip = true);
 
     /**
      * Load Snippets
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
      */
-    public function loadSnippets();
+    public function loadSnippets($skip = true);
 
     /**
      * Load Chunks
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadChunks();
+    public function loadChunks($skip = true);
 
     /**
      * Load Templates
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadTemplates();
+    public function loadTemplates($skip = true);
 
     /**
      * Load TVs
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadTVs();
+    public function loadTVs($skip = true);
 
     /**
      * Load Resources
-     * 
+     *
+     * @param bool $skip
      * @return array
+     * @throws \Exception
      */
-    public function loadResources();
+    public function loadResources($skip = true);
 
     /**
      * Load System settings
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadSystemSettings();
+    public function loadSystemSettings($skip = true);
 
     /**
      * Load Database
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadDatabase();
+    public function loadDatabase($skip = true);
 
     /**
      * Load Extension package
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadExtensionPackage();
+    public function loadExtensionPackage($skip = true);
 
     /**
      * Load Build
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadBuild();
-    
+    public function loadBuild($skip = true);
+
     /**
      * Load Dependencies
-     * 
-     * @return array
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws \Exception
      */
-    public function loadDependencies();
+    public function loadDependencies($skip = true);
 }
