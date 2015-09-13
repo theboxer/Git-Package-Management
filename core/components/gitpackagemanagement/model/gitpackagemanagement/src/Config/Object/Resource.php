@@ -5,33 +5,33 @@ use GPM\Config\ConfigObject;
 
 class Resource extends ConfigObject
 {
-    protected $pagetitle;
-    protected $alias = '';
-    protected $parent = 0;
-    protected $tvs = array();
-    protected $others = array();
-    protected $content = '';
-    protected $suffix = '.html';
-    protected $id = 0;
-    protected $context_key = 'web';
-    protected $template = null;
-    protected $class_key = 'modDocument';
-    protected $content_type = null;
-    protected $longtitle = '';
-    protected $description = '';
-    protected $introtext = '';
-    protected $published = null;
-    protected $isfolder = 0;
-    protected $richtext = null;
-    protected $menuindex = null;
-    protected $searchable = null;
-    protected $cacheable = null;
-    protected $deleted = 0;
-    protected $menutitle = '';
-    protected $hidemenu = null;
-    protected $hide_children_in_tree = 0;
-    protected $show_in_tree = 1;
-    protected $setAsHome = 0;
+    public $pagetitle;
+    public $alias = '';
+    public $parent = 0;
+    public $tvs = array();
+    public $others = array();
+    public $content = '';
+    public $suffix = '.html';
+    public $id = 0;
+    public $context_key = 'web';
+    public $template = null;
+    public $class_key = 'modDocument';
+    public $content_type = null;
+    public $longtitle = '';
+    public $description = '';
+    public $introtext = '';
+    public $published = null;
+    public $isfolder = 0;
+    public $richtext = null;
+    public $menuindex = null;
+    public $searchable = null;
+    public $cacheable = null;
+    public $deleted = 0;
+    public $menutitle = '';
+    public $hidemenu = null;
+    public $hide_children_in_tree = 0;
+    public $show_in_tree = 1;
+    public $setAsHome = 0;
 
     protected $section = 'Resources';
     protected $validations = ['pagetitle', 'tvs:array', 'others:array'];
@@ -63,61 +63,6 @@ class Resource extends ConfigObject
                 }
             }
         }
-    }
-
-    public function setSetAsHome($setAsHome)
-    {
-        $this->setAsHome = intval($setAsHome);
-    }
-    
-    public function setPublished($published)
-    {
-        $this->published = intval($published);
-    }
-    
-    public function setIsfolder($isFolder)
-    {
-        $this->isfolder = intval($isFolder);
-    }
-    
-    public function setRichtext($richtext)
-    {
-        $this->richtext = intval($richtext);
-    }
-    
-    public function setMenuindex($menuindex)
-    {
-        $this->menuindex = intval($menuindex);
-    }
-    
-    public function setSearchable($searchable)
-    {
-        $this->searchable = intval($searchable);
-    }
-    
-    public function setCacheable($cacheable)
-    {
-        $this->cacheable = intval($cacheable);
-    }
-    
-    public function setDeleted($deleted)
-    {
-        $this->deleted = intval($deleted);
-    }
-    
-    public function setHidemenu($hidemenu)
-    {
-        $this->hidemenu = intval($hidemenu);
-    }
-
-    public function setHide_children_in_tree($hide_children_in_tree)
-    {
-        $this->hide_children_in_tree = intval($hide_children_in_tree);
-    }
-    
-    public function setShow_in_tree($show_in_tree)
-    {
-        $this->show_in_tree = intval($show_in_tree);
     }
 
     public function setTvs($tvs)
@@ -339,214 +284,6 @@ class Resource extends ConfigObject
         }
 
         return $resource;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPagetitle()
-    {
-        return $this->pagetitle;
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTvs()
-    {
-        return $this->tvs;
-    }
-
-    /**
-     * @return null
-     */
-    public function getCacheable()
-    {
-        return $this->cacheable;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClassKey()
-    {
-        return $this->class_key;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->content_type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContextKey()
-    {
-        return $this->context_key;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDeleted()
-    {
-        return $this->deleted;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHideChildrenInTree()
-    {
-        return $this->hide_children_in_tree;
-    }
-
-    /**
-     * @return null
-     */
-    public function getHidemenu()
-    {
-        return $this->hidemenu;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIntrotext()
-    {
-        return $this->introtext;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIsfolder()
-    {
-        return $this->isfolder;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLongtitle()
-    {
-        return $this->longtitle;
-    }
-
-    /**
-     * @return null
-     */
-    public function getMenuindex()
-    {
-        return $this->menuindex;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMenutitle()
-    {
-        return $this->menutitle;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOthers()
-    {
-        return $this->others;
-    }
-
-    /**
-     * @return null
-     */
-    public function getPublished()
-    {
-        return $this->published;
-    }
-
-    /**
-     * @return null
-     */
-    public function getRichtext()
-    {
-        return $this->richtext;
-    }
-
-    /**
-     * @return null
-     */
-    public function getSearchable()
-    {
-        return $this->searchable;
-    }
-
-    /**
-     * @return int
-     */
-    public function getShowInTree()
-    {
-        return $this->show_in_tree;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSuffix()
-    {
-        return $this->suffix;
-    }
-
-    /**
-     * @return null
-     */
-    public function getTemplate()
-    {
-        return $this->template;
     }
 
     public function setId($id)

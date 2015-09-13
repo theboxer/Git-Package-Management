@@ -5,16 +5,15 @@ use GPM\Config\ConfigObject;
 
 class Menu extends ConfigObject
 {
-    protected $text;
-    protected $description = '';
-    protected $parent = 'components';
-    protected $icon = '';
-    protected $menuIndex = 0;
-    protected $params = '';
-    protected $handler = '';
-    protected $action;
-    /** @var Action $action */
-    protected $actionObject = null;
+    public $text;
+    public $description = '';
+    public $parent = 'components';
+    public $icon = '';
+    public $menuIndex = 0;
+    public $params = '';
+    public $handler = '';
+    /** @var Action|string */
+    public $action;
     
     protected $section = 'Menus';
     protected $validations = ['text', 'action'];
@@ -22,55 +21,15 @@ class Menu extends ConfigObject
     public function toArray()
     {
         return [
-            'text' => $this->getText(),
-            'description' => $this->getDescription(),
-            'parent' => $this->getParent(),
-            'icon' => $this->getIcon(),
-            'menuIndex' => $this->getMenuIndex(),
-            'params' => $this->getParams(),
-            'handler' => $this->getHandler(),
-            'action' => $this->getAction()
+            'text' => $this->text,
+            'description' => $this->description,
+            'parent' => $this->parent,
+            'icon' => $this->icon,
+            'menuIndex' => $this->menuIndex,
+            'params' => $this->params,
+            'handler' => $this->handler,
+            'action' => ($this->action instanceof Action)? $this->action->id : $this->action
         ];
-    }
-    
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    public function getHandler()
-    {
-        return $this->handler;
-    }
-
-    public function getIcon()
-    {
-        return $this->icon;
-    }
-
-    public function getMenuIndex()
-    {
-        return $this->menuIndex;
-    }
-
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    public function getText()
-    {
-        return $this->text;
     }
 
     public function setAction($givenAction)
@@ -82,22 +41,13 @@ class Menu extends ConfigObject
             return true;
         }
 
-        foreach ($this->config->getActions() as $action) {
-            if ($action->getId() != $givenAction) continue;
-            $this->action = $givenAction;
-            $this->actionObject = $action;
+        foreach ($this->config->actions as $action) {
+            if ($action->id != $givenAction) continue;
+            $this->action = $action;
 
             return true;
         }
 
         throw new \Exception('Menus - action not exist');
-    }
-
-    /**
-     * @return Action|null
-     */
-    public function getActionObject()
-    {
-        return $this->actionObject;
     }
 }

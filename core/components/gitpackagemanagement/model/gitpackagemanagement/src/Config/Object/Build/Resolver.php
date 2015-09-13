@@ -5,10 +5,10 @@ use GPM\Config\ConfigObject;
 
 final class Resolver extends ConfigObject
 {
-    protected $resolversDir = 'resolvers';
-    protected $before = [];
-    protected $after = [];
-    protected $files = [];
+    public $resolversDir = 'resolvers';
+    public $before = [];
+    public $after = [];
+    public $files = [];
     
     protected $section = 'Resolved';
     protected $validations = ['before:array', 'after:array', 'files:array'];
@@ -29,34 +29,5 @@ final class Resolver extends ConfigObject
                 'target' => $file['target']
             ];
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getResolversDir()
-    {
-        return $this->resolversDir;
-    }
-
-    public function getFileResolvers()
-    {
-        return $this->files;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBefore()
-    {
-        return $this->before;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAfter()
-    {
-        return $this->after;
     }
 }

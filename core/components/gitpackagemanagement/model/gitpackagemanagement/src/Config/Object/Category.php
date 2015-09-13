@@ -5,8 +5,8 @@ use GPM\Config\ConfigObject;
 
 class Category extends ConfigObject
 {
-    protected $name;
-    protected $parent = null;
+    public $name;
+    public $parent = null;
 
     protected $section = 'Categories';
     protected $validations = ['name', 'parent:categoryExists'];
@@ -14,33 +14,16 @@ class Category extends ConfigObject
     public function toArray()
     {
         $array = [
-            'name' => $this->getName()
+            'name' => $this->name
         ];
         
-        $parent = $this->getParent();
-        if (!empty($parent)) {
-            $array['parent'] = $this->getParent();
+        if (!empty($this->parent)) {
+            $array['parent'] = $this->parent;
         }
         
         return $array;
     }
     
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
     /**
      * @return array
      */
@@ -51,13 +34,13 @@ class Category extends ConfigObject
         if ($this->parent == null || $this->parent == '') return $parents;
 
         /** @var Category[] $categories */
-        $categories = $this->config->getCategories();
+        $categories = $this->config->categories;
 
         if (!isset($categories[$this->parent])) return $parents;
         $parent = $this->parent;
         while (isset($categories[$parent])) {
-            $parents[] = $categories[$parent]->getName();
-            $parent = $categories[$parent]->getParent();
+            $parents[] = $categories[$parent]->name;
+            $parent = $categories[$parent]->parent;
         }
 
         return array_reverse($parents);
@@ -70,7 +53,7 @@ class Category extends ConfigObject
     {
         if (empty($this->parent)) return null;
 
-        $categories = $this->config->getCategories();
+        $categories = $this->config->categories;
 
         if (!isset($categories[$this->parent])) return null;
 

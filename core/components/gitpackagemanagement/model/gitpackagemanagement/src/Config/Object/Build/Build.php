@@ -7,13 +7,13 @@ use GPM\Config\ConfigObject;
 class Build extends ConfigObject
 {
     /** @var Resolver $resolver */
-    private $resolver;
-    private $readme = 'docs/readme.txt';
-    private $license = 'docs/license.txt';
-    private $changelog = 'docs/changelog.txt';
-    private $schemaPath = '';
-    private $setupOptions = [];
-    private $attributes = [];
+    public $resolver;
+    public $readme = 'docs/readme.txt';
+    public $license = 'docs/license.txt';
+    public $changelog = 'docs/changelog.txt';
+    public $schemaPath = '';
+    public $setupOptions = [];
+    public $attributes = [];
     
     protected $section = 'Build';
     protected $validators = ['attributes:array'];
@@ -30,7 +30,7 @@ class Build extends ConfigObject
         if (isset($config['schemaPath'])) {
             $this->schemaPath = '/' . ltrim($config['schemaPath'], '/');
         } else {
-            $this->schemaPath = '/core/components/' . $this->config->general->getLowCaseName() . '/' . 'model/schema/' . $this->config->general->getLowCaseName() . '.mysql.schema.xml';
+            $this->schemaPath = '/core/components/' . $this->config->general->lowCaseName . '/' . 'model/schema/' . $this->config->general->lowCaseName . '.mysql.schema.xml';
         }   
     }
 
@@ -53,55 +53,4 @@ class Build extends ConfigObject
             }
         }
     }
-
-    /**
-     * @return Resolver
-     */
-    public function getResolver()
-    {
-        return $this->resolver;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReadme()
-    {
-        return $this->readme;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLicense()
-    {
-        return $this->license;
-    }
-
-    /**
-     * @return string
-     */
-    public function getChangeLog()
-    {
-        return $this->changelog;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSetupOptions()
-    {
-        return $this->setupOptions;
-    }
-
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    public function getSchemaPath()
-    {
-        return $this->schemaPath;
-    }
-
 }

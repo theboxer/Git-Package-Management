@@ -21,62 +21,14 @@ class General extends ConfigObject
         }    
     }
 
-    public function test()
-    {
-        echo $this->config->getPackagePath();
-    }
-
-
     public function toArray()
     {
         return [
-            'name' => $this->getName(),
-            'lowCaseName' => $this->getLowCaseName(),
-            'description' => $this->getDescription(),
-            'author' => $this->getAuthor(),
-            'version' => $this->getVersion()
+            'name' => $this->name,
+            'lowCaseName' => $this->lowCaseName,
+            'description' => $this->description,
+            'author' => $this->author,
+            'version' => $this->version
         ];
     }
-    
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLowCaseName()
-    {
-        return $this->lowCaseName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-
 }

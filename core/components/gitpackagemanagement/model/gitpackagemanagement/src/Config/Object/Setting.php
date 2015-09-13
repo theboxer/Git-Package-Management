@@ -5,11 +5,11 @@ use GPM\Config\ConfigObject;
 
 class Setting extends ConfigObject
 {
-    protected $key;
-    protected $type = 'textfield';
-    protected $area = 'default';
-    protected $value = '';
-    protected $namespace;
+    public $key;
+    public $type = 'textfield';
+    public $area = 'default';
+    public $value = '';
+    public $namespace;
     
     protected $section = 'Settings';
     protected $validations = ['key'];
@@ -32,21 +32,6 @@ class Setting extends ConfigObject
         ];
     }
 
-    public function getNamespace()
-    {
-        return $this->namespace;
-    }
-
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    public function getKey()
-    {
-        return $this->key;
-    }
-
     public function getNamespacedKey()
     {
         if ($this->namespace == '') {
@@ -55,15 +40,4 @@ class Setting extends ConfigObject
 
         return $this->namespace . '.' . $this->key;
     }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function getValue()
-    {
-        return $this->value;
-    }
-
 }

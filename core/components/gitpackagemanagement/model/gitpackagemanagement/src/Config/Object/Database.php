@@ -5,9 +5,9 @@ use GPM\Config\ConfigObject;
 
 class Database extends ConfigObject
 {
-    protected $prefix = 'modx_';
-    protected $tables = [];
-    protected $simpleObjects = [];
+    public $prefix = 'modx_';
+    public $tables = [];
+    public $simpleObjects = [];
     
     protected $section ='Database';
     protected $validations = ['tables:array', 'simpleObjects:array'];
@@ -15,25 +15,9 @@ class Database extends ConfigObject
     public function toArray()
     {
         return [
-            'prefix' => $this->getPrefix(),
-            'tables' => $this->getTables(),
-            'simpleObjects' => $this->getSimpleObjects()
+            'prefix' => $this->prefix,
+            'tables' => $this->tables,
+            'simpleObjects' => $this->simpleObjects
         ];
     }
-    
-    public function getPrefix()
-    {
-        return $this->prefix;
-    }
-
-    public function getTables()
-    {
-        return $this->tables;
-    }
-
-    public function getSimpleObjects()
-    {
-        return $this->simpleObjects;
-    }
-
 }

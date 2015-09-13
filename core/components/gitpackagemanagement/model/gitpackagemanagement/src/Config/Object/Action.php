@@ -5,11 +5,11 @@ use GPM\Config\ConfigObject;
 
 class Action extends ConfigObject
 {
-    protected $id;
-    protected $controller;
-    protected $hasLayout = 1;
-    protected $langTopics;
-    protected $assets = '';
+    public $id;
+    public $controller;
+    public $hasLayout = 1;
+    public $langTopics;
+    public $assets = '';
     
     protected $section = 'Actions';
     protected $validations = ['id', 'controller'];
@@ -17,45 +17,18 @@ class Action extends ConfigObject
     protected function setDefaults($config)
     {
         if (!isset($config['langTopics'])) {
-            $this->langTopics = $this->config->getLowCaseName() . ':default';
+            $this->langTopics = $this->config->general->lowCaseName . ':default';
         }        
     }
 
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
-            'controller' => $this->getController(),
-            'hasLayout' => $this->getHasLayout(),
-            'langTopics' => $this->getLangTopics(),
-            'assets' => $this->getAssets()
+            'id' => $this->id,
+            'controller' => $this->controller,
+            'hasLayout' => $this->hasLayout,
+            'langTopics' => $this->langTopics,
+            'assets' => $this->assets
         ];
     }
-
-    public function getAssets()
-    {
-        return $this->assets;
-    }
-
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    public function getHasLayout()
-    {
-        return $this->hasLayout;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getLangTopics()
-    {
-        return $this->langTopics;
-    }
-
-
 }

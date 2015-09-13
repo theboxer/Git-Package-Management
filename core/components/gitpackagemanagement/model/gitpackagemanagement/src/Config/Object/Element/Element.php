@@ -6,21 +6,22 @@ use GPM\Config\ConfigObject;
 abstract class Element extends ConfigObject
 {
     /** @var string $name */
-    protected $name;
+    public $name;
     /** @var string $description */
-    protected $description = '';
+    public $description = '';
     /** @var string $file */
-    protected $file;
+    public $file;
+    /** @var array $properties */
+    public $properties = [];
+    /** @var string $category */
+    public $category;
+    /** @var string $filePath */
+    public $filePath;
+    
     /** @var string $elementType */
     protected $elementType;
     /** @var string $extension */
     protected $extension;
-    /** @var array $properties */
-    protected $properties = [];
-    /** @var string $category */
-    protected $category;
-    /** @var string $filePath */
-    protected $filePath;
     
     protected $section = 'Elements';
     protected $validations = ['name', 'category:categoryExists', 'properties:array', 'file:file'];
@@ -40,15 +41,15 @@ abstract class Element extends ConfigObject
         ];
 
         if (!empty($this->category)) {
-            $categories = $this->config->getCategories();
+            $categories = $this->config->categories;
             $categoryPath = '/' . implode('/', $categories[$this->category]->getParents()) . '/';
 
             $filePaths[] = $categoryPath . $this->file;
             $filePaths[] = strtolower($categoryPath . $this->file);
         }
         
-        $file = $this->config->getPackagePath();
-        $file .= '/core/components/' . $this->config->getGeneral()->getLowCaseName() . '/elements/' . $this->elementType . 's/';
+        $file = $this->config->packagePath;
+        $file .= '/core/components/' . $this->config->general->lowCaseName . '/elements/' . $this->elementType . 's/';
 
         $exists = false;
         foreach ($filePaths as $filePath) {
@@ -69,37 +70,12 @@ abstract class Element extends ConfigObject
     public function toArray()
     {
         return [
-            'name' => $this->getName(),
-            'category' => $this->getCategory(),
-            'description' => $this->getDescription(),
-            'file' => $this->getFile(),
-            'properties' => $this->getProperties()
+            'name' => $this->name,
+            'category' => $this->category,
+            'description' => $this->description,
+            'file' => $this->file,
+            'properties' => $this->properties
         ];
-    }
-
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    public function getFilePath()
-    {
-        return $this->filePath;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getProperties()
-    {
-        return $this->properties;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
     }
 
     protected function setProperties($properties)
@@ -116,7 +92,7 @@ abstract class Element extends ConfigObject
             if (isset($property['description'])) {
                 $prop['desc'] = $property['description'];
             } else {
-                $prop['desc'] = $this->config->getGeneral()->getLowCaseName() . '.' . strtolower($this->getName()) . '.' . $prop['name'];
+                $prop['desc'] = $this->config->general->lowCaseName . '.' . strtolower($this->name) . '.' . $prop['name'];
             }
 
             if (isset($property['type'])) {
@@ -140,7 +116,7 @@ abstract class Element extends ConfigObject
             if (isset($property['lexicon'])) {
                 $prop['lexicon'] = $property['lexicon'];
             } else {
-                $prop['lexicon'] = $this->config->getGeneral()->getLowCaseName() . ':properties';
+                $prop['lexicon'] = $this->config->general->lowCaseName . ':properties';
             }
 
             if (isset($property['area'])) {
@@ -155,12 +131,6 @@ abstract class Element extends ConfigObject
         return true;
     }
 
-    /**
-     * @return string
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
+
 
 }

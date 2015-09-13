@@ -15,6 +15,7 @@ class Config
     protected $gpm;
     /** @var bool */
     protected $log = true;
+    
     /** @var string */
     public $packagePath;
     /** @var Object\General */
@@ -199,121 +200,11 @@ class Config
 
         $assetsFolder .= 'packages/';
 
-        if (!is_dir($assetsFolder . $this->general->getLowCaseName())) {
-            mkdir($assetsFolder . $this->general->getLowCaseName());
+        if (!is_dir($assetsFolder . $this->general->lowCaseName)) {
+            mkdir($assetsFolder . $this->general->lowCaseName);
         }
 
-        return $assetsFolder . $this->general->getLowCaseName() . '/';
-    }
-
-    public function toJSON()
-    {
-        // @TODO: Implement generating full JSON for storing in DB
-        return '{}';
-    }
-
-    /**
-     * @return General
-     */
-    public function getGeneral()
-    {
-        return $this->general;
-    }
-
-    /**
-     * @return Object\Action[]
-     */
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    /**
-     * @return Object\Menu[]
-     */
-    public function getMenus()
-    {
-        return $this->menus;
-    }
-
-    /**
-     * @return Object\Category[]
-     */
-    public function getCategories()
-    {
-        return $this->categories;
-    }
-
-    /**
-     * @return Object\Element\Plugin[]
-     */
-    public function getPlugins()
-    {
-        return $this->plugins;
-    }
-
-    /**
-     * @return Object\Element\Snippet[]
-     */
-    public function getSnippets()
-    {
-        return $this->snippets;
-    }
-
-    /**
-     * @return Object\Element\Chunk[]
-     */
-    public function getChunks()
-    {
-        return $this->chunks;
-    }
-
-    /**
-     * @return Object\Element\Template[]
-     */
-    public function getTemplates()
-    {
-        return $this->templates;
-    }
-
-    /**
-     * @return Object\Element\TV[]
-     */
-    public function getTvs()
-    {
-        return $this->tvs;
-    }
-
-    /**
-     * @return Object\Resource[]
-     */
-    public function getResources()
-    {
-        return $this->resources;
-    }
-
-    /**
-     * @return Object\Setting[]
-     */
-    public function getSystemSettings()
-    {
-        return $this->systemSettings;
-    }
-
-    /**
-     * @return Object\Database
-     */
-    public function getDatabase()
-    {
-        return $this->database;
-    }
-
-    /**
-     * @return Object\ExtensionPackage
-     */
-    public function getExtensionPackage()
-    {
-        return $this->extensionPackage;
+        return $assetsFolder . $this->general->lowCaseName . '/';
     }
 
     protected function setExtensionPackage($extensionPackage)
@@ -327,29 +218,4 @@ class Config
             $this->extensionPackage['serviceClass'] = $extensionPackage['serviceClass'];
         }
     }
-
-    /**
-     * @return Object\Build\Build
-     */
-    public function getBuild()
-    {
-        return $this->build;
-    }
-
-    /**
-     * @return Object\Dependency[]
-     */
-    public function getDependencies()
-    {
-        return $this->dependencies;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPackagePath()
-    {
-        return $this->packagePath;
-    }
-
 }

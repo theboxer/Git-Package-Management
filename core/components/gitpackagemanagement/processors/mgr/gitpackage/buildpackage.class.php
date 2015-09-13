@@ -437,38 +437,36 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor
 
     private function addMenus()
     {
-        /** @var \GPM\Config\Menu[] $menus */
-        $menus = $this->config->getMenus();
+        $menus = $this->config->menus;
 
         foreach ($menus as $menu) {
             $menuObject = $this->modx->newObject('modMenu');
             $menuObject->fromArray(array(
-                'text' => $menu->getText(),
-                'parent' => $menu->getParent(),
-                'description' => $menu->getDescription(),
-                'icon' => $menu->getIcon(),
-                'menuindex' => $menu->getMenuIndex(),
-                'params' => $menu->getParams(),
-                'handler' => $menu->getHandler(),
+                'text' => $menu->text,
+                'parent' => $menu->parent,
+                'description' => $menu->description,
+                'icon' => $menu->icon,
+                'menuindex' => $menu->menuIndex,
+                'params' => $menu->params,
+                'handler' => $menu->handler,
             ), '', true, true);
 
-            $configAction = $menu->getActionObject();
-            if ($configAction !== null) {
+            if ($menu->action instanceof \GPM\Config\Object\Action) {
                 $actionObject = $this->modx->newObject('modAction');
                 $actionObject->fromArray(array(
                     'id' => 1,
-                    'namespace' => $this->config->getLowCaseName(),
+                    'namespace' => $this->config->general->lowCaseName,
                     'parent' => 0,
-                    'controller' => $configAction->getController(),
-                    'haslayout' => $configAction->getHasLayout(),
-                    'lang_topics' => $configAction->getLangTopics(),
-                    'assets' => $configAction->getAssets(),
+                    'controller' => $menu->action->getController(),
+                    'haslayout' => $menu->action->getHasLayout(),
+                    'lang_topics' => $menu->action->getLangTopics(),
+                    'assets' => $menu->action->getAssets(),
                 ), '', true, true);
 
                 $menuObject->addOne($actionObject);
             } else {
-                $menuObject->set('action', $menu->getAction());
-                $menuObject->set('namespace', $this->config->getLowCaseName());
+                $menuObject->set('action', $menu->action);
+                $menuObject->set('namespace', $this->config->general->lowCaseName);
             }
 
             $vehicle = $this->builder->createVehicle($menuObject, 'menu');
