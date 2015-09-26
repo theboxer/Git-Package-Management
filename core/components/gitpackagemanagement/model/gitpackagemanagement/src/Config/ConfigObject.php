@@ -1,6 +1,8 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Config\Validator\Validator;
+use GPM\Config\Validator\ValidatorException;
 use GPM\Utils;
 
 abstract class ConfigObject
@@ -8,16 +10,17 @@ abstract class ConfigObject
     /* @var Config */
     protected $config;
 
-    protected $validations = [];
-    
-    protected static $section = '';
-    protected static $rules = [];
+    protected $rules = [];
 
     public function __construct(Config $config, $data = null)
     {
         $this->config = $config;
 
         if ($data !== null) {
+            if (!is_array($data)) {
+                throw new \Exception('Data have to be an array');    
+            }
+            
             $this->fromArray($data);
         }
     }
@@ -64,31 +67,13 @@ abstract class ConfigObject
 
     protected function validate()
     {
-        foreach ($this->validations as $validation) {
-            $validation = explode(':', $validation);
+        $validator = new Validator($this->rules);
+        $validator->validate(Utils::getPublicVars($this), $this->config);
 
-            $field = array_shift($validation);
-
-            if (empty($validation)) {
-                $validation[] = 'required';
-            }
-
-            try {
-                foreach ($validation as $rule) {
-                    if (method_exists($this, $rule . 'Validator')) {
-                        $this->{$rule . 'Validator'}(Utils::getPublicVars($this), $field);
-                    }
-                }
-            } catch (\Exception $e) {
-                throw new \Exception($e->getMessage());
-            }
-        }
-    }
-
-    protected function presentValidator($config, $field)
-    {
-        if (!isset($config[$field])) {
-            throw new \Exception($this->generateMsg($field, 'is not set'));
+        if ($validator->hasErrors()) {
+            $reflection = new \ReflectionClass($this);
+            
+            throw new ValidatorException($reflection->getShortName(), $validator->getErrors());
         }
     }
 
@@ -102,29 +87,5 @@ abstract class ConfigObject
         $output .= $field . ' ' . $msg;
 
         return $output;
-    }
-
-    protected function requiredValidator($config, $field)
-    {
-        if (empty($config[$field])) {
-            throw new \Exception($this->generateMsg($field, 'are empty'));
-        }
-    }
-
-    protected function arrayValidator($config, $field)
-    {
-        if (isset($config[$field]) && !is_array($config[$field])) {
-            throw new \Exception($this->generateMsg($field, 'are not an array'));
-        }
-    }
-
-    protected function categoryExistsValidator($config, $field)
-    {
-        if (empty($config[$field])) return;
-
-        $currentCategories = array_keys($this->config->categories);
-        if (!in_array($config[$field], $currentCategories)) {
-            throw new \Exception($this->generateMsg('category', $config[$field] . ' does not exist'));
-        }
     }
 }

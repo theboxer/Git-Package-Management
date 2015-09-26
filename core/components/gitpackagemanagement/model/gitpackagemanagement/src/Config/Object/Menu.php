@@ -14,9 +14,11 @@ class Menu extends ConfigObject
     public $handler = '';
     /** @var Action|string */
     public $action;
-    
-    protected $section = 'Menus';
-    protected $validations = ['text', 'action'];
+
+    protected $rules = [
+        'text' => 'notEmpty',
+        'action' => 'notEmpty'
+    ];
 
     public function toArray()
     {

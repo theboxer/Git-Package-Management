@@ -14,9 +14,10 @@ class Build extends ConfigObject
     public $schemaPath = '';
     public $setupOptions = [];
     public $attributes = [];
-    
-    protected $section = 'Build';
-    protected $validators = ['attributes:array'];
+
+    protected $rules = [
+        'attributes' => 'type:array'
+    ];
 
     public function __construct(Config $config)
     {

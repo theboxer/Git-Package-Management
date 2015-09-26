@@ -15,8 +15,14 @@ final class TV extends Element
     
     protected $elementType = 'TV';
 
-    protected $section = 'Elements: TV';
-    protected $validations = ['caption', 'templates:array', 'category:categoryExists'];
+    protected $rules = [
+        'name' => 'notEmpty',
+        'caption' => 'notEmpty',
+//        'category' => 'categoryExists',
+        'properties' => 'type:array',
+        'templates' => 'type:array',
+//        'file' => 'file'
+    ];
     
     protected function setDefaults($config)
     {

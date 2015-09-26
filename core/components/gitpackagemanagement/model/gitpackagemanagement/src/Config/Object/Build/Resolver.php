@@ -9,9 +9,12 @@ final class Resolver extends ConfigObject
     public $before = [];
     public $after = [];
     public $files = [];
-    
-    protected $section = 'Resolved';
-    protected $validations = ['before:array', 'after:array', 'files:array'];
+
+    protected $rules = [
+        'before' => 'type:array',
+        'after' => 'type:array',
+        'files' => 'type:array',
+    ];
 
     public function toArray()
     {

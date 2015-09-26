@@ -8,8 +8,13 @@ final class Plugin extends Element
     protected $elementType = 'plugin';
     protected $extension = 'php';
 
-    protected $section = 'Elements: Plugin';
-    protected $validations = ['name', 'category:categoryExists', 'events'];
+    protected $rules = [
+        'name' => 'notEmpty',
+//        'category' => 'categoryExists',
+        'properties' => 'type:array,null',
+//        'file' => 'file',
+        'events' => 'type:array,null|notEmpty'
+    ];
 
     public function toArray()
     {

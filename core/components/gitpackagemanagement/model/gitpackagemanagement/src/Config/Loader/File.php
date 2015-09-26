@@ -3,6 +3,7 @@ namespace GPM\Config\Loader;
 
 use GPM\Config\Object\General;
 use GPM\Config\Parser\Parser;
+use GPM\Config\Validator\ValidatorException;
 use Symfony\Component\Finder\Finder;
 
 final class File implements iLoader
@@ -25,11 +26,20 @@ final class File implements iLoader
     public function __construct(Parser $parser, $path, General $general = null)
     {
         if ($general === null) throw new \Exception('Missing argument General $general');
-        
+
+        $this->parser = $parser;
         $this->path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
-        $this->name = $general->getLowCaseName();
+        $this->name = $general->lowCaseName;
     }
-    
+
+    /**
+     * Load Snippets
+     *
+     * @param bool $skip
+     * @return bool
+     * @throws ValidatorException
+     * @throws \Exception
+     */
     public function loadSnippets($skip = true)
     {
         $scannedDir = $this->path . '/core/components/' . $this->name . '/elements/snippets/';

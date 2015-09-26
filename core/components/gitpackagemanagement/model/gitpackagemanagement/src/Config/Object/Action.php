@@ -11,8 +11,10 @@ class Action extends ConfigObject
     public $langTopics;
     public $assets = '';
     
-    protected $section = 'Actions';
-    protected $validations = ['id', 'controller'];
+    protected $rules = [
+        'id' => 'notEmpty',
+        'controller' => 'notEmpty'
+    ];
 
     protected function setDefaults($config)
     {

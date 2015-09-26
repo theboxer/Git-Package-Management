@@ -33,8 +33,11 @@ class Resource extends ConfigObject
     public $show_in_tree = 1;
     public $setAsHome = 0;
 
-    protected $section = 'Resources';
-    protected $validations = ['pagetitle', 'tvs:array', 'others:array'];
+    protected $rules = [
+        'pagetitle' => 'notEmpty',
+        'tvs' => 'type:array',
+        'others' => 'type:array',
+    ];
 
     protected function setDefaults($config)
     {
@@ -43,8 +46,8 @@ class Resource extends ConfigObject
         }
 
         if (!isset($config['content']) && !isset($config['file'])) {
-            $file = $this->config->getPackagePath();
-            $file .= '/core/components/' . $this->config->general->getLowCaseName() . '/resources/' . $this->alias . $this->suffix;
+            $file = $this->config->packagePath;
+            $file .= '/core/components/' . $this->config->general->lowCaseName . '/resources/' . $this->alias . $this->suffix;
 
             if (file_exists($file)) {
                 $this->content = file_get_contents($file);
@@ -55,8 +58,8 @@ class Resource extends ConfigObject
             }
 
             if (isset($config['file'])) {
-                $file = $this->config->getPackagePath();
-                $file .= '/core/components/' . $this->config->general->getLowCaseName() . '/resources/' . $config['file'];
+                $file = $this->config->packagePath;
+                $file .= '/core/components/' . $this->config->general->lowCaseName . '/resources/' . $config['file'];
 
                 if (file_exists($file)) {
                     $this->content = file_get_contents($file);
@@ -77,8 +80,8 @@ class Resource extends ConfigObject
             }
 
             if (isset($tv['file'])) {
-                $file = $this->config->getPackagePath();
-                $file .= '/core/components/' . $this->config->general->getLowCaseName() . '/resources/' . $tv['file'];
+                $file = $this->config->packagePath;
+                $file .= '/core/components/' . $this->config->general->lowCaseName . '/resources/' . $tv['file'];
 
                 if (file_exists($file)) {
                     $tv['value'] = file_get_contents($file);

@@ -10,9 +10,12 @@ class General extends ConfigObject
     public $description = '';
     public $author;
     public $version;
-    
-    protected $section = 'General';
-    protected $validations = ['name', 'author', 'version'];
+
+    protected $rules = [
+        'name' => 'notEmpty',
+        'author' => 'notEmpty',
+        'version' => 'notEmpty'
+    ];
 
     protected function setDefaults($config)
     {

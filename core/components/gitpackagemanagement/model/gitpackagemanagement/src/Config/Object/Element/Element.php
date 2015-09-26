@@ -22,9 +22,13 @@ abstract class Element extends ConfigObject
     protected $elementType;
     /** @var string $extension */
     protected $extension;
-    
-    protected $section = 'Elements';
-    protected $validations = ['name', 'category:categoryExists', 'properties:array', 'file:file'];
+
+    protected $rules = [
+        'name' => 'notEmpty',
+//        'category' => 'categoryExists',
+        'properties' => 'type:array',
+//        'file' => 'file'
+    ];
 
     protected function setDefaults()
     {

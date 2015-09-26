@@ -142,34 +142,6 @@ class Config
         return $config;
     }
 
-    public function load(iLoader $loader, $skip = true)
-    {
-        $this->loadPart($loader, 'general', $skip);
-        $this->loadPart($loader, 'actions', $skip);
-        $this->loadPart($loader, 'menus', $skip);
-        $this->loadPart($loader, 'categories', $skip);
-        $this->loadPart($loader, 'plugins', $skip);
-        $this->loadPart($loader, 'snippets', $skip);
-        $this->loadPart($loader, 'chunks', $skip);
-        $this->loadPart($loader, 'templates', $skip);
-        $this->loadPart($loader, 'tvs', $skip);
-        $this->loadPart($loader, 'resources', $skip);
-        $this->loadPart($loader, 'systemSettings', $skip);
-        $this->loadPart($loader, 'database', $skip);
-        $this->loadPart($loader, 'extensionPackage', $skip);
-        $this->loadPart($loader, 'build', $skip);
-        $this->loadPart($loader, 'dependencies', $skip);
-    }
-
-    public function loadPart(iLoader $loader, $part, $skip = true)
-    {
-        try {
-            $loader->{'load' . ucfirst($part)}($skip);
-        } catch (\Exception $e) {
-            $this->error->addError($e->getMessage(), $this->log);
-        }
-    }
-
     public function checkDependencies()
     {
         $failed = [];

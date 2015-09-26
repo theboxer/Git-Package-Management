@@ -36,16 +36,22 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $this->newConfig = new \GPM\Config\Config($this->modx, $packagePath);
         
-        
         $parser = new \GPM\Config\Parser\Parser($this->modx, $this->newConfig);
         
-        $this->newConfig->load(new \GPM\Config\Loader\JSON($parser, $packagePath));
-
-        $this->newConfig->loadPart(new \GPM\Config\Loader\File($parser, $packagePath, $this->newConfig->general), 'snippets');
-        if ($this->newConfig->error->hasErrors()) {
-            return implode('<br />', $this->newConfig->error->getErrors());
+        try {
+            $jsonLoader = new \GPM\Config\Loader\JSON($parser, $packagePath);
+            $jsonLoader->loadAll(true);
+            
+            $fileLoader = new \GPM\Config\Loader\File($parser, $packagePath, $this->newConfig->general);
+            $fileLoader->loadSnippets(true);
+        } catch (\GPM\Config\Validator\ValidatorException $ve) {
+            return $ve->getMessage();    
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-
+        
+        die();
+        
         $dependencies = $this->newConfig->checkDependencies();
         if ($dependencies !== true) {
             $msg = '<strong>Dependencies check failed!</strong><br />';

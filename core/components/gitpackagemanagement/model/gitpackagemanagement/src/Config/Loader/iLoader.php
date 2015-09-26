@@ -3,6 +3,7 @@ namespace GPM\Config\Loader;
 
 use GPM\Config\Object\General;
 use GPM\Config\Parser\Parser;
+use GPM\Config\Validator\ValidatorException;
 
 interface iLoader
 {
@@ -18,6 +19,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadGeneral($skip = true);
@@ -27,6 +29,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadActions($skip = true);
@@ -36,6 +39,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadMenus($skip = true);
@@ -45,6 +49,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadCategories($skip = true);
@@ -54,6 +59,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadPlugins($skip = true);
@@ -63,6 +69,8 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
+     * @throws \Exception
      */
     public function loadSnippets($skip = true);
 
@@ -71,6 +79,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadChunks($skip = true);
@@ -80,6 +89,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadTemplates($skip = true);
@@ -89,6 +99,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadTVs($skip = true);
@@ -98,6 +109,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return array
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadResources($skip = true);
@@ -107,6 +119,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadSystemSettings($skip = true);
@@ -116,6 +129,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadDatabase($skip = true);
@@ -125,6 +139,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadExtensionPackage($skip = true);
@@ -134,6 +149,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadBuild($skip = true);
@@ -143,6 +159,7 @@ interface iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadDependencies($skip = true);

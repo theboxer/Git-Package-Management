@@ -8,8 +8,10 @@ class Category extends ConfigObject
     public $name;
     public $parent = null;
 
-    protected $section = 'Categories';
-    protected $validations = ['name', 'parent:categoryExists'];
+    protected $rules = [
+        'name' => 'notEmpty',
+//        'parent' => 'categoryExists'
+    ];
 
     public function toArray()
     {

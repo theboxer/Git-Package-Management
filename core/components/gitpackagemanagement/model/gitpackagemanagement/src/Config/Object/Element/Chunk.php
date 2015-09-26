@@ -5,6 +5,4 @@ final class Chunk extends Element
 {
     protected $elementType = 'chunk';
     protected $extension = 'tpl';
-
-    protected $section = 'Elements: Chunk';
 }

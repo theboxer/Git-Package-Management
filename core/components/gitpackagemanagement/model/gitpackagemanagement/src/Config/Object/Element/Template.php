@@ -8,8 +8,6 @@ final class Template extends Element
     protected $elementType = 'template';
     protected $extension = 'tpl';
 
-    protected $section = 'Elements: Template';
-
     public function toArray()
     {
         $array = parent::toArray();

@@ -3,6 +3,7 @@ namespace GPM\Config\Loader;
 
 use GPM\Config\Object\General;
 use GPM\Config\Parser\Parser;
+use GPM\Config\Validator\ValidatorException;
 
 final class JSON implements iLoader
 {
@@ -37,8 +38,36 @@ final class JSON implements iLoader
     }
 
     /**
+     * Loads all parts
+     *
+     * @param bool $skip
+     * @return mixed
+     * @throws ValidatorException
+     * @throws \Exception
+     */
+    public function loadAll($skip = true)
+    {
+        $this->loadGeneral($skip);
+        $this->loadActions($skip);
+        $this->loadMenus($skip);
+        $this->loadCategories($skip);
+        $this->loadPlugins($skip);
+        $this->loadSnippets($skip);
+        $this->loadChunks($skip);
+        $this->loadTemplates($skip);
+        $this->loadTVs($skip);
+        $this->loadResources($skip);
+        $this->loadSystemSettings($skip);
+        $this->loadDatabase($skip);
+        $this->loadExtensionPackage($skip);
+        $this->loadBuild($skip);
+        $this->loadDependencies($skip);
+    }
+
+    /**
      * @param string $fileName
      * @return array
+     * @throws ValidatorException
      * @throws \Exception
      */
     private function loadFile($fileName)
@@ -61,6 +90,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadGeneral($skip = true)
@@ -81,6 +111,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadActions($skip = true)
@@ -108,6 +139,7 @@ final class JSON implements iLoader
      * Load Menus
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadMenus($skip = true)
@@ -136,6 +168,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadCategories($skip = true)
@@ -164,6 +197,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadPlugins($skip = true)
@@ -192,6 +226,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadSnippets($skip = true)
@@ -220,6 +255,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadChunks($skip = true)
@@ -248,6 +284,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadTemplates($skip = true)
@@ -276,6 +313,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadTVs($skip = true)
@@ -304,6 +342,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadResources($skip = true)
@@ -332,6 +371,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadSystemSettings($skip = true)
@@ -360,6 +400,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadDatabase($skip = true)
@@ -382,6 +423,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadExtensionPackage($skip = true)
@@ -404,6 +446,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadBuild($skip = true)
@@ -427,6 +470,7 @@ final class JSON implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
      * @throws \Exception
      */
     public function loadDependencies($skip = true)

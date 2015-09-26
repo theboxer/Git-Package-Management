@@ -10,9 +10,10 @@ class Setting extends ConfigObject
     public $area = 'default';
     public $value = '';
     public $namespace;
-    
-    protected $section = 'Settings';
-    protected $validations = ['key'];
+
+    protected $rules = [
+        'key' => 'notEmpty'
+    ];
 
     protected function setDefaults($config)
     {

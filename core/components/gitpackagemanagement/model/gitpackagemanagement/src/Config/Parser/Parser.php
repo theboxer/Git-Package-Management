@@ -42,9 +42,9 @@ final class Parser
     public function parseCategory($category, $skip = true)
     {
         $categoryObject = new Object\Category($this->config, $category);
-        if ($skip && isset($this->config->categories[$categoryObject->getName()])) return true;
+        if ($skip && isset($this->config->categories[$categoryObject->name])) return true;
         
-        $this->config->categories[$categoryObject->getName()] = $categoryObject;
+        $this->config->categories[$categoryObject->name] = $categoryObject;
 
         return true;
     }
@@ -52,9 +52,9 @@ final class Parser
     public function parsePlugin($plugin, $skip = true)
     {
         $pluginObject = new Object\Element\Plugin($this->config, $plugin);
-        if ($skip && isset($this->config->plugins[$pluginObject->getName()])) return true;
+        if ($skip && isset($this->config->plugins[$pluginObject->name])) return true;
         
-        $this->config->plugins[$pluginObject->getName()] = $pluginObject;
+        $this->config->plugins[$pluginObject->name] = $pluginObject;
 
         return true;
     }
@@ -62,9 +62,9 @@ final class Parser
     public function parseSnippet($snippet, $skip = true)
     {
         $snippetObject = new Object\Element\Snippet($this->config, $snippet);
-        if ($skip && isset($this->config->snippets[$snippetObject->getName()])) return true;
+        if ($skip && isset($this->config->snippets[$snippetObject->name])) return true;
         
-        $this->config->snippets[$snippetObject->getName()] = $snippetObject;
+        $this->config->snippets[$snippetObject->name] = $snippetObject;
 
         return true;
     }
@@ -72,9 +72,9 @@ final class Parser
     public function parseChunk($chunk, $skip = true)
     {
         $chunkObject = new Object\Element\Chunk($this->config, $chunk);
-        if ($skip && isset($this->config->chunks[$chunkObject->getName()])) return true;
+        if ($skip && isset($this->config->chunks[$chunkObject->name])) return true;
         
-        $this->config->chunks[$chunkObject->getName()] = $chunkObject;
+        $this->config->chunks[$chunkObject->name] = $chunkObject;
         
         return true;
     }
@@ -87,9 +87,9 @@ final class Parser
     public function parseTV($tv, $skip = true)
     {
         $tvObject = new Object\Element\TV($this->config, $tv);
-        if ($skip && isset($this->config->tvs[$tvObject->getName()])) return true;
+        if ($skip && isset($this->config->tvs[$tvObject->name])) return true;
         
-        $this->config->tvs[$tvObject->getName()] = $tvObject;
+        $this->config->tvs[$tvObject->name] = $tvObject;
 
         return true;
     }

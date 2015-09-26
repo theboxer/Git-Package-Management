@@ -8,9 +8,11 @@ class Database extends ConfigObject
     public $prefix = 'modx_';
     public $tables = [];
     public $simpleObjects = [];
-    
-    protected $section ='Database';
-    protected $validations = ['tables:array', 'simpleObjects:array'];
+
+    protected $rules = [
+        'tables' => 'type:array',
+        'simpleObjects' => 'type:array'
+    ];
 
     public function toArray()
     {

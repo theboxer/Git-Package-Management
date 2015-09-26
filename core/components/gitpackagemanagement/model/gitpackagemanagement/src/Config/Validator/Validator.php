@@ -16,18 +16,19 @@ final class Validator
     public function validate(array $fields, Config $config)
     {
         foreach ($this->rules as $field => $rules) {
-            $rules = explode(',', $rules);
+            $rules = explode('|', $rules);
             
             foreach ($rules as $rule) {
                 $args = explode(':', $rule);
                 $ruleName = array_shift($args);
+                $args = explode(',', $args[0]);
                 
                 try {
-                    Rules::$ruleName($fields[$field], $field, $args, $config);
+                    Rules::$ruleName($fields[$field], $field, $args, $fields, $config);
                 } catch (RuleException $e) {
                     if (!isset($this->errors[$e->getField()])) $this->errors[$e->getField()] = [];
 
-                    $this->errors[$e->getField()] = $e->getMessage();
+                    $this->errors[$e->getField()][] = $e->getMessage();
                 }
             }
         }    
@@ -35,7 +36,7 @@ final class Validator
 
     public function hasErrors()
     {
-        return !empty($this->rules);
+        return !empty($this->errors);
     }
 
     public function getErrors()
