@@ -16,7 +16,7 @@ class General extends ConfigObject
 
     protected function setDefaults($config)
     {
-        if (!isset($config['lowCaseName'])) {
+        if (empty($config['lowCaseName'])) {
             $this->lowCaseName = str_replace(' ', '_', strtolower($this->name));
         }    
     }

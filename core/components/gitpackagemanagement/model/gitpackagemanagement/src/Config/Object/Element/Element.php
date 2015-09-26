@@ -26,9 +26,9 @@ abstract class Element extends ConfigObject
     protected $section = 'Elements';
     protected $validations = ['name', 'category:categoryExists', 'properties:array', 'file:file'];
 
-    protected function setDefaults($config)
+    protected function setDefaults()
     {
-        if (empty($config['file'])) {
+        if (empty($this->file)) {
             $this->file = $this->name . '.' . $this->elementType . '.' . $this->extension;
         }    
     }

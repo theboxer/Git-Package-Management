@@ -1,13 +1,17 @@
 <?php
 namespace GPM\Config;
 
+use GPM\Utils;
+
 abstract class ConfigObject
 {
     /* @var Config */
     protected $config;
 
     protected $validations = [];
-    protected $section = [];
+    
+    protected static $section = '';
+    protected static $rules = [];
 
     public function __construct(Config $config, $data = null)
     {
@@ -46,19 +50,19 @@ abstract class ConfigObject
             }
         }
 
-        $this->setDefaults($data);
-        $this->validate($data);
+        $this->setDefaults();
+        $this->validate();
 
         return true;
     }
 
     abstract public function toArray();
 
-    protected function setDefaults($config)
+    protected function setDefaults()
     {
     }
 
-    protected function validate($config)
+    protected function validate()
     {
         foreach ($this->validations as $validation) {
             $validation = explode(':', $validation);
@@ -69,10 +73,14 @@ abstract class ConfigObject
                 $validation[] = 'required';
             }
 
-            foreach ($validation as $rule) {
-                if (method_exists($this, $rule . 'Validator')) {
-                    $this->{$rule . 'Validator'}($config, $field);
+            try {
+                foreach ($validation as $rule) {
+                    if (method_exists($this, $rule . 'Validator')) {
+                        $this->{$rule . 'Validator'}(Utils::getPublicVars($this), $field);
+                    }
                 }
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage());
             }
         }
     }
@@ -114,7 +122,7 @@ abstract class ConfigObject
     {
         if (empty($config[$field])) return;
 
-        $currentCategories = array_keys($this->config->getCategories());
+        $currentCategories = array_keys($this->config->categories);
         if (!in_array($config[$field], $currentCategories)) {
             throw new \Exception($this->generateMsg('category', $config[$field] . ' does not exist'));
         }

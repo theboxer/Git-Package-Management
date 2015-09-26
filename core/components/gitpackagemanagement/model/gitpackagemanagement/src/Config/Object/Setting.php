@@ -17,18 +17,18 @@ class Setting extends ConfigObject
     protected function setDefaults($config)
     {
         if (!isset($config['namespace'])) {
-            $this->namespace = $this->config->getLowCaseName();
+            $this->namespace = $this->config->general->lowCaseName;
         }    
     }
 
     public function toArray()
     {
         return [
-            'key' => $this->getKey(),
-            'type' => $this->getType(),
-            'area' => $this->getArea(),
-            'value' => $this->getValue(),
-            'namespace' => $this->getNamespace()
+            'key' => $this->key,
+            'type' => $this->type,
+            'area' => $this->area,
+            'value' => $this->value,
+            'namespace' => $this->namespace
         ];
     }
 
