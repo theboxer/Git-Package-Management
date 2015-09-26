@@ -116,7 +116,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         if ($db != null) {
             $tables = $db->getTables();
             if (!empty($tables)) {
-                $vehicle->addTableResolver($this->packagePath . '_build/gpm_resolvers', $tables);
+                $vehicle->addTableResolver($this->packagePath . '_build/gpm_resolvers', $db);
             }
         }
 

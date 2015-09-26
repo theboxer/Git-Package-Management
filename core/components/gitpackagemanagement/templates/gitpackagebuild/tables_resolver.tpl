@@ -14,7 +14,7 @@ if ($object->xpdo) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
             $modelPath = $modx->getOption('{{$lowercasename}}.core_path', null, $modx->getOption('core_path') . 'components/{{$lowercasename}}/') . 'model/';
-            $modx->addPackage('{{$lowercasename}}', $modelPath);
+            $modx->addPackage('{{$lowercasename}}', $modelPath, '{{$prefix}}');
 
             $manager = $modx->getManager();
 

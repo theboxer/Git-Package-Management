@@ -41,7 +41,7 @@ class GitPackageVehicle {
         return $this;
     }
 
-    public function addTableResolver($packagePath, $tables) {
+    public function addTableResolver($packagePath, GitPackageConfigDatabase $db) {
         if (!is_dir($packagePath)) {
             mkdir($packagePath);
         }
@@ -51,7 +51,8 @@ class GitPackageVehicle {
             unlink($resolver);
         }
 
-        $this->smarty->assign('tables', $tables);
+        $this->smarty->assign('tables', $db->getTables());
+        $this->smarty->assign('prefix', $db->getPrefix());
 
         $resolverContent = $this->smarty->fetch('tables_resolver.tpl');
 
