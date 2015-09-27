@@ -19,17 +19,15 @@ final class File implements iLoader
 
     /**
      * @param Parser $parser
-     * @param string $path
-     * @param General $general
      * @throws \Exception
      */
-    public function __construct(Parser $parser, $path, General $general = null)
+    public function __construct(Parser $parser)
     {
-        if ($general === null) throw new \Exception('Missing argument General $general');
+        if ($parser->config->general === null) throw new \Exception('Load General part first');
 
         $this->parser = $parser;
-        $this->path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
-        $this->name = $general->lowCaseName;
+        $this->path = rtrim($parser->config->packagePath, '/\\') . DIRECTORY_SEPARATOR;
+        $this->name = $parser->config->general->lowCaseName;
     }
 
     /**

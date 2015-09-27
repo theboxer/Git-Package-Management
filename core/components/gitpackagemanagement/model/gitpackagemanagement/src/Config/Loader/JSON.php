@@ -18,14 +18,12 @@ final class JSON implements iLoader
 
     /**
      * @param Parser $parser
-     * @param string $path
-     * @param General $general
      * @throws \Exception
      */
-    public function __construct(Parser $parser, $path, General $general = null)
+    public function __construct(Parser $parser)
     {
         $this->parser = $parser;
-        $this->path = rtrim($path, '/\\') . DIRECTORY_SEPARATOR . '_build' . DIRECTORY_SEPARATOR;
+        $this->path = rtrim($parser->config->packagePath, '/\\') . DIRECTORY_SEPARATOR . '_build' . DIRECTORY_SEPARATOR;
         $this->config = $this->loadFile('config.json');
         
         if (isset($this->config['package']) && is_string($this->config['package'])) {

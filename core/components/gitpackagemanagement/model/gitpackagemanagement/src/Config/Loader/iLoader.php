@@ -12,7 +12,7 @@ interface iLoader
      * @param $path
      * @param General $general
      */
-    public function __construct(Parser $parser, $path, General $general = null);
+    public function __construct(Parser $parser);
     
     /**
      * Load general info about package

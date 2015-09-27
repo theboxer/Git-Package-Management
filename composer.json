@@ -16,7 +16,8 @@
     "php": ">=5.4",
     "symfony/console": "~2.7",
     "symfony/filesystem": "~2.7",
-    "symfony/finder": "~2.8"
+    "symfony/finder": "~2.8",
+    "psr/log": "*"
   },
   "require-dev": {
   },

@@ -10,6 +10,9 @@ class General extends ConfigObject
     public $description = '';
     public $author;
     public $version;
+    public $corePath;
+    public $assetsPath;
+    public $assetsURL;
 
     protected $rules = [
         'name' => 'notEmpty',
@@ -21,7 +24,16 @@ class General extends ConfigObject
     {
         if (empty($config['lowCaseName'])) {
             $this->lowCaseName = str_replace(' ', '_', strtolower($this->name));
-        }    
+        }
+
+        $corePath = $this->config->packagePath . "/core/components/" . $this->lowCaseName . "/";
+        $this->corePath = str_replace('\\', '/', $corePath);
+
+        $assetsPath = $this->config->packagePath . "/assets/components/" . $this->lowCaseName . "/";
+        $this->assetsPath = str_replace('\\', '/', $assetsPath);
+
+        $packagesUrl = $this->config->modx->getOption('gitpackagemanagement.packages_base_url', null, null);
+        $this->assetsURL = $packagesUrl . $this->config->folderName . '/assets/components/' . $this->lowCaseName . '/';
     }
 
     public function toArray()

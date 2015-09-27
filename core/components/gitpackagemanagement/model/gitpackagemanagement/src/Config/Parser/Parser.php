@@ -8,9 +8,9 @@ use GPM\Config\Object\General;
 final class Parser
 {
     /** @var \modX */
-    protected $modx;
+    public $modx;
     /** @var Config */
-    protected $config;
+    public $config;
     
     public function __construct(\modX &$modx, Config $config)
     {

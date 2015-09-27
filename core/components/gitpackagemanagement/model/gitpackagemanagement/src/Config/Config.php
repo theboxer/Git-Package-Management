@@ -7,17 +7,15 @@ use GPM\Error\Error;
 
 class Config
 {
-    /** @var Error */
-    public $error;
     /** @var \modX */
     public $modx;
     /** @var \GitPackageManagement */
     protected $gpm;
-    /** @var bool */
-    protected $log = true;
     
     /** @var string */
     public $packagePath;
+    /** @var string */
+    public $folderName;
     /** @var Object\General */
     public $general;
     /** @var Object\Action[] */
@@ -52,19 +50,20 @@ class Config
     /**
      * @param \modX $modx
      * @param string $packagePath
-     * @param bool $log
+     * @param $folderName
      */
-    public function __construct(\modX &$modx, $packagePath, $log = false)
+    public function __construct(\modX &$modx, $packagePath, $folderName)
     {
         $this->modx =& $modx;
         $this->packagePath = $packagePath;
-        $this->log = $log;
+        $this->folderName = $folderName;
+        
+        $this->init();
     }
 
     public function init()
     {
         $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->error = new Error($this->modx);
     }
 
     public function __sleep()

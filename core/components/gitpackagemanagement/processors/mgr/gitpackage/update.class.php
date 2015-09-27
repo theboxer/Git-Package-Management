@@ -34,15 +34,15 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $packagePath = $this->packagePath . $this->object->dir_name;
 
-        $this->newConfig = new \GPM\Config\Config($this->modx, $packagePath);
-        
+        $this->newConfig = new \GPM\Config\Config($this->modx, $packagePath, $this->object->dir_name);
+
         $parser = new \GPM\Config\Parser\Parser($this->modx, $this->newConfig);
         
         try {
-            $jsonLoader = new \GPM\Config\Loader\JSON($parser, $packagePath);
+            $jsonLoader = new \GPM\Config\Loader\JSON($parser);
             $jsonLoader->loadAll(true);
             
-            $fileLoader = new \GPM\Config\Loader\File($parser, $packagePath, $this->newConfig->general);
+            $fileLoader = new \GPM\Config\Loader\File($parser);
             $fileLoader->loadSnippets(true);
         } catch (\GPM\Config\Validator\ValidatorException $ve) {
             return $ve->getMessage();    
