@@ -54,12 +54,28 @@ final class Install
      */
     private function createConfigFile()
     {
+        $this->checkConfig($this->config->packagePath . '/config.core.php');
+        
         $coreConfigContent = "<?php\n" .
             "define('MODX_CORE_PATH', '" . str_replace('\\', '\\\\', MODX_CORE_PATH) . "');\n" .
             "define('MODX_CONFIG_KEY', '" . MODX_CONFIG_KEY . "');";
         file_put_contents($this->config->packagePath . '/config.core.php', $coreConfigContent);
 
         $this->logger->info('config.core.php file created.');
+    }
+
+    private function checkConfig($config)
+    {
+        if (!file_exists($config)) {
+            /* make an attempt to create the file */
+            @ $hnd = fopen($config, 'w');
+            @ fwrite($hnd, '<?php');
+            @ fclose($hnd);
+        }
+        $isWritable = @is_writable($config);
+        if (!$isWritable) {
+            throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $this->config->packagePath)));
+        }
     }
 
     /**

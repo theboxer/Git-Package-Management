@@ -49,13 +49,21 @@ class Config
 
     /**
      * @param \modX $modx
-     * @param string $packagePath
      * @param $folderName
+     * @throws \Exception
      */
-    public function __construct(\modX &$modx, $packagePath, $folderName)
+    public function __construct(\modX &$modx, $folderName)
     {
         $this->modx =& $modx;
-        $this->packagePath = $packagePath;
+
+        $packagePath = rtrim($this->gpm->getOption('packages_dir', null, null), '/');
+        if ($packagePath == null) {
+            throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
+        }
+
+        $packagePath .= '/'; 
+        
+        $this->packagePath = $packagePath . $folderName;
         $this->folderName = $folderName;
         
         $this->init();

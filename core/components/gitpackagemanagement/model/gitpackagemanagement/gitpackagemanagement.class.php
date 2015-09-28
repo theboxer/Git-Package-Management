@@ -12,8 +12,6 @@ class GitPackageManagement {
     public $options = array();
     /** @var array $chunks */
     public $chunks = array();
-    /** @var string $configPath */
-    public $configPath = '/_build/config.json';
 
     function __construct(modX &$modx,array $options = array()) {
         $this->modx =& $modx;
