@@ -3,7 +3,7 @@
   "lowCaseName": "gitpackagemanagement",
   "description": "Developer tool for creating components.",
   "author": "John Peca",
-  "version": "0.11.0",
+  "version": "0.12.0-alpha",
   "package": {
     "actions": [
       {
