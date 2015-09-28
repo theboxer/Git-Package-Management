@@ -30,7 +30,7 @@ abstract class Element extends ConfigObject
 //        'file' => 'file'
     ];
 
-    protected function setDefaults()
+    protected function setDefaults($config)
     {
         if (empty($this->file)) {
             $this->file = $this->name . '.' . $this->elementType . '.' . $this->extension;

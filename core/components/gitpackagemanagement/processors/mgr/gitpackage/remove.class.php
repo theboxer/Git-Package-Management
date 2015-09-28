@@ -18,6 +18,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
     /** @var string $packageFolder */
     private $packageFolder;
 
+    /** @var \GPM\Logger\MODX */
+    protected $logger;
+    
     public function beforeRemove()
     {
         /**
@@ -61,17 +64,34 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function setConfig($packagePath)
     {
-        $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
+        $this->logger = new \GPM\Logger\MODX($this->modx);
+        
+        $configFile = $packagePath . '/_build/config.json';
         if (!file_exists($configFile)) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nfif');
         }
 
-        $this->config = new \GPM\Config\Config($this->modx, $packagePath);
+        try {
+            $this->config = new \GPM\Config\Config($this->modx, $this->object->dir_name);
+            $parser = new \GPM\Config\Parser\Parser($this->modx, $this->config);
+            $loader = new \GPM\Config\Loader\JSON($parser);
+            $loader->loadAll();
+        } catch (\GPM\Config\Validator\ValidatorException $ve) {
+            $this->addFieldError('folderName', $this->modx->lexicon('Config file is invalid.'));
+            $this->logger->error('Config file is invalid.<br /><br />');
+            $this->logger->error($ve->getMessage());
+            $this->logger->info('COMPLETED');
 
-        if ($this->config->parseConfig($this->modx->fromJSON(file_get_contents($configFile))) == false) {
-            return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
+            return false;
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            $this->logger->info('COMPLETED');
+
+            $this->addFieldError('folderName', $e->getMessage());
+
+            return false;
         }
-
+        
         return true;
     }
 
@@ -90,7 +110,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
     private function removeNamespace()
     {
         /** @var modNamespace $ns */
-        $ns = $this->modx->getObject('modNamespace', array('name' => $this->config->getLowCaseName()));
+        $ns = $this->modx->getObject('modNamespace', array('name' => $this->config->general->lowCaseName));
         if ($ns) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing namespace');
             $ns->remove();
@@ -99,10 +119,10 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeExtensionPackage()
     {
-        $extPackage = $this->config->getExtensionPackage();
+        $extPackage = $this->config->extensionPackage;
         if ($extPackage !== false) {
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing extension package');
-            $this->modx->removeExtensionPackage($this->config->getLowCaseName());
+            $this->modx->removeExtensionPackage($this->config->general->lowCaseName);
         }
     }
 
@@ -120,13 +140,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeTables()
     {
-        if ($this->config->getDatabase() != null) {
-            $modelPath = $this->modx->getOption($this->config->getLowCaseName() . '.core_path', null, $this->modx->getOption('core_path') . 'components/' . $this->config->getLowCaseName() . '/') . 'model/';
-            $this->modx->addPackage($this->config->getLowCaseName(), $modelPath, $this->config->getDatabase()->getPrefix());
+        if ($this->config->database != null) {
+            $modelPath = $this->modx->getOption($this->config->general->lowCaseName . '.core_path', null, $this->modx->getOption('core_path') . 'components/' . $this->config->general->lowCaseName . '/') . 'model/';
+            $this->modx->addPackage($this->config->general->lowCaseName, $modelPath, $this->config->database->prefix);
 
             $manager = $this->modx->getManager();
 
-            foreach ($this->config->getDatabase()->getTables() as $table) {
+            foreach ($this->config->database->tables as $table) {
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing table ' . $table);
                 $manager->removeObjectContainer($table);
             }
@@ -135,14 +155,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removePlugins()
     {
-        /** @var \GPM\Config\Element\Plugin[] $plugins */
-        $plugins = $this->config->getElements('plugins');
+        $plugins = $this->config->plugins;
         if (count($plugins) > 0) {
             foreach ($plugins as $plugin) {
                 /** @var modPlugin $pluginObject */
-                $pluginObject = $this->modx->getObject('modPlugin', array('name' => $plugin->getName()));
+                $pluginObject = $this->modx->getObject('modPlugin', array('name' => $plugin->name));
                 if ($pluginObject) {
-                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing plugin ' . $plugin->getName());
+                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing plugin ' . $plugin->name);
                     $pluginObject->remove();
                 }
             }
@@ -151,14 +170,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeSnippets()
     {
-        /** @var \GPM\Config\Element\Snippet[] $snippets */
-        $snippets = $this->config->getElements('snippets');
+        $snippets = $this->config->snippets;
         if (count($snippets) > 0) {
             foreach ($snippets as $snippet) {
                 /** @var modSnippet $snippetObject */
-                $snippetObject = $this->modx->getObject('modSnippet', array('name' => $snippet->getName()));
+                $snippetObject = $this->modx->getObject('modSnippet', array('name' => $snippet->name));
                 if ($snippetObject) {
-                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing snippet ' . $snippet->getName());
+                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing snippet ' . $snippet->name);
                     $snippetObject->remove();
                 }
             }
@@ -167,14 +185,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeChunks()
     {
-        /** @var \GPM\Config\Element\Chunk[] $chunks */
-        $chunks = $this->config->getElements('chunks');
+        $chunks = $this->config->chunks;
         if (count($chunks) > 0) {
             foreach ($chunks as $chunk) {
                 /** @var modChunk $chunkObject */
-                $chunkObject = $this->modx->getObject('modChunk', array('name' => $chunk->getName()));
+                $chunkObject = $this->modx->getObject('modChunk', array('name' => $chunk->name));
                 if ($chunkObject) {
-                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing chunk ' . $chunk->getName());
+                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing chunk ' . $chunk->name);
                     $chunkObject->remove();
                 }
             }
@@ -183,14 +200,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeTemplates()
     {
-        /** @var \GPM\Config\Element\Template[] $templates */
-        $templates = $this->config->getElements('templates');
+        $templates = $this->config->templates;
         if (count($templates) > 0) {
             foreach ($templates as $template) {
                 /** @var modTemplate $templateObject */
-                $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $template->getName()));
+                $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $template->name));
                 if ($templateObject) {
-                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing template ' . $template->getName());
+                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing template ' . $template->name);
                     $templateObject->remove();
                 }
             }
@@ -199,14 +215,13 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeTVs()
     {
-        /** @var \GPM\Config\Element\TV[] $tvs */
-        $tvs = $this->config->getElements('tvs');
+        $tvs = $this->config->tvs;
         if (count($tvs) > 0) {
             foreach ($tvs as $tv) {
                 /** @var modTemplateVar $tvObject */
-                $tvObject = $this->modx->getObject('modTemplateVar', array('name' => $tv->getName()));
+                $tvObject = $this->modx->getObject('modTemplateVar', array('name' => $tv->name));
                 if ($tvObject) {
-                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing tv ' . $tv->getName());
+                    $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing tv ' . $tv->name);
                     $tvObject->remove();
                 }
             }
@@ -216,9 +231,9 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
     private function removeCategory()
     {
         /** @var modCategory $cat */
-        $cat = $this->modx->getObject('modCategory', array('category' => $this->config->getLowCaseName()));
+        $cat = $this->modx->getObject('modCategory', array('category' => $this->config->general->lowCaseName));
         if ($cat) {
-            $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing category ' . $this->config->getLowCaseName());
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Removing category ' . $this->config->general->lowCaseName);
             $cat->remove();
         }
 
@@ -226,8 +241,8 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
 
     private function removeMenus()
     {
-        foreach ($this->config->getMenus() as $menu) {
-            $menuObject = $this->modx->getObject('modMenu', array('text' => $menu->getText()));
+        foreach ($this->config->menus as $menu) {
+            $menuObject = $this->modx->getObject('modMenu', array('text' => $menu->text));
             $menuObject->remove();
         }
     }
@@ -235,7 +250,7 @@ class GitPackageManagementRemoveProcessor extends modObjectRemoveProcessor
     private function removeActions()
     {
         /** @var modAction[] $actions */
-        $actions = $this->modx->getCollection('modAction', array('namespace' => $this->config->getLowCaseName()));
+        $actions = $this->modx->getCollection('modAction', array('namespace' => $this->config->general->lowCaseName));
         foreach ($actions as $action) {
             $action->remove();
         }

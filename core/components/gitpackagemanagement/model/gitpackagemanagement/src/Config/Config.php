@@ -55,6 +55,7 @@ class Config
     public function __construct(\modX &$modx, $folderName)
     {
         $this->modx =& $modx;
+        $this->init();
 
         $packagePath = rtrim($this->gpm->getOption('packages_dir', null, null), '/');
         if ($packagePath == null) {
@@ -65,8 +66,6 @@ class Config
         
         $this->packagePath = $packagePath . $folderName;
         $this->folderName = $folderName;
-        
-        $this->init();
     }
 
     public function init()

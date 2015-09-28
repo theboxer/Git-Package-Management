@@ -41,7 +41,7 @@ class Resource extends ConfigObject
 
     protected function setDefaults($config)
     {
-        if (!isset($config['alias'])) {
+        if (empty($config['alias'])) {
             $this->alias = \modResource::filterPathSegment($this->config->modx, $this->pagetitle);
         }
 

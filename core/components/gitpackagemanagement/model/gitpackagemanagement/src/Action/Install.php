@@ -2,15 +2,15 @@
 namespace GPM\Action;
 
 use GPM\Config\Config;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
 final class Install
 {
+    use LoggerAwareTrait;
+    
     /** @var Config */
     protected $config;
-    
-    /** @var LoggerInterface */
-    protected $logger;
     
     /** @var \modX */
     protected $modx;
@@ -32,6 +32,7 @@ final class Install
         $this->config = $config;
         $this->modx =& $config->modx;
         $this->gpm =& $this->modx->gitpackagemanagement;
+        $this->logger = $logger;
     }
 
     public function install()

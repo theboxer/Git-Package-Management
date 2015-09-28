@@ -18,7 +18,7 @@ class Action extends ConfigObject
 
     protected function setDefaults($config)
     {
-        if (!isset($config['langTopics'])) {
+        if (empty($config['langTopics'])) {
             $this->langTopics = $this->config->general->lowCaseName . ':default';
         }        
     }

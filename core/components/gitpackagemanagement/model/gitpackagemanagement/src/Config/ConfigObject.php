@@ -53,7 +53,7 @@ abstract class ConfigObject
             }
         }
 
-        $this->setDefaults();
+        $this->setDefaults($data);
         $this->validate();
 
         return true;
@@ -61,7 +61,7 @@ abstract class ConfigObject
 
     abstract public function toArray();
 
-    protected function setDefaults()
+    protected function setDefaults($config)
     {
     }
 
