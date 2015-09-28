@@ -62,7 +62,11 @@ class Config
             throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
         }
 
-        $packagePath .= '/'; 
+        $packagePath .= '/';
+
+        if (empty($folderName)) {
+            throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));
+        }
         
         $this->packagePath = $packagePath . $folderName;
         $this->folderName = $folderName;
