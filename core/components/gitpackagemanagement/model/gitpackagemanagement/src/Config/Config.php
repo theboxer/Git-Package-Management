@@ -87,12 +87,11 @@ class Config
         ];
     }
 
-    public static function wakeMe($data, \modX &$modx, $packagePath)
+    public static function wakeMe($data, \modX &$modx)
     {
         /** @var Config $config */
         $config = unserialize($data);
         $config->modx =& $modx;
-        $config->packagePath = $packagePath;
         $config->init();
         
         $config->general->setConfig($config);

@@ -34,11 +34,9 @@ abstract class Element extends ConfigObject
     {
         if (empty($this->file)) {
             $this->file = $this->name . '.' . $this->elementType . '.' . $this->extension;
-        }    
-    }
-    
-    protected function fileValidator()
-    {
+        }
+
+        // @TODO Prettify 
         $filePaths = [
             $this->file,
             strtolower($this->file),
@@ -51,7 +49,7 @@ abstract class Element extends ConfigObject
             $filePaths[] = $categoryPath . $this->file;
             $filePaths[] = strtolower($categoryPath . $this->file);
         }
-        
+
         $file = $this->config->packagePath;
         $file .= '/core/components/' . $this->config->general->lowCaseName . '/elements/' . $this->elementType . 's/';
 

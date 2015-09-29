@@ -10,9 +10,15 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor
 {
     /** @var GitPackage $object */
     public $object;
+    
     /** @var \GPM\Config\Config $config */
     public $config;
-    public $packagePath = null;
+    
+    /** @var \GPM\Logger\MODX */
+    protected $logger;
+
+    /** @var GitPackageManagement */
+    protected $gpm;
 
     public function process()
     {
@@ -22,67 +28,27 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor
         $this->object = $this->modx->getObject('GitPackage', array('id' => $id));
         if (!$this->object) return $this->failure();
 
-        $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
-        if ($this->packagePath == null) {
-            return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
-        }
+        $this->logger = new \GPM\Logger\MODX($this->modx);
+        $this->gpm =& $this->modx->gitpackagemanagement;
 
-        $packagePath = $this->packagePath . $this->object->dir_name;
+        try {
+            $this->config = new \GPM\Config\Config($this->modx, $this->object->dir_name);
+            $parser = new \GPM\Config\Parser\Parser($this->modx, $this->config);
+            $loader = new \GPM\Config\Loader\JSON($parser);
+            $loader->loadAll();
 
-        $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
-        if (!file_exists($configFile)) {
+            $installer = new \GPM\Action\Schema($this->config, $this->logger);
+            $installer->build();
+        } catch (\GPM\Config\Validator\ValidatorException $ve) {
+            $this->logger->error('Config file is invalid.<br /><br />');
+            $this->logger->error($ve->getMessage());
+
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
-
-        $config = file_get_contents($configFile);
-
-        $config = $this->modx->fromJSON($config);
-
-        $this->config = new \GPM\Config\Config($this->modx, $packagePath);
-        if ($this->config->parseConfig($config) == false) {
-            return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
-        }
-
-
-        $this->buildSchema();
 
         return $this->success();
-    }
-
-    private function buildSchema()
-    {
-        $modelPath = $this->packagePath . $this->object->dir_name . "/core/components/" . $this->config->getLowCaseName() . "/" . 'model/';
-        $modelPath = str_replace('\\', '/', $modelPath);
-
-        $manager = $this->modx->getManager();
-        $generator = $manager->getGenerator();
-
-        $generator->classTemplate = <<<EOD
-<?php
-/**
- * [+phpdoc-package+]
- */
-class [+class+] extends [+extends+] {}
-?>
-EOD;
-        $generator->platformTemplate = <<<EOD
-<?php
-/**
- * [+phpdoc-package+]
- */
-require_once (strtr(realpath(dirname(dirname(__FILE__))), '\\\\', '/') . '/[+class-lowercase+].class.php');
-class [+class+]_[+platform+] extends [+class+] {}
-?>
-EOD;
-        $generator->mapHeader = <<<EOD
-<?php
-/**
- * [+phpdoc-package+]
- */
-EOD;
-
-        $buildOptions = $this->config->getBuild();
-        $generator->parseSchema($this->packagePath . $this->object->dir_name . $buildOptions->getSchemaPath(), $modelPath);
     }
 }
 

@@ -19,11 +19,11 @@ class Build extends ConfigObject
         'attributes' => 'type:array'
     ];
 
-    public function __construct(Config $config)
+    public function __construct(Config $config, $data = null)
     {
         $this->resolver = new Resolver($config);
 
-        parent::__construct($config);
+        parent::__construct($config, $data);
     }
 
     protected function setDefaults($config)
