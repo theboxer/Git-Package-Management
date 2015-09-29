@@ -12,6 +12,7 @@ class GitPackageConfigMenu {
     private $params;
     private $handler;
     private $action;
+    private $permissions;
     /** @var GitPackageConfigAction $action */
     private $actionObject = null;
 
@@ -63,6 +64,12 @@ class GitPackageConfigMenu {
         }else{
             $this->handler = '';
         }
+        
+        if(isset($config['permissions'])){
+            $this->permissions = $config['permissions'];
+        }else{
+            $this->permissions = '';
+        }
 
         if(isset($config['action'])){
             $action = $this->setAction($config['action']);
@@ -77,6 +84,11 @@ class GitPackageConfigMenu {
         }
 
         return true;
+    }
+
+    public function getPermissions()
+    {
+        return $this->permissions;
     }
 
     public function getAction() {

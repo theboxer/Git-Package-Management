@@ -167,6 +167,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                                            'menuindex' => $men->getMenuIndex(),
                                            'params' => $men->getParams(),
                                            'handler' => $men->getHandler(),
+                                           'permissions' => $men->getPermissions(),
                                       ),'',true,true);
 
                 if (isset($actions[$men->getAction()])) {

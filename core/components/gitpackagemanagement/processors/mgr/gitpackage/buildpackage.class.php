@@ -449,6 +449,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 'menuindex' => $menu->getMenuIndex(),
                 'params' => $menu->getParams(),
                 'handler' => $menu->getHandler(),
+                'permissions' => $menu->getPermissions(),
             ),'',true,true);
 
             $configAction = $menu->getActionObject();
