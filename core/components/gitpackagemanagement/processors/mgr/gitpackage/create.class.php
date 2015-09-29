@@ -699,7 +699,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     private function createResources() {
         $resources = $this->config->getResources();
 
-        $this->resourceMap = array();
+        $this->resourceMap = $this->getResourceMap();
 
         foreach ($resources as $resource) {
             $this->createResource($resource);
@@ -733,6 +733,18 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     private function setResourceMap() {
         $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
         file_put_contents($rmf, '<?php return ' . var_export($this->resourceMap, true) . ';');
+    }
+
+    private function getResourceMap() {
+        $rmf = $this->config->getAssetsFolder() . 'resourcemap.php';
+
+        if (is_readable($rmf)) {
+            $content = include $rmf;
+        } else {
+            $content = array();
+        }
+
+        return $content;
     }
 }
 return 'GitPackageManagementCreateProcessor';

@@ -272,7 +272,33 @@ class GitPackageConfigResource {
             $resource['id'] = $this->id;
         }
 
+        $taggerCorePath = $this->modx->getOption('tagger.core_path', null, $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/tagger/');
+        if (file_exists($taggerCorePath . 'model/tagger/tagger.class.php')) {
+            /** @var Tagger $tagger */
+            $tagger = $this->modx->getService(
+                'tagger',
+                'Tagger',
+                $taggerCorePath . 'model/tagger/',
+                array(
+                    'core_path' => $taggerCorePath
+                )
+            );
+            
+            $tagger = $tagger instanceof Tagger;
+        } else {
+            $tagger = null;
+        }
+
         foreach ($this->others as $other) {
+            if (($tagger == true) && (strpos($other['name'], 'tagger-') !== false)) {
+                $groupAlias = preg_replace('/tagger-/', '', $other['name'], 1);
+
+                $group = $this->modx->getObject('TaggerGroup', array('alias' => $groupAlias));
+                if ($group) {
+                    $other['name'] = 'tagger-' . $group->id;
+                }
+            }
+            
             $resource[$other['name']] = $other['value'];
         }
 
@@ -342,15 +368,12 @@ class GitPackageConfigResource {
         $resource['show_in_tree'] = $this->show_in_tree;
         $resource['set_as_home'] = $this->setAsHome;
         $resource['tvs'] = $this->tvs;
-
-        foreach ($this->others as $other) {
-            $resource[$other['name']] = $other['value'];
-        }
+        $resource['others'] = $this->others;
 
         $resource['template'] = $this->template;
 
         if ($this->content_type !== null) {
-                $resource['content_type'] = $this->content_type;
+            $resource['content_type'] = $this->content_type;
         }
 
         if ($this->published !== null) {

@@ -51,6 +51,41 @@ if (!function_exists('createResource')) {
         } else {
             $tvs = array();
         }
+        
+        if (isset($resource['others'])) {
+            $others = $resource['others'];
+            unset($resource['others']);
+
+            $taggerCorePath = $modx->getOption('tagger.core_path', null, $modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/tagger/');
+            if (file_exists($taggerCorePath . 'model/tagger/tagger.class.php')) {
+                /** @var Tagger $tagger */
+                $tagger = $modx->getService(
+                    'tagger',
+                    'Tagger',
+                    $taggerCorePath . 'model/tagger/',
+                    array(
+                        'core_path' => $taggerCorePath
+                    )
+                );
+            
+                $tagger = $tagger instanceof Tagger;
+            } else {
+                $tagger = null;
+            }
+            
+            foreach ($others as $other) {
+                if (($tagger == true) && (strpos($other['name'], 'tagger-') !== false)) {
+                    $groupAlias = preg_replace('/tagger-/', '', $other['name'], 1);
+            
+                    $group = $modx->getObject('TaggerGroup', array('alias' => $groupAlias));
+                    if ($group) {
+                        $other['name'] = 'tagger-' . $group->id;
+                    }
+                }
+            
+                $resource[$other['name']] = $other['value'];
+            }
+        }
 
         $res = $modx->runProcessor('resource/create', $resource);
         $resObject = $res->getObject();
@@ -83,6 +118,41 @@ if (!function_exists('updateResource')) {
             $tvs = array();
         }
 
+        if (isset($resource['others'])) {
+            $others = $resource['others'];
+            unset($resource['others']);
+
+            $taggerCorePath = $modx->getOption('tagger.core_path', null, $modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/tagger/');
+            if (file_exists($taggerCorePath . 'model/tagger/tagger.class.php')) {
+                /** @var Tagger $tagger */
+                $tagger = $modx->getService(
+                    'tagger',
+                    'Tagger',
+                    $taggerCorePath . 'model/tagger/',
+                    array(
+                        'core_path' => $taggerCorePath
+                    )
+                );
+            
+                $tagger = $tagger instanceof Tagger;
+            } else {
+                $tagger = null;
+            }
+
+            foreach ($others as $other) {
+                if (($tagger == true) && (strpos($other['name'], 'tagger-') !== false)) {
+                    $groupAlias = preg_replace('/tagger-/', '', $other['name'], 1);
+                
+                    $group = $modx->getObject('TaggerGroup', array('alias' => $groupAlias));
+                    if ($group) {
+                        $other['name'] = 'tagger-' . $group->id;
+                    }
+                }
+
+                $resource[$other['name']] = $other['value'];
+            }
+        }
+
         $res = $modx->runProcessor('resource/update', $resource);
         $resObject = $res->getObject();
 
@@ -107,6 +177,8 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
     case xPDOTransport::ACTION_INSTALL:
     case xPDOTransport::ACTION_UPGRADE:
         $resources = {{$resources}};
+
+        if (isset($options['install_resources']) && empty($options['install_resources'])) return true;
 
         $resourceMap = getResourceMap();
         $toRemove = $resourceMap;
@@ -186,10 +258,21 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                     }
                 }
             } else {
-                $resId = createResource($resource);
+                if ($resource['set_as_home'] == 1) {
+                    unset($resource['set_as_home']);
+                    $resource['id'] = $siteStart;
+                
+                    $resId = updateResource($resource);
+                
+                    if ($resId !== false) {
+                        $resourceMap[$resource['pagetitle']] = $resId;
+                    }
+                } else {
+                    $resId = createResource($resource);
 
-                if ($resId !== false) {
-                    $resourceMap[$resource['pagetitle']] = $resId;
+                    if ($resId !== false) {
+                        $resourceMap[$resource['pagetitle']] = $resId;
+                    }
                 }
             }
         }
