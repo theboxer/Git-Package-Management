@@ -14,22 +14,13 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor
     /** @var \GPM\Config\Config $config */
     public $config;
     
-    /** @var \GPM\Logger\MODX */
-    protected $logger;
-
-    /** @var GitPackageManagement */
-    protected $gpm;
-
     public function process()
     {
         $id = $this->getProperty('id');
         if ($id == null) return $this->failure();
 
         $this->object = $this->modx->getObject('GitPackage', array('id' => $id));
-        if (!$this->object) return $this->failure();
-
-        $this->logger = new \GPM\Logger\MODX($this->modx);
-        $this->gpm =& $this->modx->gitpackagemanagement;
+        if (!$this->object) return $this->failure('GitPackage not found.');
 
         try {
             $this->config = new \GPM\Config\Config($this->modx, $this->object->dir_name);
@@ -37,15 +28,15 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();
 
-            $installer = new \GPM\Action\Schema($this->config, $this->logger);
-            $installer->build();
+            $schema = new \GPM\Action\Schema($this->config, new \GPM\Logger\Null());
+            $schema->build();
         } catch (\GPM\Config\Validator\ValidatorException $ve) {
-            $this->logger->error('Config file is invalid.<br /><br />');
-            $this->logger->error($ve->getMessage());
-
-            return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
+            $message = 'Config file is invalid.<br /><br />';
+            $message .= $ve->getMessage();
+            
+            return $this->failure($message);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return $this->failure($e->getMessage());
         }
 
         return $this->success();

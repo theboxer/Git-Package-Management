@@ -2,6 +2,7 @@
 namespace GPM\Action;
 
 use GPM\Config\Config;
+use GPM\Config\Object\Action;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
@@ -124,8 +125,8 @@ final class Update
                     'handler' => $men->handler,
                 ), '', true, true);
 
-                if (isset($actions[$men->action])) {
-                    $menus[$i]->addOne($actions[$men->action]);
+                if (($men->action instanceof Action) && isset($actions[$men->action->id])) {
+                    $menus[$i]->addOne($actions[$men->action->id]);
                 } else {
                     $menus[$i]->set('action', $men->action);
                     $menus[$i]->set('namespace', $this->config->general->lowCaseName);

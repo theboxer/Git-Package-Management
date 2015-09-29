@@ -45,7 +45,7 @@ abstract class ConfigObject
 
             if (property_exists($this, $key)) {
                 if (method_exists($this, 'set' . ucfirst($key))) {
-                    $this->{'set' . ucfirst($key)}($key);
+                    $this->{'set' . ucfirst($key)}($value);
                     continue;
                 }
 
