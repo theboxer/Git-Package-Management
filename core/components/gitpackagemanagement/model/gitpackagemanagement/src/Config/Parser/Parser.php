@@ -96,7 +96,7 @@ final class Parser
 
     public function parseResource($resource, $skip = true)
     {
-        $this->config->resources = new Object\Resource($this->config, $resource);
+        $this->config->resources[] = new Object\Resource($this->config, $resource);
         
         return true;
     }
