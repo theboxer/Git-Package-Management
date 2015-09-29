@@ -31,10 +31,10 @@ class ValidatorException extends \Exception
         $this->message = $section . ':' . PHP_EOL;
         
         foreach ($errors as $field => $messages) {
-            $this->message .= '        - ' . $field . ':' . PHP_EOL;
+            $this->message .= '    - ' . $field . ':' . PHP_EOL;
             
             foreach ($messages as $message) {
-                $this->message .= '            - ' . $message . PHP_EOL;    
+                $this->message .= '        - ' . $message . PHP_EOL;    
             }
         }
     }

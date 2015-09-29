@@ -29,6 +29,9 @@ final class MODX implements LoggerInterface
     
     public function log($level, $message, array $context = array())
     {
+        $message = str_replace(PHP_EOL, '<br>', $message);
+        $message = str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', $message);
+        
         if (is_string($level)) {
             $level = self::$levelMap[$level];
         }

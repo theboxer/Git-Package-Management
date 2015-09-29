@@ -59,12 +59,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "db284f0047b6d9a38bd5dd1b53a706d34d2bd957"
+                "reference": "e23659c247d77104e4012e3b4e8ef29a8840e556"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/db284f0047b6d9a38bd5dd1b53a706d34d2bd957",
-                "reference": "db284f0047b6d9a38bd5dd1b53a706d34d2bd957",
+                "url": "https://api.github.com/repos/symfony/console/zipball/e23659c247d77104e4012e3b4e8ef29a8840e556",
+                "reference": "e23659c247d77104e4012e3b4e8ef29a8840e556",
                 "shasum": ""
             },
             "require": {
@@ -108,7 +108,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-27 10:09:46"
+            "time": "2015-09-28 21:11:03"
         },
         {
             "name": "symfony/filesystem",
@@ -165,12 +165,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "8f87858ea06957ddf2a45394f9687beb230003ca"
+                "reference": "03c39e93e7101ce605250d15c25f7744a4fe6208"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/8f87858ea06957ddf2a45394f9687beb230003ca",
-                "reference": "8f87858ea06957ddf2a45394f9687beb230003ca",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/03c39e93e7101ce605250d15c25f7744a4fe6208",
+                "reference": "03c39e93e7101ce605250d15c25f7744a4fe6208",
                 "shasum": ""
             },
             "require": {
@@ -206,7 +206,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2015-09-27 10:09:46"
+            "time": "2015-09-28 10:21:41"
         }
     ],
     "packages-dev": [],
