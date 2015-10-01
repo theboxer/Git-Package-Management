@@ -98,9 +98,6 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
         m.push({
             text: _('gitpackagemanagement.build_package')
             ,handler: this.buildPackage
-        });m.push({
-            text: _('gitpackagemanagement.preserve_package')
-            ,handler: this.preservePackage
         });
         m.push('-');
         m.push({
@@ -189,28 +186,6 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             url: GitPackageManagement.config.connectorUrl
             ,params: {
                 action: 'mgr/gitpackage/buildschema'
-                ,id: this.menu.record.id
-            }
-            ,listeners: {
-                'success':{fn:function(r) {
-                    this.updateMask.hide();
-                    MODx.msg.alert(_('gitpackagemanagement.update_package'), _('gitpackagemanagement.update_package_success'));
-                    this.refresh();
-                },scope:this}
-                ,'failure':{fn:function(r) {
-                    this.updateMask.hide();
-                    MODx.msg.alert(_('gitpackagemanagement.update_package'), r.message);
-                },scope:this}
-            }
-        });
-    }
-
-    ,preservePackage: function(){
-        this.updateMask.show();
-        MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
-            ,params: {
-                action: 'mgr/gitpackage/preservepackage'
                 ,id: this.menu.record.id
             }
             ,listeners: {

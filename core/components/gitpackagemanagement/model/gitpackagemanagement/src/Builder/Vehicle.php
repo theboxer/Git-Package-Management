@@ -1,6 +1,8 @@
 <?php
 namespace GPM\Builder;
 
+use GPM\Config\Object\Database;
+
 class Vehicle {
     /** @var \modPackageBuilder $builder */
     private $builder;
@@ -42,7 +44,7 @@ class Vehicle {
         return $this;
     }
 
-    public function addTableResolver($packagePath, $tables) {
+    public function addTableResolver($packagePath, Database $db) {
         if (!is_dir($packagePath)) {
             mkdir($packagePath);
         }
@@ -52,7 +54,7 @@ class Vehicle {
             unlink($resolver);
         }
 
-        $this->smarty->assign('tables', $tables);
+        $this->smarty->assign_by_ref('db', $db);
 
         $resolverContent = $this->smarty->fetch('tables_resolver.tpl');
 

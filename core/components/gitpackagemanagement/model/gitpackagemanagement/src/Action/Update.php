@@ -31,13 +31,19 @@ final class Update
     /** @var array */
     protected $categoriesMap = [];
     
-    public function __construct(Config $config, Config $oldConfig, LoggerInterface $logger)
+    /** @var \GitPackage */
+    protected $object;
+    
+    public function __construct(Config $config, \GitPackage $object, LoggerInterface $logger)
     {
         $this->modx =& $config->modx;
         $this->gpm =& $this->modx->gitpackagemanagement;
         $this->logger = $logger;
         $this->config = $config;
-        $this->oldConfig = $oldConfig;
+
+        $this->object = $object;
+
+        $this->oldConfig = Config::wakeMe($this->object->config, $this->modx);
     }
 
     public function update($dbAction = '', $schema = 0)
@@ -71,9 +77,16 @@ final class Update
         $this->updateResources();
         $this->clearCache();
 
+        $this->updateObject();
+        
         return true;
     }
 
+    public function getOldConfig()
+    {
+        return $this->oldConfig;
+    }
+    
     private function updateActionsAndMenus()
     {
         /** @var \modAction[] $actions */
@@ -123,6 +136,7 @@ final class Update
                     'menuindex' => $men->menuIndex,
                     'params' => $men->params,
                     'handler' => $men->handler,
+                    'permissions' => $men->permissions,
                 ), '', true, true);
 
                 if (($men->action instanceof Action) && isset($actions[$men->action->id])) {
@@ -839,5 +853,13 @@ final class Update
                 $category->remove();
             }
         }
+    }
+    
+    private function updateObject()
+    {
+        $this->object->set('config', serialize($this->config));
+        $this->object->set('description', $this->config->general->description);
+        $this->object->set('version', $this->config->general->version);
+        $this->object->save();
     }
 }

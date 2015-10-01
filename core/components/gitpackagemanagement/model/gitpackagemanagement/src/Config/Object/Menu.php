@@ -12,6 +12,7 @@ class Menu extends ConfigObject
     public $menuIndex = 0;
     public $params = '';
     public $handler = '';
+    public $permissions = '';
     /** @var Action|string */
     public $action;
 
@@ -30,7 +31,8 @@ class Menu extends ConfigObject
             'menuIndex' => $this->menuIndex,
             'params' => $this->params,
             'handler' => $this->handler,
-            'action' => ($this->action instanceof Action)? $this->action->id : $this->action
+            'action' => ($this->action instanceof Action)? $this->action->id : $this->action,
+            'permissions' => $this->permissions
         ];
     }
 

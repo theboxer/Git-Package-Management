@@ -6,73 +6,45 @@
  * @package gitpackagemanagement
  * @subpackage processors
  */
-class GitPackageManagementCreateProcessor extends modObjectCreateProcessor
+class GitPackageManagementCreateProcessor extends modProcessor
 {
-    public $classKey = 'GitPackage';
     public $languageTopics = array('gitpackagemanagement:default');
-    public $objectType = 'gitpackagemanagement.package';
 
-    /** @var \GPM\Config\Config $config * */
-    private $config = null;
-    
-    /** @var \GPM\Logger\MODX */
-    protected $logger;
-    
-    /** @var GitPackageManagement */
-    protected $gpm;
-
-    public function beforeSave()
+    public function process()
     {
-        $this->logger = new \GPM\Logger\MODX($this->modx);
-        $this->gpm =& $this->modx->gitpackagemanagement;
+        $logger = new \GPM\Logger\MODX($this->modx);
         
         try {
-            $this->config = new \GPM\Config\Config($this->modx, $this->getProperty('folderName'));
-            $parser = new \GPM\Config\Parser\Parser($this->modx, $this->config);
+            $config = new \GPM\Config\Config($this->modx, $this->getProperty('folderName'));
+            $parser = new \GPM\Config\Parser\Parser($this->modx, $config);
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();
 
-            $installer = new \GPM\Action\Install($this->config, $this->logger);
+            $installer = new \GPM\Action\Install($config, $logger);
             $installer->install();
         } catch (\GPM\Config\Validator\ValidatorException $ve) {
             $this->addFieldError('folderName', $this->modx->lexicon('Config file is invalid.'));
-            $this->logger->error('Config file is invalid.<br /><br />');
-            $this->logger->error($ve->getMessage());
-            $this->logger->info('COMPLETED');
+            $logger->error('Config file is invalid.' . PHP_EOL);
+            $logger->error($ve->getMessage());
+            $logger->info('COMPLETED');
 
-            return false;
+            return $this->failure();
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-            $this->logger->info('COMPLETED');
+            $logger->error($e->getMessage());
+            $logger->info('COMPLETED');
 
             $this->addFieldError('folderName', $e->getMessage());
 
-            return false;
+            return $this->failure();
         }
 
-//        $dependencies = $this->config->checkDependencies();
-//        if ($dependencies !== true) {
-//            $this->addFieldError('folderName', $this->modx->lexicon('gitpackagemanagement.package_err_dependencies'));
-//            $this->logger->error('Dependencies are not matching!');
-//
-//            foreach ($dependencies as $dependency) {
-//                $this->logger->error('Package ' . $dependency . ' not found!');
-//            }
-//
-//            $this->logger->info('COMPLETED');
-//            return false;
-//        }
+        $logger->info('COMPLETED');
 
-        $this->object->set('config', serialize($this->config));
-        $this->object->set('version', $this->config->general->version);
-        $this->object->set('description', $this->config->general->description);
-        $this->object->set('author', $this->config->general->author);
-        $this->object->set('name', $this->config->general->name);
-        $this->object->set('dir_name', $this->getProperty('folderName'));
+        return $this->success();
+    }
 
-        $this->logger->info('COMPLETED');
-
-        return parent::beforeSave();
+    public function getLanguageTopics() {
+        return $this->languageTopics;
     }
 }
 

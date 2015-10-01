@@ -33,14 +33,8 @@ class Install extends GPMCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
         $logger = new ConsoleLogger($output);
         
-        $folder = $input->getOption('dir');
-        if (empty($folder)) {
-            $logger->error('Option dir is required.');
-            return null;
-        }
-
         try {
-            $config = new Config($this->getApplication()->modx, $folder);
+            $config = new Config($this->getApplication()->modx, $input->getOption('dir'));
             $parser = new Parser($this->getApplication()->modx, $config);
             $loader = new JSON($parser);
             $loader->loadAll();
@@ -57,16 +51,6 @@ class Install extends GPMCommand
 
             return null;
         }
-
-        /** @var \GitPackage $object */
-        $object = $this->getApplication()->modx->newObject('GitPackage');
-        $object->set('config', serialize($config));
-        $object->set('version', $config->general->version);
-        $object->set('description', $config->general->description);
-        $object->set('author', $config->general->author);
-        $object->set('name', $config->general->name);
-        $object->set('dir_name', $folder);
-        $object->save();
 
         $output->writeln('Package installed.');
     }

@@ -4,7 +4,7 @@
  *
  * THIS RESOLVER IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
- * @package {{$lowercasename}}
+ * @package {{$general->lowCaseName}}
  * @subpackage build
  */
 
@@ -13,12 +13,12 @@ if ($object->xpdo) {
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
-            $modelPath = $modx->getOption('{{$lowercasename}}.core_path', null, $modx->getOption('core_path') . 'components/{{$lowercasename}}/') . 'model/';
-            $modx->addPackage('{{$lowercasename}}', $modelPath);
+            $modelPath = $modx->getOption('{{$general->lowCaseName}}.core_path', null, $modx->getOption('core_path') . 'components/{{$general->lowCaseName}}/') . 'model/';
+            $modx->addPackage('{{$general->lowCaseName}}', $modelPath, '{{$db->prefix}}');
 
             $manager = $modx->getManager();
 
-{foreach from=$tables item=table}
+{foreach from=$db->tables item=table}
             $manager->createObjectContainer('{{$table}}');
 {/foreach}
 

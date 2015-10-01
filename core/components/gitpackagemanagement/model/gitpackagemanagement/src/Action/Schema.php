@@ -18,15 +18,6 @@ final class Schema
     /** @var \GitPackageManagement */
     protected $gpm;
     
-    /** @var array */
-    protected $resourceMap = [];
-    
-    /** @var \modCategory */
-    protected $category;
-    
-    /** @var array */
-    protected $categoriesMap = [];
-    
     public function __construct(Config $config, LoggerInterface $logger)
     {
         $this->config = $config;

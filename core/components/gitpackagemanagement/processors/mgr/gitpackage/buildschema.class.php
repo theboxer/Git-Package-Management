@@ -6,11 +6,8 @@
  * @package gitpackagemanagement
  * @subpackage processors
  */
-class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor
+class GitPackageManagementBuildSchemaProcessor extends modProcessor
 {
-    /** @var GitPackage $object */
-    public $object;
-    
     /** @var \GPM\Config\Config $config */
     public $config;
     
@@ -19,11 +16,12 @@ class GitPackageManagementBuildSchemaProcessor extends modObjectProcessor
         $id = $this->getProperty('id');
         if ($id == null) return $this->failure();
 
-        $this->object = $this->modx->getObject('GitPackage', array('id' => $id));
-        if (!$this->object) return $this->failure('GitPackage not found.');
+        /** @var GitPackage $object */
+        $object = $this->modx->getObject('GitPackage', array('id' => $id));
+        if (!$object) return $this->failure('GitPackage not found.');
 
         try {
-            $this->config = new \GPM\Config\Config($this->modx, $this->object->dir_name);
+            $this->config = new \GPM\Config\Config($this->modx, $object->dir_name);
             $parser = new \GPM\Config\Parser\Parser($this->modx, $this->config);
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();

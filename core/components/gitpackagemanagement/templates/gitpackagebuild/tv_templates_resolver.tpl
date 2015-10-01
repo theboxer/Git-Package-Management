@@ -4,7 +4,7 @@
  *
  * THIS RESOLVER IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
- * @package {{$lowercasename}}
+ * @package {{$general->lowCaseName}}
  * @subpackage build
  */
 
