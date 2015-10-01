@@ -2,10 +2,13 @@
 namespace GPM\CLI\Commands\Package;
 
 use GPM\CLI\Commands\GPMCommand;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Input\InputArgument;
+use GPM\Config\Config;
+use GPM\Config\Loader\JSON;
+use GPM\Config\Parser\Parser;
+use GPM\Config\Validator\ValidatorException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Update extends GPMCommand
@@ -13,14 +16,7 @@ class Update extends GPMCommand
     protected function configure()
     {
         $this
-            ->setName('package:update')
             ->setDescription('Update a package')
-            ->addOption(
-                'pkg',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Package name'
-            )
             ->addOption(
                 'updateDB',
                 null,
@@ -34,53 +30,32 @@ class Update extends GPMCommand
                 InputOption::VALUE_NONE,
                 'If passed XML schema will be build'
             )
-            ->addOption(
-                'useKey',
-                null,
-                InputOption::VALUE_NONE,
-                'If passed package key will be used instead of package name'
-            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getOption('pkg');
-        if (empty($name)) {
-            $this->error($output, 'Option pkg is required.');
-            return;
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+        $logger = new ConsoleLogger($output);
+
+        try {
+            $config = new Config($this->getApplication()->modx, $this->package->dir_name);
+            $parser = new Parser($this->getApplication()->modx, $config);
+            $loader = new JSON($parser);
+            $loader->loadAll();
+
+            $schema = new \GPM\Action\Update($config, $this->package, $logger);
+            $schema->update($input->getOption('updateDB'), intval($input->getOption('schema')));
+        } catch (ValidatorException $ve) {
+            $logger->error('Config file is invalid.');
+            $logger->error($ve->getMessage());
+
+
+            return null;
+        } catch (\Exception $e) {
+            $logger->error($e->getMessage());
+
+            return null;
         }
-
-        $pkgMatcher = $input->getOption('useKey') ? 'key' : 'name';
-        $c = array($pkgMatcher => $name);
-        if ($pkgMatcher == 'name') {
-            $c['OR:dir_name:='] = $name;
-        }
-
-        $pkg = $this->getApplication()->modx->getObject('GitPackage', $c);
-
-        if (empty($pkg)) {
-            $this->error($output, 'Package ' . ($input->getOption('useKey') ? 'with key ' : '') . $name . ' was not found.');
-            return;
-        }
-
-        $db = $input->getOption('updateDB');
-
-        $options = array(
-            'id' => $pkg->id,
-            'recreateDatabase' => (int) ($db == 'recreate'),
-            'alterDatabase' => (int) ($db == 'alter'),
-            'buildSchema' => (int) $input->getOption('schema'),
-        );
-
-        /** @var \modProcessorResponse $response */
-        $response = $this->getApplication()->gpm->runProcessor('mgr/gitpackage/update', $options);
-
-        if (!$response->isError()) {
-            $output->writeln('Package updated.');
-        } else {
-            $this->error($output, $response->getMessage());
-        }
-
     }
 }

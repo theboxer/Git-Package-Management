@@ -17,7 +17,6 @@ class Install extends GPMCommand
     protected function configure()
     {
         $this
-            ->setName('package:install')
             ->setDescription('Install a new package')
             ->addOption(
                 'dir',
@@ -32,7 +31,7 @@ class Install extends GPMCommand
     {
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
         $logger = new ConsoleLogger($output);
-        
+
         try {
             $config = new Config($this->getApplication()->modx, $input->getOption('dir'));
             $parser = new Parser($this->getApplication()->modx, $config);
@@ -45,13 +44,12 @@ class Install extends GPMCommand
             $logger->error('Config file is invalid.');
             $logger->error($ve->getMessage());
 
+
             return null;
         } catch (\Exception $e) {
             $logger->error($e->getMessage());
 
             return null;
         }
-
-        $output->writeln('Package installed.');
     }
 }

@@ -37,6 +37,7 @@ if (file_exists(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) .
 
     $app->setMODX($modx);
     $app->loadGPM();
+    $app->loadCommands();
 }
 
 $app->run();

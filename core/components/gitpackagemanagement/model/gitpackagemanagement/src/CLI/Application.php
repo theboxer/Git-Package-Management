@@ -1,6 +1,8 @@
 <?php
 namespace GPM\CLI;
 
+use GPM\CLI\Commands\Package\MyListCommand;
+
 class Application extends \Symfony\Component\Console\Application
 {
     /** @var \modX $modx */
@@ -16,22 +18,20 @@ class Application extends \Symfony\Component\Console\Application
         parent::__construct(self::$name, self::$version);
     }
 
-    protected function getDefaultCommands()
+    public function loadCommands()
     {
-        $commands = parent::getDefaultCommands();
-
-        $commands[] = new Commands\Package\Install();
-        $commands[] = new Commands\Package\Update();
-        $commands[] = new Commands\Package\Build();
-        $commands[] = new Commands\Package\Delete();
-        $commands[] = new Commands\Package\Schema();
-
-        $commands[] = new Commands\Package\Key\Get();
-        $commands[] = new Commands\Package\Key\Refresh();
-
-        $commands[] = new Commands\GPM\Install();
-
-        return $commands;
+        /** @var \GitPackage $packages */
+        $packages = $this->modx->getIterator('GitPackage');
+        foreach ($packages as $package) {
+            $this->add(new Commands\Package\Update($package->dir_name . ':update', $package));    
+            $this->add(new Commands\Package\Build($package->dir_name . ':build', $package));    
+            $this->add(new Commands\Package\Schema($package->dir_name . ':schema', $package));    
+            $this->add(new Commands\Package\Delete($package->dir_name . ':delete', $package));    
+            $this->add(new Commands\Package\Key\Get($package->dir_name . ':key:get', $package));    
+            $this->add(new Commands\Package\Key\Refresh($package->dir_name . ':key:refresh', $package));    
+        }
+        
+//        $this->add(new Commands\GPM\Install());
     }
 
     public function setMODX(\modX $modx)
