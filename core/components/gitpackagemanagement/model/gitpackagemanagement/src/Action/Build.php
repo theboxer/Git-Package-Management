@@ -97,12 +97,8 @@ final class Build
         }
 
         $extensionPackage = $this->config->extensionPackage;
-        if ($extensionPackage !== false) {
-            if ($extensionPackage === true) {
-                $vehicle->addExtensionPackageResolver($this->config->packagePath . '/_build/gpm_resolvers');
-            } else {
-                $vehicle->addExtensionPackageResolver($this->config->packagePath . '/_build/gpm_resolvers', $extensionPackage['serviceName'], $extensionPackage['serviceClass']);
-            }
+        if ($extensionPackage !== null) {
+            $vehicle->addExtensionPackageResolver($this->config->packagePath . '/_build/gpm_resolvers', $extensionPackage);
         }
 
         if (!empty($this->tvMap)) {

@@ -58,9 +58,13 @@ final class Delete
     private function removeExtensionPackage()
     {
         $extPackage = $this->config->extensionPackage;
-        if ($extPackage !== false) {
+        if ($extPackage !== null) {
             $this->logger->info('Removing extension package');
-            $this->modx->removeExtensionPackage($this->config->general->lowCaseName);
+            $this->modx->removeExtensionPackage($extPackage->name);
+            
+            if ($this->gpm->not22() === true) {
+                $this->modx->removeObject('modExtensionPackage', ['namespace' => $extPackage->namespace, 'name' => $extPackage->name]);
+            }
         }
     }
 

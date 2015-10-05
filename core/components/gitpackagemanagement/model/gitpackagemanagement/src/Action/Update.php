@@ -154,21 +154,36 @@ final class Update
     private function updateExtensionPackage()
     {
         $extPackage = $this->oldConfig->extensionPackage;
-        if ($extPackage !== false) {
-            $this->modx->removeExtensionPackage($this->config->general->lowCaseName);
+        if ($extPackage !== null) {
+            $this->modx->removeExtensionPackage($extPackage->name);
+            
+            if ($this->gpm->not22() === true) {
+                $this->modx->removeObject('modExtensionPackage', ['namespace' => $extPackage->namespace, 'name' => $extPackage->name]);
+            }
         }
 
         $extPackage = $this->config->extensionPackage;
-        if ($extPackage !== false) {
-            $modelPath = $this->config->packagePath . "/core/components/" . $this->config->general->lowCaseName . "/" . 'model/';
-            $modelPath = str_replace('\\', '/', $modelPath);
-            if ($extPackage === true) {
-                $this->modx->addExtensionPackage($this->config->general->lowCaseName, $modelPath);
+        if ($extPackage !== null) {
+            if ($this->gpm->not22() === true) {
+                $pkg = $this->modx->newObject('modExtensionPackage');
+                $pkg->set('namespace', $extPackage->namespace);
+                $pkg->set('name', $extPackage->name);
+                $pkg->set('path', $extPackage->path);
+                $pkg->set('table_prefix', $extPackage->tablePrefix);
+                $pkg->set('service_class', $extPackage->serviceClass);
+                $pkg->set('service_name', $extPackage->serviceName);
+                $pkg->save();
             } else {
-                $this->modx->addExtensionPackage($this->config->general->lowCaseName, $modelPath, array(
-                    'serviceName' => $extPackage['serviceName'],
-                    'serviceClass' => $extPackage['serviceClass']
-                ));
+                $options = [
+                    'tablePrefix' => $extPackage->tablePrefix
+                ];
+
+                if ($extPackage->serviceClass != '') {
+                    $options['serviceName'] = $extPackage->serviceName;
+                    $options['serviceClass'] = $extPackage->serviceClass;
+                }
+
+                $this->modx->addExtensionPackage($extPackage->name, $extPackage->path, $options);
             }
         }
     }

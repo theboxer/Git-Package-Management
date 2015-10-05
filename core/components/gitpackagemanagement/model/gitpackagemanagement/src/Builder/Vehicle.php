@@ -2,6 +2,7 @@
 namespace GPM\Builder;
 
 use GPM\Config\Object\Database;
+use GPM\Config\Object\ExtensionPackage;
 
 class Vehicle {
     /** @var \modPackageBuilder $builder */
@@ -67,7 +68,7 @@ class Vehicle {
         return $this->vehicle;
     }
 
-    public function addExtensionPackageResolver($packagePath, $serviceName = null, $serviceClass = null) {
+    public function addExtensionPackageResolver($packagePath, ExtensionPackage $extensionPackage) {
         if (!is_dir($packagePath)) {
             mkdir($packagePath);
         }
@@ -77,8 +78,7 @@ class Vehicle {
             unlink($resolver);
         }
 
-        $this->smarty->assign('serviceName', $serviceName);
-        $this->smarty->assign('serviceClass', $serviceClass);
+        $this->smarty->assign_by_ref('extPackage', $extensionPackage);
 
         $resolverContent = $this->smarty->fetch('extension_package_resolver.tpl');
 

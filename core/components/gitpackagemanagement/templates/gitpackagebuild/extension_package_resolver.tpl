@@ -8,6 +8,19 @@
  * @subpackage build
  */
 
+if (!function_exists('not22')) {
+    function not22() {
+        global $modx;
+
+        $version = $modx->getVersionData();
+
+        $version['version'];
+        $version['major_version'];
+        
+        return (($version['version'] > 2) || (($version['version'] == 2) && ($version['major_version'] > 2)));
+    }
+}
+
 if ($object->xpdo) {
     /** @var modX $modx */
     $modx =& $object->xpdo;
@@ -15,27 +28,37 @@ if ($object->xpdo) {
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
-            $modelPath = $modx->getOption('{{$general->lowCaseName}}.core_path');
+            if (not22() === true) {
+                $pkg = $modx->getObject('modExtensionPackage', array('namespace' => '{{$extPackage->namespace}}', 'name' => '{{$extPackage->name}}'));
+                if (!$pkg) {
+                    $pkg = $modx->newObject('modExtensionPackage');
+                    $pkg->set('namespace', '{{$extPackage->namespace}}');
+                }
 
-            if (empty($modelPath)) {
-                $modelPath = '[[++core_path]]components/{{$general->lowCaseName}}/model/';
-            }
-
-            if ($modx instanceof modX) {
-{if $serviceName && $serviceClass}
-                $modx->addExtensionPackage('{{$general->lowCaseName}}', $modelPath, array(
-                    'serviceName' => '{{$serviceName}}',
-                    'serviceClass' => '{{$serviceClass}}'
-                ));
-{else}
-                $modx->addExtensionPackage('{{$general->lowCaseName}}', $modelPath);
-{/if}
+                $pkg->set('name', '{{$extPackage->name}}');
+                $pkg->set('path', '[[++core_path]]components/{{$general->lowCaseName}}/model/');
+                $pkg->set('table_prefix', '{{$extPackage->tablePrefix}}');
+                $pkg->set('service_class', '{{$extPackage->serviceClass}}');
+                $pkg->set('service_name', '{{$extPackage->serviceName}}');
+                $pkg->save();
+            } else {
+                $options = [
+                    'tablePrefix' => '{{$extPackage->tablePrefix}}'
+                ];
+                
+                {if $extPackage->serviceClass != ''}$options['serviceName'] = '{{$extPackage->serviceName}}';
+                $options['serviceClass'] = '{{$extPackage->serviceClass}}';    
+                {/if}
+                
+                $modx->addExtensionPackage('{{$extPackage->name}}', '[[++core_path]]components/{{$general->lowCaseName}}/model/', $options);
             }
 
             break;
         case xPDOTransport::ACTION_UNINSTALL:
-            if ($modx instanceof modX) {
-                $modx->removeExtensionPackage('{{$general->lowCaseName}}');
+            $modx->removeExtensionPackage('{{$extPackage->name}}');
+
+            if (not22() === true) {
+                $modx->removeObject('modExtensionPackage', array('namespace' => '{{$extPackage->namespace}}', 'name' => '{{$extPackage->name}}'));
             }
 
             break;

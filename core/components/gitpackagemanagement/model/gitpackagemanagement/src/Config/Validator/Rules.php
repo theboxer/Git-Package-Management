@@ -12,7 +12,7 @@ final class Rules
     }
     
     public static function notEmpty($value, $field, array $args, array $data, Config $config) {
-        if ($value === null) {
+        if (empty($value)) {
             throw new RuleException($field, 'This field can\'t be empty.');
         }
     }
@@ -41,6 +41,19 @@ final class Rules
         $currentCategories = array_keys($config->categories);
         if (!in_array($value, $currentCategories)) {
             throw new RuleException($field, sprintf('Category %1s does not exist', $value));
+        }
+    }
+
+    public static function notEmptyWith($value, $field, array $args, array $data, Config $config)
+    {
+        if (empty($value)) {
+            return;
+        }
+        
+        $with = $args[0];
+
+        if (empty($data[$with])) {
+            throw new RuleException($field, sprintf('When using %1s, field %2s can\'t be empty.', $field, $with));
         }
     }
 }

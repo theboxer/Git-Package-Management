@@ -208,6 +208,16 @@ class GitPackageManagement {
         return $category->id;
     }
 
+    public function not22()
+    {
+        $version = $this->modx->getVersionData();
+        
+        $version['version'];
+        $version['major_version'];
+        
+        return (($version['version'] > 2) || (($version['version'] == 2) && ($version['major_version'] > 2)));
+    }
+
     protected function autoload()
     {
         require_once $this->getOption('modelPath') . 'vendor/autoload.php';
