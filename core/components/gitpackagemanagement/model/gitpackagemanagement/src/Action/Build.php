@@ -4,22 +4,10 @@ namespace GPM\Action;
 use GPM\Builder\Builder;
 use GPM\Config\Config;
 use GPM\Config\Object\Action;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
-final class Build
+final class Build extends \GPM\Action\Action
 {
-    use LoggerAwareTrait;
-    
-    /** @var Config */
-    protected $config;
-    
-    /** @var \modX */
-    protected $modx;
-    
-    /** @var \GitPackageManagement */
-    protected $gpm;
-    
     /** @var Builder */
     protected $builder;
     
@@ -31,17 +19,16 @@ final class Build
     
     public function __construct(Config $config, LoggerInterface $logger)
     {
-        $this->config = $config;
-        $this->modx =& $config->modx;
-        $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->logger = $logger;
+        parent::__construct($config, $logger);
         
         $this->loadSmarty();
     }
 
     public function build()
     {
-        $this->builder = new Builder($this->modx, $this->smarty, $this->packagePath);
+        $this->checkDependencies();
+        
+        $this->builder = new Builder($this->modx, $this->smarty, $this->config->packagePath);
         $buildOptions = $this->config->build;
 
         $objectAttributes = $buildOptions->attributes;

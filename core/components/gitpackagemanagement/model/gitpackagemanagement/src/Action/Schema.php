@@ -1,31 +1,8 @@
 <?php
 namespace GPM\Action;
 
-use GPM\Config\Config;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
-
-final class Schema
+final class Schema extends Action
 {
-    use LoggerAwareTrait;
-    
-    /** @var Config */
-    protected $config;
-    
-    /** @var \modX */
-    protected $modx;
-    
-    /** @var \GitPackageManagement */
-    protected $gpm;
-    
-    public function __construct(Config $config, LoggerInterface $logger)
-    {
-        $this->config = $config;
-        $this->modx =& $config->modx;
-        $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->logger = $logger;
-    }
-
     public function build()
     {
         $modelPath = $this->config->packagePath . "/core/components/" . $this->config->general->lowCaseName . "/" . 'model/';

@@ -2,31 +2,17 @@
 namespace GPM\Action;
 
 use GPM\Config\Config;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
-final class Delete
+final class Delete extends Action
 {
-    use LoggerAwareTrait;
-    
-    /** @var Config */
-    protected $config;
-    
-    /** @var \modX */
-    protected $modx;
-    
-    /** @var \GitPackageManagement */
-    protected $gpm;
-    
     /** @var \GitPackage */
     protected $object;
     
     public function __construct(Config $config, \GitPackage $object, LoggerInterface $logger)
     {
-        $this->config = $config;
-        $this->modx =& $config->modx;
-        $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->logger = $logger;
+        parent::__construct($config, $logger);
+        
         $this->object = $object;
     }
 

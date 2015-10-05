@@ -1,24 +1,10 @@
 <?php
 namespace GPM\Action;
 
-use GPM\Config\Config;
 use GPM\Config\Object\Action;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
 
-final class Install
+final class Install extends \GPM\Action\Action
 {
-    use LoggerAwareTrait;
-    
-    /** @var Config */
-    protected $config;
-    
-    /** @var \modX */
-    protected $modx;
-    
-    /** @var \GitPackageManagement */
-    protected $gpm;
-    
     /** @var array */
     protected $resourceMap = [];
     
@@ -28,18 +14,12 @@ final class Install
     /** @var array */
     protected $categoriesMap = [];
     
-    public function __construct(Config $config, LoggerInterface $logger)
-    {
-        $this->config = $config;
-        $this->modx =& $config->modx;
-        $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->logger = $logger;
-    }
-
     public function install()
     {
         $this->logger->info('INSTALLATION START');
 
+        $this->checkDependencies();
+        
         $this->createConfigFile();
         $this->createNamespace();
         $this->createMenusAndActions();

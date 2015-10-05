@@ -3,24 +3,12 @@ namespace GPM\Action;
 
 use GPM\Config\Config;
 use GPM\Config\Object\Action;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 
-final class Update
+final class Update extends \GPM\Action\Action
 {
-    use LoggerAwareTrait;
-    
-    /** @var Config */
-    protected $config;
-    
     /** @var Config */
     protected $oldConfig;
-    
-    /** @var \modX */
-    protected $modx;
-    
-    /** @var \GitPackageManagement */
-    protected $gpm;
     
     /** @var array */
     protected $resourceMap = [];
@@ -36,10 +24,7 @@ final class Update
     
     public function __construct(Config $config, \GitPackage $object, LoggerInterface $logger)
     {
-        $this->modx =& $config->modx;
-        $this->gpm =& $this->modx->gitpackagemanagement;
-        $this->logger = $logger;
-        $this->config = $config;
+        parent::__construct($config, $logger);
 
         $this->object = $object;
 
@@ -48,6 +33,8 @@ final class Update
 
     public function update($dbAction = '', $schema = 0)
     {
+        $this->checkDependencies();
+        
         if ($this->oldConfig->general->name != $this->config->general->name) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_ccn');
         }

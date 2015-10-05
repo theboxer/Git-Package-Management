@@ -151,26 +151,6 @@ class Config
         return $config;
     }
 
-    public function checkDependencies()
-    {
-        $failed = [];
-
-        foreach ($this->dependencies as $dependency) {
-            $found = $this->modx->getCount('transport.modTransportPackage', ['package_name' => $dependency]);
-            $foundInGPM = $this->modx->getCount('GitPackage', ['name' => $dependency, 'OR:dir_name:=' => $dependency]);
-
-            if ($found == 0 && $foundInGPM == 0) {
-                $failed[] = $dependency;
-            }
-        }
-
-        if (count($failed) == 0) {
-            return true;
-        }
-
-        return $failed;
-    }
-
     public function getAssetsFolder()
     {
         $assetsFolder = $this->gpm->getOption('assetsPath');
