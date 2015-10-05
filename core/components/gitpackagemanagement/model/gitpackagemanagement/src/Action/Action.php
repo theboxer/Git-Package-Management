@@ -31,7 +31,7 @@ abstract class Action
         $unsatisfied = [];
 
         foreach ($this->config->dependencies as $dependency) {
-            $found = $this->modx->getCount('transport.modTransportPackage', ['package_name' => $dependency->name]);
+            $found = $this->modx->getCount('transport.modTransportPackage', ['package_name' => $dependency->name, 'installed:!=' => null]);
             $foundInGPM = $this->modx->getCount('GitPackage', ['name' => $dependency->name, 'OR:dir_name:=' => $dependency->name]);
 
             if ($found == 0 && $foundInGPM == 0) {
