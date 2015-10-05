@@ -32,7 +32,8 @@ class Application extends \Symfony\Component\Console\Application
             $this->add(new Commands\Package\Key\Refresh($package->dir_name . ':key:refresh', $package));    
         }
         
-//        $this->add(new Commands\GPM\Install());
+        $this->add(new Commands\Package\Install());
+        $this->add(new Commands\Package\CMDList('package'));
     }
 
     public function setMODX(\modX $modx)

@@ -1,9 +1,7 @@
 <?php
 namespace GPM\CLI\Commands;
 
-use Symfony\Component\Console\Command\Command;
-
-class GPMCommand extends Command
+class PackageCommand extends Command
 {
     /** @var \GitPackage */
     protected $package;
@@ -13,13 +11,5 @@ class GPMCommand extends Command
         $this->package = $package;
         
         parent::__construct($name);
-    }
-    
-    /**
-     * @return \GPM\CLI\Application
-     */
-    public function getApplication()
-    {
-        return parent::getApplication();
     }
 }

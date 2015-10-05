@@ -1,18 +1,16 @@
 <?php
 namespace GPM\CLI\Commands\Package;
 
-use GPM\CLI\Commands\GPMCommand;
+use GPM\CLI\Commands\PackageCommand;
 use GPM\Config\Config;
 use GPM\Config\Loader\JSON;
 use GPM\Config\Parser\Parser;
 use GPM\Config\Validator\ValidatorException;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Build extends GPMCommand
+class Build extends PackageCommand
 {
     protected function configure()
     {
@@ -23,9 +21,6 @@ class Build extends GPMCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
-        $logger = new ConsoleLogger($output);
-
         try {
             $config = new Config($this->getApplication()->modx, $this->package->dir_name);
             $parser = new Parser($this->getApplication()->modx, $config);

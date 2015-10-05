@@ -1,17 +1,16 @@
 <?php
 namespace GPM\CLI\Commands\Package;
 
-use GPM\CLI\Commands\GPMCommand;
+use GPM\CLI\Commands\PackageCommand;
 use GPM\Config\Config;
 use GPM\Config\Loader\JSON;
 use GPM\Config\Parser\Parser;
 use GPM\Config\Validator\ValidatorException;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Schema extends GPMCommand
+class Schema extends PackageCommand
 {
     protected function configure()
     {

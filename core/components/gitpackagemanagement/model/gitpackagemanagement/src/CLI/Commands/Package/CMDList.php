@@ -1,14 +1,14 @@
 <?php
 namespace GPM\CLI\Commands\Package;
 
-use Symfony\Component\Console\Command\ListCommand;
+use GPM\CLI\Commands\Command;
 use Symfony\Component\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CMDList extends ListCommand
+class CMDList extends Command
 {
     public function getNativeDefinition()
     {

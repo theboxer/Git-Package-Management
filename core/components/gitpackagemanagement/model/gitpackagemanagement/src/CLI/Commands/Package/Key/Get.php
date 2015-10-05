@@ -1,11 +1,11 @@
 <?php
 namespace GPM\CLI\Commands\Package\Key;
 
-use GPM\CLI\Commands\GPMCommand;
+use GPM\CLI\Commands\PackageCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Get extends GPMCommand
+class Get extends PackageCommand
 {
     protected function configure()
     {
