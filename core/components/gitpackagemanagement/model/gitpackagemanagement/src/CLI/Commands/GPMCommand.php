@@ -2,7 +2,6 @@
 namespace GPM\CLI\Commands;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class GPMCommand extends Command
 {
