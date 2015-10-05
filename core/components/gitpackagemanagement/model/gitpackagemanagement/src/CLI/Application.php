@@ -23,6 +23,7 @@ class Application extends \Symfony\Component\Console\Application
         /** @var \GitPackage $packages */
         $packages = $this->modx->getIterator('GitPackage');
         foreach ($packages as $package) {
+            $this->add(new Commands\Package\CMDList($package->dir_name));    
             $this->add(new Commands\Package\Update($package->dir_name . ':update', $package));    
             $this->add(new Commands\Package\Build($package->dir_name . ':build', $package));    
             $this->add(new Commands\Package\Schema($package->dir_name . ':schema', $package));    
