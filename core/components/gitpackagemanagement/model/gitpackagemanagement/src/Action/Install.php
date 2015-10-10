@@ -1,7 +1,10 @@
 <?php
 namespace GPM\Action;
 
+use GPM\Config\Config;
 use GPM\Config\Object\Action;
+use GPM\Config\Object\Setting;
+use Psr\Log\LoggerInterface;
 
 final class Install extends \GPM\Action\Action
 {
@@ -13,7 +16,6 @@ final class Install extends \GPM\Action\Action
     
     /** @var array */
     protected $categoriesMap = [];
-    
     public function install()
     {
         $this->logger->info('INSTALLATION START');
@@ -74,7 +76,7 @@ final class Install extends \GPM\Action\Action
         
         $ns = $this->modx->newObject('modNamespace');
         $ns->set('name', $this->config->general->lowCaseName);
-        $ns->set('path', $this->config->packagePath);
+        $ns->set('path', $this->config->general->corePath);
         $ns->set('assets_path', $this->config->general->assetsPath);
         $ns->save();
 
@@ -147,10 +149,6 @@ final class Install extends \GPM\Action\Action
      */
     private function createSystemSettings()
     {
-        $this->createSystemSetting($this->config->general->lowCaseName . '.core_path', $this->config->general->corePath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting($this->config->general->lowCaseName . '.assets_path', $this->config->general->assetsPath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting($this->config->general->lowCaseName . '.assets_url', $this->config->general->assetsURL, 'textfield', 'Git Package Management Settings');
-
         foreach ($this->config->systemSettings as $setting) {
             $this->createSystemSetting($setting->getNamespacedKey(), $setting->value, $setting->type, $setting->area);
         }

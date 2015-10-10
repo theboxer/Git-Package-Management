@@ -84,7 +84,9 @@ final class Update extends \GPM\Action\Action
 
         foreach ($this->oldConfig->menus as $menu) {
             $menuObject = $this->modx->getObject('modMenu', array('text' => $menu->text));
-            $menuObject->remove();
+            if ($menuObject) {
+                $menuObject->remove();
+            }
         }
 
         $actions = array();

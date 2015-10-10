@@ -2,6 +2,7 @@
 namespace GPM\CLI\Commands\Package;
 
 use GPM\CLI\Commands\Command;
+use GPM\CLI\Descriptors\Text;
 use Symfony\Component\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,6 +55,7 @@ EOF
         }
 
         $helper = new DescriptorHelper();
+        $helper->register('txt', new Text());
         $helper->describe($output, $this->getApplication(), array(
             'format' => $input->getOption('format'),
             'raw_text' => $input->getOption('raw'),

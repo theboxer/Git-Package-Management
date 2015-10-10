@@ -18,12 +18,19 @@ final class JSON implements iLoader
 
     /**
      * @param Parser $parser
+     * @param null $path
      * @throws \Exception
      */
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, $path = null)
     {
         $this->parser = $parser;
-        $this->path = rtrim($parser->config->packagePath, '/\\') . DIRECTORY_SEPARATOR . '_build' . DIRECTORY_SEPARATOR;
+        
+        if ($path === null) {
+            $this->path = rtrim($parser->config->packagePath, '/\\') . DIRECTORY_SEPARATOR . '_build' . DIRECTORY_SEPARATOR;
+        } else {
+            $this->path = $path;
+        }
+        
         $this->config = $this->loadFile('config.json');
         
         if (isset($this->config['package']) && is_string($this->config['package'])) {
@@ -374,6 +381,27 @@ final class JSON implements iLoader
      */
     public function loadSystemSettings($skip = true)
     {
+        $this->parser->parseSystemSetting([
+            'key' => 'core_path',
+            'value' => $this->parser->config->general->corePath,
+            'area' => 'Git Package Management Settings',
+            'build' => false
+        ], true);
+
+        $this->parser->parseSystemSetting([
+            'key' => 'assets_path',
+            'value' => $this->parser->config->general->assetsPath,
+            'area' => 'Git Package Management Settings',
+            'build' => false
+        ], true);
+
+        $this->parser->parseSystemSetting([
+            'key' => 'assets_url',
+            'value' => $this->parser->config->general->assetsURL,
+            'area' => 'Git Package Management Settings',
+            'build' => false
+        ], true);
+        
         if (empty($this->config['package']['systemSettings'])) return true;
 
         $systemSettings = $this->config['package']['systemSettings'];
@@ -389,7 +417,6 @@ final class JSON implements iLoader
         foreach ($systemSettings as $systemSetting) {
             $this->parser->parseSystemSetting($systemSetting, $skip);
         }
-
         return true;
     }
 

@@ -38,20 +38,19 @@ abstract class Element extends ConfigObject
 
         // @TODO Prettify 
         $filePaths = [
-            $this->file,
-            strtolower($this->file),
+            'elements/' . $this->elementType . 's/' . $this->file,
+            'elements/' . $this->elementType . 's/' . strtolower($this->file),
         ];
 
         if (!empty($this->category)) {
             $categories = $this->config->categories;
             $categoryPath = '/' . implode('/', $categories[$this->category]->getParents()) . '/';
 
-            $filePaths[] = $categoryPath . $this->file;
-            $filePaths[] = strtolower($categoryPath . $this->file);
+            $filePaths[] = 'elements/' . $this->elementType . 's/' . $categoryPath . $this->file;
+            $filePaths[] = 'elements/' . $this->elementType . 's/' . strtolower($categoryPath . $this->file);
         }
 
-        $file = $this->config->packagePath;
-        $file .= '/core/components/' . $this->config->general->lowCaseName . '/elements/' . $this->elementType . 's/';
+        $file = $this->config->general->corePath;
 
         $exists = false;
         foreach ($filePaths as $filePath) {

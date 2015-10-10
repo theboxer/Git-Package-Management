@@ -9,10 +9,9 @@ interface iLoader
 {
     /**
      * @param Parser $parser
-     * @param $path
-     * @param General $general
+     * @param null $path
      */
-    public function __construct(Parser $parser);
+    public function __construct(Parser $parser, $path = null);
     
     /**
      * Load general info about package

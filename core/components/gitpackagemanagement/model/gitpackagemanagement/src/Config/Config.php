@@ -50,19 +50,24 @@ class Config
     /**
      * @param \modX $modx
      * @param $folderName
+     * @param string|null $packagesPath
      * @throws \Exception
      */
-    public function __construct(\modX &$modx, $folderName)
+    public function __construct(\modX &$modx, $folderName, $packagesPath = null)
     {
         $this->modx =& $modx;
         $this->init();
 
-        $packagePath = rtrim($this->gpm->getOption('packages_dir', null, null), '/');
-        if ($packagePath == null) {
-            throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
-        }
+        if ($packagesPath === null) {
+            $packagesPath = rtrim($this->gpm->getOption('packages_dir', null, null), '/');
+            if ($packagesPath == null) {
+                throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir'));
+            }
 
-        $packagePath .= '/';
+            $packagesPath .= '/';    
+        }
+        
+        $packagePath = $packagesPath;
 
         if (empty($folderName)) {
             throw new \Exception($this->modx->lexicon('gitpackagemanagement.package_err_ns_folder_name'));

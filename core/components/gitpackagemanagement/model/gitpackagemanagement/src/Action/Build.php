@@ -239,6 +239,7 @@ final class Build extends \GPM\Action\Action
         if (count($configSnippets) > 0) {
             foreach ($configSnippets as $configSnippet) {
                 if ($configSnippet->category != $category) continue;
+                if ($configSnippet->build === false) continue;
 
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $configSnippet->name);
@@ -261,6 +262,7 @@ final class Build extends \GPM\Action\Action
         if (count($configChunks) > 0) {
             foreach ($configChunks as $configChunk) {
                 if ($configChunk->category != $category) continue;
+                if ($configChunk->build === false) continue;
 
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $configChunk->name);
@@ -283,6 +285,7 @@ final class Build extends \GPM\Action\Action
         if (count($configTemplates) > 0) {
             foreach ($configTemplates as $configTemplate) {
                 if ($configTemplate->category != $category) continue;
+                if ($configTemplate->build === false) continue;
 
                 $templateObject = $this->modx->newObject('modTemplate');
                 $templateObject->set('templatename', $configTemplate->name);
@@ -306,6 +309,7 @@ final class Build extends \GPM\Action\Action
         if (count($configTVs) > 0) {
             foreach ($configTVs as $configTV) {
                 if ($configTV->category != $category) continue;
+                if ($configTV->build === false) continue;
 
                 $tvObject = $this->modx->newObject('modTemplateVar');
                 $tvObject->set('name', $configTV->name);
@@ -344,6 +348,7 @@ final class Build extends \GPM\Action\Action
 
             foreach ($configPlugins as $configPlugin) {
                 if ($configPlugin->category != $category) continue;
+                if ($configPlugin->build === false) continue;
 
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $configPlugin->name);
@@ -418,6 +423,8 @@ final class Build extends \GPM\Action\Action
         $settings = $this->config->systemSettings;
 
         foreach ($settings as $setting) {
+            if ($setting->build === false) continue;
+            
             /** @var \modSystemSetting $settingObject */
             $settingObject = $this->modx->newObject('modSystemSetting');
             $settingObject->fromArray(array(

@@ -20,6 +20,8 @@ final class Delete extends Action
     {
         $this->logger->info('Removal process started');
         
+        $this->removeObject();
+        
         $this->removeElements();
         $this->removeResources();
         $this->removeTables();
@@ -27,8 +29,7 @@ final class Delete extends Action
         $this->removeMenus();
         $this->removeActions();
         $this->removeNamespace();
-
-        $this->removeObject();
+        $this->clearCache();
     }
 
     private function removeNamespace()
@@ -187,7 +188,7 @@ final class Delete extends Action
     private function clearCache()
     {
         $results = array();
-        $partitions = array('menu' => array());
+        $partitions = array('menu' => [], 'system_settings' => []);
         $this->modx->cacheManager->refresh($partitions, $results);
     }
 

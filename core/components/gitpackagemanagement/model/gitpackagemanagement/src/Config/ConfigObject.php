@@ -7,6 +7,9 @@ use GPM\Utils;
 
 abstract class ConfigObject
 {
+    /** @var bool */
+    public $build = true;
+    
     /* @var Config */
     protected $config;
 
