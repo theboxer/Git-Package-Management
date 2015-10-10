@@ -48,7 +48,7 @@ class ExtensionPackage extends ConfigObject
         }
         
         if (empty($config['path'])) {
-            $this->path = $this->config->general->corePath . 'model/';
+            $this->path = $this->config->general->corePath;
         }
     }
 }
