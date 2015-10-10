@@ -18,7 +18,7 @@ class Update extends PackageCommand
     protected function configure()
     {
         $this
-            ->setDescription('Update a GPM')
+            ->setDescription('Update GPM')
             ->addOption(
                 'updateDB',
                 null,

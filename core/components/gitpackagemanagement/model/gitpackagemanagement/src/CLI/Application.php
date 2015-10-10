@@ -33,6 +33,7 @@ class Application extends \Symfony\Component\Console\Application
             if ($package->name == 'GitPackageManagement') {
                 $this->add(new Commands\GPM\Update('gpm:update', $package));
                 $this->add(new Commands\GPM\Delete('gpm:delete', $package));
+                $this->add(new Commands\GPM\Build('gpm:build', $package));
                 continue;
             }
             $this->add(new Commands\Package\CMDList($package->dir_name));    
