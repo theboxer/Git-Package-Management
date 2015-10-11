@@ -1,10 +1,7 @@
 <?php
 namespace GPM\Action;
 
-use GPM\Config\Config;
 use GPM\Config\Object\Action;
-use GPM\Config\Object\Setting;
-use Psr\Log\LoggerInterface;
 
 final class Install extends \GPM\Action\Action
 {
@@ -98,14 +95,7 @@ final class Install extends \GPM\Action\Action
         if (count($this->config->actions) > 0) {
             foreach ($this->config->actions as $act) {
                 /** @var \modAction[] $actions */
-                $actions[$act->id] = $this->modx->newObject('modAction');
-                $actions[$act->id]->fromArray(array(
-                    'namespace' => $this->config->general->lowCaseName,
-                    'controller' => $act->controller,
-                    'haslayout' => $act->hasLayout,
-                    'lang_topics' => $act->langTopics,
-                    'assets' => $act->assets,
-                ), '', true, true);
+                $actions[$act->id] = $act->getObject();
                 $actions[$act->id]->save();
             }
 
@@ -118,23 +108,10 @@ final class Install extends \GPM\Action\Action
         if (count($this->config->menus) > 0) {
             foreach ($this->config->menus as $i => $men) {
                 /** @var \modMenu[] $menus */
-                $menus[$i] = $this->modx->newObject('modMenu');
-                $menus[$i]->fromArray(array(
-                    'text' => $men->text,
-                    'parent' => $men->parent,
-                    'description' => $men->description,
-                    'icon' => $men->icon,
-                    'menuindex' => $men->menuIndex,
-                    'params' => $men->params,
-                    'handler' => $men->handler,
-                    'permissions' => $men->permissions,
-                ), '', true, true);
+                $menus[$i] = $men->getObject();
 
                 if (($men->action instanceof Action) && isset($actions[$men->action->id])) {
                     $menus[$i]->addOne($actions[$men->action->id]);
-                } else {
-                    $menus[$i]->set('action', $men->action);
-                    $menus[$i]->set('namespace', $this->config->general->lowCaseName);
                 }
 
                 $menus[$i]->save();
@@ -212,13 +189,7 @@ final class Install extends \GPM\Action\Action
         
         if ($extPackage !== null) {
             if ($this->gpm->not22() === true) {
-                $pkg = $this->modx->newObject('modExtensionPackage');
-                $pkg->set('namespace', $extPackage->namespace);
-                $pkg->set('name', $extPackage->name);
-                $pkg->set('path', $extPackage->path);
-                $pkg->set('table_prefix', $extPackage->tablePrefix);
-                $pkg->set('service_class', $extPackage->serviceClass);
-                $pkg->set('service_name', $extPackage->serviceName);
+                $pkg = $extPackage->getObject();
                 $pkg->save();
             } else {
                 $options = [
@@ -323,24 +294,8 @@ final class Install extends \GPM\Action\Action
 
         $categories = $this->config->categories;
         foreach ($categories as $category) {
-            $categoryObject = $this->modx->newObject('modCategory');
-            $categoryObject->set('category', $category->name);
+            $categoryObject = $category->getObject();
 
-            $parent = $category->getParentObject();
-            if (!empty($parent)) {
-                $catId = $this->gpm->findCategory($parent->getParents(), $this->category->id);
-                /** @var \modCategory $parentObject */
-                $parentObject = $this->modx->getObject('modCategory', $catId);
-                if ($parentObject) {
-                    $parent = $parentObject->id;
-                } else {
-                    $parent = $this->category->id;
-                }
-            } else {
-                $parent = $this->category->id;
-            }
-
-            $categoryObject->set('parent', $parent);
             $categoryObject->save();
             $this->categoriesMap[$category->name] = $categoryObject->id;
         }
@@ -355,18 +310,7 @@ final class Install extends \GPM\Action\Action
         if (count($plugins) > 0) {
             $this->logger->info('Creating plugins:');
             foreach ($plugins as $plugin) {
-                $pluginObject = $this->modx->newObject('modPlugin');
-                $pluginObject->set('name', $plugin->name);
-                $pluginObject->set('description', $plugin->description);
-                if ($this->gpm->getOption('enable_debug')) {
-                    $pluginObject->set('plugincode', 'include("' . $this->modx->getOption($this->config->general->lowCaseName . '.core_path') . $plugin->filePath . '");');
-                    $pluginObject->set('static', 0);
-                    $pluginObject->set('static_file', '');
-                } else {
-                    $pluginObject->set('snippet', '');
-                    $pluginObject->set('static', 1);
-                    $pluginObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $plugin->filePath);
-                }
+                $pluginObject = $plugin->getObject();
 
                 $category = $plugin->category;
                 if (!empty($category)) {
@@ -380,26 +324,15 @@ final class Install extends \GPM\Action\Action
                 }
                 $pluginObject->set('category', $category);
 
-                $pluginObject->setProperties($plugin->properties);
                 $pluginObject->save();
 
-                /** @var \modPluginEvent[] $events */
-                $events = [];
-
-                foreach ($plugin->events as $event) {
-                    $events[$event] = $this->modx->newObject('modPluginEvent');
-                    $events[$event]->fromArray(array(
-                        'event' => $event,
-                        'priority' => 0,
-                        'propertyset' => 0,
-                    ), '', true, true);
+                
+                if ($pluginObject->save()) {
+                    $this->logger->info(' - ' . $plugin->name);
+                } else {
+                    $this->logger->error(' - ' . $plugin->name . ' failed');
                 }
-
-                $pluginObject->addMany($events);
-                $pluginObject->save();
-                $this->logger->info('Plugin ' . $plugin->name . ' created.');
             }
-
         }
     }
 
@@ -412,18 +345,7 @@ final class Install extends \GPM\Action\Action
         if (count($snippets) > 0) {
             $this->logger->info('Creating snippets:');
             foreach ($snippets as $snippet) {
-                $snippetObject = $this->modx->newObject('modSnippet');
-                $snippetObject->set('name', $snippet->name);
-                $snippetObject->set('description', $snippet->description);
-                if ($this->gpm->getOption('enable_debug')) {
-                    $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->general->lowCaseName . '.core_path') . $snippet->filePath . '");');
-                    $snippetObject->set('static', 0);
-                    $snippetObject->set('static_file', '');
-                } else {
-                    $snippetObject->set('snippet', '');
-                    $snippetObject->set('static', 1);
-                    $snippetObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $snippet->filePath);
-                }
+                $snippetObject = $snippet->getObject();
 
                 $category = $snippet->category;
                 if (!empty($category)) {
@@ -437,12 +359,13 @@ final class Install extends \GPM\Action\Action
                 }
                 $snippetObject->set('category', $category);
 
-                $snippetObject->setProperties($snippet->properties);
-                $snippetObject->save();
+                if ($snippetObject->save()) {
+                    $this->logger->info(' - ' . $snippet->name);
+                } else {
+                    $this->logger->error(' - ' . $snippet->name . ' failed');
+                }
 
-                $this->logger->info('Snippet ' . $snippet->name . ' created.');
             }
-
         }
     }
 
@@ -455,11 +378,7 @@ final class Install extends \GPM\Action\Action
         if (count($chunks) > 0) {
             $this->logger->info('Creating chunks:');
             foreach ($chunks as $chunk) {
-                $chunkObject = $this->modx->newObject('modChunk');
-                $chunkObject->set('name', $chunk->name);
-                $chunkObject->set('description', $chunk->description);
-                $chunkObject->set('static', 1);
-                $chunkObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $chunk->filePath);
+                $chunkObject = $chunk->getObject();
 
                 $category = $chunk->category;
                 if (!empty($category)) {
@@ -473,10 +392,12 @@ final class Install extends \GPM\Action\Action
                 }
                 $chunkObject->set('category', $category);
 
-                $chunkObject->setProperties($chunk->properties);
-                $chunkObject->save();
+                if ($chunkObject->save()){
+                    $this->logger->info(' - ' . $chunk->name);
+                } else {
+                    $this->logger->error(' - ' . $chunk->name . ' failed');
+                }
 
-                $this->logger->info('Chunk ' . $chunk->name . ' created.');
             }
 
         }
@@ -491,12 +412,7 @@ final class Install extends \GPM\Action\Action
         if (count($templates) > 0) {
             $this->logger->info('Creating templates:');
             foreach ($templates as $template) {
-                $templatesObject = $this->modx->newObject('modTemplate');
-                $templatesObject->set('templatename', $template->name);
-                $templatesObject->set('description', $template->description);
-                $templatesObject->set('static', 1);
-                $templatesObject->set('icon', $template->icon);
-                $templatesObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $template->filePath);
+                $templatesObject = $template->getObject();
 
                 $category = $template->category;
                 if (!empty($category)) {
@@ -510,12 +426,12 @@ final class Install extends \GPM\Action\Action
                 }
                 $templatesObject->set('category', $category);
 
-                $templatesObject->setProperties($template->properties);
-                $templatesObject->save();
-
-                $this->logger->info('Template ' . $template->name . ' created.');
+                if ($templatesObject->save()) {
+                    $this->logger->info(' - ' . $template->name);
+                } else {
+                    $this->logger->error(' - ' . $template->name . ' failed');
+                }
             }
-
         }
     }
 
@@ -528,12 +444,7 @@ final class Install extends \GPM\Action\Action
         if (count($tvs) > 0) {
             $this->logger->info('Creating TVs:');
             foreach ($tvs as $tv) {
-                /** @var \modTemplateVar $tvObject */
-                $tvObject = $this->modx->newObject('modTemplateVar');
-                $tvObject->set('name', $tv->name);
-                $tvObject->set('caption', $tv->caption);
-                $tvObject->set('description', $tv->description);
-                $tvObject->set('type', $tv->type);
+                $tvObject = $tv->getObject();
 
                 $category = $tv->category;
                 if (!empty($category)) {
@@ -547,34 +458,21 @@ final class Install extends \GPM\Action\Action
                 }
                 $tvObject->set('category', $category);
 
-                $tvObject->set('elements', $tv->inputOptionValues);
-                $tvObject->set('rank', $tv->sortOrder);
-                $tvObject->set('default_text', $tv->defaultValue);
-
-                $inputProperties = $tv->inputProperties;
-                if (!empty($inputProperties)) {
-                    $tvObject->set('input_properties', $inputProperties);
+                if ($tvObject->save()) {
+                    $this->logger->info(' - ' . $tv->name);
+                } else {
+                    $this->logger->error(' - ' . $tv->name . ' failed');
                 }
 
-                $outputProperties = $tv->outputProperties;
-                if (!empty($outputProperties)) {
-                    $tvObject->set('output_properties', $outputProperties[0]);
-                }
-
-                $tvObject->setProperties($tv->properties);
-                $tvObject->save();
-
-                $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->templates));
+                /** @var \modTemplate[] $templates */
+                $templates = $this->modx->getCollection('modTemplate', ['templatename:IN' => $tv->templates]);
                 foreach ($templates as $template) {
                     $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
                     $templateTVObject->set('tmplvarid', $tvObject->id);
                     $templateTVObject->set('templateid', $template->id);
                     $templateTVObject->save();
                 }
-
-                $this->logger->info('TV ' . $tv->name . ' created.');
             }
-
         }
     }
 

@@ -45,4 +45,32 @@ final class TV extends Element
 
         return $array;
     }
+
+    public function getObject($build = false)
+    {
+        /** @var \modTemplateVar $object */
+        $object = $this->config->modx->newObject('modTemplateVar');
+        $object->set('name', $this->name);
+        $object->set('caption', $this->caption);
+        $object->set('description', $this->description);
+        $object->set('type', $this->type);
+
+        $object->set('elements', $this->inputOptionValues);
+        $object->set('rank', $this->sortOrder);
+        $object->set('default_text', $this->defaultValue);
+
+        $inputProperties = $this->inputProperties;
+        if (!empty($inputProperties)) {
+            $object->set('input_properties', $inputProperties);
+        }
+
+        $outputProperties = $this->outputProperties;
+        if (!empty($outputProperties)) {
+            $object->set('output_properties', $outputProperties[0]);
+        }
+
+        $object->setProperties($this->properties);
+
+        return $object;
+    }
 }

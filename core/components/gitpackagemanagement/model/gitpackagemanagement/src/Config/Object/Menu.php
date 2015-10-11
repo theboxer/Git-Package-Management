@@ -54,4 +54,25 @@ class Menu extends ConfigObject
 
         throw new \Exception('Menus - action not exist');
     }
+
+    public function getObject($build = false)
+    {
+        /** @var \modMenu $object */
+        $object = $this->config->modx->newObject('modMenu');
+        $object->set('text', $this->text);
+        $object->set('parent', $this->parent);
+        $object->set('description', $this->description);
+        $object->set('icon', $this->icon);
+        $object->set('menuindex', $this->menuIndex);
+        $object->set('params', $this->params);
+        $object->set('handler', $this->handler);
+        $object->set('permissions', $this->permissions);
+
+        if (!($this->action instanceof Action)) {
+            $object->set('action', $this->action);
+            $object->set('namespace', $this->config->general->lowCaseName);
+        }
+        
+        return $object;
+    }
 }

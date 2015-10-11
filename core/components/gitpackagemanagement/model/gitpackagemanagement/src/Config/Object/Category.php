@@ -62,4 +62,34 @@ class Category extends ConfigObject
         return $categories[$this->parent];
     }
 
+    public function getObject($build = false)
+    {
+        /** @var \modCategory $object */
+        $object = $this->config->modx->newObject('modCategory');
+        $object->set('category', $this->name);
+
+        if ($build === false) {
+            /** @var \modCategory $mainCategory */
+            $mainCategory = $this->config->modx->getObject('modCategory', array('category' => $this->config->general->name));
+
+            $parent = $this->getParentObject();
+            if (!empty($parent)) {
+                $catId = $this->config->gpm->findCategory($parent->getParents(), $mainCategory->id);
+                /** @var \modCategory $parentObject */
+                $parentObject = $this->config->modx->getObject('modCategory', $catId);
+                if ($parentObject) {
+                    $parent = $parentObject->id;
+                } else {
+                    $parent = $mainCategory->id;
+                }
+            } else {
+                $parent = $mainCategory->id;
+            }
+        
+            $object->set('parent', $parent);
+        }
+        
+        return $object;
+    }
+
 }

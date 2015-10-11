@@ -51,4 +51,18 @@ class ExtensionPackage extends ConfigObject
             $this->path = $this->config->general->corePath;
         }
     }
+
+    public function getObject($build = false)
+    {
+        /** @var \modExtensionPackage $object */
+        $object = $this->config->modx->newObject('modExtensionPackage');
+        $object->set('namespace', $this->namespace);
+        $object->set('name', $this->name);
+        $object->set('path', $this->path);
+        $object->set('table_prefix', $this->tablePrefix);
+        $object->set('service_class', $this->serviceClass);
+        $object->set('service_name', $this->serviceName);
+        
+        return $object;
+    }
 }

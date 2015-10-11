@@ -10,7 +10,7 @@ class Config
     /** @var \modX */
     public $modx;
     /** @var \GitPackageManagement */
-    protected $gpm;
+    public $gpm;
     
     /** @var string */
     public $packagePath;

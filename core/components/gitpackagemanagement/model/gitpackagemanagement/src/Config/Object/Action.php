@@ -33,4 +33,17 @@ class Action extends ConfigObject
             'assets' => $this->assets
         ];
     }
+
+    public function getObject($build = false)
+    {
+        /** @var \modAction $object */
+        $object = $this->config->modx->newObject('modAction');
+        $object->set('namespace', $this->config->general->lowCaseName);
+        $object->set('controller', $this->controller);
+        $object->set('haslayout', $this->hasLayout);
+        $object->set('lang_topics', $this->langTopics);
+        $object->set('assets', $this->assets);
+        
+        return $object;
+    }
 }

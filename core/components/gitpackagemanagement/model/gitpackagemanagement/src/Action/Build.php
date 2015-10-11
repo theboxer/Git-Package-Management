@@ -192,8 +192,7 @@ final class Build extends \GPM\Action\Action
 
         foreach ($cats as $cat) {
             /** @var \modCategory $category */
-            $category = $this->modx->newObject('modCategory');
-            $category->set('category', $cat->name);
+            $category = $cat->getObject(true);
 
             $snippets = $this->getSnippets($cat->name);
             if (!empty($snippets)) {
@@ -241,12 +240,7 @@ final class Build extends \GPM\Action\Action
                 if ($configSnippet->category != $category) continue;
                 if ($configSnippet->build === false) continue;
 
-                $snippetObject = $this->modx->newObject('modSnippet');
-                $snippetObject->set('name', $configSnippet->name);
-                $snippetObject->set('description', $configSnippet->description);
-                $snippetObject->set('snippet', $this->builder->getFileContent($this->config->general->corePath . $configSnippet->filePath));
-
-                $snippetObject->setProperties($configSnippet->properties);
+                $snippetObject = $configSnippet->getObject(true);
                 $snippets[] = $snippetObject;
             }
         }
@@ -264,12 +258,7 @@ final class Build extends \GPM\Action\Action
                 if ($configChunk->category != $category) continue;
                 if ($configChunk->build === false) continue;
 
-                $chunkObject = $this->modx->newObject('modChunk');
-                $chunkObject->set('name', $configChunk->name);
-                $chunkObject->set('description', $configChunk->description);
-                $chunkObject->set('snippet', $this->builder->getFileContent($this->config->general->corePath . $configChunk->filePath));
-
-                $chunkObject->setProperties($configChunk->properties);
+                $chunkObject = $configChunk->getObject(true);
                 $chunks[] = $chunkObject;
             }
         }
@@ -287,13 +276,7 @@ final class Build extends \GPM\Action\Action
                 if ($configTemplate->category != $category) continue;
                 if ($configTemplate->build === false) continue;
 
-                $templateObject = $this->modx->newObject('modTemplate');
-                $templateObject->set('templatename', $configTemplate->name);
-                $templateObject->set('description', $configTemplate->description);
-                $templateObject->set('icon', $configTemplate->icon);
-                $templateObject->set('content', $this->builder->getFileContent($this->config->general->corePath . $configTemplate->filePath));
-
-                $templateObject->setProperties($configTemplate->properties);
+                $templateObject = $configTemplate->getObject(true);
                 $templates[] = $templateObject;
             }
         }
@@ -311,26 +294,7 @@ final class Build extends \GPM\Action\Action
                 if ($configTV->category != $category) continue;
                 if ($configTV->build === false) continue;
 
-                $tvObject = $this->modx->newObject('modTemplateVar');
-                $tvObject->set('name', $configTV->name);
-                $tvObject->set('caption', $configTV->caption);
-                $tvObject->set('description', $configTV->description);
-                $tvObject->set('type', $configTV->type);
-                $tvObject->set('elements', $configTV->inputOptionValues);
-                $tvObject->set('rank', $configTV->sortOrder);
-                $tvObject->set('default_text', $configTV->defaultValue);
-
-                $inputProperties = $configTV->inputProperties;
-                if (!empty($inputProperties)) {
-                    $tvObject->set('input_properties', $inputProperties);
-                }
-
-                $outputProperties = $configTV->outputProperties;
-                if (!empty($outputProperties)) {
-                    $tvObject->set('output_properties', $outputProperties[0]);
-                }
-
-                $tvObject->setProperties($configTV->properties);
+                $tvObject = $configTV->getObject(true);
                 $this->tvMap[$configTV->name] = $configTV->templates;
                 $templateVariables[] = $tvObject;
             }
@@ -350,27 +314,8 @@ final class Build extends \GPM\Action\Action
                 if ($configPlugin->category != $category) continue;
                 if ($configPlugin->build === false) continue;
 
-                $pluginObject = $this->modx->newObject('modPlugin');
-                $pluginObject->set('name', $configPlugin->name);
-                $pluginObject->set('description', $configPlugin->description);
-                $pluginObject->set('plugincode', $this->builder->getFileContent($this->config->general->corePath . $configPlugin->filePath));
+                $pluginObject = $configPlugin->getObject(true);
 
-                $events = $configPlugin->events;
-                if (count($events) > 0) {
-                    $eventObjects = array();
-                    foreach ($events as $event) {
-                        $eventObjects[$event] = $this->modx->newObject('modPluginEvent');
-                        $eventObjects[$event]->fromArray(array(
-                            'event' => $event,
-                            'priority' => 0,
-                            'propertyset' => 0
-                        ), '', true, true);
-                    }
-
-                    $pluginObject->addMany($eventObjects);
-                }
-
-                $pluginObject->setProperties($configPlugin->properties);
                 $plugins[] = $pluginObject;
             }
         }
@@ -383,34 +328,12 @@ final class Build extends \GPM\Action\Action
         $menus = $this->config->menus;
 
         foreach ($menus as $menu) {
-            $menuObject = $this->modx->newObject('modMenu');
-            $menuObject->fromArray(array(
-                'text' => $menu->text,
-                'parent' => $menu->parent,
-                'description' => $menu->description,
-                'icon' => $menu->icon,
-                'menuindex' => $menu->menuIndex,
-                'params' => $menu->params,
-                'handler' => $menu->handler,
-                'permissions' => $menu->permissions,
-            ), '', true, true);
+            $menuObject = $menu->getObject(true);
 
             if ($menu->action instanceof Action) {
-                $actionObject = $this->modx->newObject('modAction');
-                $actionObject->fromArray(array(
-                    'id' => 1,
-                    'namespace' => $this->config->general->lowCaseName,
-                    'parent' => 0,
-                    'controller' => $menu->action->controller,
-                    'haslayout' => $menu->action->hasLayout,
-                    'lang_topics' => $menu->action->langTopics,
-                    'assets' => $menu->action->assets,
-                ), '', true, true);
+                $actionObject = $menu->action->getObject(true);
 
                 $menuObject->addOne($actionObject);
-            } else {
-                $menuObject->set('action', $menu->action);
-                $menuObject->set('namespace', $this->config->general->lowCaseName);
             }
 
             $vehicle = $this->builder->createVehicle($menuObject, 'menu');
