@@ -213,7 +213,7 @@ final class Install extends \GPM\Action\Action
     {
         $this->modx->cacheManager->delete('system_settings/config', array('cache_key' => ''));
         $results = array();
-        $partitions = array('menu' => array());
+        $partitions = array('menu' => [], 'system_settings' => []);
         $this->modx->cacheManager->refresh($partitions, $results);
 
         $this->modx->setPlaceholder('+' . $this->config->general->lowCaseName . '.core_path', $this->config->general->corePath);
