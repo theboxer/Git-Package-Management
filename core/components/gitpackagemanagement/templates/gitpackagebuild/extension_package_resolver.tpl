@@ -22,14 +22,9 @@ if ($object->xpdo) {
             }
 
             if ($modx instanceof modX) {
-{if $serviceName && $serviceClass}
-                $modx->addExtensionPackage('{{$lowercasename}}', $modelPath, array(
-                    'serviceName' => '{{$serviceName}}',
-                    'serviceClass' => '{{$serviceClass}}'
-                ));
-{else}
-                $modx->addExtensionPackage('{{$lowercasename}}', $modelPath);
-{/if}
+
+                $modx->addExtensionPackage('{{$lowercasename}}', $modelPath, {{$extension_package_options}});
+
             }
 
             break;

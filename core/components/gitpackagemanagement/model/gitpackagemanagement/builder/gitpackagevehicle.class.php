@@ -65,7 +65,7 @@ class GitPackageVehicle {
         return $this->vehicle;
     }
 
-    public function addExtensionPackageResolver($packagePath, $serviceName = null, $serviceClass = null) {
+    public function addExtensionPackageResolver($packagePath, $options = array()) {
         if (!is_dir($packagePath)) {
             mkdir($packagePath);
         }
@@ -75,8 +75,7 @@ class GitPackageVehicle {
             unlink($resolver);
         }
 
-        $this->smarty->assign('serviceName', $serviceName);
-        $this->smarty->assign('serviceClass', $serviceClass);
+        $this->smarty->assign('extension_package_options', var_export($options, true));
 
         $resolverContent = $this->smarty->fetch('extension_package_resolver.tpl');
 
