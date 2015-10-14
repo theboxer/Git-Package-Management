@@ -193,14 +193,15 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         if($extPackage !== false){
             $modelPath = $this->packagePath . $this->object->dir_name . "/core/components/" . $this->newConfig->getLowCaseName() . "/" . 'model/';
             $modelPath = str_replace('\\', '/', $modelPath);
-            if($extPackage === true){
-                $this->modx->addExtensionPackage($this->newConfig->getLowCaseName(),$modelPath);
-            }else{
-                $this->modx->addExtensionPackage($this->newConfig->getLowCaseName(),$modelPath, array(
-                      'serviceName' => $extPackage['serviceName'],
-                      'serviceClass' => $extPackage['serviceClass']
-                 ));
+
+            $db = $this->newConfig->getDatabase();
+            $prefix = $db->getPrefix();
+
+            if (isset($prefix)) {
+                $extPackage['tablePrefix'] = $prefix;
             }
+
+            $this->modx->addExtensionPackage($this->newConfig->getLowCaseName(), $modelPath, $extPackage);
         }
     }
 
