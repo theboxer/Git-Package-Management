@@ -53,6 +53,7 @@ class GitPackageVehicle {
 
         $this->smarty->assign('tables', $db->getTables());
         $this->smarty->assign('prefix', $db->getPrefix());
+        $this->smarty->assign('simpleobjects', $db->getSimpleObjects());
 
         $resolverContent = $this->smarty->fetch('tables_resolver.tpl');
 
