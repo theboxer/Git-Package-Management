@@ -128,7 +128,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         foreach ($this->oldConfig->getMenus() as $menu) {
             $menuObject = $this->modx->getObject('modMenu', array ('text' => $menu->getText()));
-            $menuObject->remove();
+            if ($menuObject) $menuObject->remove();
         }
 
         $actions = array();
