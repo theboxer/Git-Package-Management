@@ -24,7 +24,7 @@ class GitPackageError {
         return $this->errors;
     }
 
-    public function log($msg, $level = MODx::LOG_LEVEL_ERROR) {
+    public function log($msg, $level = modX::LOG_LEVEL_ERROR) {
         $this->modx->log($level, '[GitPackageManagement] ' . $msg);
     }
 
