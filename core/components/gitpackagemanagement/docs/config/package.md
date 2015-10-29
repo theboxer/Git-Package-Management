@@ -339,7 +339,7 @@ In this section we create some elements. During the installation, all elements a
 
 ### Widgets
 
-**Wrapper:** tvs (array)
+**Wrapper:** widgets (array)
 ```json
 {
     "package":{
