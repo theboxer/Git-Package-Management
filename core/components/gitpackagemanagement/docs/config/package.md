@@ -443,6 +443,7 @@ Here you can specify Resources that should be created. Note that this is only on
 - **template** (optional) - Template name or 0
 - **class_key** (optional) - Class key of Resource. Default: modDocument
 - **content_type** (optional) - Name of the content type that will be used for Resource
+- **link_attributes** (optional) - Link attributes of the Resource
 - **published** (optional) - 1/0 to set Resource published or not
 - **isfolder** (optional) - 1/0 to set Resource as folder
 - **richtext** (optional) - 1/0 to allow RichText editor
