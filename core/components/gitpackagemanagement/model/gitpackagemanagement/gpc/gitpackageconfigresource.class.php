@@ -32,6 +32,7 @@ class GitPackageConfigResource {
     private $hide_children_in_tree = 0;
     private $show_in_tree = 1;
     private $setAsHome = 0;
+    private $link_attributes = '';
 
     public function __construct(modX &$modx, $gitPackageConfig) {
         $this->modx =& $modx;
@@ -134,6 +135,10 @@ class GitPackageConfigResource {
 
         if (isset($config['show_in_tree'])) {
             $this->show_in_tree = intval($config['show_in_tree']);
+        }
+        
+        if (isset($config['link_attributes'])) {
+            $this->link_attributes = $config['link_attributes'];
         }
 
         if (isset($config['tvs']) && is_array($config['tvs'])) {
@@ -247,6 +252,7 @@ class GitPackageConfigResource {
         $resource['menutitle'] = $this->menutitle;
         $resource['hide_children_in_tree'] = $this->hide_children_in_tree;
         $resource['show_in_tree'] = $this->show_in_tree;
+        $resource['link_attributes'] = $this->link_attributes;
 
         if ($this->setAsHome == 1) {
             $id = $this->modx->getOption('site_start');
@@ -369,6 +375,7 @@ class GitPackageConfigResource {
         $resource['set_as_home'] = $this->setAsHome;
         $resource['tvs'] = $this->tvs;
         $resource['others'] = $this->others;
+        $resource['link_attributes'] = $this->link_attributes;
 
         $resource['template'] = $this->template;
 
