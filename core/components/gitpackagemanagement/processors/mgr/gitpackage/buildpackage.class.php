@@ -499,11 +499,6 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
     private function addWidgets() {
         /** @var GitPackageConfigElementWidget[] $widgets */
         $widgets = $this->config->getElements('widgets');
-        $attributes = array(
-            xPDOTransport::PRESERVE_KEYS => false,
-            xPDOTransport::UPDATE_OBJECT => true,
-            xPDOTransport::UNIQUE_KEY => array('name'),
-        );
 
         foreach ($widgets as $widget) {
             /** @var modSystemSetting $widgetObject */
@@ -520,7 +515,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 'size' => $widget->getSize(),
             ), '', true, true);
 
-            $vehicle = $this->builder->createVehicle($widgetObject, $attributes);
+            $vehicle = $this->builder->createVehicle($widgetObject, 'widget');
             $this->builder->putVehicle($vehicle);
         }
     }
