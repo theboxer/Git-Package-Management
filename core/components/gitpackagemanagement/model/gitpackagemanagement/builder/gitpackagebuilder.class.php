@@ -111,6 +111,12 @@ class GitPackageBuilder {
             xPDOTransport::PRESERVE_KEYS => true,
             xPDOTransport::UPDATE_OBJECT => false,
         );
+
+        $this->attributes['widget'] = array(
+            xPDOTransport::UNIQUE_KEY => 'name',
+            xPDOTransport::PRESERVE_KEYS => false,
+            xPDOTransport::UPDATE_OBJECT => true,
+        );
     }
 
     private function getAttributes($type){

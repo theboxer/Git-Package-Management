@@ -1,5 +1,6 @@
 Changelog for GitPackageManagement.
 
+- Fix widget installation
 - Fix Extension packages
 - Allow Widget Elements
 - Fix setting description for TVs
