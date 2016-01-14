@@ -732,6 +732,15 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                     $modResource->setTVValue($tv['name'], $tv['value']);
                 }
             }
+
+            // Set the properties field with ContentBlocks JSON formatting, if specified
+            $properties = $resource->getProperties();
+
+            if ($properties) {
+                $modResource->set('properties', null);
+                $modResource->set('properties', $properties);
+                $modResource->save();
+            }
         }
     }
 

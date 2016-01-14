@@ -458,6 +458,7 @@ Here you can specify Resources that should be created. Note that this is only on
 - **tvs** (optional) - Array of name & value pair, where name is TV's name and value is desired value. Also can be used file option, to provide value from file.
 - **others** (optional) - Array of name & value pair that will be sent to Resource's create & update processor
 - **setAsHome** (optional) - 1/0 to link this Resource with Resource that is set as site_start
+- **properties** (optional) - Path to the file that will be used for the properties field
 
 #### Example
 ```json

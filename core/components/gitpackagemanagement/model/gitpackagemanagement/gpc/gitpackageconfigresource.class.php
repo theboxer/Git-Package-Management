@@ -33,6 +33,7 @@ class GitPackageConfigResource {
     private $show_in_tree = 1;
     private $setAsHome = 0;
     private $link_attributes = '';
+    private $properties = '';
 
     public function __construct(modX &$modx, $gitPackageConfig) {
         $this->modx =& $modx;
@@ -202,6 +203,15 @@ class GitPackageConfigResource {
             }
         }
 
+        if (isset($config['properties'])) {
+            $file = $this->config->getPackagePath();
+            $file .= '/core/components/'.$this->config->getLowCaseName().'/resources/' . $config['properties'];
+
+            if(file_exists($file)){
+                $this->properties = file_get_contents($file);
+            }
+        }
+
         return true;
     }
 
@@ -253,6 +263,7 @@ class GitPackageConfigResource {
         $resource['hide_children_in_tree'] = $this->hide_children_in_tree;
         $resource['show_in_tree'] = $this->show_in_tree;
         $resource['link_attributes'] = $this->link_attributes;
+        $resource['properties'] = $this->properties;
 
         if ($this->setAsHome == 1) {
             $id = $this->modx->getOption('site_start');
@@ -376,6 +387,7 @@ class GitPackageConfigResource {
         $resource['tvs'] = $this->tvs;
         $resource['others'] = $this->others;
         $resource['link_attributes'] = $this->link_attributes;
+        $resource['properties'] = $this->properties;
 
         $resource['template'] = $this->template;
 
@@ -802,4 +814,17 @@ class GitPackageConfigResource {
         $this->template = $template;
     }
 
+    /**
+     * @return string
+     */
+    public function getProperties() {
+        return $this->properties;
+    }
+
+    /**
+     * @param string $properties
+     */
+    public function setProperties($properties) {
+        $this->properties = $properties;
+    }
 }
