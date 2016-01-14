@@ -711,6 +711,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
     private function updateResource($resource) {
         $res = $this->modx->runProcessor('resource/update', $resource->toArray());
         $resObject = $res->getObject();
+        $colObject = $this->modx->getObject('CollectionSetting', array('collection' => $resObject['id']));
 
         if ($resObject && isset($resObject['id'])) {
             /** @var modResource $modResource */
@@ -722,6 +723,19 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $tvs = $resource->getTvs();
                 foreach ($tvs as $tv) {
                     $modResource->setTVValue($tv['name'], $tv['value']);
+                }
+            }
+
+            // Set the correct Collections template for a resource, if specified
+            if ($colObject) {
+                $others = $resource->getOthers();
+
+                foreach ($others as $other) {
+                    if ($other['name'] == 'collections') {
+
+                        $colObject->set('template', $other['value']);
+                        $colObject->save();
+                    }
                 }
             }
 
