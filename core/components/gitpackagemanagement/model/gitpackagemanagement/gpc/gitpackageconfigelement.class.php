@@ -9,8 +9,6 @@ abstract class GitPackageConfigElement{
     protected $name;
     /** @var string $description */
     protected $description = '';
-    /** @var string $property_preprocess */
-    protected $property_preprocess = '';
     /** @var string $file */
     protected $file;
     /** @var string $type */
@@ -39,10 +37,6 @@ abstract class GitPackageConfigElement{
 
         if (isset($config['description'])) {
             $this->description = $config['description'];
-        }
-        
-        if (isset($config['property_preprocess'])) {
-            $this->property_preprocess = $config['property_preprocess'];
         }
 
         if(isset($config['file'])){
@@ -125,10 +119,6 @@ abstract class GitPackageConfigElement{
 
     public function getDescription() {
         return $this->description;
-    }
-    
-    public function getPropertyPreprocess() {
-        return $this->property_preprocess;
     }
 
     protected function setProperties($properties) {
