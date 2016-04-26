@@ -307,6 +307,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $elementObject->set('category', $category);
             $elementObject->set('description', $element->getDescription());
+            $elementObject->set('property_preprocess', $element->getPropertyPreprocess());
 
             if($type == 'Plugin'){
                 /** @var modPluginEvent[] $oldEvents */
