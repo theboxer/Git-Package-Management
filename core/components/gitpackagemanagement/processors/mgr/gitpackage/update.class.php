@@ -307,6 +307,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $elementObject->set('category', $category);
             $elementObject->set('description', $element->getDescription());
+            $elementObject->set('property_preprocess', $element->getPropertyPreProcess());
 
             if($type == 'Plugin'){
                 /** @var modPluginEvent[] $oldEvents */
@@ -367,6 +368,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $tvObject->set('caption', $tv->getCaption());
             $tvObject->set('description', $tv->getDescription());
+            $tvObject->set('property_preprocess', $tv->getPropertyPreProcess());
             $tvObject->set('type', $tv->getInputType());
 
             $category = $tv->getCategory();
