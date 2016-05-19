@@ -93,7 +93,7 @@
         "readme": "docs/readme.txt"
         ,"resolver": {
             "resolversDir": "resolvers"
-            "after": ["resolver.customresolver.php"]
+            ,"after": ["resolver.customresolver.php"]
         }
     }
 }
