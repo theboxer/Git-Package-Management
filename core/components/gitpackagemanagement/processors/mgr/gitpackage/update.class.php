@@ -195,7 +195,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $modelPath = str_replace('\\', '/', $modelPath);
 
             $db = $this->newConfig->getDatabase();
-            $prefix = $db->getPrefix();
+            if ($db) {
+                $prefix = $db->getPrefix();
+            }
 
             if (!is_array($extPackage)) $extPackage = array();
             
