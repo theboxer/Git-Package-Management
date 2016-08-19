@@ -142,12 +142,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
-                                                        'namespace' => $this->newConfig->getLowCaseName(),
-                                                        'controller' => $act->getController(),
-                                                        'haslayout' => $act->getHasLayout(),
-                                                        'lang_topics' => $act->getLangTopics(),
-                                                        'assets' => $act->getAssets(),
-                                                   ),'',true,true);
+                    'namespace' => $act->getNamespace(),
+                    'controller' => $act->getController(),
+                    'haslayout' => $act->getHasLayout(),
+                    'lang_topics' => $act->getLangTopics(),
+                    'assets' => $act->getAssets(),
+                ),'',true,true);
                 $actions[$act->getId()]->save();
             }
         }
@@ -160,21 +160,21 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 /** @var modMenu[] $menus */
                 $menus[$i] = $this->modx->newObject('modMenu');
                 $menus[$i]->fromArray(array(
-                                           'text' => $men->getText(),
-                                           'parent' => $men->getParent(),
-                                           'description' => $men->getDescription(),
-                                           'icon' => $men->getIcon(),
-                                           'menuindex' => $men->getMenuIndex(),
-                                           'params' => $men->getParams(),
-                                           'handler' => $men->getHandler(),
-                                           'permissions' => $men->getPermissions(),
-                                      ),'',true,true);
+                    'text' => $men->getText(),
+                    'parent' => $men->getParent(),
+                    'description' => $men->getDescription(),
+                    'icon' => $men->getIcon(),
+                    'menuindex' => $men->getMenuIndex(),
+                    'params' => $men->getParams(),
+                    'handler' => $men->getHandler(),
+                    'permissions' => $men->getPermissions(),
+                ),'',true,true);
 
                 if (isset($actions[$men->getAction()])) {
                     $menus[$i]->addOne($actions[$men->getAction()]);
                 } else {
                     $menus[$i]->set('action', $men->getAction());
-                    $menus[$i]->set('namespace', $this->newConfig->getLowCaseName());
+                    $menus[$i]->set('namespace', $men->getNamespace());
                 }
 
                 $menus[$i]->save();

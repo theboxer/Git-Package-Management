@@ -466,7 +466,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $actionObject = $this->modx->newObject('modAction');
                 $actionObject->fromArray(array(
                     'id' => 1,
-                    'namespace' => $this->config->getLowCaseName(),
+                    'namespace' => $configAction->getNamespace(),
                     'parent' => 0,
                     'controller' => $configAction->getController(),
                     'haslayout' => $configAction->getHasLayout(),
@@ -477,7 +477,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $menuObject->addOne($actionObject);
             } else {
                 $menuObject->set('action', $menu->getAction());
-                $menuObject->set('namespace', $this->config->getLowCaseName());
+                $menuObject->set('namespace', $menu->getNamespace());
             }
 
             $vehicle = $this->builder->createVehicle($menuObject, 'menu');

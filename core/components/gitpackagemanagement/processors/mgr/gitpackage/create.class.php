@@ -240,7 +240,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
-                        'namespace' => $this->config->getLowCaseName(),
+                        'namespace' => $act->getNamespace(),
                         'controller' => $act->getController(),
                         'haslayout' => $act->getHasLayout(),
                         'lang_topics' => $act->getLangTopics(),
@@ -274,7 +274,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     $menus[$i]->addOne($actions[$men->getAction()]);
                 } else {
                     $menus[$i]->set('action', $men->getAction());
-                    $menus[$i]->set('namespace', $this->config->getLowCaseName());
+                    $menus[$i]->set('namespace', $men->getNamespace());
                 }
 
                 $menus[$i]->save();

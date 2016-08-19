@@ -9,6 +9,7 @@ class GitPackageConfigAction {
     private $hasLayout;
     private $langTopics;
     private $assets;
+    private $namespace;
 
     public function __construct(modX &$modx, $gitPackageConfig) {
         $this->modx =& $modx;
@@ -48,6 +49,12 @@ class GitPackageConfigAction {
             $this->assets = '';
         }
 
+        if(!empty($config['namespace'])){
+            $this->namespace = $config['namespace'];
+        }else{
+            $this->namespace = $this->gitPackageConfig->getLowCaseName();
+        }
+
         return true;
     }
 
@@ -71,5 +78,8 @@ class GitPackageConfigAction {
         return $this->langTopics;
     }
 
-
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
 }
