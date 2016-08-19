@@ -93,7 +93,7 @@
         "readme": "docs/readme.txt"
         ,"resolver": {
             "resolversDir": "resolvers"
-            ,"after": "resolver.customresolver.php"
+            ,"after": ["resolver.customresolver.php"]
         }
     }
 }
@@ -160,7 +160,7 @@ This config shows only required params for each section. If you don't need any s
     ,"extensionPackage": {}
     ,"build": {
         "resolver": {
-            "after": "resolver.customresolver.php"
+            "after": ["resolver.customresolver.php"]
         }
     }
 }
