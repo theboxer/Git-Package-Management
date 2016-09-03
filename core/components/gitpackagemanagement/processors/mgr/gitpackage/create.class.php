@@ -417,7 +417,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject->set('description', $plugin->getDescription());
                 $pluginObject->set('property_preprocess', $plugin->getPropertyPreProcess());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $pluginObject->set('plugincode', 'include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $plugin->getFilePath() . '");');
+                    $pluginObject->set('plugincode', 'include("' . $this->packageCorePath . $plugin->getFilePath() . '");');
                     $pluginObject->set('static', 0);
                     $pluginObject->set('static_file', '');
                 } else {
@@ -474,7 +474,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $snippetObject->set('description', $snippet->getDescription());
                 $snippetObject->set('property_preprocess', $snippet->getPropertyPreProcess());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $snippet->getFilePath() . '");');
+                    $snippetObject->set('snippet', 'return include("' . $this->packageCorePath . $snippet->getFilePath() . '");');
                     $snippetObject->set('static', 0);
                     $snippetObject->set('static_file', '');
                 } else {
