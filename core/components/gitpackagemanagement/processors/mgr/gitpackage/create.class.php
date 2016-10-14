@@ -626,12 +626,15 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->setProperties($tv->getProperties());
                 $tvObject->save();
 
-                $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
-                foreach($templates as $template){
-                    $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
-                    $templateTVObject->set('tmplvarid', $tvObject->id);
-                    $templateTVObject->set('templateid', $template->id);
-                    $templateTVObject->save();
+                $templates = $tv->getTemplates();
+                if (!empty($templates)) {
+                    $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
+                    foreach ($templates as $template) {
+                        $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
+                        $templateTVObject->set('tmplvarid', $tvObject->id);
+                        $templateTVObject->set('templateid', $template->id);
+                        $templateTVObject->save();
+                    }
                 }
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'TV ' . $tv->getName() . ' created.');
