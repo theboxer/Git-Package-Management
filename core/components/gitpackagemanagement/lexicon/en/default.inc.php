@@ -33,6 +33,8 @@ $_lang['gitpackagemanagement.preserve_package'] = 'Preserve package';
 $_lang['gitpackagemanagement.build_package'] = 'Build package';
 
 //Options
+$_lang['setting_gitpackagemanagement.build_path'] = 'Build path';
+$_lang['setting_gitpackagemanagement.build_path_desc'] = 'Folder, relatives to the package, to store build transport packages. Defaults to "/_packages/"';
 $_lang['setting_gitpackagemanagement.packages_dir'] = 'Packages directory';
 $_lang['setting_gitpackagemanagement.packages_dir_desc'] = 'Path to the directory where you store packages.';
 $_lang['setting_gitpackagemanagement.packages_base_url'] = 'Packages base URL';

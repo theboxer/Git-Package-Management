@@ -75,7 +75,10 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $version[1] = 'pl';
         }
 
-        $this->builder->getTPBuilder()->directory = $this->config->getPackagePath() . '/_packages/';
+        $this->builder->getTPBuilder()->directory = $this->config->getPackagePath() . $this->modx->getOption('gitpackagemanagement.build_path', null, '/_packages/');
+        if (!is_dir($this->builder->getTPBuilder()->directory)) {
+            mkdir($this->builder->getTPBuilder()->directory);
+        }
         $this->builder->getTPBuilder()->createPackage($this->config->getLowCaseName(), $version[0], $version[1]);
 
         $this->builder->registerNamespace($this->config->getLowCaseName(), false, true, '{core_path}components/' . $this->config->getLowCaseName() . '/','{assets_path}components/' . $this->config->getLowCaseName() . '/');
