@@ -139,9 +139,42 @@ final class File implements iLoader
      *
      * @param bool $skip
      * @return bool
+     * @throws ValidatorException
+     * @throws \Exception
      */
     public function loadChunks($skip = true)
     {
+        $scannedDir = $this->path . '/core/components/' . $this->name . '/elements/chunks/';
+
+        $finder = new Finder();
+
+        /** @var \Symfony\Component\Finder\SplFileInfo[] $files */
+        $files = $finder->files()->in($scannedDir)->name('*.tpl');
+
+        foreach ($files as $file) {
+            $fileName = $file->getFilename();
+            $chunkName = explode('.', $fileName);
+            array_pop($chunkName);
+            if (count($chunkName) > 1) {
+                if ($chunkName[count($chunkName) - 1] == 'chunk') {
+                    array_pop($chunkName);
+                }
+            }
+            $chunkName = implode('.', $chunkName);
+            $category = '';
+            $path = $file->getRelativePath();
+            if (!empty($path)) {
+                $path = explode(DIRECTORY_SEPARATOR, $path);
+                $category = array_pop($path);
+            }
+
+            $this->parser->parseChunk([
+                'name' => $chunkName,
+                'file' => $fileName,
+                'category' => $category,
+            ], $skip);
+        }
+
         return true;
     }
 
