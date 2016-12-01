@@ -204,7 +204,7 @@ final class File implements iLoader
      * Load Resources
      *
      * @param bool $skip
-     * @return array
+     * @return bool
      */
     public function loadResources($skip = true)
     {

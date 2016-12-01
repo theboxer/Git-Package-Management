@@ -107,7 +107,7 @@ interface iLoader
      * Load Resources
      *
      * @param bool $skip
-     * @return array
+     * @return bool
      * @throws ValidatorException
      * @throws \Exception
      */
