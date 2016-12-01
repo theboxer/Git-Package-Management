@@ -25,9 +25,8 @@ abstract class Element extends ConfigObject
 
     protected $rules = [
         'name' => 'notEmpty',
-//        'category' => 'categoryExists',
-        'properties' => 'type:array',
-//        'file' => 'file'
+        'category' => 'categoryExists',
+        'properties' => 'type:array'
     ];
 
     protected function setDefaults($config)
@@ -53,6 +52,7 @@ abstract class Element extends ConfigObject
         $file = $this->config->general->corePath;
 
         $exists = false;
+        $finalFile = '';
         foreach ($filePaths as $filePath) {
             $finalFile = $file . $filePath;
             if (file_exists($finalFile)) {
@@ -132,6 +132,9 @@ abstract class Element extends ConfigObject
         return true;
     }
 
-
+    public function getElementType()
+    {
+        return $this->elementType;
+    }
 
 }

@@ -16,7 +16,7 @@ class GitPackageManagementCreateProcessor extends modProcessor
         
         try {
             $config = new \GPM\Config\Config($this->modx, $this->getProperty('folderName'));
-            $parser = new \GPM\Config\Parser\Parser($this->modx, $config);
+            $parser = new \GPM\Config\Parser\Parser($config);
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();
 

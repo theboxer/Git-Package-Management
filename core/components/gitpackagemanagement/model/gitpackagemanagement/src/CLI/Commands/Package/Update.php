@@ -40,7 +40,7 @@ class Update extends PackageCommand
 
         try {
             $config = new Config($this->getApplication()->modx, $this->package->dir_name);
-            $parser = new Parser($this->getApplication()->modx, $config);
+            $parser = new Parser($config);
             $loader = new JSON($parser);
             $loader->loadAll();
 

@@ -62,6 +62,21 @@ abstract class ConfigObject
         return true;
     }
 
+//    public function newObject()
+//    {
+//        throw new \Exception('Not implemented');
+//    }
+//    
+//    public function updateObject()
+//    {
+//        throw new \Exception('Not implemented');
+//    }
+//    
+//    public function buildObject()
+//    {
+//        throw new \Exception('Not implemented');
+//    }
+
     abstract public function toArray();
 
     protected function setDefaults($config)

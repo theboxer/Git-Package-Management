@@ -46,7 +46,10 @@ final class TV extends Element
         return $array;
     }
 
-    public function getObject($build = false)
+    /**
+     * @return \modTemplateVar
+     */
+    public function prepareObject()
     {
         /** @var \modTemplateVar $object */
         $object = $this->config->modx->newObject('modTemplateVar');
@@ -73,4 +76,83 @@ final class TV extends Element
 
         return $object;
     }
+
+
+    public function newObject($category)
+    {
+        $object = $this->prepareObject();
+        $object->set('category', $category);
+
+        $saved = $object->save();
+
+        if (!$saved) {
+            throw new SaveException($this);
+        }
+
+        /** @var \modTemplate[] $templates */
+        $templates = $this->config->modx->getCollection('modTemplate', ['templatename:IN' => $this->templates]);
+        foreach ($templates as $template) {
+            $templateTVObject = $this->config->modx->newObject('modTemplateVarTemplate');
+            $templateTVObject->set('tmplvarid', $object->id);
+            $templateTVObject->set('templateid', $template->id);
+            $templateTVObject->save();
+        }
+
+        return $object;
+    }
+
+    public function updateObject($category)
+    {
+        /** @var \modTemplateVar $object */
+        $object = $this->config->modx->getObject('modTemplateVar', array('name' => $this->name));
+        if (!$object) {
+            return $this->newObject($category);
+        }
+
+        $object->set('caption', $this->caption);
+        $object->set('description', $this->description);
+        $object->set('category', $category);
+        $object->set('type', $this->type);
+        $object->set('elements', $this->inputOptionValues);
+        $object->set('rank', $this->sortOrder);
+        $object->set('default_text', $this->defaultValue);
+
+        $inputProperties = $this->inputProperties;
+        if (!empty($inputProperties)) {
+            $object->set('input_properties', $inputProperties);
+        }
+
+        $outputProperties = $this->outputProperties;
+        if (!empty($outputProperties)) {
+            $object->set('output_properties', $outputProperties[0]);
+        }
+
+        $object->setProperties($object->getProperties());
+
+        $saved = $object->save();
+
+        if (!$saved) {
+            throw new SaveException($this);
+        }
+        
+        /** @var \modTemplateVarTemplate[] $oldTemplates */
+        $oldTemplates = $object->getMany('TemplateVarTemplates');
+
+        foreach ($oldTemplates as $oldTemplate) {
+            $oldTemplate->remove();
+        }
+
+        /** @var \modTemplate[] $templates */
+        $templates = $this->config->modx->getCollection('modTemplate', ['templatename:IN' => $this->templates]);
+        foreach ($templates as $template) {
+            $templateTVObject = $this->config->modx->newObject('modTemplateVarTemplate');
+            $templateTVObject->set('tmplvarid', $object->id);
+            $templateTVObject->set('templateid', $template->id);
+            $templateTVObject->save();
+        }
+        
+        return $object;
+    }
+
+
 }

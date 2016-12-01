@@ -3,6 +3,7 @@ namespace GPM\Action;
 
 use GPM\Config\Config;
 use GPM\Config\Object\Action;
+use GPM\Config\Object\Element\SaveException;
 use Psr\Log\LoggerInterface;
 
 final class Update extends \GPM\Action\Action
@@ -89,24 +90,23 @@ final class Update extends \GPM\Action\Action
             }
         }
 
+        /** @var \modAction[] $actions */
         $actions = array();
+        /** @var \modMenu[] $menus */
         $menus = array();
 
         /**
          * Create actions if any
          */
         if (count($this->config->actions) > 0) {
+            $this->logger->info('Updating actions:');
             foreach ($this->config->actions as $act) {
-                /** @var \modAction[] $actions */
-                $actions[$act->id] = $this->modx->newObject('modAction');
-                $actions[$act->id]->fromArray(array(
-                    'namespace' => $this->config->general->lowCaseName,
-                    'controller' => $act->controller,
-                    'haslayout' => $act->hasLayout,
-                    'lang_topics' => $act->langTopics,
-                    'assets' => $act->assets,
-                ), '', true, true);
-                $actions[$act->id]->save();
+                try {
+                    $actions[$act->id] = $act->newObject();
+                    $this->logger->info(' - ' . $act->id);
+                } catch (SaveException $se) {
+                    $this->logger->error(' - ' . $act->id . ' failed');
+                }
             }
         }
 
@@ -114,25 +114,17 @@ final class Update extends \GPM\Action\Action
          * Crete menus if any
          */
         if (count($this->config->menus) > 0) {
+            $this->logger->info('Updating menus:');
             foreach ($this->config->menus as $i => $men) {
-                /** @var \modMenu[] $menus */
-                $menus[$i] = $this->modx->newObject('modMenu');
-                $menus[$i]->fromArray(array(
-                    'text' => $men->text,
-                    'parent' => $men->parent,
-                    'description' => $men->description,
-                    'icon' => $men->icon,
-                    'menuindex' => $men->menuIndex,
-                    'params' => $men->params,
-                    'handler' => $men->handler,
-                    'permissions' => $men->permissions,
-                ), '', true, true);
+                try {
+                    $menus[$i] = $men->newObject();
+                    $this->logger->info(' - ' . $men->text);
+                } catch (SaveException $se) {
+                    $this->logger->error(' - ' . $men->text . ' failed');
+                }
 
                 if (($men->action instanceof Action) && isset($actions[$men->action->id])) {
                     $menus[$i]->addOne($actions[$men->action->id]);
-                } else {
-                    $menus[$i]->set('action', $men->action);
-                    $menus[$i]->set('namespace', $this->config->general->lowCaseName);
                 }
 
                 $menus[$i]->save();
@@ -154,13 +146,7 @@ final class Update extends \GPM\Action\Action
         $extPackage = $this->config->extensionPackage;
         if ($extPackage !== null) {
             if ($this->gpm->not22() === true) {
-                $pkg = $this->modx->newObject('modExtensionPackage');
-                $pkg->set('namespace', $extPackage->namespace);
-                $pkg->set('name', $extPackage->name);
-                $pkg->set('path', $extPackage->path);
-                $pkg->set('table_prefix', $extPackage->tablePrefix);
-                $pkg->set('service_class', $extPackage->serviceClass);
-                $pkg->set('service_name', $extPackage->serviceName);
+                $pkg = $extPackage->newObject();
                 $pkg->save();
             } else {
                 $options = [
@@ -184,23 +170,17 @@ final class Update extends \GPM\Action\Action
         $notUsedSettings = array_flip($notUsedSettings);
 
         foreach ($this->config->systemSettings as $key => $setting) {
-            /** @var \modSystemSetting $systemSetting */
-            $systemSetting = $this->modx->getObject('modSystemSetting', array('key' => $key));
-            if (!$systemSetting) {
-                $systemSetting = $this->modx->newObject('modSystemSetting');
-                $systemSetting->set('key', $key);
-                $systemSetting->set('value', $setting->value);
-                $systemSetting->set('namespace', $this->config->general->lowCaseName);
-                $systemSetting->set('area', $setting->area);
-                $systemSetting->set('xtype', $setting->type);
-            } else {
-                if (!isset($oldSettings[$key]) || $oldSettings[$key]->value != $setting->value) {
-                    $systemSetting->set('value', $setting->value);
+            try {
+                $oldValue = null;
+                if (isset($oldSettings[$key])) {
+                    $oldValue = $oldSettings[$key]->value;
                 }
-                $systemSetting->set('area', $setting->area);
-                $systemSetting->set('xtype', $setting->type);
+                
+                $setting->updateObject($oldValue);
+                $this->logger->info(' - ' . $setting->key);
+            } catch (SaveException $se) {
+                $this->logger->error(' - ' . $setting->key . ' failed');
             }
-            $systemSetting->save();
 
             if (isset($notUsedSettings[$key])) {
                 unset($notUsedSettings[$key]);
@@ -232,18 +212,11 @@ final class Update extends \GPM\Action\Action
         $notUsedElements = array_keys($this->oldConfig->chunks);
         $notUsedElements = array_flip($notUsedElements);
 
+        $this->logger->info('Updating chunks:');
+        
         foreach ($this->config->chunks as $name => $chunk) {
-            /** @var \modChunk $chunkObject */
-            $chunkObject = $this->modx->getObject('modChunk', array('name' => $name));
-            if (!$chunkObject) {
-                $chunkObject = $this->modx->newObject('modChunk');
-                $chunkObject->set('name', $chunk->name);
-            }
-
-            $chunkObject->set('static', 1);
-            $chunkObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $chunk->filePath);
-
             $category = $chunk->category;
+            
             if (!empty($category)) {
                 if (isset($this->categoriesMap[$category])) {
                     $category = $this->categoriesMap[$category];
@@ -254,10 +227,12 @@ final class Update extends \GPM\Action\Action
                 $category = $this->category->id;
             }
 
-            $chunkObject->set('category', $category);
-            $chunkObject->set('description', $chunk->description);
-            $chunkObject->setProperties($chunk->properties);
-            $chunkObject->save();
+            try {
+                $chunk->updateObject($category);
+                $this->logger->info(' - ' . $chunk->name);
+            } catch (SaveException $se) {
+                $this->logger->error(' - ' . $chunk->name . ' failed');
+            }
 
             if (isset($notUsedElements[$name])) {
                 unset($notUsedElements[$name]);
@@ -265,10 +240,15 @@ final class Update extends \GPM\Action\Action
         }
 
         foreach ($notUsedElements as $name => $value) {
+            /** @var \modChunk $chunk */
             $chunk = $this->modx->getObject('modChunk', array('name' => $name));
 
             if ($chunk) {
-                $chunk->remove();
+                if ($chunk->remove()) {
+                    $this->logger->info(' - ' . $chunk->name . ' removed');
+                } else {
+                    $this->logger->error(' - ' . $chunk->name . ' removal failed');
+                }
             }
         }
 
@@ -280,23 +260,9 @@ final class Update extends \GPM\Action\Action
         $notUsedElements = array_keys($this->oldConfig->snippets);
         $notUsedElements = array_flip($notUsedElements);
 
+        $this->logger->info('Updating snippets:');
+        
         foreach ($this->config->snippets as $name => $snippet) {
-            /** @var \modSnippet $snippetObject */
-            $snippetObject = $this->modx->getObject('modSnippet', array('name' => $name));
-            if (!$snippetObject) {
-                $snippetObject = $this->modx->newObject('modSnippet');
-                $snippetObject->set('name', $snippet->name);
-            }
-
-            if ($this->gpm->getOption('enable_debug')) {
-                $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->general->lowCaseName . '.core_path') . $snippet->filePath . '");');
-                $snippetObject->set('static', 0);
-                $snippetObject->set('static_file', '');
-            } else {
-                $snippetObject->set('static', 1);
-                $snippetObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $snippet->filePath);
-            }
-
             $category = $snippet->category;
             if (!empty($category)) {
                 if (isset($this->categoriesMap[$category])) {
@@ -308,10 +274,12 @@ final class Update extends \GPM\Action\Action
                 $category = $this->category->id;
             }
 
-            $snippetObject->set('category', $category);
-            $snippetObject->set('description', $snippet->description);
-            $snippetObject->setProperties($snippet->properties);
-            $snippetObject->save();
+            try {
+                $snippet->updateObject($category);
+                $this->logger->info(' - ' . $snippet->name);
+            } catch (SaveException $se) {
+                $this->logger->error(' - ' . $snippet->name . ' failed');
+            }
 
             if (isset($notUsedElements[$name])) {
                 unset($notUsedElements[$name]);
@@ -319,10 +287,15 @@ final class Update extends \GPM\Action\Action
         }
 
         foreach ($notUsedElements as $name => $value) {
+            /** @var \modSnippet $snippet */
             $snippet = $this->modx->getObject('modSnippet', array('name' => $name));
 
             if ($snippet) {
-                $snippet->remove();
+                if ($snippet->remove()) {
+                    $this->logger->info(' - ' . $snippet->name . ' removed');
+                } else {
+                    $this->logger->error(' - ' . $snippet->name . ' removal failed');
+                }
             }
         }
 
@@ -334,18 +307,11 @@ final class Update extends \GPM\Action\Action
         $notUsedElements = array_keys($this->oldConfig->templates);
         $notUsedElements = array_flip($notUsedElements);
 
+        $this->logger->info('Updating templates:');
+        
         foreach ($this->config->templates as $name => $template) {
-            /** @var \modTemplate $templateObject */
-            $templateObject = $this->modx->getObject('modTemplate', array('templatename' => $name));
-            if (!$templateObject) {
-                $templateObject = $this->modx->newObject('modTemplate');
-                $templateObject->set('templatename', $template->name);
-            }
-            $templateObject->set('icon', $template->icon);
-            $templateObject->set('static', 1);
-            $templateObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $template->filePath);
-
             $category = $template->category;
+            
             if (!empty($category)) {
                 if (isset($this->categoriesMap[$category])) {
                     $category = $this->categoriesMap[$category];
@@ -356,10 +322,12 @@ final class Update extends \GPM\Action\Action
                 $category = $this->category->id;
             }
 
-            $templateObject->set('category', $category);
-            $templateObject->set('description', $template->description);
-            $templateObject->setProperties($template->properties);
-            $templateObject->save();
+            try {
+                $template->updateObject($category);
+                $this->logger->info(' - ' . $template->name);
+            } catch (SaveException $se) {
+                $this->logger->error(' - ' . $template->name . ' failed');
+            }
 
             if (isset($notUsedElements[$name])) {
                 unset($notUsedElements[$name]);
@@ -370,7 +338,11 @@ final class Update extends \GPM\Action\Action
             $template = $this->modx->getObject('modTemplate', array('templatename' => $name));
 
             if ($template) {
-                $template->remove();
+                if ($template->remove()) {
+                    $this->logger->info(' - ' . $template->name . ' removed');
+                } else {
+                    $this->logger->error(' - ' . $template->name . ' removal failed');
+                }
             }
         }
 
@@ -382,24 +354,11 @@ final class Update extends \GPM\Action\Action
         $notUsedElements = array_keys($this->oldConfig->plugins);
         $notUsedElements = array_flip($notUsedElements);
 
+        $this->logger->info('Updating plugins:');
+        
         foreach ($this->config->plugins as $name => $plugin) {
-            /** @var \modPlugin $pluginObject */
-            $pluginObject = $this->modx->getObject('modPlugin', array('name' => $name));
-            if (!$pluginObject) {
-                $pluginObject = $this->modx->newObject('modPlugin');
-                $pluginObject->set('name', $plugin->name);
-            }
-
-            if ($this->gpm->getOption('enable_debug')) {
-                $pluginObject->set('plugincode', 'include("' . $this->modx->getOption($this->config->general->lowCaseName . '.core_path') . $plugin->filePath . '");');
-                $pluginObject->set('static', 0);
-                $pluginObject->set('static_file', '');
-            } else {
-                $pluginObject->set('static', 1);
-                $pluginObject->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $plugin->filePath);
-            }
-
             $category = $plugin->category;
+            
             if (!empty($category)) {
                 if (isset($this->categoriesMap[$category])) {
                     $category = $this->categoriesMap[$category];
@@ -410,29 +369,12 @@ final class Update extends \GPM\Action\Action
                 $category = $this->category->id;
             }
 
-            $pluginObject->set('category', $category);
-            $pluginObject->set('description', $plugin->description);
-
-            /** @var \modPluginEvent[] $oldEvents */
-            $oldEvents = $pluginObject->getMany('PluginEvents');
-            foreach ($oldEvents as $oldEvent) {
-                $oldEvent->remove();
+            try {
+                $plugin->updateObject($category);
+                $this->logger->info(' - ' . $plugin->name);
+            } catch (SaveException $se) {
+                $this->logger->error(' - ' . $plugin->name . ' failed');
             }
-            
-            /** @var \modPluginEvent[] $events */
-            $events = array();
-            foreach ($plugin->events as $event) {
-                $events[$event] = $this->modx->newObject('modPluginEvent');
-                $events[$event]->fromArray(array(
-                    'event' => $event,
-                    'priority' => 0,
-                    'propertyset' => 0,
-                ), '', true, true);
-            }
-
-            $pluginObject->addMany($events, 'PluginEvents');
-            $pluginObject->setProperties($plugin->properties);
-            $pluginObject->save();
 
             if (isset($notUsedElements[$name])) {
                 unset($notUsedElements[$name]);
@@ -443,7 +385,11 @@ final class Update extends \GPM\Action\Action
             $plugin = $this->modx->getObject('modPlugin', array('name' => $name));
 
             if ($plugin) {
-                $plugin->remove();
+                if ($plugin->remove()) {
+                    $this->logger->info(' - ' . $plugin->name . ' removed');
+                } else {
+                    $this->logger->error(' - ' . $plugin->name . ' removal failed');
+                }
             }
         }
 
@@ -455,20 +401,11 @@ final class Update extends \GPM\Action\Action
         $notUsedElements = array_keys($this->oldConfig->tvs);
         $notUsedElements = array_flip($notUsedElements);
 
+        $this->logger->info('Updating TVs:');
+        
         foreach ($this->config->tvs as $name => $tv) {
-            /** @var \modTemplateVar $tvObject */
-            $tvObject = $this->modx->getObject('modTemplateVar', array('name' => $name));
-
-            if (!$tvObject) {
-                $tvObject = $this->modx->newObject('modTemplateVar');
-                $tvObject->set('name', $tv->name);
-            }
-
-            $tvObject->set('caption', $tv->caption);
-            $tvObject->set('description', $tv->description);
-            $tvObject->set('type', $tv->type);
-
             $category = $tv->category;
+            
             if (!empty($category)) {
                 if (isset($this->categoriesMap[$category])) {
                     $category = $this->categoriesMap[$category];
@@ -479,38 +416,11 @@ final class Update extends \GPM\Action\Action
                 $category = $this->category->id;
             }
 
-            $tvObject->set('category', $category);
-
-            $tvObject->set('elements', $tv->inputOptionValues);
-            $tvObject->set('rank', $tv->sortOrder);
-            $tvObject->set('default_text', $tv->defaultValue);
-
-            $inputProperties = $tv->inputProperties;
-            if (!empty($inputProperties)) {
-                $tvObject->set('input_properties', $inputProperties);
-            }
-
-            $outputProperties = $tv->outputProperties;
-            if (!empty($outputProperties)) {
-                $tvObject->set('output_properties', $outputProperties[0]);
-            }
-
-            /** @var \modTemplateVarTemplate[] $oldTemplates */
-            $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
-
-            foreach ($oldTemplates as $oldTemplate) {
-                $oldTemplate->remove();
-            }
-
-            $tvObject->setProperties($tvObject->getProperties());
-            $tvObject->save();
-
-            $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->templates));
-            foreach ($templates as $template) {
-                $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
-                $templateTVObject->set('tmplvarid', $tvObject->id);
-                $templateTVObject->set('templateid', $template->id);
-                $templateTVObject->save();
+            try {
+                $tv->updateObject($category);
+                $this->logger->info(' - ' . $tv->name);
+            } catch (SaveException $se) {
+                $this->logger->error(' - ' . $tv->name . ' failed');
             }
 
             if (isset($notUsedElements[$name])) {
@@ -523,7 +433,11 @@ final class Update extends \GPM\Action\Action
             $tv = $this->modx->getObject('modTemplateVar', array('name' => $name));
 
             if ($tv) {
-                $tv->remove();
+                if ($tv->remove()) {
+                    $this->logger->info(' - ' . $tv->name . ' removed');
+                } else {
+                    $this->logger->error(' - ' . $tv->name . ' removal failed');
+                }
             }
         }
 

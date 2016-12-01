@@ -26,7 +26,7 @@ class GitPackageManagementUpdatePackageProcessor extends modProcessor
         
         try {
             $newConfig = new \GPM\Config\Config($this->modx, $object->dir_name);
-            $parser = new \GPM\Config\Parser\Parser($this->modx, $newConfig);
+            $parser = new \GPM\Config\Parser\Parser($newConfig);
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();
 

@@ -55,7 +55,10 @@ class Menu extends ConfigObject
         throw new \Exception('Menus - action not exist');
     }
 
-    public function getObject($build = false)
+    /**
+     * @return \modMenu
+     */
+    public function prepareObject()
     {
         /** @var \modMenu $object */
         $object = $this->config->modx->newObject('modMenu');
@@ -71,6 +74,19 @@ class Menu extends ConfigObject
         if (!($this->action instanceof Action)) {
             $object->set('action', $this->action);
             $object->set('namespace', $this->config->general->lowCaseName);
+        }
+        
+        return $object;
+    }
+
+    public function newObject()
+    {
+        $object = $this->prepareObject();
+
+        $saved = $object->save();
+
+        if (!$saved) {
+            throw new SaveException($this, "Couldn't save menu: {$this->text}");
         }
         
         return $object;

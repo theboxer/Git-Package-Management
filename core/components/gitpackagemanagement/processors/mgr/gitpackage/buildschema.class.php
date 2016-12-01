@@ -22,7 +22,7 @@ class GitPackageManagementBuildSchemaProcessor extends modProcessor
 
         try {
             $this->config = new \GPM\Config\Config($this->modx, $object->dir_name);
-            $parser = new \GPM\Config\Parser\Parser($this->modx, $this->config);
+            $parser = new \GPM\Config\Parser\Parser($this->config);
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();
 

@@ -33,7 +33,7 @@ class Install extends Command
 
         try {
             $config = new Config($this->getApplication()->modx, $input->getArgument('dir'));
-            $parser = new Parser($this->getApplication()->modx, $config);
+            $parser = new Parser($config);
             $loader = new JSON($parser);
             $loader->loadAll();
 

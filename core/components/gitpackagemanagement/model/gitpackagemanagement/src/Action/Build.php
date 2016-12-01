@@ -191,8 +191,7 @@ final class Build extends \GPM\Action\Action
         $retCategories = array();
 
         foreach ($cats as $cat) {
-            /** @var \modCategory $category */
-            $category = $cat->getObject(true);
+            $category = $cat->prepareObject();
 
             $snippets = $this->getSnippets($cat->name);
             if (!empty($snippets)) {
@@ -240,7 +239,7 @@ final class Build extends \GPM\Action\Action
                 if ($configSnippet->category != $category) continue;
                 if ($configSnippet->build === false) continue;
 
-                $snippetObject = $configSnippet->getObject(true);
+                $snippetObject = $configSnippet->prepareObject();
                 $snippets[] = $snippetObject;
             }
         }
@@ -258,7 +257,7 @@ final class Build extends \GPM\Action\Action
                 if ($configChunk->category != $category) continue;
                 if ($configChunk->build === false) continue;
 
-                $chunkObject = $configChunk->getObject(true);
+                $chunkObject = $configChunk->prepareObject();
                 $chunks[] = $chunkObject;
             }
         }
@@ -276,7 +275,7 @@ final class Build extends \GPM\Action\Action
                 if ($configTemplate->category != $category) continue;
                 if ($configTemplate->build === false) continue;
 
-                $templateObject = $configTemplate->getObject(true);
+                $templateObject = $configTemplate->prepareObject();
                 $templates[] = $templateObject;
             }
         }
@@ -294,7 +293,7 @@ final class Build extends \GPM\Action\Action
                 if ($configTV->category != $category) continue;
                 if ($configTV->build === false) continue;
 
-                $tvObject = $configTV->getObject(true);
+                $tvObject = $configTV->prepareObject();
                 $this->tvMap[$configTV->name] = $configTV->templates;
                 $templateVariables[] = $tvObject;
             }
@@ -314,7 +313,7 @@ final class Build extends \GPM\Action\Action
                 if ($configPlugin->category != $category) continue;
                 if ($configPlugin->build === false) continue;
 
-                $pluginObject = $configPlugin->getObject(true);
+                $pluginObject = $configPlugin->prepareObject();
 
                 $plugins[] = $pluginObject;
             }
@@ -328,10 +327,10 @@ final class Build extends \GPM\Action\Action
         $menus = $this->config->menus;
 
         foreach ($menus as $menu) {
-            $menuObject = $menu->getObject(true);
+            $menuObject = $menu->prepareObject();
 
             if ($menu->action instanceof Action) {
-                $actionObject = $menu->action->getObject(true);
+                $actionObject = $menu->action->prepareObject();
 
                 $menuObject->addOne($actionObject);
             }
@@ -349,14 +348,7 @@ final class Build extends \GPM\Action\Action
             if ($setting->build === false) continue;
             
             /** @var \modSystemSetting $settingObject */
-            $settingObject = $this->modx->newObject('modSystemSetting');
-            $settingObject->fromArray(array(
-                'key' => $setting->getNamespacedKey(),
-                'value' => $setting->value,
-                'xtype' => $setting->type,
-                'namespace' => $this->config->general->lowCaseName,
-                'area' => $setting->area,
-            ), '', true, true);
+            $settingObject = $setting->prepareObject(); 
 
             $vehicle = $this->builder->createVehicle($settingObject, 'setting');
             $this->builder->putVehicle($vehicle);

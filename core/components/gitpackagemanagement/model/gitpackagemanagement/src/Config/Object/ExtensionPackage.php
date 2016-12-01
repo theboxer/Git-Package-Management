@@ -52,7 +52,7 @@ class ExtensionPackage extends ConfigObject
         }
     }
 
-    public function getObject($build = false)
+    public function newObject()
     {
         /** @var \modExtensionPackage $object */
         $object = $this->config->modx->newObject('modExtensionPackage');

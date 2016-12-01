@@ -22,7 +22,7 @@ class GitPackageManagementRemoveProcessor extends modProcessor
 
         try {
             $config = new \GPM\Config\Config($this->modx, $object->dir_name);
-            $parser = new \GPM\Config\Parser\Parser($this->modx, $config);
+            $parser = new \GPM\Config\Parser\Parser($config);
             $loader = new \GPM\Config\Loader\JSON($parser);
             $loader->loadAll();
 

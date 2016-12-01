@@ -10,7 +10,7 @@ class Category extends ConfigObject
 
     protected $rules = [
         'name' => 'notEmpty',
-//        'parent' => 'categoryExists'
+        'parent' => 'categoryExists'
     ];
 
     public function toArray()
@@ -62,31 +62,44 @@ class Category extends ConfigObject
         return $categories[$this->parent];
     }
 
-    public function getObject($build = false)
+    public function prepareObject()
     {
         /** @var \modCategory $object */
         $object = $this->config->modx->newObject('modCategory');
         $object->set('category', $this->name);
 
-        if ($build === false) {
-            /** @var \modCategory $mainCategory */
-            $mainCategory = $this->config->modx->getObject('modCategory', array('category' => $this->config->general->name));
+        return $object;
+    }
+    
+    public function newObject()
+    {
+        /** @var \modCategory $object */
+        $object = $this->config->modx->newObject('modCategory');
+        $object->set('category', $this->name);
 
-            $parent = $this->getParentObject();
-            if (!empty($parent)) {
-                $catId = $this->config->gpm->findCategory($parent->getParents(), $mainCategory->id);
-                /** @var \modCategory $parentObject */
-                $parentObject = $this->config->modx->getObject('modCategory', $catId);
-                if ($parentObject) {
-                    $parent = $parentObject->id;
-                } else {
-                    $parent = $mainCategory->id;
-                }
+        /** @var \modCategory $mainCategory */
+        $mainCategory = $this->config->modx->getObject('modCategory', array('category' => $this->config->general->name));
+
+        $parent = $this->getParentObject();
+        if (!empty($parent)) {
+            $catId = $this->config->gpm->findCategory($parent->getParents(), $mainCategory->id);
+            /** @var \modCategory $parentObject */
+            $parentObject = $this->config->modx->getObject('modCategory', $catId);
+            if ($parentObject) {
+                $parent = $parentObject->id;
             } else {
                 $parent = $mainCategory->id;
             }
-        
-            $object->set('parent', $parent);
+        } else {
+            $parent = $mainCategory->id;
+        }
+    
+        $object->set('parent', $parent);
+
+        $saved = $object->save();
+
+        if (!$saved) {
+            throw new SaveException($this, "Couldn't save Category: {$this->name}");
         }
         
         return $object;

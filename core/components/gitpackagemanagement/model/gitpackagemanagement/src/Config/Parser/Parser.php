@@ -9,12 +9,13 @@ final class Parser
 {
     /** @var \modX */
     public $modx;
+    
     /** @var Config */
     public $config;
     
-    public function __construct(\modX &$modx, Config $config)
+    public function __construct(Config $config)
     {
-        $this->modx =& $modx;
+        $this->modx =& $config->modx;
         $this->config = $config;
     }
 

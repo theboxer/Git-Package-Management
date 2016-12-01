@@ -34,7 +34,10 @@ class Action extends ConfigObject
         ];
     }
 
-    public function getObject($build = false)
+    /**
+     * @return \modAction
+     */
+    public function prepareObject()
     {
         /** @var \modAction $object */
         $object = $this->config->modx->newObject('modAction');
@@ -43,6 +46,20 @@ class Action extends ConfigObject
         $object->set('haslayout', $this->hasLayout);
         $object->set('lang_topics', $this->langTopics);
         $object->set('assets', $this->assets);
+
+        return $object;
+    }
+
+
+    public function newObject()
+    {
+        $object = $this->prepareObject();
+
+        $saved = $object->save();
+
+        if (!$saved) {
+            throw new SaveException($this, "Couldn't save action with ID: {$this->id}");
+        }
         
         return $object;
     }
