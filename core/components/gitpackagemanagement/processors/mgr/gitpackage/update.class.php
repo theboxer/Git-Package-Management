@@ -142,12 +142,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
-                                                        'namespace' => $this->newConfig->getLowCaseName(),
-                                                        'controller' => $act->getController(),
-                                                        'haslayout' => $act->getHasLayout(),
-                                                        'lang_topics' => $act->getLangTopics(),
-                                                        'assets' => $act->getAssets(),
-                                                   ),'',true,true);
+                    'namespace' => $act->getNamespace(),
+                    'controller' => $act->getController(),
+                    'haslayout' => $act->getHasLayout(),
+                    'lang_topics' => $act->getLangTopics(),
+                    'assets' => $act->getAssets(),
+                ),'',true,true);
                 $actions[$act->getId()]->save();
             }
         }
@@ -160,21 +160,21 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 /** @var modMenu[] $menus */
                 $menus[$i] = $this->modx->newObject('modMenu');
                 $menus[$i]->fromArray(array(
-                                           'text' => $men->getText(),
-                                           'parent' => $men->getParent(),
-                                           'description' => $men->getDescription(),
-                                           'icon' => $men->getIcon(),
-                                           'menuindex' => $men->getMenuIndex(),
-                                           'params' => $men->getParams(),
-                                           'handler' => $men->getHandler(),
-                                           'permissions' => $men->getPermissions(),
-                                      ),'',true,true);
+                    'text' => $men->getText(),
+                    'parent' => $men->getParent(),
+                    'description' => $men->getDescription(),
+                    'icon' => $men->getIcon(),
+                    'menuindex' => $men->getMenuIndex(),
+                    'params' => $men->getParams(),
+                    'handler' => $men->getHandler(),
+                    'permissions' => $men->getPermissions(),
+                ),'',true,true);
 
                 if (isset($actions[$men->getAction()])) {
                     $menus[$i]->addOne($actions[$men->getAction()]);
                 } else {
                     $menus[$i]->set('action', $men->getAction());
-                    $menus[$i]->set('namespace', $this->newConfig->getLowCaseName());
+                    $menus[$i]->set('namespace', $men->getNamespace());
                 }
 
                 $menus[$i]->save();
@@ -195,7 +195,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $modelPath = str_replace('\\', '/', $modelPath);
 
             $db = $this->newConfig->getDatabase();
-            $prefix = $db->getPrefix();
+            if ($db) {
+                $prefix = $db->getPrefix();
+            }
 
             if (!is_array($extPackage)) $extPackage = array();
             
@@ -307,6 +309,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $elementObject->set('category', $category);
             $elementObject->set('description', $element->getDescription());
+            $elementObject->set('property_preprocess', $element->getPropertyPreProcess());
 
             if($type == 'Plugin'){
                 /** @var modPluginEvent[] $oldEvents */
@@ -367,6 +370,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
             $tvObject->set('caption', $tv->getCaption());
             $tvObject->set('description', $tv->getDescription());
+            $tvObject->set('property_preprocess', $tv->getPropertyPreProcess());
             $tvObject->set('type', $tv->getInputType());
 
             $category = $tv->getCategory();
@@ -407,12 +411,15 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             $tvObject->setProperties($tvObject->getProperties());
             $tvObject->save();
 
-            $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
-            foreach($templates as $template){
-                $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
-                $templateTVObject->set('tmplvarid', $tvObject->id);
-                $templateTVObject->set('templateid', $template->id);
-                $templateTVObject->save();
+            $templates = $tv->getTemplates();
+            if (!empty($templates)) {
+                $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
+                foreach ($templates as $template) {
+                    $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
+                    $templateTVObject->set('tmplvarid', $tvObject->id);
+                    $templateTVObject->set('templateid', $template->id);
+                    $templateTVObject->save();
+                }
             }
 
             if(isset($notUsedElements[$name])){

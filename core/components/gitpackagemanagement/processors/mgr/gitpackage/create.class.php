@@ -240,7 +240,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 /** @var modAction[] $actions */
                 $actions[$act->getId()] = $this->modx->newObject('modAction');
                 $actions[$act->getId()]->fromArray(array(
-                        'namespace' => $this->config->getLowCaseName(),
+                        'namespace' => $act->getNamespace(),
                         'controller' => $act->getController(),
                         'haslayout' => $act->getHasLayout(),
                         'lang_topics' => $act->getLangTopics(),
@@ -274,7 +274,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                     $menus[$i]->addOne($actions[$men->getAction()]);
                 } else {
                     $menus[$i]->set('action', $men->getAction());
-                    $menus[$i]->set('namespace', $this->config->getLowCaseName());
+                    $menus[$i]->set('namespace', $men->getNamespace());
                 }
 
                 $menus[$i]->save();
@@ -415,8 +415,9 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('description', $plugin->getDescription());
+                $pluginObject->set('property_preprocess', $plugin->getPropertyPreProcess());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $pluginObject->set('plugincode', 'include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $plugin->getFilePath() . '");');
+                    $pluginObject->set('plugincode', 'include("' . $this->packageCorePath . $plugin->getFilePath() . '");');
                     $pluginObject->set('static', 0);
                     $pluginObject->set('static_file', '');
                 } else {
@@ -471,8 +472,9 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $snippet->getName());
                 $snippetObject->set('description', $snippet->getDescription());
+                $snippetObject->set('property_preprocess', $snippet->getPropertyPreProcess());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
-                    $snippetObject->set('snippet', 'return include("' . $this->modx->getOption($this->config->getLowCaseName() . '.core_path') . $snippet->getFilePath() . '");');
+                    $snippetObject->set('snippet', 'return include("' . $this->packageCorePath . $snippet->getFilePath() . '");');
                     $snippetObject->set('static', 0);
                     $snippetObject->set('static_file', '');
                 } else {
@@ -514,6 +516,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $chunk->getName());
                 $chunkObject->set('description', $chunk->getDescription());
+                $chunkObject->set('property_preprocess', $chunk->getPropertyPreProcess());
                 $chunkObject->set('static', 1);
                 $chunkObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $chunk->getFilePath());
 
@@ -550,6 +553,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $templatesObject = $this->modx->newObject('modTemplate');
                 $templatesObject->set('templatename', $template->getName());
                 $templatesObject->set('description', $template->getDescription());
+                $templatesObject->set('property_preprocess', $template->getPropertyPreProcess());
                 $templatesObject->set('static', 1);
                 $templatesObject->set('icon', $template->getIcon());
                 $templatesObject->set('static_file', '[[++' . $this->config->getLowCaseName() . '.core_path]]' . $template->getFilePath());
@@ -589,6 +593,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->set('name', $tv->getName());
                 $tvObject->set('caption', $tv->getCaption());
                 $tvObject->set('description', $tv->getDescription());
+                $tvObject->set('property_preprocess', $tv->getPropertyPreProcess());
                 $tvObject->set('type', $tv->getInputType());
 
                 $category = $tv->getCategory();
@@ -621,12 +626,15 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $tvObject->setProperties($tv->getProperties());
                 $tvObject->save();
 
-                $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
-                foreach($templates as $template){
-                    $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
-                    $templateTVObject->set('tmplvarid', $tvObject->id);
-                    $templateTVObject->set('templateid', $template->id);
-                    $templateTVObject->save();
+                $templates = $tv->getTemplates();
+                if (!empty($templates)) {
+                    $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
+                    foreach ($templates as $template) {
+                        $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
+                        $templateTVObject->set('tmplvarid', $tvObject->id);
+                        $templateTVObject->set('templateid', $template->id);
+                        $templateTVObject->save();
+                    }
                 }
 
                 $this->modx->log(modX::LOG_LEVEL_INFO, 'TV ' . $tv->getName() . ' created.');

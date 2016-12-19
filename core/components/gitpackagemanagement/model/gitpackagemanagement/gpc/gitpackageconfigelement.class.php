@@ -21,6 +21,8 @@ abstract class GitPackageConfigElement{
     protected $category;
     /** @var string $filePath */
     private $filePath;
+    /** @var int $propertyPreProcess */
+    protected $propertyPreProcess = 0;
 
     public function __construct(modX &$modx, GitPackageConfig $config) {
         $this->modx =& $modx;
@@ -37,6 +39,11 @@ abstract class GitPackageConfigElement{
 
         if (isset($config['description'])) {
             $this->description = $config['description'];
+        }
+
+        if (isset($config['property_preprocess'])) {
+            $this->propertyPreProcess = (int)$config['property_preprocess'];
+            $this->propertyPreProcess = ($this->propertyPreProcess == 1) ? 1 : 0;
         }
 
         if(isset($config['file'])){
@@ -119,6 +126,10 @@ abstract class GitPackageConfigElement{
 
     public function getDescription() {
         return $this->description;
+    }
+
+    public function getPropertyPreProcess() {
+        return $this->propertyPreProcess;
     }
 
     protected function setProperties($properties) {

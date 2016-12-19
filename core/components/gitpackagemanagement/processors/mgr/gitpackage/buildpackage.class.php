@@ -75,7 +75,10 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $version[1] = 'pl';
         }
 
-        $this->builder->getTPBuilder()->directory = $this->config->getPackagePath() . '/_packages/';
+        $this->builder->getTPBuilder()->directory = $this->config->getPackagePath() . $this->modx->getOption('gitpackagemanagement.build_path', null, '/_packages/');
+        if (!is_dir($this->builder->getTPBuilder()->directory)) {
+            mkdir($this->builder->getTPBuilder()->directory);
+        }
         $this->builder->getTPBuilder()->createPackage($this->config->getLowCaseName(), $version[0], $version[1]);
 
         $this->builder->registerNamespace($this->config->getLowCaseName(), false, true, '{core_path}components/' . $this->config->getLowCaseName() . '/','{assets_path}components/' . $this->config->getLowCaseName() . '/');
@@ -308,6 +311,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $snippetObject = $this->modx->newObject('modSnippet');
                 $snippetObject->set('name', $configSnippet->getName());
                 $snippetObject->set('description', $configSnippet->getDescription());
+                $snippetObject->set('property_preprocess', $configSnippet->getPropertyPreProcess());
                 $snippetObject->set('snippet', $this->builder->getFileContent($this->corePath . $configSnippet->getFilePath()));
 
                 $snippetObject->setProperties($configSnippet->getProperties());
@@ -330,6 +334,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $chunkObject = $this->modx->newObject('modChunk');
                 $chunkObject->set('name', $configChunk->getName());
                 $chunkObject->set('description', $configChunk->getDescription());
+                $chunkObject->set('property_preprocess', $configChunk->getPropertyPreProcess());
                 $chunkObject->set('snippet', $this->builder->getFileContent($this->corePath . $configChunk->getFilePath()));
 
                 $chunkObject->setProperties($configChunk->getProperties());
@@ -352,6 +357,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $templateObject = $this->modx->newObject('modTemplate');
                 $templateObject->set('templatename', $configTemplate->getName());
                 $templateObject->set('description', $configTemplate->getDescription());
+                $templateObject->set('property_preprocess', $configTemplate->getPropertyPreProcess());
                 $templateObject->set('icon', $configTemplate->getIcon());
                 $templateObject->set('content', $this->builder->getFileContent($this->corePath . $configTemplate->getFilePath()));
 
@@ -376,6 +382,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $tvObject->set('name', $configTV->getName());
                 $tvObject->set('caption', $configTV->getCaption());
                 $tvObject->set('description', $configTV->getDescription());
+                $tvObject->set('property_preprocess', $configTV->getPropertyPreProcess());
                 $tvObject->set('type', $configTV->getInputType());
                 $tvObject->set('elements', $configTV->getInputOptionValues());
                 $tvObject->set('rank', $configTV->getSortOrder());
@@ -414,6 +421,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $configPlugin->getName());
                 $pluginObject->set('description', $configPlugin->getDescription());
+                $pluginObject->set('property_preprocess', $configPlugin->getPropertyPreProcess());
                 $pluginObject->set('plugincode', $this->builder->getFileContent($this->corePath . $configPlugin->getFilePath()));
 
                 $events = $configPlugin->getEvents();
@@ -461,7 +469,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $actionObject = $this->modx->newObject('modAction');
                 $actionObject->fromArray(array(
                     'id' => 1,
-                    'namespace' => $this->config->getLowCaseName(),
+                    'namespace' => $configAction->getNamespace(),
                     'parent' => 0,
                     'controller' => $configAction->getController(),
                     'haslayout' => $configAction->getHasLayout(),
@@ -472,7 +480,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $menuObject->addOne($actionObject);
             } else {
                 $menuObject->set('action', $menu->getAction());
-                $menuObject->set('namespace', $this->config->getLowCaseName());
+                $menuObject->set('namespace', $menu->getNamespace());
             }
 
             $vehicle = $this->builder->createVehicle($menuObject, 'menu');

@@ -106,21 +106,18 @@ class GitPackageManagement {
     }
 
     public function deleteDir($dirPath) {
-        if (! is_dir($dirPath)) {
-            return;
-        }
-        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-            $dirPath .= '/';
-        }
-        $files = glob($dirPath . '*', GLOB_MARK);
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                $this->deleteDir($file);
-            } else {
-                unlink($file);
+        if (is_dir($dirPath)) {
+            $files = scandir($dirPath);
+            foreach ($files as $file) {
+                if ($file != '.' && $file != '..') {
+                    if (is_dir($dirPath . '/' . $file))
+                        $this->deleteDir($dirPath . '/' . $file);
+                    else
+                        unlink($dirPath . '/' . $file);
+                }
             }
+            rmdir($dirPath);
         }
-        rmdir($dirPath);
     }
 
     public function jsonFormat($json) {

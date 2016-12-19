@@ -14,7 +14,12 @@ if ($object->xpdo) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
             $modelPath = $modx->getOption('{{$lowercasename}}.core_path', null, $modx->getOption('core_path') . 'components/{{$lowercasename}}/') . 'model/';
+            
+{if !$prefix}
+            $modx->addPackage('{{$lowercasename}}', $modelPath, null);
+{else}
             $modx->addPackage('{{$lowercasename}}', $modelPath, '{{$prefix}}');
+{/if}
 
 {foreach from=$simpleobjects item=object}
             $modx->loadClass('{{$object}}');

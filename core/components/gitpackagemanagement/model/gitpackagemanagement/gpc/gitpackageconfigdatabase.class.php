@@ -11,10 +11,10 @@ class GitPackageConfigDatabase {
     }
 
     public function fromArray($config) {
-        if (isset($config['prefix'])) {
+        if (isset($config['prefix']) && ($config['prefix'] != $this->modx->config[xPDO::OPT_TABLE_PREFIX])) {
             $this->prefix = $config['prefix'];
         } else {
-            $this->prefix = 'modx_';
+            $this->prefix = null;
         }
 
         if (isset($config['tables'])) {

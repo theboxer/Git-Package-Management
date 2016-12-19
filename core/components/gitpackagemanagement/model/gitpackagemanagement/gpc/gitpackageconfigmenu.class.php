@@ -13,6 +13,7 @@ class GitPackageConfigMenu {
     private $handler;
     private $action;
     private $permissions;
+    private $namespace;
     /** @var GitPackageConfigAction $action */
     private $actionObject = null;
 
@@ -70,6 +71,12 @@ class GitPackageConfigMenu {
         }else{
             $this->permissions = '';
         }
+        
+        if(!empty($config['namespace'])){
+            $this->namespace = $config['namespace'];
+        }else{
+            $this->namespace = $this->gitPackageConfig->getLowCaseName();
+        }
 
         if(isset($config['action'])){
             $action = $this->setAction($config['action']);
@@ -121,6 +128,11 @@ class GitPackageConfigMenu {
 
     public function getText() {
         return $this->text;
+    }
+
+    public function getNamespace()
+    {
+        return $this->namespace;
     }
 
     public function setAction($givenAction) {
