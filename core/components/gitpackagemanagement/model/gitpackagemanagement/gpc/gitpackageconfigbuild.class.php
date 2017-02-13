@@ -11,6 +11,7 @@ class GitPackageConfigBuild {
     private $changelog = 'docs/changelog.txt';
     private $schemaPath = '';
     private $setupOptions = array();
+    private $buildOptions = array();
     private $attributes = array();
 
     public function __construct(modX &$modx, GitPackageConfig $config) {
@@ -38,6 +39,10 @@ class GitPackageConfigBuild {
 
         if(isset($config['setupOptions'])){
             $this->setupOptions = $config['setupOptions'];
+        }
+
+        if(isset($config['options'])){
+            $this->buildOptions = $config['options'];
         }
 
         if(isset($config['schemaPath'])){
@@ -118,6 +123,13 @@ class GitPackageConfigBuild {
      */
     public function getSetupOptions() {
         return $this->setupOptions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBuildOptions() {
+        return $this->buildOptions;
     }
 
     /**
