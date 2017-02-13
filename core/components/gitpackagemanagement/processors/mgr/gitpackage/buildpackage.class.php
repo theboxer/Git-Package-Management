@@ -216,7 +216,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $this->packagePath = str_replace('\\', '/', $this->packagePath);
     }
 
-    private function addCategory() {
+    protected function addCategory() {
         /** @var modCategory $category */
         $category = $this->modx->newObject('modCategory');
         $category->set('category', $this->config->getName());
