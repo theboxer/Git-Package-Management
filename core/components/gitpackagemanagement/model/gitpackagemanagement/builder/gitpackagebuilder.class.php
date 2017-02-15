@@ -120,7 +120,7 @@ class GitPackageBuilder {
     }
 
     private function getAttributes($type){
-        return $this->attributes[$type];
+        return (is_string($type)) ? $this->attributes[$type] : $type;
     }
 
     public function registerNamespace($ns = 'core', $autoIncludes = true, $packageNamespace = true, $path = '', $assetsPath = ''){
