@@ -274,7 +274,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
         this.windows.addPackage.fp.getForm().reset();
         this.windows.addPackage.show(e.target);
     }
-    
+
     ,removeItem: function(btn,e) {
         if (!this.menu.record) return false;
 
@@ -286,7 +286,7 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
                     ,'beforeSubmit': {fn:function() {
                         var topic = '/gitpackageuninstall/';
                         var register = 'mgr';
-                        if(this.console == null || this.console.isDestroyed){
+                        if(this.console === null || this.console.isDestroyed){
                             this.console = MODx.load({
                                 xtype: 'modx-console'
                                 ,register: register

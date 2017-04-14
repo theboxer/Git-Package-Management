@@ -65,11 +65,6 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_cc_nw', array('package' => $packagePath . $folderName)));
         }
 
-        if (!$this->checkConfig($packagePath . $folderName . '/_build/build.config.php')) {
-            $this->addFieldError('folderName',$this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
-            $this->modx->log(modX::LOG_LEVEL_ERROR, $this->modx->lexicon('gitpackagemanagement.package_err_bc_nw', array('package' => $packagePath . $folderName)));
-        }
-
         /**
          * If no error was added in block above, cloning and installation part begins
          */
