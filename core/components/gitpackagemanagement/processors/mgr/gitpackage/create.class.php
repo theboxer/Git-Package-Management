@@ -289,7 +289,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
         /** @var $setting GitPackageConfigSetting */
         foreach($this->config->getSettings() as $setting){
-            $this->createSystemSetting($setting->getNamespacedKey(), $setting->getValue(), $setting->getType(), $setting->getArea());
+            $this->createSystemSetting($setting);
         }
 
         $this->modx->log(modX::LOG_LEVEL_INFO, 'System settings created.');
@@ -298,27 +298,26 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
 
     /**
      * Support method for createSystemSettings(), insert system setting to database
-     * @param $key string
-     * @param $value string
-     * @param string $xtype string
-     * @param string $area string
+     * @param $setting GitPackageConfigSetting
      */
-    private function createSystemSetting($key, $value, $xtype = 'textfield', $area = 'default'){
+    private function createSystemSetting($setting){
+        $key = $setting->getNamespacedKey();
+
         $ct = $this->modx->getObject('modSystemSetting',array('key' => $key));
         if (!$ct){
             /** @var modSystemSetting $setting */
             $setting = $this->modx->newObject('modSystemSetting');
             $setting->set('key', $key);
-            $setting->set('value', $value);
+            $setting->set('value', $setting->getValue());
             $setting->set('namespace', $this->config->getLowCaseName());
-            $setting->set('area', $area);
-            $setting->set('xtype', $xtype);
+            $setting->set('area', $setting->getArea());
+            $setting->set('xtype', $setting->getType());
             $setting->save();
         }else{
-            $ct->set('value', $value);
+            $setting->set('value', $setting->getValue());
             $ct->set('namespace', $this->config->getLowCaseName());
-            $ct->set('area', $area);
-            $ct->set('xtype', $xtype);
+            $setting->set('area', $setting->getArea());
+            $setting->set('xtype', $setting->getType());
             $ct->save();
         }
     }
