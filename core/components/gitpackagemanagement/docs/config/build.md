@@ -120,6 +120,6 @@ This method is called in the build process before adding the first vehicle. It c
 
 #### appendVehicles
 
-This method is called in the build process after adding the last vehicle. It could be used to add own custom vehicles to the package or to empty temporary folders in the *assets/components* or *core/components*, that would be packaged otherwise automatically into the package.
+This method is called in the build process after adding the last vehicle. It could be used to add own custom vehicles to the package or to do other things at the end of a build process.
 
 An example for the usage of both methods in a custom build processor could be found on https://github.com/Jako/Git-Package-Management/blob/feature/publish/core/components/gitpackagemanagement/processors/mgr/gitpackage/buildpackagepublish.class.php#L132-L187. This processor adds - amongst other things - two custom vehicles before the first default vehicle and one custom vehicle after the last vehicle. These vehicles are used to add methods to decrypt the category vehicle during the install process of the package.  
