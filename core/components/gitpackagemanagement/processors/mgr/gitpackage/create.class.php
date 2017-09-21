@@ -410,6 +410,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $plugin->getName());
                 $pluginObject->set('description', $plugin->getDescription());
+                $pluginObject->set('disabled', $plugin->getDisabled());
                 $pluginObject->set('property_preprocess', $plugin->getPropertyPreProcess());
                 if ($this->modx->gitpackagemanagement->getOption('enable_debug')) {
                     $pluginObject->set('plugincode', 'include("' . $this->packageCorePath . $plugin->getFilePath() . '");');

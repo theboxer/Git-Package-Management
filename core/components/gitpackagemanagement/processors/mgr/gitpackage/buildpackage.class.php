@@ -421,6 +421,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 $pluginObject = $this->modx->newObject('modPlugin');
                 $pluginObject->set('name', $configPlugin->getName());
                 $pluginObject->set('description', $configPlugin->getDescription());
+                $pluginObject->set('disabled', $configPlugin->getDisabled());
                 $pluginObject->set('property_preprocess', $configPlugin->getPropertyPreProcess());
                 $pluginObject->set('plugincode', $this->builder->getFileContent($this->corePath . $configPlugin->getFilePath()));
 

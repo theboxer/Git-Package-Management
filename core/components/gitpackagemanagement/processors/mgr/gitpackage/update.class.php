@@ -284,6 +284,7 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             
             if ($this->modx->gitpackagemanagement->getOption('enable_debug') && ($type == 'Plugin' || $type == 'Snippet')) {
                 if($type == 'Plugin') {
+                    $elementObject->set('disabled', $element->getDisabled());
                     $elementObject->set('plugincode', 'include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . $element->getFilePath() . '");');
                 } else {
                     $elementObject->set('snippet', 'return include("' . $this->modx->getOption($this->newConfig->getLowCaseName() . '.core_path') . $element->getFilePath() . '");');
