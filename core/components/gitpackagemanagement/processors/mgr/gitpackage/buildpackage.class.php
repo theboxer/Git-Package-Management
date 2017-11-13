@@ -83,6 +83,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $this->builder->registerNamespace($this->config->getLowCaseName(), false, true, '{core_path}components/' . $this->config->getLowCaseName() . '/','{assets_path}components/' . $this->config->getLowCaseName() . '/');
 
+        $this->prependVehicles();
+
         $vehicle = $this->addCategory();
 
         $resolver = $buildOptions->getResolver();
@@ -161,6 +163,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $this->builder->putVehicle($vehicle);
         $this->addMenus();
+
+        $this->appendVehicles();
 
         $packageAttributes = array();
 
@@ -447,6 +451,10 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         return $plugins;
     }
+
+    protected function prependVehicles() {}
+
+    protected function appendVehicles() {}
 
     private function addMenus() {
         /** @var GitPackageConfigMenu[] $menus */
