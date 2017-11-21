@@ -723,6 +723,7 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
     private function createResource($resource) {
         $res = $this->modx->runProcessor('resource/create', $resource->toArray());
         $resObject = $res->getObject();
+        $colObject = $this->modx->getObject('CollectionSetting', array('collection' => $resObject['id']));
 
         if ($resObject && isset($resObject['id'])) {
             /** @var modResource $modResource */
@@ -735,6 +736,28 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 foreach ($tvs as $tv) {
                     $modResource->setTVValue($tv['name'], $tv['value']);
                 }
+            }
+
+            // Set the correct Collections template for a resource, if specified
+            if ($colObject) {
+                $others = $resource->getOthers();
+
+                foreach ($others as $other) {
+                    if ($other['name'] == 'collections') {
+
+                        $colObject->set('template', $other['value']);
+                        $colObject->save();
+                    }
+                }
+            }
+
+            // Set the properties field with ContentBlocks JSON formatting, if specified
+            $properties = $resource->getProperties();
+
+            if ($properties) {
+                $modResource->set('properties', null);
+                $modResource->set('properties', $properties);
+                $modResource->save();
             }
         }
     }

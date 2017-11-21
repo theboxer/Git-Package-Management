@@ -458,6 +458,7 @@ Here you can specify Resources that should be created. Note that this is only on
 - **tvs** (optional) - Array of name & value pair, where name is TV's name and value is desired value. Also can be used file option, to provide value from file.
 - **others** (optional) - Array of name & value pair that will be sent to Resource's create & update processor
 - **setAsHome** (optional) - 1/0 to link this Resource with Resource that is set as site_start
+- **properties** (optional) - Path to the file that will be used for the properties field
 
 #### Example
 ```json
@@ -475,6 +476,8 @@ Here you can specify Resources that should be created. Note that this is only on
     }
 }
 ```
+
+> Note: you can also assign a Collections template to a resource through the Others property. Simply add "collections" as name, and the template ID as value.
 
 ## System settings
 Here you can specify all system settings that you need for your component. Note that all settings are automaticaly prefixed with lowCaseName (from General part) and settings core_path, assets_path and assets_url are created automatically.

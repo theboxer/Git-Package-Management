@@ -17,8 +17,8 @@ if (!$object->xpdo) return false;
 $modx =& $object->xpdo;
 
 if (!function_exists('getResourceMap')) {
-    function getResourceMap() {
-        global $modx;
+    function getResourceMap($modx) {
+        //global $modx;
 
         $assetsPath = rtrim($modx->getOption('{{$lowercasename}}.assets_path',null,$modx->getOption('assets_path').'components/{{$lowercasename}}/'), '/') . '/';
         $rmf = $assetsPath . 'resourcemap.php';
@@ -34,8 +34,8 @@ if (!function_exists('getResourceMap')) {
 }
 
 if (!function_exists('setResourceMap')) {
-    function setResourceMap($resourceMap) {
-        global $modx;
+    function setResourceMap($modx,$resourceMap) {
+        //global $modx;
 
         $assetsPath = rtrim($modx->getOption('{{$lowercasename}}.assets_path',null,$modx->getOption('assets_path').'components/{{$lowercasename}}/'), '/') . '/';
         $rmf = $assetsPath . 'resourcemap.php';
@@ -45,8 +45,8 @@ if (!function_exists('setResourceMap')) {
 }
 
 if (!function_exists('createResource')) {
-    function createResource($resource) {
-        global $modx;
+    function createResource($modx,$resource) {
+        //global $modx;
 
         if (isset($resource['tvs'])) {
             $tvs = $resource['tvs'];
@@ -111,8 +111,8 @@ if (!function_exists('createResource')) {
 }
 
 if (!function_exists('updateResource')) {
-    function updateResource($resource) {
-        global $modx;
+    function updateResource($modx,$resource) {
+        //global $modx;
 
         if (isset($resource['tvs'])) {
             $tvs = $resource['tvs'];
@@ -183,7 +183,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
         if (isset($options['install_resources']) && empty($options['install_resources'])) return true;
 
-        $resourceMap = getResourceMap();
+        $resourceMap = getResourceMap($modx);
         $toRemove = $resourceMap;
         $siteStart = $modx->getOption('site_start');
 
@@ -237,7 +237,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                 $exists = $modx->getObject('modResource', array('id' => $resourceMap[$resource['pagetitle']]));
                 if ($exists) {
                     $resource['id'] = $exists->id;
-                    $resId = updateResource($resource);
+                    $resId = updateResource($modx,$resource);
 
                     if ($resId !== false) {
                         $resourceMap[$resource['pagetitle']] = $resId;
@@ -247,13 +247,13 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                         unset($resource['set_as_home']);
                         $resource['id'] = $siteStart;
 
-                        $resId = updateResource($resource);
+                        $resId = updateResource($modx,$resource);
 
                         if ($resId !== false) {
                             $resourceMap[$resource['pagetitle']] = $resId;
                         }
                     } else {
-                        $resId = createResource($resource);
+                        $resId = createResource($modx,$resource);
 
                         if ($resId !== false) {
                             $resourceMap[$resource['pagetitle']] = $resId;
@@ -265,13 +265,13 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                     unset($resource['set_as_home']);
                     $resource['id'] = $siteStart;
                 
-                    $resId = updateResource($resource);
+                    $resId = updateResource($modx,$resource);
                 
                     if ($resId !== false) {
                         $resourceMap[$resource['pagetitle']] = $resId;
                     }
                 } else {
-                    $resId = createResource($resource);
+                    $resId = createResource($modx,$resource);
 
                     if ($resId !== false) {
                         $resourceMap[$resource['pagetitle']] = $resId;
@@ -294,7 +294,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             }
         }
 
-        setResourceMap($resourceMap);
+        setResourceMap($modx,$resourceMap);
 
         break;
     case xPDOTransport::ACTION_UNINSTALL:
