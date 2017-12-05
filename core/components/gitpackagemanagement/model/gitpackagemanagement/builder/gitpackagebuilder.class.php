@@ -140,8 +140,8 @@ class GitPackageBuilder {
         if ($this->modx->gitpackagemanagement->getOption('remove_extracted_package')) {
             $this->modx->gitpackagemanagement->deleteDir($this->builder->directory . $this->builder->signature . '/');
         }
-        chmod($this->builder->directory, octdec($this->modx->getOption('new_folder_permissions')));
-        chmod($this->builder->directory . $this->builder->signature . '.transport.zip', octdec($this->modx->getOption('new_file_permissions')));
+        chmod($this->builder->directory, octdec($this->modx->getOption('new_folder_permissions', null, '0775')));
+        chmod($this->builder->directory . $this->builder->signature . '.transport.zip', octdec($this->modx->getOption('new_file_permissions', null, '0644')));
     }
 
 
