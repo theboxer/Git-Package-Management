@@ -7,6 +7,10 @@ $xpdo_meta_map['GitPackage']= array (
   'version' => NULL,
   'table' => 'git_packages',
   'extends' => 'xPDOSimpleObject',
+  'tableMeta' => 
+  array (
+    'engine' => 'MyISAM',
+  ),
   'fields' => 
   array (
     'name' => NULL,
@@ -16,6 +20,7 @@ $xpdo_meta_map['GitPackage']= array (
     'dir_name' => NULL,
     'config' => '',
     'key' => '',
+    'updatedon' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -70,6 +75,13 @@ $xpdo_meta_map['GitPackage']= array (
       'phptype' => 'string',
       'null' => false,
       'default' => '',
+    ),
+    'updatedon' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'null' => true,
     ),
   ),
 );

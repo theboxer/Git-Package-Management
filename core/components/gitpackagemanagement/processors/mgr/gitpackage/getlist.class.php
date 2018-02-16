@@ -8,7 +8,7 @@
 class GitPackageManagementGetListProcessor extends modObjectGetListProcessor {
     public $classKey = 'GitPackage';
     public $languageTopics = array('gitpackagemanagement:default');
-    public $defaultSortField = 'id';
+    public $defaultSortField = 'updatedon';
     public $defaultSortDirection = 'desc';
     public $objectType = 'gitpackagemanagement.packages';
 
@@ -21,6 +21,14 @@ class GitPackageManagementGetListProcessor extends modObjectGetListProcessor {
                 ));
         }
         return $c;
+    }
+
+    public function prepareRow(xPDOObject $object)
+    {
+        $ta = $object->toArray();
+        $ta['updatedon'] = !empty($ta['updatedon']) ?
+            strftime('%Y-%m-%d %H:%M:%S', $ta['updatedon']) : '';
+        return $ta;
     }
 }
 return 'GitPackageManagementGetListProcessor';
