@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model package="gitpackagemanagement" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="gitpackagemanagement">
+<model package="gitpackagemanagement" baseClass="xPDOObject" platform="mysql" defaultEngine="InnoDB" phpdoc-package="gitpackagemanagement">
     <object class="GitPackage" table="git_packages" extends="xPDOSimpleObject">
         <field key="name" dbtype="varchar" precision="100" phptype="string" null="false" />
         <field key="description" dbtype="text" phptype="text" null="false" default="" />
