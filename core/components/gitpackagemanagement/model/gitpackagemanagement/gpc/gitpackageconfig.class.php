@@ -60,6 +60,7 @@ class GitPackageConfig {
         $this->modx->loadClass('GitPackageConfigElementWidget', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigResource', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigBuild', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
+        $this->modx->loadClass('GitPackageConfigBuildValidator', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigBuildResolver', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
         $this->modx->loadClass('GitPackageConfigCategory', $this->gpm->getOption('modelPath') . 'gitpackagemanagement/gpc/', true, true);
 
@@ -70,7 +71,7 @@ class GitPackageConfig {
 
     /**
      * Parse and validate given array into objects
-     * @param $config Array
+     * @param $config array
      * @return bool
      */
     public function parseConfig($config) {

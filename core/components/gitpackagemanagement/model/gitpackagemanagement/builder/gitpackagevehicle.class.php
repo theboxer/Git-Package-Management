@@ -15,6 +15,14 @@ class GitPackageVehicle {
         $this->vehicle = $this->builder->createVehicle($object, $attributes);
     }
 
+    public function addPhpValidator($filePath) {
+        $this->vehicle->validate('php', array(
+            'source' => $filePath,
+        ));
+
+        return $this;
+    }
+
     public function addAssetsResolver($assetsPath){
         return $this->addFileResolver($assetsPath, "return MODX_ASSETS_PATH . 'components/';");
     }
