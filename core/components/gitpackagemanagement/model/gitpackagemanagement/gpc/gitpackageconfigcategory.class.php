@@ -6,6 +6,7 @@ class GitPackageConfigCategory
     /* @var $gitPackageConfig GitPackageConfig */
     private $config;
     private $name;
+    private $rank;
     private $parent = null;
 
     public function __construct(modX &$modx, $gitPackageConfig)
@@ -33,6 +34,10 @@ class GitPackageConfigCategory
             $this->parent = $config['parent'];
         }
 
+        if (isset($config['rank'])) {
+            $this->rank = $config['rank'];
+        }
+
         return true;
     }
 
@@ -50,6 +55,14 @@ class GitPackageConfigCategory
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRank()
+    {
+        return $this->rank;
     }
 
     /**

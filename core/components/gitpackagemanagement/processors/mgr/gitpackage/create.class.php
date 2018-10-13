@@ -395,6 +395,11 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
                 $parent = $this->category->id;
             }
 
+            $rank = $category->getRank();
+            if (!empty($rank)) {
+                $categoryObject->set('rank', $rank);
+            }
+
             $categoryObject->set('parent', $parent);
             $categoryObject->save();
             $this->categoriesMap[$category->getName()] = $categoryObject->id;
