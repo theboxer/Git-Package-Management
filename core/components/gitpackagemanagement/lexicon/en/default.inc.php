@@ -31,6 +31,7 @@ $_lang['gitpackagemanagement.build_schema'] = 'Build classes from schema';
 $_lang['gitpackagemanagement.update_mask'] = 'Updating package';
 $_lang['gitpackagemanagement.preserve_package'] = 'Preserve package';
 $_lang['gitpackagemanagement.build_package'] = 'Build package';
+$_lang['gitpackagemanagement.check_lexicon'] = 'Check Lexicon';
 
 //Options
 $_lang['setting_gitpackagemanagement.build_path'] = 'Build path';
