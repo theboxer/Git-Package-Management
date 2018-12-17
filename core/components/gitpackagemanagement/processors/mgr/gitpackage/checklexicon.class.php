@@ -203,9 +203,10 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
     private function addChunkKeys($filename) {
         $fileContent = file_get_contents($filename);
         $results = array();
-        preg_match_all('/\[\[%(' . $this->config->getLowCaseName() . '.*?)[\?\]]/m', $fileContent, $results);
-        if (is_array($results[2])) {
-            foreach ($results[2] as $result) {
+        $test = '/\[\[%(' . $this->config->getLowCaseName() . '.*?)(\?|\])/m';
+        preg_match_all('/\[\[%(' . $this->config->getLowCaseName() . '.*?)[?\]]/m', $fileContent, $results);
+        if (is_array($results[1])) {
+            foreach ($results[1] as $result) {
                 // Don't add lexicon keys that ends with a dot or an underscore or that key contains a setting tag
                 if (substr($result, -1) !== '.' &&
                     substr($result, -1) !== '_' &&
