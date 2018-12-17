@@ -20,6 +20,7 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
     private $languageKeys = array();
     private $missingKeys = array();
     private $superfluousKeys = array();
+    private $variableKeys = array();
 
     private $invalidLexicons = array();
 
@@ -80,8 +81,11 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
         if ($result = $this->writeKeys('superfluous')) {
             $msg[] = $result;
         }
+        if ($result = $this->writeKeys('variable')) {
+            $msg[] = $result;
+        }
         if (empty($msg)) {
-            $msg = 'Every lexicon entry is available!';
+            $msg = 'Every lexicon entry is available and no variable keys are used!';
         } else {
             $msg = implode("<br><br>", $msg);
         }
@@ -164,10 +168,14 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
             foreach ($results[2] as $result) {
                 // Don't add lexicon keys that ends with a dot or an underscore or that contain a variable
                 if (substr($result, -1) !== '.' &&
-                    substr($result, -1) !== '_' &&
-                    strpos($result, '$') === false
+                    substr($result, -1) !== '_'
                 ) {
-                    $this->languageKeys[] = $result;
+                    if (strpos($result, '$') === false
+                    ) {
+                        $this->languageKeys[] = $result;
+                    } else {
+                        $this->variableKeys[] = $result;
+                    }
                 }
             }
         }
@@ -186,10 +194,14 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
             foreach ($results[2] as $result) {
                 // Don't add lexicon keys that ends with a dot or an underscore or that key is concatenated
                 if (substr($result, -1) !== '.' &&
-                    substr($result, -1) !== '_' &&
-                    strpos($result, '+') === false
+                    substr($result, -1) !== '_'
                 ) {
-                    $this->languageKeys[] = $result;
+                    if (strpos($result, '+') === false
+                    ) {
+                        $this->languageKeys[] = $result;
+                    } else {
+                        $this->variableKeys[] = $result;
+                    }
                 }
             }
         }
@@ -209,10 +221,14 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
             foreach ($results[1] as $result) {
                 // Don't add lexicon keys that ends with a dot or an underscore or that key contains a setting tag
                 if (substr($result, -1) !== '.' &&
-                    substr($result, -1) !== '_' &&
-                    strpos($result, '[[+') === false
+                    substr($result, -1) !== '_'
                 ) {
-                    $this->languageKeys[] = $result;
+                    if (strpos($result, '[[+') === false
+                    ) {
+                        $this->languageKeys[] = $result;
+                    } else {
+                        $this->variableKeys[] = $result;
+                    }
                 }
             }
         }
@@ -273,6 +289,10 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
             case 'superfluous':
                 $keys = &$this->superfluousKeys;
                 $keysFile = '_superfluous.php';
+                break;
+            case 'variable':
+                $keys = &$this->variableKeys;
+                $keysFile = '_variable.php';
                 break;
             default:
                 $type = 'missing';
