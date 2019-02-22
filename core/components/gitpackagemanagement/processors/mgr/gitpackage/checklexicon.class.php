@@ -137,7 +137,13 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
                 return ($current->getFilename() !== '_build' && $current->getFilename() !== '_packages' && $current->getFilename() !== 'node_modules' && $current->getFilename() !== 'vendor');
             } else {
                 $pathinfo = pathinfo($current->getFilename());
-                return ($current->isFile() && ($pathinfo['extension'] == 'php' || $pathinfo['extension'] == 'js' || $pathinfo['extension'] == 'html' || $pathinfo['basename'] == 'config.json') && strpos($pathinfo['basename'], 'min.js') == false) ? true : false;
+                return ($current->isFile() && (
+                    $pathinfo['extension'] == 'php' ||
+                    $pathinfo['extension'] == 'js' ||
+                    $pathinfo['extension'] == 'html' ||
+                    $pathinfo['extension'] == 'tpl' ||
+                    $pathinfo['basename'] == 'config.json'
+                    ) && strpos($pathinfo['basename'], 'min.js') == false) ? true : false;
             }
         });
         $iterator = new \RecursiveIteratorIterator($filter);
@@ -146,6 +152,7 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
             $this->addPhpKeys($path);
             $this->addJsKeys($path);
             $this->addChunkKeys($path);
+            $this->addSmartyKeys($path);
         }
         $this->addSettingKeys();
         $this->addMenuKeys();
@@ -215,7 +222,6 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
     private function addChunkKeys($filename) {
         $fileContent = file_get_contents($filename);
         $results = array();
-        $test = '/\[\[%(' . $this->config->getLowCaseName() . '.*?)(\?|\])/m';
         preg_match_all('/\[\[%(' . $this->config->getLowCaseName() . '.*?)[?\]]/m', $fileContent, $results);
         if (is_array($results[1])) {
             foreach ($results[1] as $result) {
@@ -229,6 +235,27 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
                     } else {
                         $this->variableKeys[] = $result;
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Add _lang calls in smarty template files: {$_lang.whatever}
+     *
+     * @param string $filename
+     */
+    private function addSmartyKeys($filename) {
+        $fileContent = file_get_contents($filename);
+        $results = array();
+        preg_match_all('/\$_lang\.(.*?)\}/m', $fileContent, $results);
+        if (is_array($results[1])) {
+            foreach ($results[1] as $result) {
+                // Don't add lexicon keys that ends with a dot or an underscore or that key contains a setting tag
+                if (substr($result, -1) !== '.' &&
+                    substr($result, -1) !== '_'
+                ) {
+                    $this->languageKeys[] = $this->config->getLowCaseName() . '.' . $result;
                 }
             }
         }
@@ -274,6 +301,13 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
             $properties = $snippet->getProperties();
             foreach ($properties as $property) {
                 $this->languageKeys[] = $property['desc'];
+                if (is_array($property['options']) && !empty($property['options'])) {
+                    foreach ($property['options'] as $option) {
+                        if (strpos($option['text'], $this->config->getLowCaseName() . '.') === 0) {
+                            $this->languageKeys[] = $option['text'];
+                        }
+                    }
+                }
             }
         }
     }
