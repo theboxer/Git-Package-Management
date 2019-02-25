@@ -69,6 +69,9 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
         $this->addKeys();
 
         $lexiconEntries = $this->loadLexicons();
+        if ($lexiconEntries === false) {
+            return $this->failure('The language folder "' . $this->lexiconPath . $this->language . '/' . '" does not exist!');
+        }
 
         $this->missingKeys = array_diff($this->languageKeys, array_keys($lexiconEntries));
         $usedKeys = array_intersect($this->languageKeys, array_keys($lexiconEntries));
@@ -106,21 +109,25 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
     /**
      * Load package lexicons
      *
-     * @return array
+     * @return bool|array
      */
     private function loadLexicons() {
-        $iterator = new \DirectoryIterator($this->lexiconPath . $this->language . '/');
-        $_lang = array();
-        foreach ($iterator as $path => $current) {
-            if (strpos($current->getFilename(), 'inc.php') !== false) {
-                try {
-                    include $current->getRealPath();
-                } catch (Exception $e) {
-                    $this->invalidLexicons[] = $current->getFilename();
+        if (file_exists($this->lexiconPath . $this->language . '/')) {
+            $_lang = array();
+            $iterator = new \DirectoryIterator($this->lexiconPath . $this->language . '/');
+            foreach ($iterator as $path => $current) {
+                if (strpos($current->getFilename(), 'inc.php') !== false) {
+                    try {
+                        include $current->getRealPath();
+                    } catch (Exception $e) {
+                        $this->invalidLexicons[] = $current->getFilename();
+                    }
                 }
             }
+            return $_lang;
+        } else {
+            return false;
         }
-        return $_lang;
     }
 
     /**
