@@ -6,7 +6,7 @@
         <field key="version" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
         <field key="author" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
         <field key="dir_name" dbtype="varchar" precision="100" phptype="string" null="false" />
-        <field key="config" dbtype="text" phptype="string" null="false" default="" />
+        <field key="config" dbtype="mediumtext" phptype="string" null="false" default="" />
         <field key="key" dbtype="varchar" precision="32" phptype="string" null="false" default="" />
         <field key="updatedon" dbtype="int" precision="10" phptype="integer" null="true"/>
     </object>
