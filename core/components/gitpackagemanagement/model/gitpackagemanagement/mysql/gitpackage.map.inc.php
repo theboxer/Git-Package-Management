@@ -9,7 +9,7 @@ $xpdo_meta_map['GitPackage']= array (
   'extends' => 'xPDOSimpleObject',
   'tableMeta' => 
   array (
-    'engine' => 'MyISAM',
+    'engine' => 'InnoDB',
   ),
   'fields' => 
   array (
@@ -63,7 +63,7 @@ $xpdo_meta_map['GitPackage']= array (
     ),
     'config' => 
     array (
-      'dbtype' => 'text',
+      'dbtype' => 'mediumtext',
       'phptype' => 'string',
       'null' => false,
       'default' => '',
