@@ -104,6 +104,11 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
         });
         m.push('-');
         m.push({
+            text: _('gitpackagemanagement.check_lexicon')
+            ,handler: this.checkLexicon
+        });
+        m.push('-');
+        m.push({
             text: _('gitpackagemanagement.remove_package')
             ,handler: this.removeItem
         });
@@ -248,7 +253,28 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
             }
         });
     }
-    
+    ,checkLexicon: function(){
+        this.updateMask.show();
+        MODx.Ajax.request({
+            url: GitPackageManagement.config.connectorUrl
+            ,params: {
+                action: 'mgr/gitpackage/checklexicon'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.check_lexicon'), r.message);
+                    this.refresh();
+                },scope:this}
+                ,'failure':{fn:function(r) {
+                    this.updateMask.hide();
+                    MODx.msg.alert(_('gitpackagemanagement.check_lexicon'), r.message);
+                },scope:this}
+            }
+        });
+    }
+
     ,createItem: function(btn,e) {
         if (!this.windows.addPackage) {
             this.windows.addPackage = MODx.load({
