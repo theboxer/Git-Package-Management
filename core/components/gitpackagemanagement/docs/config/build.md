@@ -27,7 +27,7 @@ Define build options here.
 ```
 
 ## Resolver part
-Define resolver options here
+Define resolver options here. Resolvers are run when a package is installed, upgraded, or uninstalled inside the MODX package manager; not when a package is updated within Git Package Management.
 
 **Wrapper:** resolver
 ```json
