@@ -4,6 +4,8 @@ class GitPackageConfigBuild {
     private $modx;
     /** @var GitPackageConfig $config */
     private $config;
+    /** @var GitPackageConfigBuildValidator $validator */
+    private $validator;
     /** @var GitPackageConfigBuildResolver $resolver */
     private $resolver;
     private $readme = 'docs/readme.txt';
@@ -16,11 +18,16 @@ class GitPackageConfigBuild {
 
     public function __construct(modX &$modx, GitPackageConfig $config) {
         $this->modx =& $modx;
+        $this->validator = new GitPackageConfigBuildValidator($this->modx);
         $this->resolver = new GitPackageConfigBuildResolver($this->modx);
         $this->config = $config;
     }
 
     public function fromArray($config) {
+        if(isset($config['validator'])){
+            $this->validator->fromArray($config['validator']);
+        }
+
         if(isset($config['resolver'])){
             $this->resolver->fromArray($config['resolver']);
         }
@@ -74,6 +81,20 @@ class GitPackageConfigBuild {
      */
     public function setResolver($resolver) {
         $this->resolver = $resolver;
+    }
+
+    /**
+     * @return GitPackageConfigBuildValidator
+     */
+    public function getValidator() {
+        return $this->validator;
+    }
+
+    /**
+     * @param GitPackageConfigBuildValidator $validator
+     */
+    public function setValidator($validator) {
+        $this->validator = $validator;
     }
 
     /**

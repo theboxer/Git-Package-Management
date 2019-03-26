@@ -29,14 +29,14 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         if (!$this->object) return $this->failure();
 
         $this->packagePath = rtrim($this->modx->getOption('gitpackagemanagement.packages_dir', null, null), '/') . '/';
-        if($this->packagePath == null){
+        if ($this->packagePath == null) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_ns_packages_dir');
         }
 
         $packagePath = $this->packagePath . $this->object->dir_name;
 
         $configFile = $packagePath . $this->modx->gitpackagemanagement->configPath;
-        if(!file_exists($configFile)){
+        if (!file_exists($configFile)) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
         }
 
@@ -45,7 +45,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $config = $this->modx->fromJSON($config);
 
         $this->config = new GitPackageConfig($this->modx, $packagePath);
-        if($this->config->parseConfig($config) == false) {
+        if ($this->config->parseConfig($config) == false) {
             return $this->modx->lexicon('gitpackagemanagement.package_err_url_config_nf');
         }
 
@@ -81,11 +81,23 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         }
         $this->builder->getTPBuilder()->createPackage($this->config->getLowCaseName(), $version[0], $version[1]);
 
-        $this->builder->registerNamespace($this->config->getLowCaseName(), false, true, '{core_path}components/' . $this->config->getLowCaseName() . '/','{assets_path}components/' . $this->config->getLowCaseName() . '/');
+        $this->builder->registerNamespace($this->config->getLowCaseName(), false, true, '{core_path}components/' . $this->config->getLowCaseName() . '/', '{assets_path}components/' . $this->config->getLowCaseName() . '/');
 
         $this->prependVehicles();
 
+        /** @var GitPackageVehicle $vehicle */
         $vehicle = $this->addCategory();
+
+        $validator = $buildOptions->getValidator();
+
+        $validatorsDir = $validator->getValidatorsDir();
+        $validatorsDir = trim($validatorsDir, '/');
+        $validatorsDir = $this->packagePath . '_build/' . $validatorsDir . '/';
+
+        $validators = $validator->getValidators();
+        foreach ($validators as $script) {
+            $vehicle->addPhpValidator($validatorsDir . ltrim($script, '/'));
+        }
 
         $resolver = $buildOptions->getResolver();
 
@@ -94,7 +106,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $resolversDir = $this->packagePath . '_build/' . $resolversDir . '/';
 
         $before = $resolver->getBefore();
-        foreach($before as $script) {
+        foreach ($before as $script) {
             $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
         }
 
@@ -157,7 +169,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         $this->addSystemSettings();
 
         $after = $resolver->getAfter();
-        foreach($after as $script) {
+        foreach ($after as $script) {
             $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
         }
 
@@ -317,8 +329,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         /** @var GitPackageConfigElementSnippet[] $configSnippets */
         $configSnippets = $this->config->getElements('snippets');
-        if(count($configSnippets) > 0){
-            foreach($configSnippets as $configSnippet){
+        if (count($configSnippets) > 0) {
+            foreach ($configSnippets as $configSnippet) {
                 if ($configSnippet->getCategory() != $category) continue;
 
                 $snippetObject = $this->modx->newObject('modSnippet');
@@ -340,8 +352,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         /** @var GitPackageConfigElementChunk[] $configChunks */
         $configChunks = $this->config->getElements('chunks');
-        if(count($configChunks) > 0){
-            foreach($configChunks as $configChunk){
+        if (count($configChunks) > 0) {
+            foreach ($configChunks as $configChunk) {
                 if ($configChunk->getCategory() != $category) continue;
 
                 $chunkObject = $this->modx->newObject('modChunk');
@@ -363,8 +375,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         /** @var GitPackageConfigElementTemplate[] $configTemplates */
         $configTemplates = $this->config->getElements('templates');
-        if(count($configTemplates) > 0){
-            foreach($configTemplates as $configTemplate){
+        if (count($configTemplates) > 0) {
+            foreach ($configTemplates as $configTemplate) {
                 if ($configTemplate->getCategory() != $category) continue;
 
                 $templateObject = $this->modx->newObject('modTemplate');
@@ -387,8 +399,8 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         /** @var GitPackageConfigElementTV[] $configTVs */
         $configTVs = $this->config->getElements('tvs');
-        if(count($configTVs) > 0){
-            foreach($configTVs as $configTV){
+        if (count($configTVs) > 0) {
+            foreach ($configTVs as $configTV) {
                 if ($configTV->getCategory() != $category) continue;
 
                 $tvObject = $this->modx->newObject('modTemplateVar');
@@ -404,12 +416,12 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
                 $inputProperties = $configTV->getInputProperties();
                 if (!empty($inputProperties)) {
-                    $tvObject->set('input_properties',$inputProperties);
+                    $tvObject->set('input_properties', $inputProperties);
                 }
 
                 $outputProperties = $configTV->getOutputProperties();
                 if (!empty($outputProperties)) {
-                    $tvObject->set('output_properties',$outputProperties);
+                    $tvObject->set('output_properties', $outputProperties);
                 }
 
                 $tvObject->setProperties($configTV->getProperties());
@@ -426,9 +438,9 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         /** @var GitPackageConfigElementPlugin[] $configPlugins */
         $configPlugins = $this->config->getElements('plugins');
-        if(count($configPlugins) > 0){
+        if (count($configPlugins) > 0) {
 
-            foreach($configPlugins as $configPlugin){
+            foreach ($configPlugins as $configPlugin) {
                 if ($configPlugin->getCategory() != $category) continue;
 
                 $pluginObject = $this->modx->newObject('modPlugin');
@@ -480,7 +492,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                 'params' => $menu->getParams(),
                 'handler' => $menu->getHandler(),
                 'permissions' => $menu->getPermissions(),
-            ),'',true,true);
+            ), '', true, true);
 
             $configAction = $menu->getActionObject();
             if ($configAction !== null) {
@@ -493,7 +505,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
                     'haslayout' => $configAction->getHasLayout(),
                     'lang_topics' => $configAction->getLangTopics(),
                     'assets' => $configAction->getAssets(),
-                ),'',true,true);
+                ), '', true, true);
 
                 $menuObject->addOne($actionObject);
             } else {
@@ -551,7 +563,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
     }
 
     private function loadSmarty() {
-        $this->smarty = $this->modx->getService('smarty','smarty.modSmarty');
+        $this->smarty = $this->modx->getService('smarty', 'smarty.modSmarty');
         $this->smarty->setTemplatePath($this->modx->gitpackagemanagement->getOption('templatesPath') . '/gitpackagebuild/');
 
         $this->smarty->assign('lowercasename', $this->config->getLowCaseName());
