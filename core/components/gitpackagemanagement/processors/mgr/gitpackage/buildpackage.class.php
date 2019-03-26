@@ -255,7 +255,16 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $category->addMany($categories, 'Children');
         }
 
-        return $this->builder->createVehicle($category, 'category');
+        $category = $this->builder->createVehicle($category, 'category');
+
+        $buildOptions = $this->config->getBuild()->getBuildOptions();
+
+        if ($this->modx->getOption('abort_install_on_vehicle_fail', $buildOptions, false)) {
+            $categoryVehicle = $category->getVehicle();
+            $categoryVehicle->attributes[xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL] = true;
+        }
+
+        return $category;
     }
 
     private function getCategories($parent = null) {
