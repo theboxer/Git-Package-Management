@@ -7,7 +7,7 @@ GitPackageManagement.grid.Packages = function(config) {
         ,baseParams: {
             action: 'mgr/gitpackage/getlist'
         }
-        ,fields: ['id','name','description', 'author', 'version', 'key']
+        ,fields: ['id','name','description', 'author', 'version', 'key', 'updatedon']
         ,autoHeight: true
         ,paging: true
         ,remoteSort: true
@@ -22,6 +22,7 @@ GitPackageManagement.grid.Packages = function(config) {
         },{
             header: _('gitpackagemanagement.name')
             ,dataIndex: 'name'
+            ,sortable: true
             ,width: 200
         },{
             header: _('gitpackagemanagement.description')
@@ -35,6 +36,12 @@ GitPackageManagement.grid.Packages = function(config) {
             header: _('gitpackagemanagement.version')
             ,dataIndex: 'version'
             ,width: 100
+        },{
+            header: _('gitpackagemanagement.updatedon')
+            ,dataIndex: 'updatedon'
+            ,sortable: true
+            ,renderer: Ext.util.Format.dateRenderer(MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format)
+            ,width: 150
         },{
             header: _('gitpackagemanagement.key')
             ,dataIndex: 'key'

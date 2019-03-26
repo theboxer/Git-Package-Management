@@ -75,6 +75,8 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
 
         $this->setProperty('config', $this->modx->toJSON($config));
 
+        $this->object->set('updatedon', time());
+
         return parent::beforeSet();
     }
 

@@ -27,6 +27,7 @@ $_lang['gitpackagemanagement.update_package_alter_database'] = 'Update package a
 $_lang['gitpackagemanagement.update_package_success'] = 'The package was successfully updated.';
 $_lang['gitpackagemanagement.delete_package_folder'] = 'Delete package folder';
 $_lang['gitpackagemanagement.key'] = 'Key';
+$_lang['gitpackagemanagement.updatedon'] = 'Last Update';
 $_lang['gitpackagemanagement.build_schema'] = 'Build classes from schema';
 $_lang['gitpackagemanagement.update_mask'] = 'Updating package';
 $_lang['gitpackagemanagement.preserve_package'] = 'Preserve package';
