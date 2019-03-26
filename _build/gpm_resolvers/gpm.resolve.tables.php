@@ -6,6 +6,10 @@
  *
  * @package gitpackagemanagement
  * @subpackage build
+ *
+ * @var mixed $object
+ * @var modX $modx
+ * @var array $options
  */
 
 if ($object->xpdo) {
@@ -14,7 +18,9 @@ if ($object->xpdo) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
             $modelPath = $modx->getOption('gitpackagemanagement.core_path', null, $modx->getOption('core_path') . 'components/gitpackagemanagement/') . 'model/';
-            $modx->addPackage('gitpackagemanagement', $modelPath, 'modx_');
+            
+            $modx->addPackage('gitpackagemanagement', $modelPath, null);
+
 
             $manager = $modx->getManager();
 
