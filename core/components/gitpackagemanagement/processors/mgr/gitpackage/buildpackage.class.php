@@ -51,6 +51,15 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
 
         $this->loadSmarty();
 
+        $buildOptions = $this->config->getBuild()->getBuildOptions();
+        $emptyFolders = $this->modx->getOption('empty_folders', $buildOptions, array());
+        if (!empty($emptyFolders)) {
+            foreach ($emptyFolders as $emptyFolder => $emptyFiles) {
+                $emptyFolder = str_replace('{package_path}', $this->config->getPackagePath() . '/', $emptyFolder);
+                $this->emptyFolder($emptyFolder, $emptyFiles);
+            }
+        }
+
         return true;
     }
 
@@ -142,7 +151,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $prefix = $db->getPrefix();
 
             if (!is_array($extensionPackage)) $extensionPackage = array();
-            
+
             if (isset($prefix)) {
                 $extensionPackage['tablePrefix'] = $prefix;
             }
@@ -471,6 +480,29 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         }
 
         return $plugins;
+    }
+
+    protected function emptyFolder($path, $filemask = '*')
+    {
+        $inverse = false;
+        if (strpos($filemask, '!') === 0) {
+            $filemask = substr($filemask, 1);
+            $inverse = true;
+        }
+        $files = glob($path . '/' . $filemask, GLOB_BRACE);
+        if ($inverse) {
+            $allFiles = glob($path . '/*');
+            $files = array_diff($allFiles, $files);
+        }
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->emptyFolder($file, '*');
+                rmdir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        return;
     }
 
     protected function prependVehicles() {}
