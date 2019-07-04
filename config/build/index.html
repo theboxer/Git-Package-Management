@@ -3,29 +3,30 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
   <title>Build - Git Package Management</title>
-  
-
-  
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../../css/highlight.css">
-  <link href="../../docs.css" rel="stylesheet">
-
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
-  <script src="../../js/theme.js"></script>
-
-  <style>
-    body {font-size: 90%;}
-    pre, code {font-size: 100%;}
-    h3, h4, h5, h6 {color: #2980b9; font-weight: 300}
-  </style> 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Build";
+    var mkdocs_page_input_path = "config/build.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -36,100 +37,129 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
         <a href="../.." class="icon icon-home"> Git Package Management</a>
-        
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-      <ul class="current">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">General</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../directory-structure/">Directory structure</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../installation/">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../system-settings/">System settings</a>
+                </li>
+                <li class=" current">
+                    
+    <span class="caption-text">Config</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../general/">General</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../package/">Package</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../database/">Database</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../extension-package/">Extension package</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../dependencies/">Dependencies</a>
+                </li>
+                <li class="toctree-l3 current">
+                    
+    <a class="current" href="./">Build</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l4"><a href="#available-properties">Available properties:</a></li>
     
-        
-        <span>General</span>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../../directory-structure">Directory structure</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../../installation">Installation</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../../system-settings">System settings</a>
-                    
-                </li>
-            
-        
 
+    <li class="toctree-l4"><a href="#example">Example</a></li>
     
-        
-        <span>Config</span>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../general">General</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../package">Package</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../database">Database</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../extension-package">Extension package</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../dependencies">Dependencies</a>
-                    
-                </li>
-            
-                <li class="toctree-l1 current">
-                    <a class="current" href=".">Build</a>
-                    
-                        <ul>
-                        
-                            <li class="toctree-l2"><a href="#available-properties">Available properties:</a></li>
-                            
-                        
-                            <li class="toctree-l2"><a href="#example">Example</a></li>
-                            
-                        
-                            <li class="toctree-l2"><a href="#resolver-part">Resolver part</a></li>
-                            
-                                <li><a class="toctree-l3" href="#available-properties_1">Available properties:</a></li>
-                            
-                                <li><a class="toctree-l3" href="#example_1">Example</a></li>
-                            
-                        
-                            <li class="toctree-l2"><a href="#setup-options-part">Setup options part</a></li>
-                            
-                                <li><a class="toctree-l3" href="#available-properties_2">Available properties:</a></li>
-                            
-                                <li><a class="toctree-l3" href="#example_2">Example</a></li>
-                            
-                        
-                        </ul>
-                    
-                </li>
-            
-                <li class="toctree-l1 ">
-                    <a class="" href="../examples">Examples</a>
-                    
-                </li>
-            
-        
 
+    <li class="toctree-l4"><a href="#resolver-part">Resolver part</a></li>
     
-</ul>
+        <ul>
+        
+            <li><a class="toctree-l5" href="#available-properties_1">Available properties:</a></li>
+        
+            <li><a class="toctree-l5" href="#example_1">Example</a></li>
+        
+        </ul>
+    
 
+    <li class="toctree-l4"><a href="#setup-options-part">Setup options part</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#available-properties_2">Available properties:</a></li>
+        
+            <li><a class="toctree-l5" href="#example_2">Example</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l4"><a href="#build-options-part">Build options part</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#available-properties_3">Available properties:</a></li>
+        
+            <li><a class="toctree-l5" href="#example_3">Example</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l4"><a href="#build-helper-methods">Build helper methods</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#prependvehicles">prependVehicles</a></li>
+        
+            <li><a class="toctree-l5" href="#appendvehicles">appendVehicles</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../examples/">Examples</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
       </div>
       &nbsp;
     </nav>
@@ -138,8 +168,8 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="icon icon-reorder"></i>
-        <a href="../.."></a>
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Git Package Management</a>
       </nav>
 
       
@@ -148,20 +178,31 @@
           <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Config &raquo;</li>
+        
+      
+        
+          <li>General &raquo;</li>
+        
+      
+    
     <li>Build</li>
-      <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="https://github.com/TheBoxer/Git-Package-Management" class="icon icon-github"> Edit on GitHub</a>
-          
-        
-      </li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/TheBoxer/Git-Package-Management/edit/master/docs/config/build.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
   </ul>
   <hr/>
 </div>
           <div role="main">
             <div class="section">
-              <p>Define build options here.</p>
+              
+                <p>Define build options here.</p>
 <p><strong>Wrapper:</strong> build</p>
 <pre><code class="json">{
     &quot;build&quot;:{}
@@ -176,6 +217,7 @@
 <li><strong>changelog</strong> (optional, default: docs/changelog.txt) - Path to change log file</li>
 <li><strong>schemaPath</strong> (optional, default: /core/components/$lowCaseName$/model/schema/$lowCaseName$.mysql.schema.xml) - Path to the XML schema file</li>
 <li><strong>setupOptions</strong> (optional) - Setup options object</li>
+<li><strong>options</strong> (optional) - Options object</li>
 </ul>
 <h4 id="example">Example</h4>
 <pre><code class="json">{
@@ -187,7 +229,7 @@
 </code></pre>
 
 <h2 id="resolver-part">Resolver part</h2>
-<p>Define resolver options here</p>
+<p>Define resolver options here. Resolvers are run when a package is installed, upgraded, or uninstalled inside the MODX package manager; not when a package is updated within Git Package Management.</p>
 <p><strong>Wrapper:</strong> resolver</p>
 <pre><code class="json">{
     &quot;resolver&quot;:{}
@@ -218,8 +260,8 @@
 </code></pre>
 
 <h2 id="setup-options-part">Setup options part</h2>
-<p>Define setup options here</p>
-<p><strong>Wrapper:</strong> resolver</p>
+<p>Define setup options here. Setup options are requested and used during the installation process of a package.</p>
+<p><strong>Wrapper:</strong> setupOptions</p>
 <pre><code class="json">{
     &quot;setupOptions&quot;:{}
 }
@@ -232,22 +274,62 @@
 <h4 id="example_2">Example</h4>
 <pre><code class="json">{
     &quot;setupOptions&quot;:{
-        &quot;source&quot;: &quot;setup.options.php&quot;,
+        &quot;source&quot;: &quot;setup.options.php&quot;
     }
 }
 </code></pre>
 
+<h2 id="build-options-part">Build options part</h2>
+<p>Define build options here. These options could be used to modify the build process i.e. in own gitpackage processors.</p>
+<p><strong>Wrapper:</strong> options</p>
+<pre><code class="json">{
+    &quot;options&quot;:{}
+}
+</code></pre>
 
+<h4 id="available-properties_3">Available properties:</h4>
+<ul>
+<li><strong>empty_folders</strong> Could contain an array of emptied folders during the build. The files in the folders are selected with the PHP glob method with the GLOB_BRACE option. The file list is inverted with a leading <code>!</code> sign.</li>
+</ul>
+<h4 id="example_3">Example</h4>
+<pre><code class="json">{
+    &quot;options&quot;: {
+      &quot;empty_folders&quot;: {
+        &quot;{package_path}core/components/xxx/vendor/mpdf/mpdf/tmp&quot; : &quot;*&quot;,
+        &quot;{package_path}core/components/xxx/vendor/mpdf/mpdf/ttfonts&quot; : &quot;!{DejaVu,Free}*&quot;,
+        &quot;{package_path}core/components/xxx/vendor/mpdf/mpdf/ttfontdata&quot; : &quot;*&quot;
+      }
+      &quot;encrypt&quot;: true
+    }
+}
+</code></pre>
+
+<p>The build options could be used in a custom build processor with the following code:</p>
+<pre><code>$buildOptions = $this-&gt;config-&gt;getBuild()-&gt;getBuildOptions();
+if ($this-&gt;modx-&gt;getOption('encrypt', $buildOptions, false)) {
+    ...
+}
+</code></pre>
+
+<h5 id="empty_folder">empty_folder</h5>
+<h2 id="build-helper-methods">Build helper methods</h2>
+<p>There are two build helper methods available, that could be used in a custom build processor: prependVehicles and appendVehicles. The methods are called during the build process of a package.</p>
+<h4 id="prependvehicles">prependVehicles</h4>
+<p>This method is called in the build process before adding the first vehicle. It could be used to add own custom vehicles to the package or to empty temporary folders in the <em>assets/components</em> or <em>core/components</em>, that would be packaged otherwise automatically into the package.</p>
+<h4 id="appendvehicles">appendVehicles</h4>
+<p>This method is called in the build process after adding the last vehicle. It could be used to add own custom vehicles to the package or to do other things at the end of a build process.</p>
+<p>An example for the usage of both methods in a custom build processor could be found on https://github.com/Jako/Git-Package-Management/blob/feature/publish/core/components/gitpackagemanagement/processors/mgr/gitpackage/buildpackagepublish.class.php#L132-L187. This processor adds - amongst other things - two custom vehicles before the first default vehicle and one custom vehicle after the last vehicle. These vehicles are used to add methods to decrypt the category vehicle during the install process of the package.  </p>
+              
             </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../examples" class="btn btn-neutral float-right" title="Examples"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../dependencies" class="btn btn-neutral" title="Dependencies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../dependencies/" class="btn btn-neutral" title="Dependencies"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -255,14 +337,13 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>
     <!-- Copyright etc -->
-    </p>
+    
   </div>
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-	  
+      
         </div>
       </div>
 
@@ -270,14 +351,22 @@
 
   </div>
 
-<div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
-        
-            <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
-        
-      <span><a href="../dependencies" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      <span style="margin-left: 15px"><a href="../examples" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+          <a href="https://github.com/TheBoxer/Git-Package-Management/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../dependencies/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
     </span>
 </div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
 </body>
 </html>
