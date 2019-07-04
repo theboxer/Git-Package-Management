@@ -90,12 +90,17 @@ Define build options here. These options could be used to modify the build proce
 ```
 
 #### Available properties:
-* No default properties
+* **empty_folders** Could contain an array of emptied folders during the build. The files in the folders are selected with the PHP glob method with the GLOB_BRACE option. The file list is inverted with a leading `!` sign.
 
 #### Example
 ```json
 {
     "options": {
+      "empty_folders": {
+        "{package_path}core/components/xxx/vendor/mpdf/mpdf/tmp" : "*",
+        "{package_path}core/components/xxx/vendor/mpdf/mpdf/ttfonts" : "!{DejaVu,Free}*",
+        "{package_path}core/components/xxx/vendor/mpdf/mpdf/ttfontdata" : "*"
+      }
       "encrypt": true
     }
 }
@@ -109,6 +114,8 @@ if ($this->modx->getOption('encrypt', $buildOptions, false)) {
     ...
 }
 ```
+
+##### empty_folder 
 
 ## Build helper methods
 
