@@ -164,6 +164,7 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
         $this->addSettingKeys();
         $this->addMenuKeys();
         $this->addSnippetKeys();
+        $this->addWidgetKeys();
 
         $this->languageKeys = array_unique($this->languageKeys);
         sort($this->languageKeys);
@@ -316,6 +317,18 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Add widget language keys
+     */
+    private function addWidgetKeys() {
+        $widgets = $this->config->getElements('widgets');
+
+        foreach ($widgets as $widget) {
+            $this->languageKeys[] = $widget->getName();
+            $this->languageKeys[] = $widget->getDescription();
         }
     }
 
