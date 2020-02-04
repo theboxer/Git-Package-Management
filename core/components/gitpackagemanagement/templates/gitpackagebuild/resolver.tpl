@@ -12,14 +12,14 @@
 
 if ($object->xpdo) {
     $modx =& $object->xpdo;
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
+    switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+        case \xPDO\Transport\xPDOTransport::ACTION_INSTALL:
 
             break;
-        case xPDOTransport::ACTION_UPGRADE:
+        case \xPDO\Transport\xPDOTransport::ACTION_UPGRADE:
 
             break;
-        case xPDOTransport::ACTION_UNINSTALL:
+        case \xPDO\Transport\xPDOTransport::ACTION_UNINSTALL:
 
             break;
     }

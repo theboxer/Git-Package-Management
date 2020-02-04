@@ -1,5 +1,6 @@
 <?php namespace GPM\Commands\Package;
 
+use GitPackageManagement\Model\GitPackage;
 use GPM\Commands\GPMCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -7,12 +8,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GetList extends GPMCommand
 {
+
     protected function configure()
     {
         $this
             ->setName('package:list')
-            ->setDescription('List registered packages.')
-        ;
+            ->setDescription('List registered packages.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -20,17 +21,30 @@ class GetList extends GPMCommand
         $modx = $this->getApplication()->modx;
 
         $table = new Table($output);
-        $table->setHeaders([
-            'name', 'description', 'version', 'dir_name', 'key'
-        ]);
+        $table->setHeaders(
+            [
+                'name',
+                'description',
+                'version',
+                'dir_name',
+                'key',
+            ]
+        );
 
-        /** @var \GitPackage $package */
-        foreach($modx->getCollection('GitPackage') as $package) {
-            $table->addRow([
-                $package->name, $package->description, $package->version, $package->dir_name, $package->key
-            ]);
+        /** @var GitPackage $package */
+        foreach ($modx->getCollection(GitPackage::class) as $package) {
+            $table->addRow(
+                [
+                    $package->name,
+                    $package->description,
+                    $package->version,
+                    $package->dir_name,
+                    $package->key,
+                ]
+            );
         }
 
         $table->render();
     }
+
 }

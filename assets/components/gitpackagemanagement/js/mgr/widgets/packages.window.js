@@ -5,7 +5,7 @@ GitPackageManagement.window.AddPackage = function(config) {
         title: _('gitpackagemanagement.add_package')
         ,id: this.ident
         ,width: 475
-        ,url: GitPackageManagement.config.connectorUrl
+        ,url: MODx.config.connector_url
         ,baseParams: {
             action: 'mgr/gitpackage/create'
             ,register: 'mgr'
@@ -32,7 +32,7 @@ GitPackageManagement.window.RemovePackage = function(config) {
         ,id: this.ident
         ,width: 475
         ,labelWidth: 200
-        ,url: GitPackageManagement.config.connectorUrl
+        ,url: MODx.config.connector_url
         ,cancelBtnText: _('no')
         ,saveBtnText: _('yes')
         ,labelAlign: 'left'

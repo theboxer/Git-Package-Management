@@ -1,14 +1,16 @@
 <?php
+
 namespace GPM\Commands\Package;
 
+use GitPackageManagement\Model\GitPackage;
 use GPM\Commands\GPMCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Schema extends GPMCommand
 {
+
     protected function configure()
     {
         $this
@@ -25,8 +27,7 @@ class Schema extends GPMCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If passed package key will be used instead of package name'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -38,23 +39,23 @@ class Schema extends GPMCommand
         }
 
         $pkgMatcher = $input->getOption('useKey') ? 'key' : 'name';
-        $c = array($pkgMatcher => $name);
+        $c = [$pkgMatcher => $name];
         if ($pkgMatcher == 'name') {
             $c['OR:dir_name:='] = $name;
         }
 
-        $pkg = $this->getApplication()->modx->getObject('GitPackage', $c);
+        $pkg = $this->getApplication()->modx->getObject(GitPackage::class, $c);
 
         if (empty($pkg)) {
             $this->error($output, 'Package ' . ($input->getOption('useKey') ? 'with key ' : '') . $name . ' was not found.');
             return;
         }
 
-        $options = array(
+        $options = [
             'id' => $pkg->id,
-        );
+        ];
 
-        /** @var \modProcessorResponse $response */
+        /** @var \MODX\Revolution\Processors\ProcessorResponse $response */
         $response = $this->getApplication()->gpm->runProcessor('mgr/gitpackage/buildschema', $options);
 
         if (!$response->isError()) {
@@ -62,6 +63,6 @@ class Schema extends GPMCommand
         } else {
             $this->error($output, $response->getMessage());
         }
-
     }
+
 }

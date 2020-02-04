@@ -19,6 +19,9 @@
   "autoload": {
     "psr-0": {
       "GPM": "src/"
+    },
+    "psr-4": {
+      "GitPackageManagement\\": "../core/components/gitpackagemanagement/src"
     }
   }
 }

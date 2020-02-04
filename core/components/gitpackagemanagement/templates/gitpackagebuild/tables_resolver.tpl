@@ -14,11 +14,11 @@
 
 if ($object->xpdo) {
     $modx =& $object->xpdo;
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
-        case xPDOTransport::ACTION_UPGRADE:
+    switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+        case \xPDO\Transport\xPDOTransport::ACTION_INSTALL:
+        case \xPDO\Transport\xPDOTransport::ACTION_UPGRADE:
             $modelPath = $modx->getOption('{{$lowercasename}}.core_path', null, $modx->getOption('core_path') . 'components/{{$lowercasename}}/') . 'model/';
-            
+
 {if !$prefix}
             $modx->addPackage('{{$lowercasename}}', $modelPath, null);
 {else}

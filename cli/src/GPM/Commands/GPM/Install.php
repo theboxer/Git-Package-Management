@@ -1,8 +1,13 @@
 <?php
+
 namespace GPM\Commands\GPM;
 
+use GitPackageManagement\Model\GitPackage;
 use GPM\Commands\GPMCommand;
 use GPM\MODX\Config;
+use MODX\Revolution\modMenu;
+use MODX\Revolution\modNamespace;
+use MODX\Revolution\modSystemSetting;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,12 +15,17 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Install extends GPMCommand
 {
-    /** @var \modX $modx */
+
+    /** @var \MODX\Revolution\modX $modx */
     protected $modx;
+
     /** @var Config $config */
     protected $config;
+
     protected $packageCorePath;
+
     protected $packageAssetsPath;
+
     protected $packageAssetsUrl;
 
     protected function configure()
@@ -54,8 +64,7 @@ class Install extends GPMCommand
                 InputOption::VALUE_REQUIRED,
                 'MODX config key',
                 'config'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -95,7 +104,7 @@ class Install extends GPMCommand
         $fs = new Filesystem();
         $fs->dumpFile($packagesDir . $dir . '/config.core.php', $configFileContent);
 
-        if($fs->exists($packagesDir . $dir . '/config.core.php') && $this->getApplication()->gpm === null) {
+        if ($fs->exists($packagesDir . $dir . '/config.core.php') && $this->getApplication()->gpm === null) {
             if (isset($GLOBALS['modx']) && $GLOBALS['modx'] instanceof \modX) {
                 $modx = $GLOBALS['modx'];
             } else {
@@ -104,17 +113,7 @@ class Install extends GPMCommand
                 $modx = include 'IncludeMODX.php';
             }
 
-            $corePath = $packagesDir . $dir . '/core/components/gitpackagemanagement/';
-
-            /** @var \GitPackageManagement $gpm */
-            $gpm = $modx->getService(
-                'gitpackagemanagement',
-                'GitPackageManagement',
-                $corePath . 'model/gitpackagemanagement/',
-                array(
-                    'core_path' => $corePath
-                )
-            );
+            $gpm = new \GitPackageManagement\GitPackageManagement($modx);
 
             $this->getApplication()->setMODX($modx);
             $this->getApplication()->setGPM($gpm);
@@ -125,7 +124,6 @@ class Install extends GPMCommand
         $this->install($packagesDir, $dir, $packagesBaseUrl, $output);
 
         $output->writeln('GPM installed.');
-
     }
 
     protected function getConfigFileContent($corePath, $configKey)
@@ -157,8 +155,8 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
         $this->clearCache();
 
 
-        /** @var \GitPackage $packageObject */
-        $packageObject = $this->modx->newObject('GitPackage');
+        /** @var GitPackage $packageObject */
+        $packageObject = $this->modx->newObject(GitPackage::class);
         $packageObject->set('version', $this->config->getVersion());
         $packageObject->set('description', $this->config->getDescription());
         $packageObject->set('author', $this->config->getAuthor());
@@ -170,8 +168,8 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     protected function createNamespace()
     {
-        /** @var \modNamespace $ns */
-        $ns = $this->modx->newObject('modNamespace');
+        /** @var modNamespace $ns */
+        $ns = $this->modx->newObject(modNamespace::class);
         $ns->set('name', $this->config->getLowCaseName());
         $ns->set('path', $this->packageCorePath);
         $ns->set('assets_path', $this->packageAssetsPath);
@@ -180,50 +178,31 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     protected function createMenusAndActions()
     {
-        $actions = array();
-        $menus = array();
-
-        /**
-         * Create actions if any
-         */
-        if(count($this->config->getActions()) > 0){
-            foreach($this->config->getActions() as $act){
-                /** @var \modAction[] $actions */
-                $actions[$act->getId()] = $this->modx->newObject('modAction');
-                $actions[$act->getId()]->fromArray(array(
-                    'namespace' => $this->config->getLowCaseName(),
-                    'controller' => $act->getController(),
-                    'haslayout' => $act->getHasLayout(),
-                    'lang_topics' => $act->getLangTopics(),
-                    'assets' => $act->getAssets(),
-                ),'',true,true);
-                $actions[$act->getId()]->save();
-            }
-        }
+        $menus = [];
 
         /**
          * Crete menus if any
          */
-        if(count($this->config->getMenus()) > 0){
-            foreach($this->config->getMenus() as $i => $men){
-                /** @var \modMenu[] $menus */
-                $menus[$i] = $this->modx->newObject('modMenu');
-                $menus[$i]->fromArray(array(
-                    'text' => $men->getText(),
-                    'parent' => $men->getParent(),
-                    'description' => $men->getDescription(),
-                    'icon' => $men->getIcon(),
-                    'menuindex' => $men->getMenuIndex(),
-                    'params' => $men->getParams(),
-                    'handler' => $men->getHandler(),
-                ),'',true,true);
-
-                if (isset($actions[$men->getAction()])) {
-                    $menus[$i]->addOne($actions[$men->getAction()]);
-                } else {
-                    $menus[$i]->set('action', $men->getAction());
-                    $menus[$i]->set('namespace', $this->config->getLowCaseName());
-                }
+        if (count($this->config->getMenus()) > 0) {
+            foreach ($this->config->getMenus() as $i => $men) {
+                /** @var modMenu[] $menus */
+                $menus[$i] = $this->modx->newObject(modMenu::class);
+                $menus[$i]->fromArray(
+                    [
+                        'text'        => $men->getText(),
+                        'parent'      => $men->getParent(),
+                        'description' => $men->getDescription(),
+                        'icon'        => $men->getIcon(),
+                        'menuindex'   => $men->getMenuIndex(),
+                        'params'      => $men->getParams(),
+                        'handler'     => $men->getHandler(),
+                        'action'      => $men->getAction(),
+                        'namespace'   => $this->config->getLowCaseName(),
+                    ],
+                    '',
+                    true,
+                    true
+                );
 
                 $menus[$i]->save();
             }
@@ -239,9 +218,10 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
         $this->createSystemSetting($this->config->getLowCaseName() . '.packages_dir', $packagesDir, 'textfield', 'Paths');
         $this->createSystemSetting($this->config->getLowCaseName() . '.packages_base_url', $packagesBaseUrl, 'textfield', 'Paths');
 
-        /** @var $setting \GitPackageConfigSetting */
-        foreach($this->config->getSettings() as $setting){
-            if ($setting->getKey() == 'packages_dir' || $setting->getKey() == 'packages_base_url') continue;
+        foreach ($this->config->getSettings() as $setting) {
+            if ($setting->getKey() == 'packages_dir' || $setting->getKey() == 'packages_base_url') {
+                continue;
+            }
 
             $this->createSystemSetting($setting->getNamespacedKey(), $setting->getValue(), $setting->getType(), $setting->getArea());
         }
@@ -249,24 +229,25 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     /**
      * Support method for createSystemSettings(), insert system setting to database
+     *
      * @param $key string
      * @param $value string
-     * @param string $xtype string
-     * @param string $area string
+     * @param  string  $xtype  string
+     * @param  string  $area  string
      */
     protected function createSystemSetting($key, $value, $xtype = 'textfield', $area = 'default')
     {
-        $ct = $this->modx->getObject('modSystemSetting',array('key' => $key));
-        if (!$ct){
-            /** @var \modSystemSetting $setting */
-            $setting = $this->modx->newObject('modSystemSetting');
+        $ct = $this->modx->getObject(modSystemSetting::class, ['key' => $key]);
+        if (!$ct) {
+            /** @var modSystemSetting $setting */
+            $setting = $this->modx->newObject(modSystemSetting::class);
             $setting->set('key', $key);
             $setting->set('value', $value);
             $setting->set('namespace', $this->config->getLowCaseName());
             $setting->set('area', $area);
             $setting->set('xtype', $xtype);
             $setting->save();
-        }else{
+        } else {
             $ct->set('value', $value);
             $ct->set('namespace', $this->config->getLowCaseName());
             $ct->set('area', $area);
@@ -277,17 +258,13 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     protected function createTables()
     {
-        if($this->config->getDatabase() != null){
+        if ($this->config->getDatabase() != null) {
             $modelPath = $this->packageCorePath . 'model/';
             $this->modx->addPackage($this->config->getLowCaseName(), $modelPath, $this->config->getDatabase()->getPrefix());
 
-            foreach ($this->config->getDatabase()->getSimpleObjects() as $simpleObject) {
-                $this->modx->loadClass($simpleObject);
-            }
-
             $manager = $this->modx->getManager();
 
-            foreach($this->config->getDatabase()->getTables() as $table){
+            foreach ($this->config->getDatabase()->getTables() as $table) {
                 $manager->createObjectContainer($table);
             }
         }
@@ -295,13 +272,14 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     protected function clearCache()
     {
-        $this->modx->cacheManager->delete('system_settings/config', array('cache_key' => ''));
-        $results = array();
-        $partitions = array ('menu' => array ());
+        $this->modx->cacheManager->delete('system_settings/config', ['cache_key' => '']);
+        $results = [];
+        $partitions = ['menu' => []];
         $this->modx->cacheManager->refresh($partitions, $results);
 
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.core_path', $this->packageCorePath);
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath);
         $this->modx->setPlaceholder('+' . $this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl);
     }
+
 }

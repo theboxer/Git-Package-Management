@@ -1,6 +1,8 @@
 <?php
+
 namespace GPM\Commands\Package;
 
+use GitPackageManagement\Model\GitPackage;
 use GPM\Commands\GPMCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Delete extends GPMCommand
 {
+
     protected function configure()
     {
         $this
@@ -31,8 +34,7 @@ class Delete extends GPMCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If passed package folder will be removed'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,26 +46,26 @@ class Delete extends GPMCommand
         }
 
         $pkgMatcher = $input->getOption('useKey') ? 'key' : 'name';
-        $c = array($pkgMatcher => $name);
+        $c = [$pkgMatcher => $name];
         if ($pkgMatcher == 'name') {
             $c['OR:dir_name:='] = $name;
         }
 
-        $pkg = $this->getApplication()->modx->getObject('GitPackage', $c);
+        $pkg = $this->getApplication()->modx->getObject(GitPackage::class, $c);
 
         if (empty($pkg)) {
             $this->error($output, 'Package ' . ($input->getOption('useKey') ? 'with key ' : '') . $name . ' was not found.');
             return;
         }
 
-        $deleteFolder = (int) $input->getOption('deleteFolder');
+        $deleteFolder = (int)$input->getOption('deleteFolder');
 
-        $options = array(
-            'id' => $pkg->id,
-            'deleteFolder' => $deleteFolder
-        );
+        $options = [
+            'id'           => $pkg->id,
+            'deleteFolder' => $deleteFolder,
+        ];
 
-        /** @var \modProcessorResponse $response */
+        /** @var \MODX\Revolution\Processors\ProcessorResponse $response */
         $response = $this->getApplication()->gpm->runProcessor('mgr/gitpackage/remove', $options);
 
         if (!$response->isError()) {
@@ -71,6 +73,6 @@ class Delete extends GPMCommand
         } else {
             $this->error($output, $response->getMessage());
         }
-
     }
+
 }

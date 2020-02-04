@@ -14,9 +14,9 @@
 
 if ($object->xpdo) {
     $modx =& $object->xpdo;
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
-        case xPDOTransport::ACTION_UPGRADE:
+    switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+        case \xPDO\Transport\xPDOTransport::ACTION_INSTALL:
+        case \xPDO\Transport\xPDOTransport::ACTION_UPGRADE:
             $modelPath = $modx->getOption('{{$lowercasename}}.core_path');
 
             if (empty($modelPath)) {
@@ -28,7 +28,7 @@ if ($object->xpdo) {
             }
 
             break;
-        case xPDOTransport::ACTION_UNINSTALL:
+        case \xPDO\Transport\xPDOTransport::ACTION_UNINSTALL:
             if ($modx instanceof modX) {
                 $modx->removeExtensionPackage('{{$lowercasename}}');
             }

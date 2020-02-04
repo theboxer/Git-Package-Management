@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Resolve paths. These are useful to change if you want to debug and/or develop
  * in a directory outside of the MODx webroot. They are not required to set
@@ -8,11 +9,12 @@
  * @subpackage build
  */
 function createSetting(&$modx,$key,$value) {
-    $ct = $modx->getCount('modSystemSetting',array(
+    $ct = $modx->getCount(\MODX\Revolution\modSystemSetting::class,array(
         'key' => 'gitpackagemanagement.'.$key,
     ));
     if (empty($ct)) {
-        $setting = $modx->newObject('modSystemSetting');
+        /** @var \xPDO\Om\xPDOObject $setting */
+        $setting = $modx->newObject(\MODX\Revolution\modSystemSetting::class);
         $setting->set('key','gitpackagemanagement.'.$key);
         $setting->set('value',$value);
         $setting->set('namespace','gitpackagemanagement');
@@ -21,9 +23,9 @@ function createSetting(&$modx,$key,$value) {
     }
 }
 if ($object->xpdo) {
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_INSTALL:
-        case xPDOTransport::ACTION_UPGRADE:
+    switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+        case \xPDO\Transport\xPDOTransport::ACTION_INSTALL:
+        case \xPDO\Transport\xPDOTransport::ACTION_UPGRADE:
             $modx =& $object->xpdo;
 
             /* create gitpackagemanagement settings */

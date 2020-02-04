@@ -18,19 +18,19 @@ $settings = array(
         'name' => 'Packages base URL'
     ),
 );
-switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-    case xPDOTransport::ACTION_INSTALL:
-    case xPDOTransport::ACTION_UPGRADE:
+switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+    case \xPDO\Transport\xPDOTransport::ACTION_INSTALL:
+    case \xPDO\Transport\xPDOTransport::ACTION_UPGRADE:
 
         foreach ($settings as $key => $setting) {
-            $settingObject = $modx->getObject('modSystemSetting',array('key' => 'gitpackagemanagement.'.$setting['key']));
+            $settingObject = $modx->getObject(\MODX\Revolution\modSystemSetting::class, ['key' => 'gitpackagemanagement.'.$setting['key']]);
             if ($settingObject) {
                 $settings[$key]['value'] = $settingObject->get('value');
             }
         }
 
         break;
-    case xPDOTransport::ACTION_UNINSTALL: break;
+    case \xPDO\Transport\xPDOTransport::ACTION_UNINSTALL: break;
 }
 
 $output = array();

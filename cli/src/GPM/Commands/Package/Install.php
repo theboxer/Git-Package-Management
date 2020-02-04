@@ -1,4 +1,5 @@
 <?php
+
 namespace GPM\Commands\Package;
 
 use GPM\Commands\GPMCommand;
@@ -9,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Install extends GPMCommand
 {
+
     protected function configure()
     {
         $this
@@ -19,8 +21,7 @@ class Install extends GPMCommand
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Name of the folder with package'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -31,11 +32,11 @@ class Install extends GPMCommand
             return;
         }
 
-        $options = array(
+        $options = [
             'folderName' => $folder,
-        );
+        ];
 
-        /** @var \modProcessorResponse $response */
+        /** @var \MODX\Revolution\Processors\ProcessorResponse $response */
         $response = $this->getApplication()->gpm->runProcessor('mgr/gitpackage/create', $options);
 
         if (!$response->isError()) {
@@ -44,4 +45,5 @@ class Install extends GPMCommand
             $this->error($output, $response->getMessage());
         }
     }
+
 }

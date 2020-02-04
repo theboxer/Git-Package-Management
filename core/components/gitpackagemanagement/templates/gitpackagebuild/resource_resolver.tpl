@@ -54,7 +54,7 @@ if (!function_exists('createResource')) {
         } else {
             $tvs = array();
         }
-        
+
         if (isset($resource['others'])) {
             $others = $resource['others'];
             unset($resource['others']);
@@ -70,22 +70,22 @@ if (!function_exists('createResource')) {
                         'core_path' => $taggerCorePath
                     )
                 );
-            
+
                 $tagger = $tagger instanceof Tagger;
             } else {
                 $tagger = null;
             }
-            
+
             foreach ($others as $other) {
                 if (($tagger == true) && (strpos($other['name'], 'tagger-') !== false)) {
                     $groupAlias = preg_replace('/tagger-/', '', $other['name'], 1);
-            
+
                     $group = $modx->getObject('TaggerGroup', array('alias' => $groupAlias));
                     if ($group) {
                         $other['name'] = 'tagger-' . $group->id;
                     }
                 }
-            
+
                 $resource[$other['name']] = $other['value'];
             }
         }
@@ -95,7 +95,7 @@ if (!function_exists('createResource')) {
 
         if ($resObject && isset($resObject['id'])) {
             /** @var modResource $modResource */
-            $modResource = $modx->getObject('modResource', array('id' => $resObject['id']));
+            $modResource = $modx->getObject(\MODX\Revolution\modResource, array('id' => $resObject['id']));
 
             if ($modResource) {
                 foreach ($tvs as $tv) {
@@ -136,7 +136,7 @@ if (!function_exists('updateResource')) {
                         'core_path' => $taggerCorePath
                     )
                 );
-            
+
                 $tagger = $tagger instanceof Tagger;
             } else {
                 $tagger = null;
@@ -145,7 +145,7 @@ if (!function_exists('updateResource')) {
             foreach ($others as $other) {
                 if (($tagger == true) && (strpos($other['name'], 'tagger-') !== false)) {
                     $groupAlias = preg_replace('/tagger-/', '', $other['name'], 1);
-                
+
                     $group = $modx->getObject('TaggerGroup', array('alias' => $groupAlias));
                     if ($group) {
                         $other['name'] = 'tagger-' . $group->id;
@@ -161,7 +161,7 @@ if (!function_exists('updateResource')) {
 
         if ($resObject && isset($resObject['id'])) {
             /** @var modResource $modResource */
-            $modResource = $modx->getObject('modResource', array('id' => $resObject['id']));
+            $modResource = $modx->getObject(\MODX\Revolution\modResource, array('id' => $resObject['id']));
 
             if ($modResource) {
                 foreach ($tvs as $tv) {
@@ -176,9 +176,9 @@ if (!function_exists('updateResource')) {
     }
 }
 
-switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-    case xPDOTransport::ACTION_INSTALL:
-    case xPDOTransport::ACTION_UPGRADE:
+switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+    case \xPDO\Transport\xPDOTransport::ACTION_INSTALL:
+    case \xPDO\Transport\xPDOTransport::ACTION_UPGRADE:
         $resources = {{$resources}};
 
         if (isset($options['install_resources']) && empty($options['install_resources'])) return true;
@@ -193,7 +193,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                     $resource['parent'] = $resourceMap[$resource['parent']];
                 } else {
                     /** @var modResource $parent */
-                    $parent = $modx->getObject('modResource', array('pagetitle' => $resource['parent']));
+                    $parent = $modx->getObject(\MODX\Revolution\modResource, array('pagetitle' => $resource['parent']));
                     if ($parent) {
                         $resource['parent'] = $parent->id;
                     }
@@ -201,7 +201,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             } else {
                 if ($resource['parent'] != 0) {
                     /** @var modResource $parent */
-                    $parent = $modx->getObject('modResource', array('id' => $resource['parent']));
+                    $parent = $modx->getObject(\MODX\Revolution\modResource, array('id' => $resource['parent']));
                     if ($parent) {
                         $resource['parent'] = $parent->id;
                     }
@@ -212,7 +212,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
             if ($resource['template'] !== null) {
                 if ($resource['template'] !== 0) {
-                    $template = $modx->getObject('modTemplate', array('templatename' => $resource['template']));
+                    $template = $modx->getObject(\MODX\Revolution\modTemplate, array('templatename' => $resource['template']));
                     if ($template) {
                         $resource['template'] = $template->id;
                     }
@@ -222,7 +222,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             }
 
             if ($resource['content_type'] !== null) {
-                $content_type = $modx->getObject('modContentType', array('name' => $resource['content_type']));
+                $content_type = $modx->getObject(\MODX\Revolution\modContentType, array('name' => $resource['content_type']));
                 if ($content_type) {
                     $resource['content_type'] = $content_type->id;
                 }
@@ -234,7 +234,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                 unset($toRemove[$resource['pagetitle']]);
 
                 /** @var modResource $exists */
-                $exists = $modx->getObject('modResource', array('id' => $resourceMap[$resource['pagetitle']]));
+                $exists = $modx->getObject(\MODX\Revolution\modResource, array('id' => $resourceMap[$resource['pagetitle']]));
                 if ($exists) {
                     $resource['id'] = $exists->id;
                     $resId = updateResource($modx,$resource);
@@ -264,9 +264,9 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
                 if ($resource['set_as_home'] == 1) {
                     unset($resource['set_as_home']);
                     $resource['id'] = $siteStart;
-                
+
                     $resId = updateResource($modx,$resource);
-                
+
                     if ($resId !== false) {
                         $resourceMap[$resource['pagetitle']] = $resId;
                     }
@@ -286,9 +286,9 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
             if ($resource == $siteStart) continue;
 
             /** @var modResource $modResource */
-            $modResource = $modx->getObject('modResource', $resource);
+            $modResource = $modx->getObject(\MODX\Revolution\modResource, $resource);
             if ($modResource) {
-                $modx->updateCollection('modResource', array('parent' => 0), array('parent' => $resource));
+                $modx->updateCollection(\MODX\Revolution\modResource, array('parent' => 0), array('parent' => $resource));
 
                 $modResource->remove();
             }
@@ -297,7 +297,7 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         setResourceMap($modx,$resourceMap);
 
         break;
-    case xPDOTransport::ACTION_UNINSTALL:
+    case \xPDO\Transport\xPDOTransport::ACTION_UNINSTALL:
 
         break;
 }

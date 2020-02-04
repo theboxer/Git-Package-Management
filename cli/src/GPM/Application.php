@@ -6,7 +6,7 @@ class Application extends \Symfony\Component\Console\Application
     /** @var \modX $modx */
     public $modx;
 
-    /** @var \GitPackageManagement $gpm */
+    /** @var \GitPackageManagement\GitPackageManagement $gpm */
     public $gpm;
 
     protected static $name = 'GPM CLI';
@@ -47,16 +47,10 @@ class Application extends \Symfony\Component\Console\Application
 
     public function loadGPM()
     {
-        $corePath = $this->modx->getOption('gitpackagemanagement.core_path',null,$this->modx->getOption('core_path').'components/gitpackagemanagement/');
-
-        $this->gpm = $this->modx->getService(
-            'gitpackagemanagement',
-            'GitPackageManagement',
-            $corePath . 'model/gitpackagemanagement/',
-            array(
-                'core_path' => $corePath
-            )
-        );
+        try {
+            $this->gpm = $this->modx->services->get('gitpackagemanagement');
+        } catch (\Exception $e) {
+            $this->gpm = null;
+        }
     }
-
 }

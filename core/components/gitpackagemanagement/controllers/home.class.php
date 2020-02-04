@@ -1,13 +1,6 @@
 <?php
-/**
- * Loads the home page.
- *
- * @package gitpackagemanagement
- * @subpackage controllers
- */
-if (!class_exists('GitPackageManagementBaseManagerController')) {
-    require_once __DIR__ .'/../index.class.php';
-}
+
+require_once __DIR__ .'/../index.class.php';
 class GitPackageManagementHomeManagerController extends GitPackageManagementBaseManagerController {
     public function process(array $scriptProperties = array()) {
 

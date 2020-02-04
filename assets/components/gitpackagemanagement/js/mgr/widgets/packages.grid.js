@@ -3,16 +3,16 @@ GitPackageManagement.grid.Packages = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         id: 'gitpackagemanagement-grid-packages'
-        ,url: GitPackageManagement.config.connectorUrl
+        ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/gitpackage/getlist'
+            action: 'GitPackageManagement\\Processors\\GitPackage\\GetList'
         }
         ,fields: ['id','name','description', 'author', 'version', 'key', 'updatedon']
         ,autoHeight: true
         ,paging: true
         ,remoteSort: true
         ,enableDragDrop: false
-        ,save_action: 'mgr/gitpackage/updatefromgrid'
+        ,save_action: 'GitPackageManagement\\Processors\\GitPackage\\UpdateFromGrid'
         ,autosave: true
         ,columns: [{
             header: _('id')
@@ -125,9 +125,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,updatePackage: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/update'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\Update'
                 ,id: this.menu.record.id
                 ,recreateDatabase: 0
             }
@@ -148,9 +148,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,updatePackageAndDatabase: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/update'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\Update'
                 ,id: this.menu.record.id
                 ,recreateDatabase: 1
                 ,alterDatabase: 0
@@ -173,9 +173,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,updatePackageAndAlterDatabase: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/update'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\Update'
                 ,id: this.menu.record.id
                 ,recreateDatabase: 0
                 ,alterDatabase: 1
@@ -198,9 +198,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,buildSchema: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/buildschema'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\BuildSchema'
                 ,id: this.menu.record.id
             }
             ,listeners: {
@@ -220,9 +220,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,preservePackage: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/preservepackage'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\Preserve'
                 ,id: this.menu.record.id
             }
             ,listeners: {
@@ -242,9 +242,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,buildPackage: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/buildpackage'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\Build'
                 ,id: this.menu.record.id
             }
             ,listeners: {
@@ -263,9 +263,9 @@ Ext.extend(GitPackageManagement.grid.Packages,MODx.grid.Grid,{
     ,checkLexicon: function(){
         this.updateMask.show();
         MODx.Ajax.request({
-            url: GitPackageManagement.config.connectorUrl
+            url: MODx.config.connector_url
             ,params: {
-                action: 'mgr/gitpackage/checklexicon'
+                action: 'GitPackageManagement\\Processors\\GitPackage\\CheckLexicon'
                 ,id: this.menu.record.id
             }
             ,listeners: {

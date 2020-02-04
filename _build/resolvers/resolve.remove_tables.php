@@ -1,7 +1,7 @@
 <?php
 if ($object->xpdo) {
-    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
-        case xPDOTransport::ACTION_UNINSTALL:
+    switch ($options[\xPDO\Transport\xPDOTransport::PACKAGE_ACTION]) {
+        case \xPDO\Transport\xPDOTransport::ACTION_UNINSTALL:
             /** @var modX $modx */
             $modx =& $object->xpdo;
 
@@ -10,7 +10,7 @@ if ($object->xpdo) {
 
             $manager = $modx->getManager();
 
-            $manager->removeObjectContainer('GitPackage');
+            $manager->removeObjectContainer(\GitPackageManagement\Model\GitPackage::class);
             break;
     }
 }
