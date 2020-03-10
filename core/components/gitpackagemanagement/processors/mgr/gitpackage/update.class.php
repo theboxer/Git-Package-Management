@@ -332,8 +332,12 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                     // If events are defined as separate JSON objects, they can contain priority and propertyset values
                     if (is_array($event)) {
                         $eventName = $event['event'];
-                        $priority = $event['priority'];
-                        $propertySet = $event['propertyset'];
+                        if ($event['priority']) {
+                            $priority = $event['priority'];
+                        }
+                        if ($event['propertyset']) {
+                            $propertySet = $event['propertyset'];
+                        }
                     }
 
                     $events[$eventName] = $this->modx->newObject('modPluginEvent');
