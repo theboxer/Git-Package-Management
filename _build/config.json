@@ -40,6 +40,18 @@
         "value": "0",
         "type": "combo-boolean",
         "area": "system"
+      },
+      {
+        "key": "disable_create_elements",
+        "value": "0",
+        "type": "combo-boolean",
+        "area": "system"
+      },
+      {
+        "key": "disable_update_elements",
+        "value": "0",
+        "type": "combo-boolean",
+        "area": "system"
       }
     ]
   },
