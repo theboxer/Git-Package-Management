@@ -97,26 +97,28 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
         $this->object->set('description', $this->newConfig->getDescription());
         $this->object->set('version', $this->newConfig->getVersion());
 
-        /** @var modCategory category */
-        $this->category = $this->modx->getObject('modCategory', array('category' => $this->newConfig->getName()));
-        if(!$this->category){
-            $this->category = $this->modx->newObject('modCategory');
-            $this->category->set('category', $this->newConfig->getName());
-            $this->category->save();
+        if (!$this->modx->gitpackagemanagement->getOption('disable_update_elements')){
+            /** @var modCategory category */
+            $this->category = $this->modx->getObject('modCategory', array('category' => $this->newConfig->getName()));
+            if(!$this->category){
+                $this->category = $this->modx->newObject('modCategory');
+                $this->category->set('category', $this->newConfig->getName());
+                $this->category->save();
+            }
+
+            $this->updateDatabase();
+            $this->updateActionsAndMenus();
+            $this->updateExtensionPackage();
+            $this->updateSystemSettings();
+
+            $notUsedCategories = array();
+            $this->updateCategories($notUsedCategories);
+            $this->updateElements();
+            $this->removeNotUsedCategories($notUsedCategories);
+
+            $this->updateResources();
+            $this->clearCache();
         }
-
-        $this->updateDatabase();
-        $this->updateActionsAndMenus();
-        $this->updateExtensionPackage();
-        $this->updateSystemSettings();
-
-        $notUsedCategories = array();
-        $this->updateCategories($notUsedCategories);
-        $this->updateElements();
-        $this->removeNotUsedCategories($notUsedCategories);
-
-        $this->updateResources();
-        $this->clearCache();
 
         return true;
     }
