@@ -7,7 +7,7 @@ GitPackageManagement.window.AddPackage = function(config) {
         ,width: 475
         ,url: MODx.config.connector_url
         ,baseParams: {
-            action: 'mgr/gitpackage/create'
+            action: 'GitPackageManagement\\Processors\\GitPackage\\Create'
             ,register: 'mgr'
             ,topic: '/gitpackageinstall/'
         }
@@ -37,7 +37,7 @@ GitPackageManagement.window.RemovePackage = function(config) {
         ,saveBtnText: _('yes')
         ,labelAlign: 'left'
         ,baseParams: {
-            action: 'mgr/gitpackage/remove'
+            action: 'GitPackageManagement\\Processors\\GitPackage\\Remove'
             ,register: 'mgr'
             ,topic: '/gitpackageuninstall/'
         }
