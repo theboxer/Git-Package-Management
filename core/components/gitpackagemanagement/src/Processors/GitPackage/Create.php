@@ -312,9 +312,9 @@ class Create extends CreateProcessor
      */
     private function createSystemSettings()
     {
-        $this->createSystemSetting($this->config->getLowCaseName() . '.core_path', $this->packageCorePath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.core_path', $this->packageCorePath, 'textfield', 'gitpackagemanagement');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath, 'textfield', 'gitpackagemanagement');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl, 'textfield', 'gitpackagemanagement');
 
         /** @var $setting Setting */
         foreach ($this->config->getSettings() as $setting) {

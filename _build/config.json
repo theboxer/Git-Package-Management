@@ -16,12 +16,22 @@
       {
         "key": "packages_dir",
         "value": "",
-        "area": "Paths"
+        "area": "paths"
       },
       {
         "key": "packages_base_url",
         "value": "/",
-        "area": "Paths"
+        "area": "paths"
+      },
+      {
+        "key": "build_path",
+        "value": "/_packages/",
+        "area": "paths"
+      },
+      {
+        "key": "default_lexicon",
+        "value": "en",
+        "area": "system"
       },
       {
         "key": "enable_debug",

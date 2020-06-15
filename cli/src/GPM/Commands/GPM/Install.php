@@ -211,9 +211,9 @@ define('MODX_CONFIG_KEY', '" . $configKey . "');";
 
     protected function createSystemSettings($packagesDir, $packagesBaseUrl)
     {
-        $this->createSystemSetting($this->config->getLowCaseName() . '.core_path', $this->packageCorePath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath, 'textfield', 'Git Package Management Settings');
-        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl, 'textfield', 'Git Package Management Settings');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.core_path', $this->packageCorePath, 'textfield', 'gitpackagemanagement');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_path', $this->packageAssetsPath, 'textfield', 'gitpackagemanagement');
+        $this->createSystemSetting($this->config->getLowCaseName() . '.assets_url', $this->packageAssetsUrl, 'textfield', 'gitpackagemanagement');
 
         $this->createSystemSetting($this->config->getLowCaseName() . '.packages_dir', $packagesDir, 'textfield', 'Paths');
         $this->createSystemSetting($this->config->getLowCaseName() . '.packages_base_url', $packagesBaseUrl, 'textfield', 'Paths');

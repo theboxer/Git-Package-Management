@@ -5,6 +5,7 @@
  * @package gitpackagemanagement
  * @subpackage lexicon
  */
+
 $_lang['prop_gitpackagemanagement.limit_desc'] = 'The number of Items to limit per page.';
 $_lang['prop_gitpackagemanagement.outputseparator_desc'] = 'A string to separate each row with.';
 $_lang['prop_gitpackagemanagement.sortby_desc'] = 'The field to sort by.';
