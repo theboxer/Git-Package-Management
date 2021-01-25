@@ -151,7 +151,6 @@ class GitPackageManagementCreateProcessor extends modObjectCreateProcessor {
         }
 
         $this->object->set('config', $this->modx->toJSON($configContent));
-        $this->object->save();
         $this->modx->log(modX::LOG_LEVEL_INFO, 'Config file is valid.');
         return true;
 
