@@ -150,7 +150,7 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
                     $pathinfo['extension'] == 'html' ||
                     $pathinfo['extension'] == 'tpl' ||
                     $pathinfo['basename'] == 'config.json'
-                    ) && strpos($pathinfo['basename'], 'min.js') == false) ? true : false;
+                    ) && strpos($pathinfo['basename'], 'min.js') === false) ? true : false;
             }
         });
         $iterator = new \RecursiveIteratorIterator($filter);
@@ -178,9 +178,9 @@ class GitPackageManagementCheckLexiconProcessor extends modObjectProcessor {
     private function addPhpKeys($filename) {
         $fileContent = file_get_contents($filename);
         $results = array();
-        preg_match_all('/modx->lexicon\((["\'])(' . $this->config->getLowCaseName() . '\..*?)\1\s*[,\)]/m', $fileContent, $results);
-        if (is_array($results[2])) {
-            foreach ($results[2] as $result) {
+        preg_match_all('/(modx|xpdo)->lexicon\((["\'])(' . $this->config->getLowCaseName() . '\..*?)\2\s*[,\)]/m', $fileContent, $results);
+        if (is_array($results[3])) {
+            foreach ($results[3] as $result) {
                 // Don't add lexicon keys that ends with a dot or an underscore or that contain a variable
                 if (substr($result, -1) !== '.' &&
                     substr($result, -1) !== '_'
