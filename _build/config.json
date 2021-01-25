@@ -3,7 +3,7 @@
   "lowCaseName": "gitpackagemanagement",
   "description": "Developer tool for creating components.",
   "author": "John Peca",
-  "version": "0.14.0-alpha",
+  "version": "0.14.0-alpha9",
   "package": {
     "actions": [
       {
@@ -37,6 +37,18 @@
       },
       {
         "key": "remove_extracted_package",
+        "value": "0",
+        "type": "combo-boolean",
+        "area": "system"
+      },
+      {
+        "key": "disable_create_elements",
+        "value": "0",
+        "type": "combo-boolean",
+        "area": "system"
+      },
+      {
+        "key": "disable_update_elements",
         "value": "0",
         "type": "combo-boolean",
         "area": "system"

@@ -18,3 +18,13 @@ Activating this setting, plugins and snippets are no longer created as static el
 Key: `gitpackagemanagement.remove_extracted_package`  
 Default: `false`  
 Activating this setting, the extracted transport package is removed after building.
+
+### Disable creating anything in the MODX db
+Key: `gitpackagemanagement.disable_create_elements`    
+Default: `false`  
+Activating this setting, GPM lets the MODX installation alone and doesn't create anything. This is useful, when you want GPM to just create a package, without altering the MODX installation.
+
+### Disable updating anything in the MODX db
+Key: `gitpackagemanagement.disable_update_elements`    
+Default: `false`  
+Activating this setting, GPM lets the MODX installation alone and doesn't update anything. This is useful, when you want GPM to just create a package, without altering the MODX installation.    
