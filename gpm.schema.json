@@ -1,0 +1,490 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GPM Config",
+  "name": "gpm.yml",
+  "fileMatch": [ "gpm.json", "gpm.yml", "gpm.yaml" ],
+  "description": "A config file for GPM",
+
+  "definitions": {
+    "category": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "children": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/category" },
+          "default": []
+        }
+      }
+    },
+
+    "properties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/definitions/type"
+          },
+          "value": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "boolean" }
+            ]
+          },
+          "lexicon": {
+            "type": "string"
+          },
+          "area": {
+            "type": "string"
+          }
+        }
+      }
+    },
+
+    "type": {
+      "type": "string",
+      "default": "textfield",
+      "enum": [
+        "textfield",
+        "textarea",
+        "numberfield",
+        "combo-boolean",
+        "text-password",
+        "modx-combo-category",
+        "modx-combo-charset",
+        "modx-combo-country",
+        "modx-combo-context",
+        "modx-combo-namespace",
+        "modx-combo-template",
+        "modx-combo-user",
+        "modx-combo-usergroup",
+        "modx-combo-language",
+        "modx-combo-source",
+        "modx-combo-source-type",
+        "modx-combo-manager-theme",
+        "modx-grid-json"
+      ]
+    },
+
+    "event": {
+      "type": "string",
+      "enum": [
+        "OnBeforeCacheUpdate",
+        "OnBeforeChunkFormDelete",
+        "OnBeforeChunkFormSave",
+        "OnBeforeDocFormDelete",
+        "OnBeforeDocFormSave",
+        "OnBeforeEmptyTrash",
+        "OnBeforeManagerLogin",
+        "OnBeforeManagerLogout",
+        "OnBeforeManagerPageInit",
+        "OnBeforePluginFormDelete",
+        "OnBeforePluginFormSave",
+        "OnBeforeRegisterClientScripts",
+        "OnBeforeSaveWebPageCache",
+        "OnBeforeSnipFormDelete",
+        "OnBeforeSnipFormSave",
+        "OnBeforeTempFormDelete",
+        "OnBeforeTempFormSave",
+        "OnBeforeTVFormDelete",
+        "OnBeforeTVFormSave",
+        "OnBeforeUserActivate",
+        "OnBeforeUserDeactivate",
+        "OnBeforeUserDuplicate",
+        "OnBeforeUserFormDelete",
+        "OnBeforeUserFormSave",
+        "OnBeforeUserGroupFormRemove",
+        "OnBeforeUserGroupFormSave",
+        "OnBeforeWebLogin",
+        "OnBeforeWebLogout",
+        "OnCacheUpdate",
+        "OnCategoryBeforeRemove",
+        "OnCategoryBeforeSave",
+        "OnCategoryRemove",
+        "OnCategorySave",
+        "OnChunkBeforeRemove",
+        "OnChunkBeforeSave",
+        "OnChunkFormDelete",
+        "OnChunkFormPrerender",
+        "OnChunkFormRender",
+        "OnChunkFormSave",
+        "OnChunkRemove",
+        "OnChunkSave",
+        "OnContextBeforeRemove",
+        "OnContextBeforeSave",
+        "OnContextFormPrerender",
+        "OnContextFormRender",
+        "OnContextRemove",
+        "OnContextSave",
+        "OnDocFormDelete",
+        "OnDocFormPrerender",
+        "OnDocFormRender",
+        "OnDocFormSave",
+        "OnDocPublished",
+        "OnDocUnPublished",
+        "OnElementNotFound",
+        "OnEmptyTrash",
+        "OnFileCreateFormPrerender",
+        "OnFileEditFormPrerender",
+        "OnFileManagerBeforeUpload",
+        "OnFileManagerDirCreate",
+        "OnFileManagerDirRemove",
+        "OnFileManagerDirRename",
+        "OnFileManagerFileCreate",
+        "OnFileManagerFileRemove",
+        "OnFileManagerFileRename",
+        "OnFileManagerFileUpdate",
+        "OnFileManagerMoveObject",
+        "OnFileManagerUpload",
+        "OnHandleRequest",
+        "OnInitCulture",
+        "OnLoadWebDocument",
+        "OnLoadWebPageCache",
+        "OnManagerAuthentication",
+        "OnManagerLogin",
+        "OnManagerLoginFormPrerender",
+        "OnManagerLoginFormRender",
+        "OnManagerLogout",
+        "OnManagerPageAfterRender",
+        "OnManagerPageBeforeRender",
+        "OnManagerPageInit",
+        "OnMediaSourceBeforeFormDelete",
+        "OnMediaSourceBeforeFormSave",
+        "OnMediaSourceDuplicate",
+        "OnMediaSourceFormDelete",
+        "OnMediaSourceFormSave",
+        "OnMediaSourceGetProperties",
+        "OnMODXInit",
+        "OnPackageInstall",
+        "OnPackageRemove",
+        "OnPackageUninstall",
+        "OnPageNotFound",
+        "OnPageUnauthorized",
+        "OnParseDocument",
+        "OnPluginBeforeRemove",
+        "OnPluginBeforeSave",
+        "OnPluginEventBeforeRemove",
+        "OnPluginEventBeforeSave",
+        "OnPluginEventRemove",
+        "OnPluginEventSave",
+        "OnPluginFormDelete",
+        "OnPluginFormPrerender",
+        "OnPluginFormRender",
+        "OnPluginFormSave",
+        "OnPluginRemove",
+        "OnPluginSave",
+        "OnPropertySetBeforeRemove",
+        "OnPropertySetBeforeSave",
+        "OnPropertySetRemove",
+        "OnPropertySetSave",
+        "OnResourceAddToResourceGroup",
+        "OnResourceAutoPublish",
+        "OnResourceBeforeSort",
+        "OnResourceCacheUpdate",
+        "OnResourceDelete",
+        "OnResourceDuplicate",
+        "OnResourceGroupBeforeRemove",
+        "OnResourceGroupBeforeSave",
+        "OnResourceGroupRemove",
+        "OnResourceGroupSave",
+        "OnResourceRemoveFromResourceGroup",
+        "OnResourceSort",
+        "OnResourceToolbarLoad",
+        "OnResourceTVFormPrerender",
+        "OnResourceTVFormRender",
+        "OnResourceUndelete",
+        "OnRichTextBrowserInit",
+        "OnRichTextEditorInit",
+        "OnRichTextEditorRegister",
+        "OnSiteRefresh",
+        "OnSiteSettingsRender",
+        "OnSnipFormDelete",
+        "OnSnipFormPrerender",
+        "OnSnipFormRender",
+        "OnSnipFormSave",
+        "OnSnippetBeforeRemove",
+        "OnSnippetBeforeSave",
+        "OnSnippetRemove",
+        "OnSnippetSave",
+        "OnTempFormDelete",
+        "OnTempFormPrerender",
+        "OnTempFormRender",
+        "OnTempFormSave",
+        "OnTemplateBeforeRemove",
+        "OnTemplateBeforeSave",
+        "OnTemplateRemove",
+        "OnTemplateSave",
+        "OnTemplateVarBeforeRemove",
+        "OnTemplateVarBeforeSave",
+        "OnTemplateVarRemove",
+        "OnTemplateVarSave",
+        "OnTVFormDelete",
+        "OnTVFormPrerender",
+        "OnTVFormRender",
+        "OnTVFormSave",
+        "OnTVInputPropertiesList",
+        "OnTVInputRenderList",
+        "OnTVOutputRenderList",
+        "OnTVOutputRenderPropertiesList",
+        "OnUserActivate",
+        "OnUserAddToGroup",
+        "OnUserBeforeAddToGroup",
+        "OnUserBeforeRemove",
+        "OnUserBeforeRemoveFromGroup",
+        "OnUserBeforeSave",
+        "OnUserChangePassword",
+        "OnUserDeactivate",
+        "OnUserDuplicate",
+        "OnUserFormDelete",
+        "OnUserFormPrerender",
+        "OnUserFormRender",
+        "OnUserFormSave",
+        "OnUserGroupBeforeRemove",
+        "OnUserGroupBeforeSave",
+        "OnUserGroupFormSave",
+        "OnUserGroupRemove",
+        "OnUserGroupSave",
+        "OnUserNotFound",
+        "OnUserProfileBeforeRemove",
+        "OnUserProfileBeforeSave",
+        "OnUserProfileRemove",
+        "OnUserProfileSave",
+        "OnUserRemove",
+        "OnUserRemoveFromGroup",
+        "OnUserSave",
+        "OnWebAuthentication",
+        "OnWebLogin",
+        "OnWebLogout",
+        "OnWebPageComplete",
+        "OnWebPageInit",
+        "OnWebPagePrerender"
+      ]
+    },
+
+    "element": {
+      "type": "object",
+      "required": ["name"],
+      "properties":  {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "file": {
+          "type": "string"
+        },
+        "category": {
+          "oneOf": [
+            {"type":  "string"},
+            {"type":  "array", "items":  {"type": "string"}}
+          ]
+        },
+        "propertyPreProcess": {
+          "type": "integer"
+        },
+        "properties": {
+          "$ref": "#/definitions/properties"
+        }
+      }
+    }
+  },
+
+  "required": [
+    "name",
+    "version"
+  ],
+
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name"
+    },
+    "lowCaseName": {
+      "type": "string"
+    },
+    "namespace": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+.[0-9]+.[0-9]+(-[a-zA-Z]+)?$"
+    },
+
+    "menus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "type": "string",
+            "default": "components"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "menuIndex": {
+            "type": "integer"
+          },
+          "params": {
+            "type": "string"
+          },
+          "handler": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "string"
+          }
+        }
+      }
+    },
+
+    "systemSettings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key"],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/definitions/type"
+          },
+          "area": {
+            "type": "string",
+            "default": "default"
+          },
+          "value": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "boolean" }
+            ]
+          }
+        }
+      }
+    },
+
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/category"
+      }
+    },
+
+    "snippets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/element"
+      }
+    },
+
+    "chunks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/element"
+      }
+    },
+
+    "plugins": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/element" },
+          {
+            "properties": {
+              "disabled": {
+                "type": "boolean"
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    { "$ref": "#/definitions/event" },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    "templates": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/element" },
+          {
+            "properties": {
+              "icon": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    "build": {
+      "type": "object",
+      "properties": {
+        "scripts": {
+          "type": "object",
+          "properties": {
+            "before": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "database": {
+      "type": "object",
+      "properties": {
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+name: gpm
+lowCaseName: gpm
+description: Git Package Management for MODX Revolution 3.x
+author: John Peca
+version: 0.1.0
+
+menus:
+  - text: gpm.menu
+    description: gpm.menu_desc
+    action: manage
+
+systemSettings:
+  - key: build_path
+    area: build
+    value: _packages
+  - key: enable_debug
+    area: system
+    type: combo-boolean
+    value: 0
+
+database:
+  tables:
+    - GPM\Model\GitPackage

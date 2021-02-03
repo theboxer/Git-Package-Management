@@ -1,0 +1,21 @@
+{
+  "name": "theboxer/gpm",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "theboxer",
+      "email": "john@peca.io"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "GPM\\": "src/"
+    }
+  },
+  "require": {
+    "symfony/console": "^3.4",
+    "symfony/yaml": "^3.4"
+  }
+}
