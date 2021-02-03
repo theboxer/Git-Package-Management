@@ -50,3 +50,6 @@ Did you run into an issue installing or using GPM?
 
 ## Feature Requests / Enhancements
 Please hold on with all your ideas, I have my list I want to handle first. (Yes, it will be public, later)
+
+## Note
+There is a `package:create` command that will help you set up a new package. Try it out :)
