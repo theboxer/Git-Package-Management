@@ -210,6 +210,7 @@ class Install extends Operation
             if (!$object) {
                 $object = $this->modx->newObject(modCategory::class);
                 $object->set('category', $category->name);
+                $object->set('rank', $category->rank);
             }
 
             $object->set('parent', $this->category->get('id'));
@@ -245,6 +246,7 @@ class Install extends Operation
             if (!$object) {
                 $object = $this->modx->newObject(modCategory::class);
                 $object->set('category', $category->name);
+                $object->set('rank', $category->rank);
             }
 
             $object->set('parent', $parent);

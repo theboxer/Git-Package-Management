@@ -407,6 +407,11 @@ class Update extends Operation
         foreach ($childCategories as $category) {
             if (isset($map[$category->name])) {
                 $map[$category->name]['delete'] = false;
+
+                $object = $this->modx->getObject(modCategory::class, ['id' => $map[$category->name]['id']]);
+                $object->set('rank', $category->rank);
+                $object->save();
+
                 $this->logger->info(' - ' . $category->name);
                 $this->syncCategories($category->children, $map[$category->name]['id'], $map[$category->name]['children']);
 
@@ -418,6 +423,7 @@ class Update extends Operation
             if (!$object) {
                 $object = $this->modx->newObject(modCategory::class);
                 $object->set('category', $category->name);
+                $object->set('rank', $category->rank);
             }
             $object->set('parent', $parentId);
             $saved = $object->save();

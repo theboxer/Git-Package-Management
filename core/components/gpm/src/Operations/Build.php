@@ -244,6 +244,7 @@ class Build extends Operation {
             /** @var modCategory $category */
             $category = $this->modx->newObject(modCategory::class);
             $category->set('category', $cat->name);
+            $category->set('rank', $cat->rank);
 
             $snippets = $this->getElements('snippet', $catPath);
             if (!empty($snippets)) {

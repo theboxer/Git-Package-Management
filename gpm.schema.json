@@ -11,6 +11,7 @@
       "required": ["name"],
       "properties": {
         "name": { "type": "string" },
+        "rank": { "type":  "integer" },
         "children": {
           "type": "array",
           "items": { "$ref": "#/definitions/category" },

@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
  * Class General
  *
  * @property-read string $name
+ * @property-read integer $rank
  * @property-read Category[] $children
  *
  * @package GPM\Config\Parts
@@ -17,6 +18,9 @@ class Category extends Part
 {
     /** @var string */
     protected $name = '';
+
+    /** @var integer */
+    protected $rank = 0;
 
     /** @var Category[] */
     protected $children = [];
@@ -53,6 +57,11 @@ class Category extends Part
             foreach ($this->children as $childCategory) {
                 $valid = $childCategory->validate($logger) && $valid;
             }
+        }
+
+        if (!is_int($this->rank)) {
+            $valid = false;
+            $logger->error("Categories - {$this->name} - rank has to be an integer");
         }
 
         if ($valid) {
