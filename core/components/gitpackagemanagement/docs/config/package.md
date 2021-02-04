@@ -375,7 +375,7 @@ lexicon, size
                 "type": "file",
                 "content": "mywidget.widget.php",
                 "lexicon": "mywidget:default",
-                "size": "half",
+                "size": "half"
             }]
         }
     }
@@ -400,6 +400,7 @@ Category with name of the package is created automatically and all categories de
 #### Available properties:
 - **name** (required) - Category's name
 - **parent** (optional) - Name of category that will be used as a parent
+- **rank** (optional) - Sort order of this category
 
 #### Example
 ```json
@@ -411,6 +412,9 @@ Category with name of the package is created automatically and all categories de
             },{
                 "name": "Second category",
                 "parent": "First category"
+            },{
+                "name": "Last category",
+                "rank": "99"
             }]
         }
     }

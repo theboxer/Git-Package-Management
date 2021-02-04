@@ -788,6 +788,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $parent = $this->category->id;
             }
 
+            $rank = $category->getRank();
+            if (!empty($rank)) {
+                $categoryObject->set('rank', $rank);
+            }
+
             $categoryObject->set('parent', $parent);
 
             $categoryObject->save();
