@@ -27,6 +27,7 @@ class Install extends \GPM\Operations\Install
             ];
 
             $this->config = Config::load($this->modx, $this->logger, $parsedConfig);
+            $this->prepareGitPackage($dir);
 
             $this->createConfigFile();
             $this->createNamespace();
@@ -35,7 +36,7 @@ class Install extends \GPM\Operations\Install
             $this->createTables();
             $this->clearCache();
 
-            $this->createGitPackage($dir);
+            $this->saveGitPackage();
         } catch (\Exception $err) {
             $this->logger->error($err->getMessage());
             return;
