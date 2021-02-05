@@ -1,8 +1,10 @@
 # GPM
 
-This is the new version of GPM specifically for MODX Revolution 3.x. 
+🚨🚨🚨 **This is the new version of GPM specifically for MODX Revolution 3.x.** 🚨🚨🚨
 
 It doesn't work with 2.x and packages generated from this version also work only with Revolution 3.x.
+
+🚨 [Here is the v1 which works with Revo 2.x](https://github.com/theboxer/Git-Package-Management/tree/master)
 
 ## Docs
 Documentation is still in progress, as this is a new major version, there isn't much that is backward compatible, not even config.json (it was renamed to gpm.json or gpm.yaml and the structure is similar but different).
