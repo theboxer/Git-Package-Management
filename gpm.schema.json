@@ -492,15 +492,25 @@
     "build": {
       "type": "object",
       "properties": {
-        "scripts": {
-          "type": "object",
-          "properties": {
-            "before": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
+        "readme": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "changelog": {
+          "type": "string"
+        },
+        "scriptsBefore": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scriptsAfter": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }

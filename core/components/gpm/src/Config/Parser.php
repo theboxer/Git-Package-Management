@@ -145,10 +145,10 @@ class Parser
     {
         if (!isset($this->config['build'])) return [];
 
-        return [
-            'scriptsBefore' => $this->config['build']['scripts']['before'] ?? [],
-            'scriptsAfter' => $this->config['build']['scripts']['after'] ?? [],
-        ];
+        $this->config['build']['scriptsBefore'] = $this->config['build']['scriptsBefore'] ?? [];
+        $this->config['build']['scriptsAfter'] = $this->config['build']['scriptsAfter'] ?? [];
+
+        return $this->config['build'];
     }
 
     private function getSnippets(): array

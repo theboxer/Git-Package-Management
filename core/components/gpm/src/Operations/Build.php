@@ -42,6 +42,8 @@ class Build extends Operation {
 
             $this->packScripts('after');
 
+            $this->setPackageAttributes();
+
             $this->package->pack();
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
@@ -103,26 +105,61 @@ class Build extends Operation {
         $namespace->set('path', '{core_path}components/' . $this->config->general->lowCaseName . '/');
         $namespace->set('assets_path', '{assets_path}components/' . $this->config->general->lowCaseName . '/');
 
+        $namespaceResolvers = [
+            [
+                'type' => 'file',
+                'source' => $this->config->paths->core,
+                'target' => "return MODX_CORE_PATH . 'components/';",
+            ],
+            [
+                'type' => 'file',
+                'source' => $this->config->paths->assets,
+                'target' => "return MODX_ASSETS_PATH . 'components/';",
+            ],
+            [
+                'type' => 'php',
+                'source' => $this->getResolver('bootstrap'),
+            ]
+        ];
+
+        if (!empty($this->config->build->readme)) {
+            $readmePath = ltrim($this->config->build->readme, '\\/');
+            if (substr($readmePath, 0, 4) !== 'core' && substr($readmePath, 0, 6) !== 'assets') {
+                $namespaceResolvers[] = [
+                    'type' => 'file',
+                    'source' => $this->config->paths->package . $this->config->build->readme,
+                    'target' => "return MODX_CORE_PATH . 'components/{$this->config->general->lowCaseName}/docs/';",
+                ];
+            }
+        }
+
+        if (!empty($this->config->build->license)) {
+            $licensePath = ltrim($this->config->build->license, '\\/');
+            if (substr($licensePath, 0, 4) !== 'core' && substr($licensePath, 0, 6) !== 'assets') {
+                $namespaceResolvers[] = [
+                    'type' => 'file',
+                    'source' => $this->config->paths->package . $this->config->build->license,
+                    'target' => "return MODX_CORE_PATH . 'components/{$this->config->general->lowCaseName}/docs/';",
+                ];
+            }
+        }
+
+        if (!empty($this->config->build->changelog)) {
+            $changelogPath = ltrim($this->config->build->changelog, '\\/');
+            if (substr($changelogPath, 0, 4) !== 'core' && substr($changelogPath, 0, 6) !== 'assets') {
+                $namespaceResolvers[] = [
+                    'type' => 'file',
+                    'source' => $this->config->paths->package . $this->config->build->changelog,
+                    'target' => "return MODX_CORE_PATH . 'components/{$this->config->general->lowCaseName}/docs/';",
+                ];
+            }
+        }
+
         $this->package->put($namespace, [
             xPDOTransport::UNIQUE_KEY    => 'name',
             xPDOTransport::PRESERVE_KEYS => true,
             xPDOTransport::UPDATE_OBJECT => true,
-            'resolve' => [
-                [
-                    'type' => 'file',
-                    'source' => $this->config->paths->core,
-                    'target' => "return MODX_CORE_PATH . 'components/';",
-                ],
-                [
-                    'type' => 'file',
-                    'source' => $this->config->paths->assets,
-                    'target' => "return MODX_ASSETS_PATH . 'components/';",
-                ],
-                [
-                    'type' => 'php',
-                    'source' => $this->getResolver('bootstrap'),
-                ]
-            ]
+            'resolve' => $namespaceResolvers
         ]);
     }
 
@@ -341,6 +378,21 @@ class Build extends Operation {
         }
 
         return $propertySets;
+    }
+
+    protected function setPackageAttributes(): void
+    {
+        if (!empty($this->config->build->readme)) {
+            $this->package->setAttribute('readme', file_get_contents($this->config->paths->package . $this->config->build->readme));
+        }
+        
+        if (!empty($this->config->build->license)) {
+            $this->package->setAttribute('license', file_get_contents($this->config->paths->package . $this->config->build->license));
+        }
+
+        if (!empty($this->config->build->changelog)) {
+            $this->package->setAttribute('changelog', file_get_contents($this->config->paths->package . $this->config->build->changelog));
+        }
     }
 
     protected function getResolver(string $name, array $props = []): string
