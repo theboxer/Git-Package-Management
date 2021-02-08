@@ -6,13 +6,13 @@ use GPM\Config\Parts\Part;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class General
+ * Class Category
  *
  * @property-read string $name
  * @property-read integer $rank
  * @property-read Category[] $children
  *
- * @package GPM\Config\Parts
+ * @package GPM\Config\Parts\Element
  */
 class Category extends Part
 {

@@ -4,11 +4,11 @@ namespace GPM\Config\Parts\Element;
 use MODX\Revolution\modTemplate;
 
 /**
- * Class General
+ * Class Template
  *
  * @property-read string $icon
  *
- * @package GPM\Config\Parts
+ * @package GPM\Config\Parts\Element
  */
 class Template extends Element
 {

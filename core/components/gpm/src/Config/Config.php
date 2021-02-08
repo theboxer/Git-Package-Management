@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
  * @property-read Parts\Element\Plugin[] $plugins;
  * @property-read Parts\Element\Template[] $templates;
  * @property-read Parts\Element\Category[] $categories;
+ * @property-read Parts\PropertySet[] $propertySets;
  *
  * @package GPM\Config
  */
@@ -53,6 +54,9 @@ class Config
 
     /** @var Parts\Element\Category[] */
     private $categories = [];
+
+    /** @var Parts\PropertySet[] */
+    private $propertySets = [];
 
     /** @var Parts\Build */
     private $build;
@@ -129,6 +133,10 @@ class Config
 
         foreach ($cfg['templates'] as $template) {
             $config->templates[] = new Parts\Element\Template($template, $config);
+        }
+
+        foreach ($cfg['propertySets'] as $propertySet) {
+            $config->propertySets[] = new Parts\PropertySet($propertySet, $config);
         }
 
         $valid = $config->validate($logger);
@@ -208,6 +216,10 @@ class Config
             $valid = $template->validate($logger) && $valid;
         }
 
+        foreach ($this->propertySets as $propertySet) {
+            $valid = $propertySet->validate($logger) && $valid;
+        }
+
         return $valid;
     }
 
@@ -223,7 +235,8 @@ class Config
             'chunks',
             'plugins',
             'templates',
-            'categories'
+            'categories',
+            'propertySets',
         ];
     }
 
@@ -263,6 +276,10 @@ class Config
 
         foreach ($config->categories as $category) {
             $category->setConfig($config);
+        }
+
+        foreach ($config->propertySets as $propertySet) {
+            $propertySet->setConfig($config);
         }
 
         return $config;

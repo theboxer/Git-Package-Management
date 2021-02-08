@@ -5,7 +5,7 @@ use GPM\Config\Config;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class General
+ * Class Paths
  *
  * @property-read string $package
  * @property-read string $core

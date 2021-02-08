@@ -5,7 +5,7 @@ use MODX\Revolution\modMenu;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class SystemSetting
+ * Class Menu
  *
  * @property-read string $text
  * @property-read string $description

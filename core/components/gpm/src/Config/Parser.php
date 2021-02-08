@@ -49,6 +49,7 @@ class Parser
             'plugins' => $this->getPlugins(),
             'templates' => $this->getTemplates(),
             'categories' => $this->getCategories(),
+            'propertySets' => $this->getPropertySets(),
             'build' => $this->getBuild(),
         ];
     }
@@ -208,6 +209,39 @@ class Parser
             }
 
             if (is_string($chunk)) {
+                die('load file');
+                continue;
+            }
+        }
+
+        return $output;
+    }
+
+    private function getPropertySets(): array
+    {
+        $output = [];
+
+        if (!isset($this->config['propertySets'])) return $output;
+
+        $propertySets = $this->config['propertySets'];
+        if (is_string($propertySets)) {
+            die('load file');
+        }
+
+        if (!is_array($propertySets)) return $output;
+
+        foreach ($propertySets as $propertySet) {
+            if (is_array($propertySet)) {
+                $propertySet['properties'] = $this->getProperties($propertySet);
+                if (is_string($propertySet['category'])) {
+                    $propertySet['category'] = [$propertySet['category']];
+                }
+
+                $output[] = $propertySet;
+                continue;
+            }
+
+            if (is_string($propertySet)) {
                 die('load file');
                 continue;
             }

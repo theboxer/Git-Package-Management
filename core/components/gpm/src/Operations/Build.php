@@ -38,7 +38,7 @@ class Build extends Operation {
             $this->packSystemSettings();
             $this->packMenu();
             $this->packDB();
-            $this->packElements();
+            $this->packMainCategory();
 
             $this->packScripts('after');
 
@@ -165,9 +165,9 @@ class Build extends Operation {
         }
     }
 
-    protected function packElements(): void
+    protected function packMainCategory(): void
     {
-        $this->logger->notice('Packing elements');
+        $this->logger->notice('Packing main category');
 
         $category = $this->modx->newObject(modCategory::class);
         $category->set('category', $this->config->general->name);
@@ -194,12 +194,41 @@ class Build extends Operation {
             $category->addMany($templates, 'Templates');
         }
 
+        $propertySets = $this->getPropertySets();
+        if (!empty($propertySets)) {
+            $category->addMany($propertySets, 'PropertySets');
+        }
+
         $categories = $this->getCategories($this->config->categories);
         if (!empty($categories)) {
             $category->addMany($categories, 'Children');
         }
 
-        $this->package->put($category, Attributes::$category);
+        $resolvers = [
+            'resolve' => [
+                [
+                    'type' => 'php',
+                    'snippets' => $this->getElementPropertySets('snippets'),
+                    'chunks' => $this->getElementPropertySets('chunks'),
+                    'plugins' => $this->getElementPropertySets('plugins'),
+                    'templates' => $this->getElementPropertySets('templates'),
+                    'source' => $this->getResolver('element_property_set'),
+                ]
+            ]
+        ];
+
+        $this->package->put($category, array_merge(Attributes::$category, $resolvers));
+    }
+
+    protected function getElementPropertySets(string $type)
+    {
+        $elements = [];
+
+        foreach ($this->config->{$type} as $element) {
+            $elements[$element->name] = $element->propertySets;
+        }
+
+        return $elements;
     }
 
     protected function packScripts($type): void
@@ -266,6 +295,11 @@ class Build extends Operation {
                 $category->addMany($templates, 'Templates');
             }
 
+            $propertySets = $this->getPropertySets($catPath);
+            if (!empty($propertySets)) {
+                $category->addMany($propertySets, 'PropertySets');
+            }
+
             $children = $this->getCategories($cat->children, $catPath);
             if (!empty($children)) {
                 $category->addMany($children, 'Children');
@@ -293,6 +327,20 @@ class Build extends Operation {
         }
 
         return $elements;
+    }
+
+    protected function getPropertySets(array $category = []): array
+    {
+        $propertySets = [];
+        if (empty($this->config->propertySets)) return $propertySets;
+
+        foreach ($this->config->propertySets as $propertySet) {
+            if ($propertySet->category !== $category) continue;
+            $this->logger->notice(' ' . str_pad('', count($category) + 2, '-') . ' PropertySet: ' . $propertySet->name);
+            $propertySets[] = $propertySet->getBuildObject();
+        }
+
+        return $propertySets;
     }
 
     protected function getResolver(string $name, array $props = []): string

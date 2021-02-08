@@ -4,7 +4,7 @@ namespace GPM\Config\Parts;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class General
+ * Class Build
  *
  * @property-read array $scriptsBefore
  * @property-read array $scriptsAfter

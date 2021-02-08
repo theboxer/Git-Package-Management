@@ -4,7 +4,7 @@ namespace GPM\Config\Parts;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class General
+ * Class Database
  *
  * @property-read string[] $tables
  *

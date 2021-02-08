@@ -3,10 +3,11 @@ namespace GPM\Config\Parts\Element;
 
 use GPM\Config\Config;
 use GPM\Config\Parts\Part;
+use GPM\Config\Parts\Property;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class General
+ * Class Element
  *
  * @property-read string $name
  * @property-read string $description
@@ -16,8 +17,9 @@ use Psr\Log\LoggerInterface;
  * @property-read Property[] $properties
  * @property-read string $absoluteFilePath
  * @property-read string $filePath
+ * @property-read string[] $propertySets
  *
- * @package GPM\Config\Parts
+ * @package GPM\Config\Parts\Element
  */
 abstract class Element extends Part
 {
@@ -51,6 +53,9 @@ abstract class Element extends Part
     /** @var string */
     protected $extension = '';
 
+    /** @var string[] */
+    protected $propertySets = [];
+
     protected function generator(): void
     {
         parent::generator();
@@ -77,14 +82,6 @@ abstract class Element extends Part
                 break;
             }
         }
-    }
-
-    /**
-     * @param string|int $propertyPreProcess
-     */
-    protected function setPropertyPreProcess($propertyPreProcess): void
-    {
-        $this->propertyPreProcess = (intval($propertyPreProcess) === 1) ? 1 : 0;
     }
 
     protected function setCategory(array $category): void
@@ -229,6 +226,11 @@ abstract class Element extends Part
 
         if (empty($this->absoluteFilePath) || !file_exists($this->absoluteFilePath)) {
             $logger->error(ucfirst($this->type) . ": {$this->file} - file doesn't exist");
+            $valid = false;
+        }
+
+        if (!is_int($this->propertyPreProcess)) {
+            $logger->error(ucfirst($this->type) . ": {$this->name} - propertyPreProcess has to be integer");
             $valid = false;
         }
 

@@ -5,12 +5,12 @@ use MODX\Revolution\modPlugin;
 use MODX\Revolution\modPluginEvent;
 
 /**
- * Class General
+ * Class Plugin
  *
  * @property-read string[] $events
  * @property-read boolean $disabled
  *
- * @package GPM\Config\Parts
+ * @package GPM\Config\Parts\Element
  */
 class Plugin extends Element
 {

@@ -49,6 +49,11 @@ class Attributes
                     ],
                 ],
             ],
+            'PropertySets' => [
+                xPDOTransport::PRESERVE_KEYS => false,
+                xPDOTransport::UPDATE_OBJECT => true,
+                xPDOTransport::UNIQUE_KEY => 'name',
+            ],
         ]
     ];
 

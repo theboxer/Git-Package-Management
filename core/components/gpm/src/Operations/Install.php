@@ -4,8 +4,10 @@ namespace GPM\Operations;
 
 use GPM\Config\Config;
 use GPM\Config\Parts\SystemSetting;
+use MODX\Revolution\modElementPropertySet;
 use MODX\Revolution\modNamespace;
 use MODX\Revolution\modCategory;
+use MODX\Revolution\modPropertySet;
 use MODX\Revolution\modX;
 use Psr\Log\LoggerInterface;
 
@@ -54,6 +56,7 @@ class Install extends Operation
             $this->clearCache();
 
             $this->createCategories();
+            $this->createPropertySets();
             $this->createElements('snippet');
             $this->createElements('chunk');
             $this->createElements('plugin');
@@ -282,17 +285,53 @@ class Install extends Operation
             return;
         }
 
-        $this->logger->notice("Creating {$cfgType}:");
+        $this->logger->notice("Creating {$cfgType}");
 
         /** @var \GPM\Config\Parts\Element\Element $element */
         foreach ($this->config->{$cfgType} as $element) {
             $category = $this->getCategory($element->category);
+            /** @var \MODX\Revolution\modElement $obj */
             $obj = $element->getObject($category, $this->debug);
             $saved = $obj->save();
             if ($saved) {
                 $this->logger->info(' - ' . $element->name);
+
+                foreach ($element->propertySets as $propertySet) {
+                    /** @var modPropertySet $propertySetObject */
+                    $propertySetObject = $this->modx->getObject(modPropertySet::class, ['name' => $propertySet]);
+                    if ($propertySetObject) {
+                        /** @var modElementPropertySet $propertySetLink */
+                        $propertySetLink = $this->modx->newObject(modElementPropertySet::class);
+                        $propertySetLink->set('property_set', $propertySetObject->id);
+                        $propertySetLink->set('element_class', 'MODX\\Revolution\\mod' . ucfirst($type));
+                        $propertySetLink->set('element', $obj->id);
+                        $propertySetLink->save();
+
+                        $this->logger->info(' -- ' . $propertySet);
+                    }
+                }
             } else {
                 $this->logger->error("Saving {$type} {$obj->name}");
+            }
+        }
+    }
+
+    protected function createPropertySets(): void
+    {
+        if (empty($this->config->propertySets)) {
+            return;
+        }
+
+        $this->logger->notice("Creating Property Sets");
+
+        foreach ($this->config->propertySets as $propertySet) {
+            $category = $this->getCategory($propertySet->category);
+            $obj = $propertySet->getObject($category);
+            $saved = $obj->save();
+            if ($saved) {
+                $this->logger->info(' - ' . $propertySet->name);
+            } else {
+                $this->logger->error("Saving PropertySet {$obj->name}");
             }
         }
     }

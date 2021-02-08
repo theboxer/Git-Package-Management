@@ -6,7 +6,7 @@
   "description": "A config file for GPM",
 
   "definitions": {
-    "category": {
+    "categories": {
       "type": "object",
       "required": ["name"],
       "properties": {
@@ -14,7 +14,7 @@
         "rank": { "type":  "integer" },
         "children": {
           "type": "array",
-          "items": { "$ref": "#/definitions/category" },
+          "items": { "$ref": "#/definitions/categories" },
           "default": []
         }
       }
@@ -272,6 +272,13 @@
       ]
     },
 
+    "category": {
+      "oneOf": [
+        {"type":  "string"},
+        {"type":  "array", "items":  {"type": "string"}}
+      ]
+    },
+
     "element": {
       "type": "object",
       "required": ["name"],
@@ -285,17 +292,18 @@
         "file": {
           "type": "string"
         },
-        "category": {
-          "oneOf": [
-            {"type":  "string"},
-            {"type":  "array", "items":  {"type": "string"}}
-          ]
-        },
+        "category": { "$ref": "#/definitions/category" },
         "propertyPreProcess": {
           "type": "integer"
         },
         "properties": {
           "$ref": "#/definitions/properties"
+        },
+        "propertySets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }
@@ -398,7 +406,7 @@
     "categories": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/category"
+        "$ref": "#/definitions/categories"
       }
     },
 
@@ -456,6 +464,28 @@
             }
           }
         ]
+      }
+    },
+
+    "propertySets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/definitions/category"
+          },
+          "properties": {
+            "$ref": "#/definitions/properties"
+          }
+        }
       }
     },
 

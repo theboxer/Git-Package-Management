@@ -1,12 +1,11 @@
 <?php
-namespace GPM\Config\Parts\Element;
+namespace GPM\Config\Parts;
 
-use GPM\Config\Parts\Part;
 use GPM\Utils\Types;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class General
+ * Class Property
  *
  * @property-read string $name
  * @property-read string $description

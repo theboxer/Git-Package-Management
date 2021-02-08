@@ -4,6 +4,8 @@ namespace GPM\Operations;
 
 use GPM\Config\Config;
 use GPM\Model\GitPackage;
+use MODX\Revolution\modElementPropertySet;
+use MODX\Revolution\modPropertySet;
 use Psr\Log\LoggerInterface;
 use MODX\Revolution\modMenu;
 use MODX\Revolution\modSystemSetting;
@@ -69,6 +71,7 @@ class Update extends Operation
             $this->updateElements('chunk');
             $this->updateElements('plugin');
             $this->updateElements('template');
+            $this->updatePropertySets();
 
             $this->updateGitPackage();
         } catch (\Exception $err) {
@@ -480,6 +483,26 @@ class Update extends Operation
 
             if ($saved) {
                 $this->logger->info(' - ' . $element->name);
+
+                $this->modx->removeCollection(modElementPropertySet::class, [
+                    'element_class' => 'mod' . ucfirst($type),
+                    'element' => $obj->id,
+                ]);
+
+                foreach ($element->propertySets as $propertySet) {
+                    /** @var modPropertySet $propertySetObject */
+                    $propertySetObject = $this->modx->getObject(modPropertySet::class, ['name' => $propertySet]);
+                    if ($propertySetObject) {
+                        /** @var modElementPropertySet $propertySetLink */
+                        $propertySetLink = $this->modx->newObject(modElementPropertySet::class);
+                        $propertySetLink->set('property_set', $propertySetObject->id);
+                        $propertySetLink->set('element_class', 'MODX\\Revolution\\mod' . ucfirst($type));
+                        $propertySetLink->set('element', $obj->id);
+                        $propertySetLink->save();
+
+                        $this->logger->info(' -- ' . $propertySet);
+                    }
+                }
             } else {
                 $this->logger->error('Saving ' . ucfirst($cfgType) . ' ' . $element->name);
             }
@@ -500,9 +523,58 @@ class Update extends Operation
                 $removed = $toDelete->remove();
 
                 if ($removed) {
-                    $this->logger->info(' - ' . $element->name);
+                    $this->logger->info(' - ' . $notUsedSnippet);
                 } else {
-                    $this->logger->error('Removing ' . ucfirst($cfgType) . ' ' . $element->name);
+                    $this->logger->error('Removing ' . ucfirst($cfgType) . ' ' . $notUsedSnippet);
+                }
+            }
+        }
+    }
+
+    protected function updatePropertySets(): void
+    {
+        if (empty($this->oldConfig->propertySets) || empty($this->newConfig->propertySets)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Property Sets');
+
+        $notUsedPropertySets = [];
+        foreach ($this->oldConfig->propertySets as $oldPropertySet) {
+            $notUsedPropertySets[$oldPropertySet->name] = $oldPropertySet;
+        }
+
+        foreach ($this->newConfig->propertySets as $propertySet) {
+            $previousProperties = null;
+            if (isset($notUsedPropertySets[$propertySet->name])) {
+                $previousProperties = $notUsedPropertySets[$propertySet->name]->getProperties();
+                unset($notUsedPropertySets[$propertySet->name]);
+            }
+
+            $category = $this->getCategory($propertySet->category);
+            $obj = $propertySet->getObject($category, $previousProperties);
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $propertySet->name);
+            } else {
+                $this->logger->error('Saving PropertySet ' . $propertySet->name);
+            }
+        }
+
+        if (!empty($notUsedPropertySets)) {
+            $this->logger->notice('Removing unused PropertySets');
+        }
+
+        foreach ($notUsedPropertySets as $notUsedPropertySet => $v) {
+            $toDelete = $this->modx->getObject(modPropertySet::class, ['name' => $notUsedPropertySet]);
+            if ($toDelete) {
+                $removed = $toDelete->remove();
+
+                if ($removed) {
+                    $this->logger->info(' - ' . $notUsedPropertySet);
+                } else {
+                    $this->logger->error('Removing PropertySet ' . $notUsedPropertySet);
                 }
             }
         }
