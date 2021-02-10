@@ -1,6 +1,7 @@
 <?php
 namespace GPM\Config\Parts;
 
+use GPM\Config\Rules;
 use MODX\Revolution\modMenu;
 use Psr\Log\LoggerInterface;
 
@@ -21,6 +22,8 @@ use Psr\Log\LoggerInterface;
  */
 class Menu extends Part
 {
+    protected $keyField = 'text';
+
     /** @var string */
     protected $text = '';
 
@@ -47,6 +50,10 @@ class Menu extends Part
 
     /** @var string */
     protected $permission = '';
+
+    protected $rules = [
+        'text' => [Rules::isString, Rules::notEmpty]
+    ];
 
     protected function generator(): void
     {
@@ -80,17 +87,6 @@ class Menu extends Part
         $obj->set('namespace', $this->config->general->lowCaseName);
 
         return $obj;
-    }
-
-    public function validate(LoggerInterface $logger): bool
-    {
-        if (empty($this->text)) {
-            $logger->error('Menu - text is required');
-            return false;
-        }
-
-        $logger->debug(' - Menu: ' . $this->text);
-        return true;
     }
 
     public function getObject(): modMenu

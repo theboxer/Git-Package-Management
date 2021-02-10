@@ -2,6 +2,7 @@
 
 namespace GPM\Config\Parts;
 
+use GPM\Config\Rules;
 use GPM\Utils\Types;
 use MODX\Revolution\modSystemSetting;
 use Psr\Log\LoggerInterface;
@@ -18,6 +19,7 @@ use Psr\Log\LoggerInterface;
  */
 class SystemSetting extends Part
 {
+    protected $keyField = 'key';
 
     /** @var string */
     protected $key = '';
@@ -31,26 +33,11 @@ class SystemSetting extends Part
     /** @var string */
     protected $value = '';
 
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-
-        if (empty($this->key)) {
-            $logger->error('System Settings - key is required');
-            $valid = false;
-        }
-
-        if (!in_array($this->type, Types::List)) {
-            $logger->error('System Settings - ' . $this->key . ' - type is not valid');
-            $valid = false;
-        }
-
-        if ($valid) {
-            $logger->debug(' - System Setting: ' . $this->key);
-        }
-
-        return $valid;
-    }
+    protected $rules = [
+        'key' => [Rules::isString, Rules::notEmpty],
+        'type' => [Rules::isString, Rules::validXType],
+        'value' => [Rules::isScalar]
+    ];
 
     public function getObject($previousValue = null): modSystemSetting
     {

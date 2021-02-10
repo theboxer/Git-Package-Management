@@ -1,6 +1,7 @@
 <?php
 namespace GPM\Config\Parts;
 
+use GPM\Config\Rules;
 use MODX\Revolution\modPropertySet;
 use Psr\Log\LoggerInterface;
 
@@ -16,6 +17,9 @@ use Psr\Log\LoggerInterface;
  */
 class PropertySet extends Part
 {
+
+    protected $keyField = 'name';
+
     /** @var string */
     protected $name = '';
 
@@ -28,45 +32,13 @@ class PropertySet extends Part
     /** @var Property[] */
     protected $properties = [];
 
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-
-        if (empty($this->name)) {
-            $logger->error(ucfirst($this->type) . " - name is required");
-            $valid = false;
-        }
-
-        if (!empty($this->category)) {
-            $configCategories = $this->config->categories;
-            foreach ($this->category as $category) {
-                $found = false;
-                foreach ($configCategories as $configCategory) {
-                    if ($configCategory->name === $category) {
-                        $configCategories = $configCategory->children;
-                        $found = true;
-                        break;
-                    }
-                }
-
-                if ($found === false) {
-                    $logger->error("PropertySet: {$this->name} - " . implode('/', $this->category) . " category doesn't exist");
-                    $valid = false;
-                    break;
-                }
-            }
-        }
-
-        if ($valid) {
-            $logger->debug(' - PropertySet: ' . $this->name);
-        }
-
-        foreach ($this->properties as $property) {
-            $valid = $property->validate($logger, $this->name) && $valid;
-        }
-
-        return $valid;
-    }
+    protected $rules = [
+        'name' => [Rules::isString, Rules::notEmpty ],
+        'category' => [Rules::isArray, Rules::categoryExists],
+        'properties' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::configPart]]]
+        ]
+    ];
 
     protected function setCategory(array $category): void
     {

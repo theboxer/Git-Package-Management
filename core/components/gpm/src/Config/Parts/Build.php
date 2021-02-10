@@ -1,6 +1,7 @@
 <?php
 namespace GPM\Config\Parts;
 
+use GPM\Config\Rules;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -32,10 +33,14 @@ class Build extends Part
     /** @var string[] */
     protected $scriptsAfter = [];
 
-    public function getScriptsPath(): string
-    {
-        return $this->config->paths->package . '_build' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR;
-    }
+    protected $rules = [
+        'readme' => [Rules::isString, Rules::packageFileExists],
+        'license' => [Rules::isString, Rules::packageFileExists],
+        'changelog' => [Rules::isString, Rules::packageFileExists],
+        'scriptsBefore' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isString, Rules::scriptExists]]]
+        ]
+    ];
 
     protected function generator(): void
     {
@@ -50,68 +55,5 @@ class Build extends Part
         if (empty($this->license) && file_exists($this->config->paths->package . 'LICENSE.md')) {
             $this->license = 'LICENSE.md';
         }
-    }
-
-
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-
-        if (!empty($this->scriptsBefore)) {
-            if (!is_array($this->scriptsBefore)) {
-                $valid = false;
-                $logger->error("Build - scriptsBefore has to be an array");
-            } else {
-                foreach ($this->scriptsBefore as $script) {
-                    $scriptPath = $this->getScriptsPath() . $script;
-                    if (!file_exists($scriptPath)) {
-                        $valid = false;
-                        $logger->error("Build - scriptsBefore - {$script} doesn't exist");
-                    }
-                }
-            }
-        }
-
-        if (!empty($this->scriptsAfter)) {
-            if (!is_array($this->scriptsAfter)) {
-                $valid = false;
-                $logger->error("Build - scriptsAfter has to be an array");
-            } else {
-                foreach ($this->scriptsAfter as $script) {
-                    $scriptPath = $this->getScriptsPath() . $script;
-                    if (!file_exists($scriptPath)) {
-                        $valid = false;
-                        $logger->error("Build - scriptsAfter - {$script} doesn't exist");
-                    }
-                }
-            }
-        }
-
-        if (!empty($this->readme)) {
-            if (!file_exists($this->config->paths->package . $this->readme)) {
-                $logger->error("Build - {$this->readme} doesn't exist");
-                $valid = false;
-            }
-        }
-
-        if (!empty($this->changelog)) {
-            if (!file_exists($this->config->paths->package . $this->changelog)) {
-                $logger->error("Build - {$this->changelog} doesn't exist");
-                $valid = false;
-            }
-        }
-
-        if (!empty($this->license)) {
-            if (!file_exists($this->config->paths->package . $this->license)) {
-                $logger->error("Build - {$this->license} doesn't exist");
-                $valid = false;
-            }
-        }
-
-        if ($valid) {
-            $logger->debug(' - Build');
-        }
-
-        return $valid;
     }
 }

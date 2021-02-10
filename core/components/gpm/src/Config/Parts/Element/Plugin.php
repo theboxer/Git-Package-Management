@@ -36,19 +36,6 @@ class Plugin extends Element
         }
     }
 
-    /**
-     * @param bool|string $disabled
-     *
-     * @return bool
-     */
-    protected function setDisabled($disabled): bool
-    {
-        if (empty($disabled)) return false;
-        if (is_bool($disabled)) return $disabled;
-
-        return intval($disabled) === 1;
-    }
-
     protected function prepareObject(int $category = null, bool $update = false, bool $static = true, bool $debug = false): modPlugin
     {
         /** @var modPlugin $obj */

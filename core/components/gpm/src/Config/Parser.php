@@ -87,14 +87,12 @@ class Parser
         if (!is_array($systemSettings)) return $output;
 
         foreach ($systemSettings as $systemSetting) {
-            if (is_array($systemSetting)) {
-                $output[] = $systemSetting;
-                continue;
-            }
-
             if (is_string($systemSetting)) {
                 die('load file');
-                continue;
+            }
+
+            if (is_array($systemSetting)) {
+                $output[] = $systemSetting;
             }
         }
 
@@ -115,14 +113,12 @@ class Parser
         if (!is_array($menus)) return $output;
 
         foreach ($menus as $menu) {
-            if (is_array($menu)) {
-                $output[] = $menu;
-                continue;
-            }
-
             if (is_string($menu)) {
                 die('load file');
-                continue;
+            }
+
+            if (is_array($menu)) {
+                $output[] = $menu;
             }
         }
 
@@ -133,22 +129,28 @@ class Parser
     {
         if (!isset($this->config['database'])) return [];
 
-        $tables = $this->config['database']['tables'] ?? [];
-        if (!is_array($tables)) $tables = [];
+        $database = $this->config['database'];
+        if (is_string($database)) {
+            die('load file');
+        }
 
-        return [
-            'tables' => $tables
-        ];
+        if (is_array($database)) return $database;
+
+        return [];
     }
 
     private function getBuild(): array
     {
         if (!isset($this->config['build'])) return [];
 
-        $this->config['build']['scriptsBefore'] = $this->config['build']['scriptsBefore'] ?? [];
-        $this->config['build']['scriptsAfter'] = $this->config['build']['scriptsAfter'] ?? [];
+        $build = $this->config['build'];
+        if (is_string($build)) {
+            die('load file');
+        }
 
-        return $this->config['build'];
+        if (is_array($build)) return $build;
+
+        return [];
     }
 
     private function getSnippets(): array
@@ -165,19 +167,18 @@ class Parser
         if (!is_array($snippets)) return $output;
 
         foreach ($snippets as $snippet) {
+            if (is_string($snippet)) {
+                die('load file');
+            }
+
             if (is_array($snippet)) {
                 $snippet['properties'] = $this->getProperties($snippet);
+
                 if (is_string($snippet['category'])) {
                     $snippet['category'] = [$snippet['category']];
                 }
 
                 $output[] = $snippet;
-                continue;
-            }
-
-            if (is_string($snippet)) {
-                die('load file');
-                continue;
             }
         }
 
@@ -198,6 +199,11 @@ class Parser
         if (!is_array($chunks)) return $output;
 
         foreach ($chunks as $chunk) {
+            if (is_string($chunk)) {
+                die('load file');
+                continue;
+            }
+
             if (is_array($chunk)) {
                 $chunk['properties'] = $this->getProperties($chunk);
                 if (is_string($chunk['category'])) {
@@ -205,12 +211,6 @@ class Parser
                 }
 
                 $output[] = $chunk;
-                continue;
-            }
-
-            if (is_string($chunk)) {
-                die('load file');
-                continue;
             }
         }
 
@@ -231,6 +231,11 @@ class Parser
         if (!is_array($propertySets)) return $output;
 
         foreach ($propertySets as $propertySet) {
+            if (is_string($propertySet)) {
+                die('load file');
+                continue;
+            }
+
             if (is_array($propertySet)) {
                 $propertySet['properties'] = $this->getProperties($propertySet);
                 if (is_string($propertySet['category'])) {
@@ -238,12 +243,6 @@ class Parser
                 }
 
                 $output[] = $propertySet;
-                continue;
-            }
-
-            if (is_string($propertySet)) {
-                die('load file');
-                continue;
             }
         }
 
@@ -264,6 +263,10 @@ class Parser
         if (!is_array($templates)) return $output;
 
         foreach ($templates as $template) {
+            if (is_string($template)) {
+                die('load file');
+            }
+
             if (is_array($template)) {
                 $template['properties'] = $this->getProperties($template);
                 if (is_string($template['category'])) {
@@ -271,12 +274,6 @@ class Parser
                 }
 
                 $output[] = $template;
-                continue;
-            }
-
-            if (is_string($template)) {
-                die('load file');
-                continue;
             }
         }
 
@@ -307,20 +304,18 @@ class Parser
         if (!is_array($categories)) return $output;
 
         foreach ($categories as $category) {
+            if (is_string($category)) {
+                // check if file exists and load children if file exists
+
+                $category = ['name' => $category];
+            }
+
             if (is_array($category)) {
                 if (!empty($category['children'])) {
                     $category['children'] = $this->getCategories($category['children']);
                 }
 
                 $output[] = $category;
-                continue;
-            }
-
-            if (is_string($category)) {
-                // check if file exists and load children if file exists
-
-                $output[] = ['name' => $category];
-                continue;
             }
         }
 
@@ -341,6 +336,10 @@ class Parser
         if (!is_array($plugins)) return $output;
 
         foreach ($plugins as $plugin) {
+            if (is_string($plugin)) {
+                die('load file');
+            }
+
             if (is_array($plugin)) {
                 $plugin['properties'] = $this->getProperties($plugin);
                 if (isset($plugin['category']) && is_string($plugin['category'])) {
@@ -348,12 +347,6 @@ class Parser
                 }
 
                 $output[] = $plugin;
-                continue;
-            }
-
-            if (is_string($plugin)) {
-                die('load file');
-                continue;
             }
         }
 
@@ -363,22 +356,27 @@ class Parser
     private function getProperties(array $element): array
     {
         if (empty($element['properties'])) return [];
-        if (!is_array($element['properties'])) return [];
+        $properties = $element['properties'];
 
-        $properties = [];
-
-        foreach ($element['properties'] as $property) {
-            $properties[] = [
-                'name' => $property['name'] ?? '',
-                'description' => $property['description'] ?? '',
-                'type' => $property['type'] ?? '',
-                'value' => $property['value'] ?? '',
-                'lexicon' => $property['lexicon'] ?? '',
-                'area' => $property['area'] ?? '',
-            ];
+        if (is_string($properties)) {
+            die('load file');
         }
 
-        return $properties;
+        if (!is_array($properties)) return [];
+
+        $output = [];
+
+        foreach ($element['properties'] as $property) {
+            if (is_string($property)) {
+                die('load file');
+            }
+
+            if (is_array($property)) {
+                $output[] = $property;
+            }
+        }
+
+        return $output;
     }
 
     private function parseJSON(string $string): array

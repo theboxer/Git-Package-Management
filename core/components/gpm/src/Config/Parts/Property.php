@@ -1,6 +1,7 @@
 <?php
 namespace GPM\Config\Parts;
 
+use GPM\Config\Rules;
 use GPM\Utils\Types;
 use Psr\Log\LoggerInterface;
 
@@ -18,6 +19,9 @@ use Psr\Log\LoggerInterface;
  */
 class Property extends Part
 {
+
+    protected $keyField = 'name';
+
     /** @var string */
     protected $name = '';
 
@@ -35,6 +39,11 @@ class Property extends Part
 
     /** @var string */
     protected $area = '';
+
+    protected $rules = [
+        'name' => [Rules::isString, Rules::notEmpty],
+        'type' => [Rules::isString, Rules::validXType],
+    ];
 
     protected function generator(): void
     {
@@ -57,26 +66,5 @@ class Property extends Part
             'lexicon' => $this->lexicon,
             'area' => $this->area,
         ];
-    }
-
-
-    public function validate(LoggerInterface $logger, $name = ''): bool
-    {
-        $valid = true;
-        if (empty($this->name)) {
-            $logger->error("Property - {$name} - name is required");
-            $valid = false;
-        }
-
-        if (!in_array($this->type, Types::List)) {
-            $logger->error("Property - {$name} - " . $this->name . ' - type is not valid');
-            $valid = false;
-        }
-
-        if ($valid) {
-            $logger->debug(' -- Property: ' . $this->name);
-        }
-
-        return $valid;
     }
 }

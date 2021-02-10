@@ -2,7 +2,6 @@
 namespace GPM\Operations;
 
 use GPM\Config\Config;
-use GPM\Model\GitPackage;
 use GPM\Utils\Build\Attributes;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\Transport\modPackageBuilder;
@@ -278,7 +277,7 @@ class Build extends Operation {
         }
 
         foreach ($this->config->build->{$availableTypes[$type]} as $script) {
-            $scriptPath = $this->config->build->getScriptsPath() . $script;
+            $scriptPath = $this->config->paths->scriptsPath . $script;
             if (file_exists($scriptPath)) {
                 $this->logger->info(' - ' . $script);
                 $this->package->put(
@@ -385,7 +384,7 @@ class Build extends Operation {
         if (!empty($this->config->build->readme)) {
             $this->package->setAttribute('readme', file_get_contents($this->config->paths->package . $this->config->build->readme));
         }
-        
+
         if (!empty($this->config->build->license)) {
             $this->package->setAttribute('license', file_get_contents($this->config->paths->package . $this->config->build->license));
         }

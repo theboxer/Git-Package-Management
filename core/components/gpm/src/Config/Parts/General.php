@@ -1,6 +1,7 @@
 <?php
 namespace GPM\Config\Parts;
 
+use GPM\Config\Rules;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -35,6 +36,11 @@ class General extends Part
     /** @var string */
     protected $version = '';
 
+    protected $rules = [
+        'name' => [Rules::isString, Rules::notEmpty],
+        'version' => [Rules::isString, Rules::notEmpty],
+    ];
+
     protected function generator(): void
     {
         if (empty($this->lowCaseName)) {
@@ -44,25 +50,5 @@ class General extends Part
         if (empty($this->namespace)) {
             $this->namespace = ucfirst($this->lowCaseName);
         }
-    }
-
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-        if (empty($this->name)) {
-            $logger->error('General - name is required');
-            $valid = false;
-        }
-
-        if (empty($this->version)) {
-            $logger->error('General - version is required');
-            $valid = false;
-        }
-
-        if ($valid) {
-            $logger->debug(' - General');
-        }
-
-        return $valid;
     }
 }

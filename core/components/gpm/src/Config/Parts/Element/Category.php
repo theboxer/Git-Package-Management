@@ -3,6 +3,7 @@ namespace GPM\Config\Parts\Element;
 
 use GPM\Config\Config;
 use GPM\Config\Parts\Part;
+use GPM\Config\Rules;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -16,6 +17,8 @@ use Psr\Log\LoggerInterface;
  */
 class Category extends Part
 {
+    protected $keyField = 'name';
+
     /** @var string */
     protected $name = '';
 
@@ -24,6 +27,13 @@ class Category extends Part
 
     /** @var Category[] */
     protected $children = [];
+
+    protected $rules = [
+        'name' => [Rules::isString, Rules::notEmpty],
+        'children' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::configPart]]]
+        ]
+    ];
 
     protected function generator(): void
     {
@@ -43,31 +53,5 @@ class Category extends Part
         foreach ($this->children as $category) {
             $category->setConfig($config);
         }
-    }
-
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-        if (empty($this->name)) {
-            $valid = false;
-            $logger->error("Categories - name is required");
-        }
-
-        if (!empty($this->children)) {
-            foreach ($this->children as $childCategory) {
-                $valid = $childCategory->validate($logger) && $valid;
-            }
-        }
-
-        if (!is_int($this->rank)) {
-            $valid = false;
-            $logger->error("Categories - {$this->name} - rank has to be an integer");
-        }
-
-        if ($valid) {
-            $logger->debug(' - Category: ' . $this->name);
-        }
-
-        return $valid;
     }
 }

@@ -18,21 +18,4 @@ class Database extends Part
     protected function generator(): void
     {
     }
-
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-
-        if (!is_array($this->tables)) {
-            $valid = false;
-            $logger->error('Database - tables has to be an array');
-        }
-
-        if ($valid) {
-            $logger->debug(' - Database');
-        }
-
-        return true;
-    }
-
 }

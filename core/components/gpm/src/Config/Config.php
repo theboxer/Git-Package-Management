@@ -178,49 +178,8 @@ class Config
 
     private function validate(LoggerInterface $logger): bool
     {
-        $logger->notice('Validating config');
-
-        $validGeneral = $this->general->validate($logger);
-        if (!$validGeneral) return false;
-
-        $valid = true;
-        $valid = $this->paths->validate($logger) && $valid;
-        $valid = $this->build->validate($logger) && $valid;
-        $valid = $this->database->validate($logger) && $valid;
-
-        foreach ($this->systemSettings as $systemSetting) {
-            $valid = $systemSetting->validate($logger) && $valid;
-        }
-
-        foreach ($this->menus as $menu) {
-            $valid = $menu->validate($logger) && $valid;
-        }
-
-        foreach ($this->categories as $category) {
-            $valid = $category->validate($logger) && $valid;
-        }
-
-        foreach ($this->snippets as $snippet) {
-            $valid = $snippet->validate($logger) && $valid;
-        }
-
-        foreach ($this->chunks as $chunk) {
-            $valid = $chunk->validate($logger) && $valid;
-        }
-
-        foreach ($this->plugins as $plugin) {
-            $valid = $plugin->validate($logger) && $valid;
-        }
-
-        foreach ($this->templates as $template) {
-            $valid = $template->validate($logger) && $valid;
-        }
-
-        foreach ($this->propertySets as $propertySet) {
-            $valid = $propertySet->validate($logger) && $valid;
-        }
-
-        return $valid;
+        $validator = new Validator($logger, $this);
+        return $validator->validateConfig();
     }
 
     public function __sleep(): array

@@ -4,6 +4,7 @@ namespace GPM\Config\Parts\Element;
 use GPM\Config\Config;
 use GPM\Config\Parts\Part;
 use GPM\Config\Parts\Property;
+use GPM\Config\Rules;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -23,6 +24,8 @@ use Psr\Log\LoggerInterface;
  */
 abstract class Element extends Part
 {
+    protected $keyField = 'name';
+
     /** @var string */
     protected $name = '';
 
@@ -55,6 +58,15 @@ abstract class Element extends Part
 
     /** @var string[] */
     protected $propertySets = [];
+
+    protected $rules = [
+        'name' => [Rules::isString, Rules::notEmpty],
+        'category' => [Rules::isArray, Rules::categoryExists],
+        'file' => [Rules::isString, Rules::notEmpty, Rules::elementFileExists],
+        'properties' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::configPart]]]
+        ]
+    ];
 
     protected function generator(): void
     {
@@ -213,56 +225,6 @@ abstract class Element extends Part
         $obj->setProperties($this->getProperties());
 
         return $obj;
-    }
-
-    public function validate(LoggerInterface $logger): bool
-    {
-        $valid = true;
-
-        if (empty($this->name)) {
-            $logger->error(ucfirst($this->type) . " - name is required");
-            $valid = false;
-        }
-
-        if (empty($this->absoluteFilePath) || !file_exists($this->absoluteFilePath)) {
-            $logger->error(ucfirst($this->type) . ": {$this->file} - file doesn't exist");
-            $valid = false;
-        }
-
-        if (!is_int($this->propertyPreProcess)) {
-            $logger->error(ucfirst($this->type) . ": {$this->name} - propertyPreProcess has to be integer");
-            $valid = false;
-        }
-
-        if (!empty($this->category)) {
-            $configCategories = $this->config->categories;
-            foreach ($this->category as $category) {
-                $found = false;
-                foreach ($configCategories as $configCategory) {
-                    if ($configCategory->name === $category) {
-                        $configCategories = $configCategory->children;
-                        $found = true;
-                        break;
-                    }
-                }
-
-                if ($found === false) {
-                    $logger->error(ucfirst($this->type) . ": {$this->name} - " . implode('/', $this->category) . " category doesn't exist");
-                    $valid = false;
-                    break;
-                }
-            }
-        }
-
-        if ($valid) {
-            $logger->debug(' - ' . ucfirst($this->type) . ': ' . $this->name);
-        }
-
-        foreach ($this->properties as $property) {
-            $valid = $property->validate($logger, $this->name) && $valid;
-        }
-
-        return $valid;
     }
 
     abstract public function getObject(int $category, bool $debug = false);
