@@ -2,10 +2,10 @@
 namespace GPM\Config\Parts\Element;
 
 use GPM\Config\Config;
+use GPM\Config\Parts\HasCategory;
+use GPM\Config\Parts\HasProperties;
 use GPM\Config\Parts\Part;
-use GPM\Config\Parts\Property;
 use GPM\Config\Rules;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Element
@@ -15,7 +15,6 @@ use Psr\Log\LoggerInterface;
  * @property-read string $file
  * @property-read string[] $category
  * @property-read int $propertyPreProcess
- * @property-read Property[] $properties
  * @property-read string $absoluteFilePath
  * @property-read string $filePath
  * @property-read string[] $propertySets
@@ -24,6 +23,9 @@ use Psr\Log\LoggerInterface;
  */
 abstract class Element extends Part
 {
+    use HasCategory;
+    use HasProperties;
+
     protected $keyField = 'name';
 
     /** @var string */
@@ -35,14 +37,8 @@ abstract class Element extends Part
     /** @var string */
     protected $file = '';
 
-    /** @var string[] */
-    protected $category = [];
-
     /** @var int $propertyPreProcess */
     protected $propertyPreProcess = 0;
-
-    /** @var Property[] */
-    protected $properties = [];
 
     /** @var string */
     protected $absoluteFilePath = '';
@@ -94,68 +90,6 @@ abstract class Element extends Part
                 break;
             }
         }
-    }
-
-    protected function setCategory(array $category): void
-    {
-        if (count($category) !== 1) {
-            $this->category = $category;
-            return;
-        }
-
-        $categoryPath = $this->findCategoryPath([], $category[0], $this->config->categories);
-
-        if ($categoryPath[count($categoryPath) - 1] === $category[0]) {
-            $this->category = $categoryPath;
-        } else {
-            $this->category = $category;
-        }
-    }
-
-    /**
-     * @param string[] $path
-     * @param string $categoryName
-     * @param \GPM\Config\Parts\Element\Category[] $categories
-     */
-    private function findCategoryPath(array $path, string $categoryName, array $categories): array
-    {
-        $futureScan = [];
-
-        foreach ($categories as $category) {
-            if ($category->name === $categoryName) {
-                $path[] = $category->name;
-                return $path;
-            }
-
-            if (!empty($category->children)) {
-                $futureScan[] = ['name' => $category->name, 'children' => $category->children];
-            }
-        }
-
-        foreach ($futureScan as $childCategories) {
-            $found = $this->findCategoryPath(array_merge($path, [$childCategories['name']]), $categoryName, $childCategories['children']);
-            if (!empty($found)) return $found;
-        }
-
-        return [];
-    }
-
-    protected function setProperties(array $properties): void
-    {
-        foreach ($properties as $property) {
-            $this->properties[] = new Property($property, $this->config);
-        }
-    }
-
-    public function getProperties(): array
-    {
-        $properties = [];
-
-        foreach ($this->properties as $property) {
-            $properties[] = $property->toArray();
-        }
-
-        return $properties;
     }
 
     public function setConfig(Config $config): void

@@ -1,6 +1,7 @@
 <?php
 namespace GPM\Config\Parts;
 
+use GPM\Config\Config;
 use GPM\Config\Rules;
 use MODX\Revolution\modPropertySet;
 use Psr\Log\LoggerInterface;
@@ -17,6 +18,8 @@ use Psr\Log\LoggerInterface;
  */
 class PropertySet extends Part
 {
+    use HasCategory;
+    use HasProperties;
 
     protected $keyField = 'name';
 
@@ -26,12 +29,6 @@ class PropertySet extends Part
     /** @var string */
     protected $description = '';
 
-    /** @var string[] */
-    protected $category = [];
-
-    /** @var Property[] */
-    protected $properties = [];
-
     protected $rules = [
         'name' => [Rules::isString, Rules::notEmpty ],
         'category' => [Rules::isArray, Rules::categoryExists],
@@ -39,68 +36,6 @@ class PropertySet extends Part
             ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::configPart]]]
         ]
     ];
-
-    protected function setCategory(array $category): void
-    {
-        if (count($category) !== 1) {
-            $this->category = $category;
-            return;
-        }
-
-        $categoryPath = $this->findCategoryPath([], $category[0], $this->config->categories);
-
-        if ($categoryPath[count($categoryPath) - 1] === $category[0]) {
-            $this->category = $categoryPath;
-        } else {
-            $this->category = $category;
-        }
-    }
-
-    /**
-     * @param string[] $path
-     * @param string $categoryName
-     * @param \GPM\Config\Parts\Element\Category[] $categories
-     */
-    private function findCategoryPath(array $path, string $categoryName, array $categories): array
-    {
-        $futureScan = [];
-
-        foreach ($categories as $category) {
-            if ($category->name === $categoryName) {
-                $path[] = $category->name;
-                return $path;
-            }
-
-            if (!empty($category->children)) {
-                $futureScan[] = ['name' => $category->name, 'children' => $category->children];
-            }
-        }
-
-        foreach ($futureScan as $childCategories) {
-            $found = $this->findCategoryPath(array_merge($path, [$childCategories['name']]), $categoryName, $childCategories['children']);
-            if (!empty($found)) return $found;
-        }
-
-        return [];
-    }
-
-    protected function setProperties(array $properties): void
-    {
-        foreach ($properties as $property) {
-            $this->properties[] = new Property($property, $this->config);
-        }
-    }
-
-    public function getProperties(): array
-    {
-        $properties = [];
-
-        foreach ($this->properties as $property) {
-            $properties[] = $property->toArray();
-        }
-
-        return $properties;
-    }
 
     protected function prepareObject(int $category = null, bool $update = false, array $previousProperties = null)
     {
@@ -151,6 +86,15 @@ class PropertySet extends Part
         $obj->set('properties', $newProperties);
 
         return $obj;
+    }
+
+    public function setConfig(Config $config): void
+    {
+        parent::setConfig($config);
+
+        foreach ($this->properties as $property) {
+            $property->setConfig($config);
+        }
     }
 
     public function getObject(int $category, array $previousProperties = null): modPropertySet
