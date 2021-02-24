@@ -6,18 +6,33 @@
   "description": "A config file for GPM",
 
   "definitions": {
+    "partialConfig": {
+      "type": "string",
+      "description": "Partial config file path"
+    },
+
     "categories": {
-      "type": "object",
-      "required": ["name"],
-      "properties": {
-        "name": { "type": "string" },
-        "rank": { "type":  "integer" },
-        "children": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/categories" },
-          "default": []
+      "anyOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "object",
+          "required": ["name"],
+          "properties": {
+            "name": { "type": "string" },
+            "rank": { "type":  "integer" },
+            "children": {
+              "oneOf": [
+                { "$ref": "#/definitions/partialConfig" },
+                {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/categories" },
+                  "default": []
+                }
+              ]
+            }
+          }
         }
-      }
+      ]
     },
 
     "properties": {
@@ -358,193 +373,272 @@
     },
 
     "menus": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "text"
-        ],
-        "properties": {
-          "text": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "action": {
-            "type": "string"
-          },
-          "parent": {
-            "type": "string",
-            "default": "components"
-          },
-          "icon": {
-            "type": "string"
-          },
-          "menuIndex": {
-            "type": "integer"
-          },
-          "params": {
-            "type": "string"
-          },
-          "handler": {
-            "type": "string"
-          },
-          "permission": {
-            "type": "string"
-          }
-        }
-      }
-    },
-
-    "systemSettings": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["key"],
-        "properties": {
-          "key": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/definitions/type"
-          },
-          "area": {
-            "type": "string",
-            "default": "default"
-          },
-          "value": {
-            "oneOf": [
-              { "type": "string" },
-              { "type": "number" },
-              { "type": "boolean" }
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "parent": {
+                    "type": "string",
+                    "default": "components"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "menuIndex": {
+                    "type": "integer"
+                  },
+                  "params": {
+                    "type": "string"
+                  },
+                  "handler": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                }
+              }
             ]
           }
         }
-      }
+      ]
+    },
+
+    "systemSettings": {
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "type": "object",
+                "required": ["key"],
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "$ref": "#/definitions/type"
+                  },
+                  "area": {
+                    "type": "string",
+                    "default": "default"
+                  },
+                  "value": {
+                    "oneOf": [
+                      { "type": "string" },
+                      { "type": "number" },
+                      { "type": "boolean" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     },
 
     "categories": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/categories"
-      }
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/categories" }
+        }
+      ]
     },
 
     "snippets": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/element"
-      }
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              { "$ref": "#/definitions/element" }
+            ]
+          }
+        }
+      ]
     },
 
     "chunks": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/element"
-      }
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              { "$ref": "#/definitions/element" }
+            ]
+          }
+        }
+      ]
     },
 
     "plugins": {
-      "type": "array",
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/element" },
-          {
-            "properties": {
-              "disabled": {
-                "type": "boolean"
-              },
-              "events": {
-                "type": "array",
-                "items": {
-                  "anyOf": [
-                    { "$ref": "#/definitions/eventName" },
-                    { "$ref": "#/definitions/event" }
-                  ]
-                }
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "allOf": [
+                  { "$ref": "#/definitions/element" },
+                  {
+                    "properties": {
+                      "disabled": {
+                        "type": "boolean"
+                      },
+                      "events": {
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            { "$ref": "#/definitions/eventName" },
+                            { "$ref": "#/definitions/event" }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
               }
-            }
+            ]
           }
-        ]
-      }
+        }
+      ]
     },
 
     "templates": {
-      "type": "array",
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/element" },
-          {
-            "properties": {
-              "icon": {
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "allOf": [
+                  { "$ref": "#/definitions/element" },
+                  {
+                    "properties": {
+                      "icon": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    "propertySets": {
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "$ref": "#/definitions/category"
+                  },
+                  "properties": {
+                    "$ref": "#/definitions/properties"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    "build": {
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "object",
+          "properties": {
+            "readme": {
+              "type": "string"
+            },
+            "license": {
+              "type": "string"
+            },
+            "changelog": {
+              "type": "string"
+            },
+            "scriptsBefore": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "scriptsAfter": {
+              "type": "array",
+              "items": {
                 "type": "string"
               }
             }
           }
-        ]
-      }
-    },
-
-    "propertySets": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "category": {
-            "$ref": "#/definitions/category"
-          },
-          "properties": {
-            "$ref": "#/definitions/properties"
-          }
         }
-      }
-    },
-
-    "build": {
-      "type": "object",
-      "properties": {
-        "readme": {
-          "type": "string"
-        },
-        "license": {
-          "type": "string"
-        },
-        "changelog": {
-          "type": "string"
-        },
-        "scriptsBefore": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "scriptsAfter": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
+      ]
     },
 
     "database": {
-      "type": "object",
-      "properties": {
-        "tables": {
-          "type": "array",
-          "items": {
-            "type": "string"
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "object",
+          "properties": {
+            "tables": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         }
-      }
+      ]
     }
   }
 }
