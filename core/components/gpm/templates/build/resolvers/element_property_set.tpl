@@ -48,6 +48,9 @@ foreach ($elementClasses as $type => $elementClass) {
                     $propertySetsCache[$propertySetName] = $propertySet->id;
                 }
 
+                $elementPropertySet = $modx->getObject(\MODX\Revolution\modElementPropertySet::class, ['element' => $element->id, 'element_class' => $elementClass, 'property_set' => $propertySetsCache[$propertySetName]]);
+                if ($elementPropertySet) continue;
+
                 $elementPropertySet = $modx->newObject(\MODX\Revolution\modElementPropertySet::class);
                 $elementPropertySet->set('element', $element->id);
                 $elementPropertySet->set('element_class', $elementClass);

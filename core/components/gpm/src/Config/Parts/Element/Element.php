@@ -61,6 +61,9 @@ abstract class Element extends Part
         'file' => [Rules::isString, Rules::notEmpty, Rules::elementFileExists],
         'properties' => [
             ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::configPart]]]
+        ],
+        'propertySets' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isString, Rules::propertySetExists]]]
         ]
     ];
 

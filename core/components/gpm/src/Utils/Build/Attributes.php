@@ -36,6 +36,11 @@ class Attributes
                 xPDOTransport::UPDATE_OBJECT => true,
                 xPDOTransport::UNIQUE_KEY => 'name',
             ],
+            'PropertySets' => [
+                xPDOTransport::PRESERVE_KEYS => false,
+                xPDOTransport::UPDATE_OBJECT => true,
+                xPDOTransport::UNIQUE_KEY => 'name',
+            ],
             'Plugins' => [
                 xPDOTransport::UNIQUE_KEY => 'name',
                 xPDOTransport::PRESERVE_KEYS => false,
@@ -44,16 +49,19 @@ class Attributes
                 xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
                     'PluginEvents' => [
                         xPDOTransport::PRESERVE_KEYS => true,
-                        xPDOTransport::UPDATE_OBJECT => false,
+                        xPDOTransport::UPDATE_OBJECT => true,
                         xPDOTransport::UNIQUE_KEY => ['pluginid','event'],
+                        xPDOTransport::RELATED_OBJECTS => true,
+                        xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
+                            'PropertySet' => [
+                                xPDOTransport::UNIQUE_KEY => 'name',
+                                xPDOTransport::PRESERVE_KEYS => false,
+                                xPDOTransport::UPDATE_OBJECT => false,
+                            ]
+                        ]
                     ],
                 ],
-            ],
-            'PropertySets' => [
-                xPDOTransport::PRESERVE_KEYS => false,
-                xPDOTransport::UPDATE_OBJECT => true,
-                xPDOTransport::UNIQUE_KEY => 'name',
-            ],
+            ]
         ]
     ];
 

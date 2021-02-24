@@ -2,6 +2,7 @@
 namespace GPM\Config;
 
 use GPM\Config\Parts\Element\Element;
+use GPM\Config\Parts\Element\Plugin;
 use GPM\Config\Parts\Part;
 use Psr\Log\LoggerInterface;
 
@@ -20,6 +21,8 @@ class Rules {
     const categoryExists = 'categoryExists';
     const configPart = 'configPart';
     const elementFileExists = 'elementFileExists';
+    const containsEventPropertySets = 'containsEventPropertySets';
+    const propertySetExists = 'propertySetExists';
 
     private static function getLogID(Part $part, $fieldName): string
     {
@@ -236,5 +239,33 @@ class Rules {
         }
 
         return $valid;
+    }
+
+    private static function containsEventPropertySets(Validator $validator, $value, string $fieldName, Plugin $part, $params = null): bool
+    {
+        $valid = true;
+        $events = $part->events;
+        foreach ($events as $event) {
+            if (empty($event->propertySet)) continue;
+
+            if (!in_array($event->propertySet, $value)) {
+                $validator->logger->error(self::getLogID($part, $fieldName) . "don't contain {$event->propertySet} property set from {$event->name} event.");
+                $valid = false;
+            }
+        }
+
+        return $valid;
+    }
+
+    private static function propertySetExists(Validator $validator, $value, string $fieldName, Element $part, $params = null): bool
+    {
+        foreach ($validator->config->propertySets as $propertySet) {
+            if ($propertySet->name === $value) {
+                return true;
+            }
+        }
+
+        $validator->logger->error(self::getLogID($part, $fieldName) . "is not defined under package's property sets.");
+        return false;
     }
 }

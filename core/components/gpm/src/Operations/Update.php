@@ -517,15 +517,15 @@ class Update extends Operation
             $this->logger->notice('Removing unused ' . ucfirst($cfgType));
         }
 
-        foreach ($notUsedElements as $notUsedSnippet => $v) {
-            $toDelete = $this->modx->getObject($class, [$pk => $notUsedSnippet]);
+        foreach ($notUsedElements as $notUsedElement => $v) {
+            $toDelete = $this->modx->getObject($class, [$pk => $notUsedElement]);
             if ($toDelete) {
                 $removed = $toDelete->remove();
 
                 if ($removed) {
-                    $this->logger->info(' - ' . $notUsedSnippet);
+                    $this->logger->info(' - ' . $notUsedElement);
                 } else {
-                    $this->logger->error('Removing ' . ucfirst($cfgType) . ' ' . $notUsedSnippet);
+                    $this->logger->error('Removing ' . ucfirst($cfgType) . ' ' . $notUsedElement);
                 }
             }
         }

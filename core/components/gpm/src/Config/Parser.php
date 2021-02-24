@@ -346,6 +346,19 @@ class Parser
                     $plugin['category'] = [$plugin['category']];
                 }
 
+                if (isset($plugin['events']) && is_array($plugin['events'])) {
+                    $events = [];
+                    foreach ($plugin['events'] as $event) {
+                        if (is_string($event)) {
+                            $event = ['name' => $event];
+                        }
+
+                        $events[] = $event;
+                    }
+                    
+                    $plugin['events'] = $events;
+                }
+
                 $output[] = $plugin;
             }
         }
