@@ -4,6 +4,7 @@ namespace GPM\Operations;
 
 use GPM\Config\Config;
 use GPM\Model\GitPackage;
+use MODX\Revolution\modDashboardWidget;
 use MODX\Revolution\modElementPropertySet;
 use MODX\Revolution\modPropertySet;
 use Psr\Log\LoggerInterface;
@@ -72,6 +73,7 @@ class Update extends Operation
             $this->updateElements('plugin');
             $this->updateElements('template');
             $this->updatePropertySets();
+            $this->updateWidgets();
 
             $this->updateGitPackage();
         } catch (\Exception $err) {
@@ -526,6 +528,52 @@ class Update extends Operation
                     $this->logger->info(' - ' . $notUsedElement);
                 } else {
                     $this->logger->error('Removing ' . ucfirst($cfgType) . ' ' . $notUsedElement);
+                }
+            }
+        }
+    }
+
+    protected function updateWidgets(): void
+    {
+        if (empty($this->oldConfig->widgets) || empty($this->newConfig->widgets)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Widgets');
+
+        $notUsedWidgets = [];
+        foreach ($this->oldConfig->widgets as $oldWidget) {
+            $notUsedWidgets[$oldWidget->name] = true;
+        }
+
+        foreach ($this->newConfig->widgets as $widget) {
+            if (isset($notUsedWidgets[$widget->name])) {
+                unset($notUsedWidgets[$widget->name]);
+            }
+
+            $obj = $widget->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $widget->name);
+            } else {
+                $this->logger->error('Saving Widget  ' . $widget->name);
+            }
+        }
+
+        if (!empty($notUsedWidgets)) {
+            $this->logger->notice('Removing unused Widgets');
+        }
+
+        foreach ($notUsedWidgets as $notUsedWidget => $v) {
+            $toDelete = $this->modx->getObject(modDashboardWidget::class, ['name' => $notUsedWidget, 'namespace' => $this->newConfig->general->lowCaseName]);
+            if ($toDelete) {
+                $removed = $toDelete->remove();
+
+                if ($removed) {
+                    $this->logger->info(' - ' . $notUsedWidget);
+                } else {
+                    $this->logger->error('Removing Widget ' . $notUsedWidget);
                 }
             }
         }

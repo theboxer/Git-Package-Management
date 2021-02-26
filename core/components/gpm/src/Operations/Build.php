@@ -38,6 +38,7 @@ class Build extends Operation {
             $this->packMenu();
             $this->packDB();
             $this->packMainCategory();
+            $this->packWidgets();
 
             $this->packScripts('after');
 
@@ -198,6 +199,18 @@ class Build extends Operation {
         foreach ($this->config->menus as $menu) {
             $this->logger->info(' - ' . $menu->text);
             $this->package->put($menu->getBuildObject(), Attributes::$menu);
+        }
+    }
+
+    protected function packWidgets(): void
+    {
+        if (!empty($this->config->widgets)) {
+            $this->logger->notice('Packing widgets');
+        }
+
+        foreach ($this->config->widgets as $widget) {
+            $this->logger->info(' - ' . $widget->name);
+            $this->package->put($widget->getBuildObject(), Attributes::$widget);
         }
     }
 

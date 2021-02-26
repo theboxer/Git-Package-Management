@@ -20,6 +20,7 @@ use Psr\Log\LoggerInterface;
  * @property-read Parts\Element\Template[] $templates;
  * @property-read Parts\Element\Category[] $categories;
  * @property-read Parts\PropertySet[] $propertySets;
+ * @property-read Parts\Widget[] $widgets;
  *
  * @package GPM\Config
  */
@@ -57,6 +58,9 @@ class Config
 
     /** @var Parts\PropertySet[] */
     private $propertySets = [];
+
+    /** @var Parts\Widget[] */
+    private $widgets = [];
 
     /** @var Parts\Build */
     private $build;
@@ -139,6 +143,10 @@ class Config
             $config->propertySets[] = new Parts\PropertySet($propertySet, $config);
         }
 
+        foreach ($cfg['widgets'] as $widget) {
+            $config->widgets[] = new Parts\Widget($widget, $config);
+        }
+
         $valid = $config->validate($logger);
         if (!$valid) {
             throw new \Exception('Config is not valid');
@@ -196,6 +204,7 @@ class Config
             'templates',
             'categories',
             'propertySets',
+            'widgets',
         ];
     }
 
@@ -239,6 +248,10 @@ class Config
 
         foreach ($config->propertySets as $propertySet) {
             $propertySet->setConfig($config);
+        }
+
+        foreach ($config->widgets as $widget) {
+            $widget->setConfig($config);
         }
 
         return $config;

@@ -80,6 +80,9 @@ abstract class Element extends Part
         $pathsToCheck = [];
         $pathsToCheck[] = $baseSnippetsPath . $this->file;
 
+        $this->absoluteFilePath = $baseSnippetsPath . $this->file;
+        $this->filePath = str_replace($this->config->paths->core, '', $this->absoluteFilePath);
+
         if (!empty($this->category)) {
             $category = implode(DIRECTORY_SEPARATOR, $this->category) . DIRECTORY_SEPARATOR;
             $pathsToCheck[] = $baseSnippetsPath . $category . $this->file;

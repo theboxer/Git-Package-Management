@@ -65,6 +65,10 @@ final class Validator {
             $valid = $this->validate($propertySet) && $valid;
         }
 
+        foreach ($this->config->widgets as $widget) {
+            $valid = $this->validate($widget) && $valid;
+        }
+
         return $valid;
     }
 

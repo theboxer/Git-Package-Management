@@ -156,6 +156,7 @@ class Parser
             'templates'      => $this->getTemplates(),
             'categories'     => $this->getCategories(),
             'propertySets'   => $this->getPropertySets(),
+            'widgets'        => $this->getWidgets(),
             'build'          => $this->getBuild(),
         ];
     }
@@ -553,6 +554,41 @@ class Parser
                 }
 
                 $output[] = $propertySet;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    private function getWidgets(): array
+    {
+        $output = [];
+
+        if (!isset($this->config['widgets'])) {
+            return $output;
+        }
+
+        $widgets = $this->config['widgets'];
+        if (is_string($widgets)) {
+            $widgets = $this->loadConfigFile($widgets);
+        }
+
+        if (!is_array($widgets)) {
+            return $output;
+        }
+
+        foreach ($widgets as $widget) {
+            if (is_string($widget)) {
+                $widget = $this->loadConfigFile($widget);
+            }
+
+            if (is_array($widget)) {
+                $widget['properties'] = $this->getProperties($widget);
+                $output[] = $widget;
             }
         }
 

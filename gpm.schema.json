@@ -639,6 +639,54 @@
           }
         }
       ]
+    },
+
+    "widgets": {
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "default": "file",
+                    "enum": ["html", "file", "snippet", "php"]
+                  },
+                  "size": {
+                    "type": "string",
+                    "default": "half",
+                    "enum": ["quarter", "one-third", "half", "two-third", "three-quarters", "full", "double"]
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "lexicon": {
+                    "type": "string"
+                  },
+                  "permission": {
+                    "type": "string"
+                  },
+                  "properties": {
+                    "type": "object"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }

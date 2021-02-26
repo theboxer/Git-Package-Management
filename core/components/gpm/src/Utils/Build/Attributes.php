@@ -85,7 +85,7 @@ class Attributes
     ];
 
     public static $widget = [
-        xPDOTransport::UNIQUE_KEY => 'name',
+        xPDOTransport::UNIQUE_KEY => ['name', 'namespace'],
         xPDOTransport::PRESERVE_KEYS => false,
         xPDOTransport::UPDATE_OBJECT => true,
     ];

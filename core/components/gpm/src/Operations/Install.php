@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 
 class Install extends Operation
 {
+
     /** @var \GPM\Operations\ParseSchema */
     protected $parseSchema;
 
@@ -61,6 +62,7 @@ class Install extends Operation
             $this->createElements('chunk');
             $this->createElements('plugin');
             $this->createElements('template');
+            $this->createWidgets();
 
             $this->saveGitPackage();
         } catch (\Exception $err) {
@@ -69,6 +71,16 @@ class Install extends Operation
         }
 
         $this->logger->warning('Package installed.');
+    }
+
+    protected function prepareGitPackage(string $dir): void
+    {
+        $this->package = $this->modx->newObject(\GPM\Model\GitPackage::class);
+        $this->package->set('version', $this->config->general->version);
+        $this->package->set('description', $this->config->general->description);
+        $this->package->set('author', $this->config->general->author);
+        $this->package->set('name', $this->config->general->name);
+        $this->package->set('dir_name', $dir);
     }
 
     protected function createConfigFile(): void
@@ -118,7 +130,9 @@ class Install extends Operation
 
     protected function createMenus(): void
     {
-        if (empty($this->config->menus)) return;
+        if (empty($this->config->menus)) {
+            return;
+        }
         $this->logger->notice('Creating Menus');
 
         foreach ($this->config->menus as $menu) {
@@ -130,7 +144,6 @@ class Install extends Operation
             } else {
                 $this->logger->error('Saving menu' . $menu->text);
             }
-
         }
     }
 
@@ -226,7 +239,7 @@ class Install extends Operation
             }
 
             $this->categoriesMap[$category->name] = [
-                'id' => $object->get('id'),
+                'id'       => $object->get('id'),
                 'children' => [],
             ];
 
@@ -237,9 +250,9 @@ class Install extends Operation
     }
 
     /**
-     * @param \GPM\Config\Parts\Element\Category[] $categories
-     * @param int $parent
-     * @param array $map
+     * @param  \GPM\Config\Parts\Element\Category[]  $categories
+     * @param  int  $parent
+     * @param  array  $map
      */
     protected function createCategoryChildren(array $categories, int $parent, array &$map): void
     {
@@ -262,7 +275,7 @@ class Install extends Operation
             }
 
             $map[$category->name] = [
-                'id' => $object->get('id'),
+                'id'       => $object->get('id'),
                 'children' => [],
             ];
 
@@ -270,6 +283,51 @@ class Install extends Operation
                 $this->createCategoryChildren($category->children, $object->get('id'), $map[$category->name]['children']);
             }
         }
+    }
+
+    protected function createPropertySets(): void
+    {
+        if (empty($this->config->propertySets)) {
+            return;
+        }
+
+        $this->logger->notice("Creating Property Sets");
+
+        foreach ($this->config->propertySets as $propertySet) {
+            $category = $this->getCategory($propertySet->category);
+            $obj = $propertySet->getObject($category);
+            $saved = $obj->save();
+            if ($saved) {
+                $this->logger->info(' - ' . $propertySet->name);
+            } else {
+                $this->logger->error("Saving PropertySet {$obj->name}");
+            }
+        }
+    }
+
+    /**
+     * @param  string[]  $elCategory
+     *
+     * @return int
+     */
+    protected function getCategory(array $elCategory): int
+    {
+        if (empty($elCategory)) {
+            return $this->category->id;
+        }
+
+        $catChain = $this->categoriesMap;
+        $catId = $this->category->get('id');
+        foreach ($elCategory as $cat) {
+            if (!isset($catChain[$cat])) {
+                throw new \Exception('Category chain is not correct: ' . implode(' - ', $elCategory));
+            }
+
+            $catId = $catChain[$cat]['id'];
+            $catChain = $catChain[$cat]['children'];
+        }
+
+        return $catId;
     }
 
     /**
@@ -316,57 +374,24 @@ class Install extends Operation
         }
     }
 
-    protected function createPropertySets(): void
+    protected function createWidgets(): void
     {
-        if (empty($this->config->propertySets)) {
+        if (empty($this->config->widgets)) {
             return;
         }
 
-        $this->logger->notice("Creating Property Sets");
+        $this->logger->notice("Creating Widgets");
 
-        foreach ($this->config->propertySets as $propertySet) {
-            $category = $this->getCategory($propertySet->category);
-            $obj = $propertySet->getObject($category);
+        foreach ($this->config->widgets as $widget) {
+            $obj = $widget->getObject();
             $saved = $obj->save();
+
             if ($saved) {
-                $this->logger->info(' - ' . $propertySet->name);
+                $this->logger->info(' - ' . $widget->name);
             } else {
-                $this->logger->error("Saving PropertySet {$obj->name}");
+                $this->logger->error("Saving widget {$widget->name}");
             }
         }
-    }
-
-    /**
-     * @param  string[]  $elCategory
-     *
-     * @return int
-     */
-    protected function getCategory(array $elCategory): int
-    {
-        if (empty($elCategory)) return $this->category->id;
-
-        $catChain = $this->categoriesMap;
-        $catId = $this->category->get('id');
-        foreach ($elCategory as $cat) {
-            if (!isset($catChain[$cat])) {
-                throw new \Exception('Category chain is not correct: ' . implode(' - ', $elCategory));
-            }
-
-            $catId = $catChain[$cat]['id'];
-            $catChain = $catChain[$cat]['children'];
-        }
-
-        return $catId;
-    }
-
-    protected function prepareGitPackage(string $dir): void
-    {
-        $this->package = $this->modx->newObject(\GPM\Model\GitPackage::class);
-        $this->package->set('version', $this->config->general->version);
-        $this->package->set('description', $this->config->general->description);
-        $this->package->set('author', $this->config->general->author);
-        $this->package->set('name', $this->config->general->name);
-        $this->package->set('dir_name', $dir);
     }
 
     protected function saveGitPackage(): void

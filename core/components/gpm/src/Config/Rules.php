@@ -4,6 +4,7 @@ namespace GPM\Config;
 use GPM\Config\Parts\Element\Element;
 use GPM\Config\Parts\Element\Plugin;
 use GPM\Config\Parts\Part;
+use GPM\Config\Parts\Widget;
 use Psr\Log\LoggerInterface;
 
 class Rules {
@@ -14,6 +15,7 @@ class Rules {
     const isInt = 'isInt';
     const isFloat = 'isFloat';
     const isBool = 'isBool';
+    const isEnum = 'isEnum';
 
     const packageFileExists = 'packageFileExists';
     const scriptExists = 'scriptExists';
@@ -23,6 +25,7 @@ class Rules {
     const elementFileExists = 'elementFileExists';
     const containsEventPropertySets = 'containsEventPropertySets';
     const propertySetExists = 'propertySetExists';
+    const widgetContent = 'widgetContent';
 
     private static function getLogID(Part $part, $fieldName): string
     {
@@ -235,7 +238,7 @@ class Rules {
         $valid = file_exists($part->absoluteFilePath);
 
         if (!$valid) {
-            $validator->logger->error(self::getLogID($part, $fieldName) . "\"{$part->file}\" doesn't exist");
+            $validator->logger->error(self::getLogID($part, $fieldName) . "\"{$part->filePath}\" doesn't exist");
         }
 
         return $valid;
@@ -267,5 +270,31 @@ class Rules {
 
         $validator->logger->error(self::getLogID($part, $fieldName) . "is not defined under package's property sets.");
         return false;
+    }
+
+    private static function isEnum(Validator $validator, $value, string $fieldName, Part $part, array $params = []): bool
+    {
+        $valid = in_array($value, $params);
+        if ($valid) return true;
+
+        $validator->logger->error(self::getLogID($part, $fieldName) . "has to be one of these values " . implode(', ', $params) . ". Value {$value} was used.");
+        return false;
+    }
+
+    private static function widgetContent(Validator $validator, $value, string $fieldName, Widget $part, $params = null): bool
+    {
+        $type = $part->type;
+
+        if ($type === 'file') {
+            $valid = file_exists($part->absoluteFilePath);
+
+            if (!$valid) {
+                $validator->logger->error(self::getLogID($part, $fieldName) . "\"{$part->filePath}\" doesn't exist");
+            }
+
+            return $valid;
+        }
+
+        return true;
     }
 }
