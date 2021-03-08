@@ -42,7 +42,7 @@ class Property extends Part
 
     protected $rules = [
         'name' => [Rules::isString, Rules::notEmpty],
-        'type' => [Rules::isString, Rules::validXType],
+        'type' => [Rules::isString],
     ];
 
     protected function generator(): void

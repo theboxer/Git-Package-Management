@@ -35,7 +35,7 @@ class SystemSetting extends Part
 
     protected $rules = [
         'key' => [Rules::isString, Rules::notEmpty],
-        'type' => [Rules::isString, Rules::validXType],
+        'type' => [Rules::isString],
         'value' => [Rules::isScalar]
     ];
 
