@@ -59,7 +59,7 @@ class PackageCreate extends Command {
         $description = $input->getOption('description');
         $author = $input->getOption('author');
 
-        $general = new General(
+        $generalPart = new General(
             [
                 'name' => $name,
                 'lowCaseName' => $lowCaseName,
@@ -73,12 +73,12 @@ class PackageCreate extends Command {
         }
 
         if (empty($lowCaseName)) {
-            $question = new Question('Name of the package in lower case (without spaces and extra symbols, default: ' . $general->lowCaseName . '): ', $general->lowCaseName);
+            $question = new Question('Name of the package in lower case (without spaces and extra symbols, default: ' . $generalPart->lowCaseName . '): ', $generalPart->lowCaseName);
             $lowCaseName = $helper->ask($input, $output, $question);
         }
 
         if (empty($namespace)) {
-            $question = new Question('PSR-4 Namespace of the package (default: ' . $general->namespace . '): ', $general->namespace);
+            $question = new Question('PSR-4 Namespace of the package (default: ' . $generalPart->namespace . '): ', $generalPart->namespace);
             $namespace = $helper->ask($input, $output, $question);
         }
 

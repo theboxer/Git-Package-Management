@@ -4,6 +4,7 @@ namespace GPM\Operations;
 
 
 use GPM\Config\Parts\General;
+use GPM\Config\Validator;
 use Symfony\Component\Yaml\Yaml;
 
 class Create extends Operation
@@ -18,11 +19,14 @@ class Create extends Operation
     {
         $this->loadSmarty();
 
-        $general = new General($generalData);
-        $valid = $general->validate($this->logger);
+        $packagesDir = $this->modx->getOption('gpm.packages_dir');
+
+        $config = \GPM\Config\Config::load($this->modx, $this->logger, ['general' => $generalData, 'paths' => ['package' => $packagesDir . $dir . DIRECTORY_SEPARATOR], 'build' => [], 'database' => []]);
+        $validator = new Validator($this->logger, $config);
+
+        $valid = $validator->validateConfig();
         if (!$valid) return;
 
-        $packagesDir = $this->modx->getOption('gpm.packages_dir');
         $this->cacheManager = $this->modx->getCacheManager();
 
         if ($force) {
@@ -34,13 +38,13 @@ class Create extends Operation
             return;
         }
 
-        $this->smarty->assign('namespace', $general->namespace);
-        $this->smarty->assign('name', $general->name);
-        $this->smarty->assign('lowCaseName', $general->lowCaseName);
+        $this->smarty->assign('namespace', $config->general->namespace);
+        $this->smarty->assign('name', $config->general->name);
+        $this->smarty->assign('lowCaseName', $config->general->lowCaseName);
 
 
-        $corePath = $packagesDir . $dir . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $general->lowCaseName;
-        $assetsPath = $packagesDir . $dir . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $general->lowCaseName;
+        $corePath = $config->paths->core;
+        $assetsPath = $config->paths->assets;
 
         $this->cacheManager->writeTree($packagesDir . $dir . DIRECTORY_SEPARATOR . '_build');
 
