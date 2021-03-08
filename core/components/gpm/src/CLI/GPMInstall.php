@@ -80,8 +80,6 @@ class GPMInstall extends Command {
             return Command::FAILURE;
         }
 
-//        $dir = dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/_build/config.yml';
-
         $logger = new ConsoleLogger($output);
 
         $install = new \GPM\Operations\GPM\Install($modx, $logger);
