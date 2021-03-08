@@ -154,6 +154,7 @@ abstract class Element extends Part
             } else {
                 $obj->set('content', '');
                 $obj->set('static', 1);
+                $obj->set('source', 0);
                 $obj->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath);
             }
         } else {
