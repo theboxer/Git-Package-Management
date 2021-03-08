@@ -26,7 +26,7 @@ class GPMInstall extends Command {
     {
         $corePath = $input->getOption('corePath');
         if (!is_dir($corePath)) {
-            $this->error($output, 'corePath doesn\'t exist');
+            $this->error($output, 'corePath doesn\'t exist; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
@@ -34,24 +34,24 @@ class GPMInstall extends Command {
 
         $configKey = $input->getOption('configKey');
         if (empty($configKey)) {
-            $this->error($output, 'configKey is required');
+            $this->error($output, 'configKey is required; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
         $modxConfig = $corePath . 'config' . DIRECTORY_SEPARATOR . $configKey .'.inc.php';
         if (!file_exists($modxConfig)) {
-            $this->error($output, 'modx config doesn\'t exist');
+            $this->error($output, 'modx config doesn\'t exist; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
         $packagesDir = $input->getOption('packagesDir');
         if (empty($packagesDir)) {
-            $this->error($output, 'packagesDir is required');
+            $this->error($output, 'packagesDir is required; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
         if (!is_dir($packagesDir)) {
-            $this->error($output, 'packagesDir doesn\'t exist');
+            $this->error($output, 'packagesDir doesn\'t exist; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
@@ -59,12 +59,12 @@ class GPMInstall extends Command {
 
         $dir = $input->getOption('dir');
         if (empty($dir)) {
-            $this->error($output, 'dir is required');
+            $this->error($output, 'dir is required; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
         if (!is_dir($packagesDir . $dir)) {
-            $this->error($output, 'dir doesn\'t exist');
+            $this->error($output, 'dir doesn\'t exist; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
@@ -76,7 +76,7 @@ class GPMInstall extends Command {
         require_once MODX_CONNECTORS_PATH . 'index.php';
 
         if (!is_object($modx) || !($modx instanceof \MODX\Revolution\modX)) {
-            $this->error($output, 'failed to load MODX');
+            $this->error($output, 'failed to load MODX; try running "gpm:install -h" for more options');
             return Command::FAILURE;
         }
 
