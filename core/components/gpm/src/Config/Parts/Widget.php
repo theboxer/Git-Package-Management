@@ -86,6 +86,10 @@ class Widget extends Part
             $this->filePath = 'elements' . DIRECTORY_SEPARATOR . 'widgets' . DIRECTORY_SEPARATOR . $this->content;
             $this->absoluteFilePath = $this->config->paths->core . 'elements' . DIRECTORY_SEPARATOR . 'widgets' . DIRECTORY_SEPARATOR . $this->content;
         }
+
+        if (empty($this->lexicon)) {
+            $this->lexicon = $this->config->general->lowCaseName . ':default';
+        }
     }
 
     protected function prepareObject(bool $build = false): modDashboardWidget
