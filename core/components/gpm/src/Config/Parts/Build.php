@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
  * @property-read string $changelog
  * @property-read array $scriptsBefore
  * @property-read array $scriptsAfter
+ * @property-read array $requires
  *
  * @package GPM\Config\Parts
  */
@@ -33,13 +34,17 @@ class Build extends Part
     /** @var string[] */
     protected $scriptsAfter = [];
 
+    /** @var string[] */
+    protected $requires = [];
+
     protected $rules = [
         'readme' => [Rules::isString, Rules::packageFileExists],
         'license' => [Rules::isString, Rules::packageFileExists],
         'changelog' => [Rules::isString, Rules::packageFileExists],
         'scriptsBefore' => [
             ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isString, Rules::scriptExists]]]
-        ]
+        ],
+        'requires' => [Rules::isArray, Rules::packageDependencies],
     ];
 
     protected function generator(): void

@@ -620,6 +620,12 @@
                 "type": "string"
               }
             },
+            "requires": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
             "scriptsAfter": {
               "type": "array",
               "items": {

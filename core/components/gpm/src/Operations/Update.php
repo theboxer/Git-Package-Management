@@ -7,11 +7,13 @@ use GPM\Model\GitPackage;
 use MODX\Revolution\modDashboardWidget;
 use MODX\Revolution\modElementPropertySet;
 use MODX\Revolution\modPropertySet;
+use MODX\Revolution\Transport\modTransportPackage;
 use Psr\Log\LoggerInterface;
 use MODX\Revolution\modMenu;
 use MODX\Revolution\modSystemSetting;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\modX;
+use xPDO\Transport\xPDOTransport;
 
 class Update extends Operation
 {

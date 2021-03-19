@@ -405,6 +405,14 @@ class Build extends Operation {
         if (!empty($this->config->build->changelog)) {
             $this->package->setAttribute('changelog', file_get_contents($this->config->paths->package . $this->config->build->changelog));
         }
+
+        $requires = array_filter($this->config->build->requires, function($key) {
+            return strtolower($key) !== 'gpm';
+        }, ARRAY_FILTER_USE_KEY);
+
+        if (!empty($requires)) {
+            $this->package->setAttribute('requires', $requires);
+        }
     }
 
     protected function getResolver(string $name, array $props = []): string

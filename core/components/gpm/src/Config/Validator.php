@@ -30,7 +30,7 @@ final class Validator {
         $valid = true;
 
         $valid = $this->validate($this->config->build) && $valid;
-        $valid = $this->validate($this->config->build) && $valid;
+        $valid = $this->validate($this->config->paths) && $valid;
         $valid = $this->validate($this->config->database) && $valid;
 
         foreach ($this->config->systemSettings as $systemSetting) {

@@ -2,7 +2,7 @@ name: gpm
 lowCaseName: gpm
 description: Git Package Management for MODX Revolution 3.x
 author: John Peca
-version: 0.1.0
+version: 3.0.0
 
 menus:
   - text: gpm.menu

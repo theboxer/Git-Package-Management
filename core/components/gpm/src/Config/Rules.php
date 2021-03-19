@@ -5,7 +5,10 @@ use GPM\Config\Parts\Element\Element;
 use GPM\Config\Parts\Element\Plugin;
 use GPM\Config\Parts\Part;
 use GPM\Config\Parts\Widget;
+use GPM\Model\GitPackage;
+use MODX\Revolution\Transport\modTransportPackage;
 use Psr\Log\LoggerInterface;
+use xPDO\Transport\xPDOTransport;
 
 class Rules {
     const isString = 'isString';
@@ -26,6 +29,7 @@ class Rules {
     const containsEventPropertySets = 'containsEventPropertySets';
     const propertySetExists = 'propertySetExists';
     const widgetContent = 'widgetContent';
+    const packageDependencies = 'packageDependencies';
 
     private static function getLogID(Part $part, $fieldName): string
     {
@@ -296,5 +300,50 @@ class Rules {
         }
 
         return true;
+    }
+
+    private static function packageDependencies(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
+    {
+        /** @var modTransportPackage $transportPackage */
+        $transportPackage = $validator->config->modx->newObject(modTransportPackage::class);
+        $transportPackage->set('signature', $validator->config->general->lowCaseName . '-' . $validator->config->general->version);
+        $transportPackage->parseSignature();
+
+        $unsatisfied = $transportPackage->checkDependencies($value);
+        if (empty($unsatisfied)) {
+            return true;
+        }
+
+        $valid = true;
+
+        foreach ($unsatisfied as $packageName => $constraint) {
+            if (strtolower($packageName) === 'php') {
+                $valid = false;
+                $validator->logger->error(self::getLogID($part, $fieldName) . "PHP {$constraint} but your version is " . PHP_VERSION);
+                continue;
+            }
+
+            if (strtolower($packageName) === 'modx') {
+                $valid = false;
+                $validator->logger->error(self::getLogID($part, $fieldName) . "MODX Revolution {$constraint} but your version is {$validator->config->modx->version['full_version']}");
+                continue;
+            }
+
+            /** @var GitPackage $package */
+            $package = $validator->config->modx->getObject(GitPackage::class, ['name' => $packageName]);
+            if (!$package) {
+                $valid = false;
+                $validator->logger->error(self::getLogID($part, $fieldName) . "{$packageName} but it is not installed.");
+                continue;
+            }
+
+            $satisfies = xPDOTransport::satisfies($package->version, $constraint);
+            if (!$satisfies) {
+                $valid = false;
+                $validator->logger->error(self::getLogID($part, $fieldName) . "{$packageName} {$constraint} but your version is {$package->version}");
+            }
+        }
+
+        return $valid;
     }
 }
