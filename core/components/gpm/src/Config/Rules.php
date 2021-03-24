@@ -22,6 +22,7 @@ class Rules {
 
     const packageFileExists = 'packageFileExists';
     const scriptExists = 'scriptExists';
+    const buildFileExists = 'buildFileExists';
     const validXType = 'validXType';
     const categoryExists = 'categoryExists';
     const configPart = 'configPart';
@@ -162,11 +163,24 @@ class Rules {
         return $valid;
     }
 
+    private static function buildFileExists(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
+    {
+        if (empty($value)) return true;
+
+        $valid = file_exists($validator->config->paths->build . $value);
+
+        if (!$valid) {
+            $validator->logger->error(self::getLogID($part, $fieldName) . "doesn't exist.");
+        }
+
+        return $valid;
+    }
+
     private static function scriptExists(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
     {
         if (empty($value)) return true;
 
-        $valid = file_exists($validator->config->paths->scriptsPath . $value);
+        $valid = file_exists($validator->config->paths->scripts . $value);
 
         if (!$valid) {
             $validator->logger->error(self::getLogID($part, $fieldName) . "doesn't exist.");

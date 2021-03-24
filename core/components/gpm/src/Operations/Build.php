@@ -290,7 +290,7 @@ class Build extends Operation {
         }
 
         foreach ($this->config->build->{$availableTypes[$type]} as $script) {
-            $scriptPath = $this->config->paths->scriptsPath . $script;
+            $scriptPath = $this->config->paths->scripts . $script;
             if (file_exists($scriptPath)) {
                 $this->logger->info(' - ' . $script);
                 $this->package->put(
@@ -412,6 +412,10 @@ class Build extends Operation {
 
         if (!empty($requires)) {
             $this->package->setAttribute('requires', $requires);
+        }
+
+        if (!empty($this->config->build->setupOptions)) {
+            $this->package->setAttribute('setup-options', ['source' => $this->config->paths->build . $this->config->build->setupOptions]);
         }
     }
 

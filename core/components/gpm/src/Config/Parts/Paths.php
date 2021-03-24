@@ -11,7 +11,8 @@ use Psr\Log\LoggerInterface;
  * @property-read string $core
  * @property-read string $assets
  * @property-read string $assetsURL
- * @property-read string $scriptsPath
+ * @property-read string $scripts
+ * @property-read string $build
  *
  * @package GPM\Config\Parts
  */
@@ -30,7 +31,10 @@ class Paths extends Part
     protected $assetsURL = '';
 
     /** @var string  */
-    protected $scriptsPath = '';
+    protected $scripts = '';
+
+    /** @var string  */
+    protected $build = '';
 
     /**
      * Paths constructor.
@@ -49,6 +53,7 @@ class Paths extends Part
         $this->assets = $this->package . 'assets' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $config->general->lowCaseName . DIRECTORY_SEPARATOR;
         $this->assetsURL = $package . '/assets' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $config->general->lowCaseName . DIRECTORY_SEPARATOR;
 
-        $this->scriptsPath = $this->package . '_build' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR;
+        $this->scripts = $this->package . '_build' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR;
+        $this->build = $this->package . '_build' . DIRECTORY_SEPARATOR;
     }
 }

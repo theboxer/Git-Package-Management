@@ -626,6 +626,9 @@
                 "type": "string"
               }
             },
+            "setupOptions": {
+              "type": "string"
+            },
             "scriptsAfter": {
               "type": "array",
               "items": {
