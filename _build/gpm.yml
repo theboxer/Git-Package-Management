@@ -17,6 +17,10 @@ systemSettings:
     area: system
     type: combo-boolean
     value: 0
+  - key: enable_file_log
+    area: system
+    type: combo-boolean
+    value: 0
 
 database:
   tables:
