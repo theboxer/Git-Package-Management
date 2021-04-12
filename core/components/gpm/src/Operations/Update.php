@@ -67,6 +67,7 @@ class Update extends Operation
             $this->updateMenus();
             $this->updateSystemSettings();
             $this->updateTables();
+            $this->updateTransportListing();
             $this->clearCache();
 
             $this->updateCategories();
@@ -256,6 +257,49 @@ class Update extends Operation
             $manager->removeObjectContainer($table);
             $this->logger->info(' - ' . $table);
         }
+    }
+
+    protected function updateTransportListing(): void
+    {
+        $name = strtolower($this->newConfig->general->lowCaseName);
+
+        $version = explode('-', $this->newConfig->general->version);
+        if (count($version) == 1) {
+            $version[1] = 'pl';
+        }
+
+        $release = $version[1];
+        $version = $version[0];
+
+        if (empty($version)) {
+            throw new \Exception('Version is not specified');
+        }
+
+        if (empty($release)) {
+            throw new \Exception('release is not specified');
+        }
+
+        $signature = $name . '-' . $version . '-' . $release;
+        $filename = $signature . '.transport.zip';
+        $listing = $this->modx->getObject(modTransportPackage::class, ['signature' => $signature]);
+        if(!empty($listing)){
+            $listing->set('installed', strftime('%Y-%m-%d %H:%M:%S'));
+        }else{
+            $listing = $this->modx->newObject(modTransportPackage::class);
+            $listing->set('source', $filename);
+            $listing->set('signature', $signature);
+            $listing->set('installed', strftime('%Y-%m-%d %H:%M:%S'));
+            $listing->set('workspace', 1);
+            $listing->set('provider', 0);
+            $listing->set('disabled', 0);
+            $listing->set('package_name', $this->newConfig->general->name); 
+            $listing->set('release', $release);
+            $version = explode('.', $version);
+            $listing->set('version_major', $version[0]);
+            $listing->set('version_minor', $version[1]);
+            $listing->set('version_patch', $version[2]);
+        }
+        $listing->save();
     }
 
     protected function alterTable(string $table): void
