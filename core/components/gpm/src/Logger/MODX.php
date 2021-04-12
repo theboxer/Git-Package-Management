@@ -41,7 +41,7 @@ final class MODX implements LoggerInterface
             $level = self::$levelMap[$level];
         }
 
-        $target = (!$this->getOption('enable_file_log')) ? '' : array(
+        $target = (!$this->modx->getOption('gpm.enable_file_log', array(), false)) ? '' : array(
             'target' => 'FILE',
             'options' => array(
                 'filename' => 'gpm.log'
