@@ -23,6 +23,9 @@ $_lang['gpm.package.install'] = 'Install new package';
 $_lang['gpm.package.uninstall_short'] = 'Uninstall';
 $_lang['gpm.package.uninstall'] = 'Uninstall Package';
 $_lang['gpm.package.uninstall_desc'] = 'Are you sure you want to uninstall <strong>[[+name]]</strong>?';
+$_lang['gpm.package.update_package'] = 'Update package';
+$_lang['gpm.package.update_package_alter'] = 'Update package and alter database';
+$_lang['gpm.package.update_package_recreate'] = 'Update package and recreate database';
 $_lang['gpm.package.dir'] = 'Directory name';
 $_lang['gpm.package.build'] = 'Build package';
 
