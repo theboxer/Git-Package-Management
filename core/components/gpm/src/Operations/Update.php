@@ -88,7 +88,7 @@ class Update extends Operation
 
     protected function updateMenus(): void
     {
-        if (empty($this->oldConfig->menus) || empty($this->newConfig->menus)) return;
+        if (empty($this->oldConfig->menus) && empty($this->newConfig->menus)) return;
         $this->logger->notice('Updating Menus');
 
         $notUsedMenus = [];
@@ -131,7 +131,7 @@ class Update extends Operation
 
     protected function updateSystemSettings(): void
     {
-        if (empty($this->oldConfig->systemSettings) || empty($this->newConfig->systemSettings)) return;
+        if (empty($this->oldConfig->systemSettings) && empty($this->newConfig->systemSettings)) return;
         $this->logger->notice('Updating System Settings');
 
         /** @var \GPM\Config\Parts\SystemSetting[] $toDelete */
@@ -464,7 +464,7 @@ class Update extends Operation
         $cfgType = $type . 's';
         $class = '\\MODX\\Revolution\\mod' . ucfirst($type);
 
-        if (empty($this->oldConfig->{$cfgType}) || empty($this->newConfig->{$cfgType})) {
+        if (empty($this->oldConfig->{$cfgType}) && empty($this->newConfig->{$cfgType})) {
             return;
         }
 
@@ -537,7 +537,7 @@ class Update extends Operation
 
     protected function updateWidgets(): void
     {
-        if (empty($this->oldConfig->widgets) || empty($this->newConfig->widgets)) {
+        if (empty($this->oldConfig->widgets) && empty($this->newConfig->widgets)) {
             return;
         }
 
@@ -583,7 +583,7 @@ class Update extends Operation
 
     protected function updatePropertySets(): void
     {
-        if (empty($this->oldConfig->propertySets) || empty($this->newConfig->propertySets)) {
+        if (empty($this->oldConfig->propertySets) && empty($this->newConfig->propertySets)) {
             return;
         }
 
