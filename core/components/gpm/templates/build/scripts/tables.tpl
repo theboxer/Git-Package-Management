@@ -1,4 +1,6 @@
 <?php
+use xPDO\Transport\xPDOTransport;
+
 /**
  * Create tables
  *
@@ -7,7 +9,7 @@
  * @package {{$general.lowCaseName}}
  * @subpackage build.scripts
  *
- * @var \Teleport\Transport\Transport $transport
+ * @var \xPDO\Transport\xPDOTransport $transport
  * @var array $object
  * @var array $options
  */
@@ -19,7 +21,7 @@ if ($options[xPDOTransport::PACKAGE_ACTION] === xPDOTransport::ACTION_UNINSTALL)
 $manager = $modx->getManager();
 
 {foreach from=$tables item=table}
-$manager->createObjectContainer('{{$table}}');
+$manager->createObjectContainer({{$table}}::class);
 {/foreach}
 
 return true;

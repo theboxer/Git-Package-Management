@@ -629,6 +629,12 @@
             "setupOptions": {
               "type": "string"
             },
+            "installValidator": {
+              "type": "string"
+            },
+            "unInstallValidator": {
+              "type": "string"
+            },
             "scriptsAfter": {
               "type": "array",
               "items": {

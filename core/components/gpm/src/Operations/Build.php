@@ -5,6 +5,7 @@ use GPM\Config\Config;
 use GPM\Utils\Build\Attributes;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\Transport\modPackageBuilder;
+use xPDO\Transport\xPDOScriptVehicle;
 use xPDO\Transport\xPDOTransport;
 
 class Build extends Operation {
@@ -31,6 +32,8 @@ class Build extends Operation {
             $this->loadSmarty();
             $this->package = $this->createPackage();
 
+            $this->packInstallValidator();
+
             $this->packNamespace();
             $this->packScripts('before');
 
@@ -41,6 +44,8 @@ class Build extends Operation {
             $this->packWidgets();
 
             $this->packScripts('after');
+
+            $this->packUnInstallValidator();
 
             $this->setPackageAttributes();
 
@@ -95,6 +100,36 @@ class Build extends Operation {
         $package = new xPDOTransport($this->modx, $signature, $directory);
 
         return $package;
+    }
+
+    protected function packInstallValidator(): void
+    {
+        if (empty($this->config->build->installValidator)) return;
+
+        $this->package->put(
+            [
+                'source' => $this->config->paths->scripts . $this->config->build->installValidator
+            ],
+            [
+                'vehicle_class' => xPDOScriptVehicle::class,
+                xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true,
+            ]
+        );
+    }
+
+    protected function packUnInstallValidator(): void
+    {
+        if (empty($this->config->build->unInstallValidator)) return;
+
+        $this->package->put(
+            [
+                'source' => $this->config->paths->scripts . $this->config->build->unInstallValidator
+            ],
+            [
+                'vehicle_class' => xPDOScriptVehicle::class,
+                xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true,
+            ]
+        );
     }
 
     protected function packNamespace(): void
@@ -184,7 +219,16 @@ class Build extends Operation {
                     'source' => $this->getScript('tables', ['tables' => $this->config->database->tables])
                 ],
                 [
-                    'vehicle_class' => 'xPDO\\Transport\\xPDOScriptVehicle'
+                    'vehicle_class' => xPDOScriptVehicle::class
+                ]
+            );
+
+            $this->package->put(
+                [
+                    'source' => $this->getScript('sync_tables', ['tables' => $this->config->database->tables])
+                ],
+                [
+                    'vehicle_class' => xPDOScriptVehicle::class
                 ]
             );
         }
@@ -298,7 +342,7 @@ class Build extends Operation {
                         'source' => $scriptPath
                     ],
                     [
-                        'vehicle_class' => 'xPDO\\Transport\\xPDOScriptVehicle'
+                        'vehicle_class' => xPDOScriptVehicle::class
                     ]
                 );
             }

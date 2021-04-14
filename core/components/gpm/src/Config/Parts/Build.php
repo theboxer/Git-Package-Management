@@ -14,6 +14,8 @@ use Psr\Log\LoggerInterface;
  * @property-read array $scriptsAfter
  * @property-read array $requires
  * @property-read string $setupOptions
+ * @property-read string $installValidator
+ * @property-read string $unInstallValidator
  *
  * @package GPM\Config\Parts
  */
@@ -41,6 +43,12 @@ class Build extends Part
     /** @var string */
     protected $setupOptions = '';
 
+    /** @var string */
+    protected $installValidator = '';
+
+    /** @var string */
+    protected $unInstallValidator = '';
+
     protected $rules = [
         'readme' => [Rules::isString, Rules::packageFileExists],
         'license' => [Rules::isString, Rules::packageFileExists],
@@ -50,6 +58,8 @@ class Build extends Part
         ],
         'requires' => [Rules::isArray, Rules::packageDependencies],
         'setupOptions' => [Rules::isString, Rules::buildFileExists],
+        'installValidator' => [Rules::isString, Rules::scriptExists],
+        'unInstallValidator' => [Rules::isString, Rules::scriptExists],
     ];
 
     protected function generator(): void
