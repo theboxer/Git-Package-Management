@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
  * Class SystemSetting
  *
  * @property-read string $key
+ * @property-read string $namespace
  * @property-read string $type
  * @property-read string $area
  * @property-read string $value
@@ -25,6 +26,9 @@ class SystemSetting extends Part
     protected $key = '';
 
     /** @var string */
+    protected $namespace = '';
+
+    /** @var string */
     protected $type = '';
 
     /** @var string */
@@ -35,6 +39,7 @@ class SystemSetting extends Part
 
     protected $rules = [
         'key' => [Rules::isString, Rules::notEmpty],
+        'namespace' => [Rules::isString],
         'type' => [Rules::isString],
         'value' => [Rules::isScalar]
     ];
@@ -62,7 +67,7 @@ class SystemSetting extends Part
             $obj->set('value', $this->value);
         }
 
-        $obj->set('namespace', $this->config->general->lowCaseName);
+        $obj->set('namespace', $this->namespace);
         $obj->set('area', $this->area);
         $obj->set('xtype', $this->type);
 
@@ -71,7 +76,9 @@ class SystemSetting extends Part
 
     public function getNamespacedKey(): string
     {
-        return $this->config->general->lowCaseName . '.' . $this->key;
+        if ($this->namespace === 'core') return $this->key;
+
+        return $this->namespace . '.' . $this->key;
     }
 
     public function getBuildObject(): modSystemSetting
@@ -87,6 +94,10 @@ class SystemSetting extends Part
 
         if (empty($this->area)) {
             $this->area = 'default';
+        }
+
+        if (empty($this->namespace)) {
+            $this->namespace = $this->config->general->lowCaseName;
         }
     }
 

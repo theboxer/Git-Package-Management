@@ -451,6 +451,9 @@
                   "key": {
                     "type": "string"
                   },
+                  "namespace": {
+                    "type": "string"
+                  },
                   "type": {
                     "$ref": "#/definitions/type"
                   },
