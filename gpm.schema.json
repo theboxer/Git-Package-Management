@@ -16,6 +16,7 @@
         { "$ref": "#/definitions/partialConfig" },
         {
           "type": "object",
+          "additionalProperties": false,
           "required": ["name"],
           "properties": {
             "name": { "type": "string" },
@@ -303,6 +304,7 @@
 
     "event": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["name"],
       "properties": {
         "name": { "$ref": "#/definitions/eventName" },
@@ -324,6 +326,7 @@
 
     "element": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["name"],
       "properties":  {
         "name": {
@@ -357,6 +360,8 @@
     "version"
   ],
 
+  "additionalProperties": false,
+
   "properties": {
     "name": {
       "type": "string",
@@ -389,6 +394,7 @@
               { "$ref": "#/definitions/partialConfig" },
               {
                 "type": "object",
+                "additionalProperties": false,
                 "required": [
                   "text"
                 ],
@@ -439,6 +445,7 @@
               { "$ref": "#/definitions/partialConfig" },
               {
                 "type": "object",
+                "additionalProperties": false,
                 "required": ["key"],
                 "properties": {
                   "key": {
@@ -577,6 +584,7 @@
               { "$ref": "#/definitions/partialConfig" },
               {
                 "type": "object",
+                "additionalProperties": false,
                 "required": ["name"],
                 "properties": {
                   "name": {
@@ -604,6 +612,7 @@
         { "$ref": "#/definitions/partialConfig" },
         {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "readme": {
               "type": "string"
@@ -648,6 +657,7 @@
         { "$ref": "#/definitions/partialConfig" },
         {
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "tables": {
               "type": "array",
@@ -670,6 +680,7 @@
               { "$ref": "#/definitions/partialConfig" },
               {
                 "type": "object",
+                "additionalProperties": false,
                 "required": ["name"],
                 "properties": {
                   "name": {
