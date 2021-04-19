@@ -621,10 +621,7 @@
               }
             },
             "requires": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "object"
             },
             "setupOptions": {
               "type": "string"
