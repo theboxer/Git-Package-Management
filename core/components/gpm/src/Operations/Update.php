@@ -202,7 +202,7 @@ class Update extends Operation
 
             foreach ($this->newConfig->database->tables as $newTable) {
                 $manager->createObjectContainer($newTable);
-                $this->logger->info(' - ' . $oldTable);
+                $this->logger->info(' - ' . $newTable);
             }
 
             return;
@@ -269,7 +269,6 @@ class Update extends Operation
         $tableName = $this->modx->getTableName($table);
         $tableName = str_replace('`', '', $tableName);
         $dbname = $this->modx->getOption('dbname');
-
         $c = $this->modx->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = :dbName AND table_name = :tableName");
 
         $c->bindParam(':dbName', $dbname);
