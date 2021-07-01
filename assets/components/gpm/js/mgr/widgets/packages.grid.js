@@ -73,6 +73,18 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
 
         if (this.menu.record && (this.menu.record.name !== 'gpm')) {
             m.push({
+                text: _('gpm.package.update_package'),
+                handler: this.update
+            });
+            m.push({
+                text: _('gpm.package.update_package_alter'),
+                handler: this.updateAlter
+            });
+            m.push({
+                text: _('gpm.package.update_package_recreate'),
+                handler: this.updateRecreate
+            });
+            m.push({
                 text: _('gpm.package.uninstall_short'),
                 handler: this.uninstall
             });
@@ -92,6 +104,63 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
 
         installPackageWindow.fp.getForm().reset();
         installPackageWindow.show(e.target);
+    },
+
+    update: function (btn, e) {
+        if (!this.menu.record) return false;
+        var self = this; 
+
+        gpm.loggedAction(
+            'GitPackage\\Update',
+            {
+                id: this.menu.record.id
+                ,recreateDatabase: 0
+                ,alterDatabase: 0
+            },
+            function() {
+                self.refresh();
+            }
+        );
+        
+        return true;
+    },
+
+    updateAlter: function (btn, e) {
+        if (!this.menu.record) return false;
+        var self = this; 
+
+        gpm.loggedAction(
+            'GitPackage\\Update',
+            {
+                id: this.menu.record.id
+                ,recreateDatabase: 0
+                ,alterDatabase: 1
+            },
+            function() {
+                self.refresh();
+            }
+        );
+        
+        return true;
+    },
+
+    updateRecreate: function (btn, e) {
+        if (!this.menu.record) return false;
+        var self = this; 
+
+        gpm.loggedAction(
+            'GitPackage\\Update',
+            {
+                id: this.menu.record.id
+                ,recreateDatabase: 1
+                ,alterDatabase: 0
+            },
+            function() {
+                self.refresh();
+            }
+        );
+        
+        return true;
     },
 
     uninstall: function (btn, e) {
