@@ -7,6 +7,7 @@ use GPM\Model\GitPackage;
 use MODX\Revolution\modMenu;
 use MODX\Revolution\modNamespace;
 use MODX\Revolution\modCategory;
+use MODX\Revolution\Transport\modTransportPackage;
 
 class Remove extends Operation
 {
@@ -32,6 +33,7 @@ class Remove extends Operation
             $this->removeMenus();
 
             $this->removeTables();
+            $this->removeTransportListing();
             $this->removeNamespace();
             $this->removeConfigFile();
             $this->clearCache();
@@ -101,6 +103,12 @@ class Remove extends Operation
             $manager->removeObjectContainer($table);
             $this->logger->info(' - ' . $table);
         }
+    }
+
+    protected function removeTransportListing(): void
+    {
+        $this->modx->removeCollection(modTransportPackage::class, ['package_name' => $this->config->general->lowCaseName]);
+        $this->logger->notice('Removing Package Installer Listing');
     }
 
     protected function clearCache(): void

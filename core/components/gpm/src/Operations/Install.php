@@ -9,6 +9,7 @@ use MODX\Revolution\modNamespace;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\modPropertySet;
 use MODX\Revolution\modX;
+use MODX\Revolution\Transport\modTransportPackage;
 use Psr\Log\LoggerInterface;
 
 class Install extends Operation
@@ -54,6 +55,7 @@ class Install extends Operation
             $this->createMenus();
             $this->createSystemSettings($packagesBaseUrl);
             $this->createTables();
+            $this->createTransportListing();
             $this->clearCache();
 
             $this->createCategories();
@@ -189,6 +191,49 @@ class Install extends Operation
                 }
             }
         }
+    }
+
+    protected function createTransportListing(): void
+    {
+        $name = strtolower($this->config->general->lowCaseName);
+
+        $version = explode('-', $this->config->general->version);
+        if (count($version) == 1) {
+            $version[1] = 'pl';
+        }
+
+        $release = $version[1];
+        $version = $version[0];
+
+        if (empty($version)) {
+            throw new \Exception('Version is not specified');
+        }
+
+        if (empty($release)) {
+            throw new \Exception('release is not specified');
+        }
+
+        $signature = $name . '-' . $version . '-' . $release;
+        $filename = $signature . '.transport.zip';
+        $listing = $this->modx->getObject(modTransportPackage::class, ['signature' => $signature]);
+        if(!empty($listing)){
+            $listing->set('installed', strftime('%Y-%m-%d %H:%M:%S'));
+        }else{
+            $listing = $this->modx->newObject(modTransportPackage::class);
+            $listing->set('source', $filename);
+            $listing->set('signature', $signature);
+            $listing->set('installed', strftime('%Y-%m-%d %H:%M:%S'));
+            $listing->set('workspace', 1);
+            $listing->set('provider', 0);
+            $listing->set('disabled', 0);
+            $listing->set('package_name', $this->config->general->name); 
+            $listing->set('release', $release);
+            $version = explode('.', $version);
+            $listing->set('version_major', $version[0]);
+            $listing->set('version_minor', $version[1]);
+            $listing->set('version_patch', $version[2]);
+        }
+        $listing->save();
     }
 
     protected function clearCache(): void
