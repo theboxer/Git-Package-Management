@@ -319,18 +319,37 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if($type == 'Plugin'){
                 /** @var modPluginEvent[] $oldEvents */
                 $oldEvents = $elementObject->getMany('PluginEvents');
+                $oldPropertySets = array();
                 foreach($oldEvents as $oldEvent){
+                    $oldPropertySets[$oldEvent->get('event')] = $oldEvent->get('propertyset');
                     $oldEvent->remove();
                 }
                 $events = array();
 
-                foreach($element->getEvents() as $event){
-                    $events[$event]= $this->modx->newObject('modPluginEvent');
-                    $events[$event]->fromArray(array(
-                                                    'event' => $event,
-                                                    'priority' => 0,
-                                                    'propertyset' => 0,
-                                               ),'',true,true);
+                foreach($element->getEvents() as $event) {
+                    $eventName = $event;
+                    $priority = 0;
+                    $propertySet = 0;
+
+                    // If events are defined as separate JSON objects, they can contain priority values
+                    if (is_array($event)) {
+                        $eventName = $event['event'];
+                        if ($event['priority']) {
+                            $priority = $event['priority'];
+                        }
+                    }
+
+                    // Keep custom property set for this event
+                    if ($oldPropertySets[$eventName]) {
+                        $propertySet = $oldPropertySets[$eventName];
+                    }
+
+                    $events[$eventName] = $this->modx->newObject('modPluginEvent');
+                    $events[$eventName]->fromArray(array(
+                        'event' => $eventName,
+                        'priority' => $priority,
+                        'propertyset' => $propertySet,
+                    ), '', true, true);
                 }
 
                 $elementObject->addMany($events, 'PluginEvents');

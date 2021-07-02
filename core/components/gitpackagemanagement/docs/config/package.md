@@ -244,7 +244,7 @@ In this section we create some elements. During the installation, all elements a
 - **name** (required) - Plugin's name
 - **category** (optional) - Name of category defined in **categories** element
 - **file** (optional, default: strtolower($name$).plugin.php) - Plugin's filename with extension
-- **events** (required) - Array of events
+- **events** (required) - Array of events (or an array of objects, see second example)
 - **properties** (optional) - An array of objects, where each object has those properties:
     - **name** (required) - Name of the property
     - **description** (optional) - Description of the property
@@ -267,6 +267,28 @@ In this section we create some elements. During the installation, all elements a
                     "name": "testproperty",
                     "value": "testvalue"
                 }]
+            }]
+        }
+    }
+}
+```
+
+If you want to specify the priority or property set of a plugin event, you can define the events as separate objects. If you don't provide a propertyset or priority, it will fall back to 0.
+```json
+{
+    "package":{
+        "elements": {
+            "plugins": [{
+                "name": "PackagePlugin",
+                "events": [
+                    {
+                        "event": "OnDocFormSave",
+                        "priority": 10
+                    },{
+                        "event": "OnWebPagePrerender",
+                        "propertyset": 5
+                    }
+                ]
             }]
         }
     }
