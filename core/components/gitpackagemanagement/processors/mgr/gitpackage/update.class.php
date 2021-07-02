@@ -319,7 +319,9 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if($type == 'Plugin'){
                 /** @var modPluginEvent[] $oldEvents */
                 $oldEvents = $elementObject->getMany('PluginEvents');
+                $oldPropertySets = array();
                 foreach($oldEvents as $oldEvent){
+                    $oldPropertySets[$oldEvent->get('event')] = $oldEvent->get('propertyset');
                     $oldEvent->remove();
                 }
                 $events = array();
@@ -335,6 +337,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                         if ($event['priority']) {
                             $priority = $event['priority'];
                         }
+                    }
+
+                    // Keep custom property set for this event
+                    if ($oldPropertySets[$eventName]) {
+                        $propertySet = $oldPropertySets[$eventName];
                     }
 
                     $events[$eventName] = $this->modx->newObject('modPluginEvent');
