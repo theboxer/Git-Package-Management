@@ -329,14 +329,11 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                     $priority = 0;
                     $propertySet = 0;
 
-                    // If events are defined as separate JSON objects, they can contain priority and propertyset values
+                    // If events are defined as separate JSON objects, they can contain priority values
                     if (is_array($event)) {
                         $eventName = $event['event'];
                         if ($event['priority']) {
                             $priority = $event['priority'];
-                        }
-                        if ($event['propertyset']) {
-                            $propertySet = $event['propertyset'];
                         }
                     }
 
