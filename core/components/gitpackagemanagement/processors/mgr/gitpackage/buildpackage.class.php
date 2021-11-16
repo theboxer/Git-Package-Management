@@ -285,6 +285,19 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $categoryVehicle->attributes[xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL] = true;
         }
 
+        if ($this->modx->getOption('encrypt', $buildOptions, false)) {
+            $vehicleClass = $this->modx->getOption('gitpackagemanagement.encrypt_vehicle_class', null, 'encryptVehicle');
+            $vehiclePath = $this->modx->getOption('gitpackagemanagement.encrypt_vehicle_path', null, $this->modx->getOption('gitpackagemanagement.core_path') . 'elements/');
+            if ($this->getProperty('encryptKey')) {
+                $this->modx->setOption('gitpackagemanagement.encrypt_key', $this->getProperty('encryptKey'));
+            }
+
+            $categoryVehicle = $category->getVehicle();
+            $categoryVehicle->attributes['vehicle_class'] = $vehicleClass;
+            $categoryVehicle->attributes['vehicle_package_path'] = $vehiclePath;
+            $categoryVehicle->attributes[xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL] = true;
+        }
+
         return $category;
     }
 
@@ -487,8 +500,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         return $plugins;
     }
 
-    protected function emptyFolder($path, $filemask = '*')
-    {
+    protected function emptyFolder($path, $filemask = '*') {
         $inverse = false;
         if (strpos($filemask, '!') === 0) {
             $filemask = substr($filemask, 1);
@@ -510,9 +522,59 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
         return;
     }
 
-    protected function prependVehicles() {}
+    protected function prependVehicles() {
+        $buildOptions = $this->config->getBuild()->getBuildOptions();
 
-    protected function appendVehicles() {}
+        if ($this->modx->getOption('encrypt', $buildOptions, false)) {
+            $resolversDir = $this->config->getBuild()->getResolver()->getResolversDir();
+            $resolversDir = trim($resolversDir, '/');
+            $resolversDir = $this->packagePath . '_build/' . $resolversDir . '/';
+
+            $this->modx->loadClass('xPDOFileVehicle', MODX_CORE_PATH . 'xpdo/transport/', true, true);
+            $fileObject = new xPDOFileVehicle();
+            $vehiclePath = $this->modx->getOption('gitpackagemanagement.encrypt_vehicle_path', null, $this->modx->getOption('gitpackagemanagement.core_path') . 'elements/transport/encryptvehicle.class.php');
+            $vehicle = $this->builder->createVehicle($fileObject, array(
+                'vehicle_class' => 'xPDOFileVehicle',
+                'object' => array(
+                    'source' => $vehiclePath,
+                    'target' => 'return MODX_CORE_PATH . "components/' . $this->config->getLowCaseName() . '_vehicle/";',
+                    'name' => 'encryptvehicle.class.php'
+                )
+            ));
+
+            $this->builder->putVehicle($vehicle);
+
+            $this->modx->loadClass('xPDOScriptVehicle', MODX_CORE_PATH . 'xpdo/transport/', true, true);
+            $fileObject = new xPDOScriptVehicle();
+            $vehicle = $this->builder->createVehicle($fileObject, array(
+                'vehicle_class' => 'xPDOScriptVehicle',
+                'object' => array(
+                    'source' => $resolversDir . $this->modx->getOption('encrypted_resolver', $buildOptions, 'resolve.encrypted.php')
+                )
+            ));
+
+            $this->builder->putVehicle($vehicle);
+        }
+    }
+
+    protected function appendVehicles() {
+        $buildOptions = $this->config->getBuild()->getBuildOptions();
+
+        if ($this->modx->getOption('encrypt', $buildOptions, false)) {
+            $resolversDir = $this->config->getBuild()->getResolver()->getResolversDir();
+            $resolversDir = trim($resolversDir, '/');
+            $resolversDir = $this->packagePath . '_build/' . $resolversDir . '/';
+
+            $this->modx->loadClass('xPDOScriptVehicle', MODX_CORE_PATH . 'xpdo/transport/', true, true);
+            $fileObject = new xPDOScriptVehicle();
+            $vehicle = $this->builder->createVehicle($fileObject, array(
+                'vehicle_class' => 'xPDOScriptVehicle',
+                'object' => array(
+                    'source' => $resolversDir . $this->modx->getOption('encrypted_resolver', $buildOptions, 'resolve.encrypted.php'),
+                )
+            ));
+        }
+    }
 
     private function addMenus() {
         /** @var GitPackageConfigMenu[] $menus */

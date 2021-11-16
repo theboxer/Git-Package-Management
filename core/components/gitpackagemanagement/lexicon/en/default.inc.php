@@ -35,6 +35,7 @@ $_lang['gitpackagemanagement.build_package'] = 'Build package';
 $_lang['gitpackagemanagement.check_lexicon'] = 'Check Lexicon';
 
 //Options
+$_lang['area_encrypt'] = 'Encrypt';
 $_lang['setting_gitpackagemanagement.build_path'] = 'Build path';
 $_lang['setting_gitpackagemanagement.build_path_desc'] = 'Folder, relatives to the package, to store build transport packages. Defaults to "/_packages/"';
 $_lang['setting_gitpackagemanagement.packages_dir'] = 'Packages directory';
@@ -49,6 +50,14 @@ $_lang['setting_gitpackagemanagement.disable_create_elements'] = 'Disable creati
 $_lang['setting_gitpackagemanagement.disable_create_elements_desc'] = 'By activating this setting, GPM lets the MODX installation alone. This is useful, when you want GPM to just create a package.';
 $_lang['setting_gitpackagemanagement.disable_update_elements'] = 'Disable updating anything in the MODX db';
 $_lang['setting_gitpackagemanagement.disable_update_elements_desc'] = 'By activating this setting, GPM lets the MODX installation alone. This is useful, when you want GPM to just create a package.';
+$_lang['setting_gitpackagemanagement.encrypt_key'] = 'Enrcypt Key';
+$_lang['setting_gitpackagemanagement.encrypt_key_desc'] = 'The package will be encrypted with this key, when encrypt is enabled in the build options.';
+$_lang['setting_gitpackagemanagement.support_mail'] = 'Support Email';
+$_lang['setting_gitpackagemanagement.support_mail_desc'] = 'The support email is shown when the package can\'t be decrypted.';
+$_lang['setting_gitpackagemanagement.support_name'] = 'Support Name';
+$_lang['setting_gitpackagemanagement.support_name_desc'] = 'The support name is shown when the package can\'t be decrypted.';
+$_lang['setting_gitpackagemanagement.support_url'] = 'Support URL';
+$_lang['setting_gitpackagemanagement.support_url_desc'] = 'The support url is shown when the package can\'t be decrypted.';
 
 //Errors
 $_lang['gitpackagemanagement.package_err_ns_folder_name'] = 'You have to enter folder name.';
@@ -64,4 +73,3 @@ $_lang['gitpackagemanagement.package_err_ccln'] = 'You can not update your packa
 $_lang['gitpackagemanagement.package_err_bc_nw'] = 'Build config is not writable. Please make [[+package]]/_build/build.config.php writable to continue.';
 $_lang['gitpackagemanagement.package_err_cc_nw'] = 'Core config is not writable. Please make [[+package]]/config.core.php writable to continue.';
 $_lang['gitpackagemanagement.package_err_dependencies'] = 'Dependencies check failed!';
-

@@ -52,6 +52,26 @@
         "value": "0",
         "type": "combo-boolean",
         "area": "system"
+      },
+      {
+        "key": "encrypt_key",
+        "value": "",
+        "area": "encrypt"
+      },
+      {
+        "key": "support_mail",
+        "value": "",
+        "area": "encrypt"
+      },
+      {
+        "key": "support_name",
+        "value": "",
+        "area": "encrypt"
+      },
+      {
+        "key": "support_url",
+        "value": "",
+        "area": "encrypt"
       }
     ]
   },

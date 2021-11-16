@@ -26,6 +26,12 @@ class Build extends GPMCommand
                 InputOption::VALUE_NONE,
                 'If passed package key will be used instead of package name'
             )
+            ->addOption(
+                'encryptKey',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'If passed the package will be optional encrypted with that key'
+            )
         ;
     }
 
@@ -52,6 +58,7 @@ class Build extends GPMCommand
 
         $options = array(
             'id' => $pkg->id,
+            'encryptKey' => $input->getOption('encryptKey')
         );
 
         /** @var \modProcessorResponse $response */
