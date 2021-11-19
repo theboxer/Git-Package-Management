@@ -553,7 +553,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle = $this->builder->createVehicle($fileObject, array(
                 'vehicle_class' => 'xPDOScriptVehicle',
                 'object' => array(
-                    'source' => $resolversDir . $this->modx->getOption('encrypted_resolver', $buildOptions, 'resolve.encrypted.php')
+                    'source' => realpath($resolversDir . $this->modx->getOption('encrypted_resolver', $buildOptions, '../gpm_resolvers/gpm.resolve.encrypt.php'))
                 )
             ));
 
@@ -574,7 +574,7 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle = $this->builder->createVehicle($fileObject, array(
                 'vehicle_class' => 'xPDOScriptVehicle',
                 'object' => array(
-                    'source' => $resolversDir . $this->modx->getOption('encrypted_resolver', $buildOptions, 'resolve.encrypted.php'),
+                    'source' => realpath($resolversDir . $this->modx->getOption('encrypted_resolver', $buildOptions, '../gpm_resolvers/gpm.resolve.encrypt.php'))
                 )
             ));
         }
