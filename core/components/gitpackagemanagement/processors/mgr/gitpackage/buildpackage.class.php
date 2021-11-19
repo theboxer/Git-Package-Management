@@ -182,6 +182,10 @@ class GitPackageManagementBuildPackageProcessor extends modObjectProcessor {
             $vehicle->addPHPResolver($resolversDir . ltrim($script, '/'));
         }
 
+        if ($this->modx->getOption('encrypt', $this->config->getBuild()->getBuildOptions(), false)) {
+            $vehicle->addEncryptResolver($this->packagePath . '_build/gpm_resolvers', $this->config);
+        }
+
         $this->builder->putVehicle($vehicle);
         $this->addMenus();
 

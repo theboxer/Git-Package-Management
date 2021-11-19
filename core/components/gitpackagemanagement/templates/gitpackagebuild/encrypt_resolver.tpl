@@ -10,7 +10,9 @@
  * @var xPDOTransport $transport
  */
 
-$transport->xpdo->loadClass('transport.xPDOObjectVehicle', XPDO_CORE_PATH, true, true);
-$transport->xpdo->loadClass('encryptVehicle', MODX_CORE_PATH . 'components/{{$lowercasename}}_vehicle/', true, true);
+if ($transport->xpdo) {
+    $transport->xpdo->loadClass('transport.xPDOObjectVehicle', XPDO_CORE_PATH, true, true);
+    $transport->xpdo->loadClass('encryptVehicle', MODX_CORE_PATH . 'components/{{$lowercasename}}_vehicle/', true, true);
+}
 
 return true;

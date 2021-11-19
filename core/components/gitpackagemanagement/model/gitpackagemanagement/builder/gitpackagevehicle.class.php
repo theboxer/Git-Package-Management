@@ -130,4 +130,23 @@ class GitPackageVehicle {
 
         return $this->addPHPResolver($resolver);
     }
+
+    public function addEncryptResolver($packagePath, $config) {
+        if (!is_dir($packagePath)) {
+            mkdir($packagePath);
+        }
+
+        $resolver = $packagePath . '/gpm.resolve.encrypt.php';
+        if (file_exists($resolver)) {
+            unlink($resolver);
+        }
+
+        $this->smarty->assign('lowercasename', $config->getLowCaseName());
+
+        $resolverContent = $this->smarty->fetch('encrypt_resolver.tpl');
+
+        file_put_contents($resolver, $resolverContent);
+
+        return $this->addPHPResolver($resolver);
+    }
 }
