@@ -142,7 +142,14 @@ class Rules {
                     $itemRule['params'] = null;
                 }
 
-                $valid = self::check($itemRule, $validator, $arrayValue, "{$fieldName} - {$arrayValue}", $part);
+                $arrayValueLabel = '';
+                if (is_scalar($arrayValue)) {
+                    $arrayValueLabel = $arrayValue;
+                } else if (is_object($arrayValue) && (property_exists($arrayValue, 'keyField'))) {
+                    $arrayValueLabel = $arrayValue->{$arrayValue->keyField};
+                }
+
+                $valid = self::check($itemRule, $validator, $arrayValue, "{$fieldName} - {$arrayValueLabel}", $part);
                 if (!$valid) return false;
             }
         }
