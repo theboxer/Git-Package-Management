@@ -2,3 +2,4 @@ core/components/gpm/vendor
 cache/*
 _packages/
 config.core.php
+.idea

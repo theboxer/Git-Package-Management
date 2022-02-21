@@ -155,7 +155,7 @@ abstract class Element extends Part
                 $obj->set('content', '');
                 $obj->set('static', 1);
                 $obj->set('source', 0);
-                $obj->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath);
+                $obj->set('static_file', $this->absoluteFilePath);
             }
         } else {
             $obj->set('content', file_get_contents($this->absoluteFilePath));
