@@ -152,10 +152,10 @@ abstract class Element extends Part
                 $obj->set('static', 0);
                 $obj->set('static_file', '');
             } else {
-                $obj->set('content', '');
+                $obj->set('content', file_get_contents($this->absoluteFilePath));
                 $obj->set('static', 1);
                 $obj->set('source', 0);
-                $obj->set('static_file', $this->absoluteFilePath);
+                $obj->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath);
             }
         } else {
             $obj->set('content', file_get_contents($this->absoluteFilePath));
