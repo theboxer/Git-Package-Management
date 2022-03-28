@@ -406,13 +406,6 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
                 $tvObject->set('output_properties',$outputProperties);
             }
 
-            /** @var modTemplateVarTemplate[] $oldTemplates */
-            $oldTemplates = $tvObject->getMany('TemplateVarTemplates');
-
-            foreach($oldTemplates as $oldTemplate){
-                $oldTemplate->remove();
-            }
-
             $tvObject->setProperties($tvObject->getProperties());
             $tvObject->save();
 
@@ -420,10 +413,16 @@ class GitPackageManagementUpdatePackageProcessor extends modObjectUpdateProcesso
             if (!empty($templates)) {
                 $templates = $this->modx->getCollection('modTemplate', array('templatename:IN' => $tv->getTemplates()));
                 foreach ($templates as $template) {
-                    $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
-                    $templateTVObject->set('tmplvarid', $tvObject->id);
-                    $templateTVObject->set('templateid', $template->id);
-                    $templateTVObject->save();
+                    $templateTVObject = $this->modx->getObject('modTemplateVarTemplate', array(
+                        'tmplvarid' => $tvObject->id,
+                        'templateid' => $template->id
+                    ));
+                    if (!$templateTVObject) {
+                        $templateTVObject = $this->modx->newObject('modTemplateVarTemplate');
+                        $templateTVObject->set('tmplvarid', $tvObject->id);
+                        $templateTVObject->set('templateid', $template->id);
+                        $templateTVObject->save();
+                    }
                 }
             }
 
