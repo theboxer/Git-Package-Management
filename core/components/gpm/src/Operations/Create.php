@@ -52,7 +52,7 @@ class Create extends Operation
         $this->createAssetsDirs($assetsPath);
 
         $cmpFiles = [
-            'base.js.tpl' => $assetsPath . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'mgr' . DIRECTORY_SEPARATOR . $general->lowCaseName . '.js',
+            'base.js.tpl' => $assetsPath . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'mgr' . DIRECTORY_SEPARATOR . $config->general->lowCaseName . '.js',
             'page.js.tpl' => $assetsPath . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'mgr' . DIRECTORY_SEPARATOR . 'sections' . DIRECTORY_SEPARATOR . 'manage.js',
             'panel.js.tpl' => $assetsPath . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'mgr' . DIRECTORY_SEPARATOR . 'widgets' . DIRECTORY_SEPARATOR . 'manage.panel.js',
             'empty_1' => $assetsPath . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'mgr.css',
@@ -60,7 +60,7 @@ class Create extends Operation
             'template.tpl.tpl' => $corePath . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'manage.tpl',
             'ManageController.php.tpl' => $corePath . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . 'manage.class.php',
             'BaseController.php.tpl' => $corePath . DIRECTORY_SEPARATOR . 'index.class.php',
-            'BaseClass.php.tpl' => $corePath . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $general->name . '.php',
+            'BaseClass.php.tpl' => $corePath . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $config->general->name . '.php',
         ];
 
         foreach ($cmpFiles as $tpl => $path) {
@@ -73,7 +73,7 @@ class Create extends Operation
             $this->cacheManager->writeFile($path, $content);
         }
 
-        $schemaPath = $corePath . DIRECTORY_SEPARATOR . 'schema' . DIRECTORY_SEPARATOR . $general->lowCaseName . '.mysql.schema.xml';
+        $schemaPath = $corePath . DIRECTORY_SEPARATOR . 'schema' . DIRECTORY_SEPARATOR . $config->general->lowCaseName . '.mysql.schema.xml';
         $composerPath = $corePath . DIRECTORY_SEPARATOR . 'composer.json';
         $bootstrapPath = $corePath . DIRECTORY_SEPARATOR . 'bootstrap.php';
         $gpmConfigPath = $packagesDir . $dir . DIRECTORY_SEPARATOR . '_build' . DIRECTORY_SEPARATOR . 'gpm.yaml';
@@ -89,7 +89,7 @@ class Create extends Operation
 
         $generalData['menus'] = [
             [
-                'text' => $general->lowCaseName . '.menu',
+                'text' => $config->general->lowCaseName . '.menu',
                 'action' => 'manage',
             ]
         ];
