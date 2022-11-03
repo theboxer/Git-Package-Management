@@ -135,7 +135,7 @@ abstract class Element extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject($class);
-            $obj->set('name', $this->name);
+            $obj->set($pk, $this->name);
         }
 
         $obj->set('description', $this->description);
