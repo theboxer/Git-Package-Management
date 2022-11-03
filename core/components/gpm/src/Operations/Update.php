@@ -7,6 +7,9 @@ use GPM\Model\GitPackage;
 use MODX\Revolution\modDashboardWidget;
 use MODX\Revolution\modElementPropertySet;
 use MODX\Revolution\modPropertySet;
+use MODX\Revolution\modTemplate;
+use MODX\Revolution\modTemplateVar;
+use MODX\Revolution\modTemplateVarTemplate;
 use MODX\Revolution\Transport\modTransportPackage;
 use Psr\Log\LoggerInterface;
 use MODX\Revolution\modMenu;
@@ -64,6 +67,9 @@ class Update extends Operation
             $this->oldConfig = Config::wakeMe($package->config, $this->modx);
             $this->newConfig = Config::load($this->modx, $this->logger, $packages . $this->package->dir_name . DIRECTORY_SEPARATOR);
 
+            // ADD
+            $this->updateScripts('before');
+
             $this->updateMenus();
             $this->updateSystemSettings();
             $this->updateTables();
@@ -74,10 +80,17 @@ class Update extends Operation
             $this->updateElements('chunk');
             $this->updateElements('plugin');
             $this->updateElements('template');
+            // FIX TVs
+            $this->updateElements('templateVar');
+            
             $this->updatePropertySets();
             $this->updateWidgets();
 
             $this->updateGitPackage();
+
+            // ADD
+            $this->updateScripts('after');
+
         } catch (\Exception $err) {
             $this->logger->error($err->getMessage());
             return;
@@ -466,7 +479,7 @@ class Update extends Operation
         if (empty($this->oldConfig->{$cfgType}) && empty($this->newConfig->{$cfgType})) {
             return;
         }
-
+        
         $this->logger->notice('Updating ' . ucfirst($cfgType));
 
         $notUsedElements = [];
@@ -485,7 +498,7 @@ class Update extends Operation
             $saved = $obj->save();
 
             if ($saved) {
-                $this->logger->info(' - ' . $element->name);
+                $this->logger->info(' - ' . $element->name . $this->setIdSuffix($obj->id));
 
                 $this->modx->removeCollection(modElementPropertySet::class, [
                     'element_class' => 'mod' . ucfirst($type),
@@ -506,6 +519,24 @@ class Update extends Operation
                         $this->logger->info(' -- ' . $propertySet);
                     }
                 }
+
+                // FIX TVs
+                if ($type === 'templateVar' && !empty($element->templates)) {
+                    $templates = $this->modx->getCollection(modTemplate::class, ['templatename:IN' => $element->templates]);
+                    if ($templates) {
+                        foreach ($templates as $template) {
+                            $templateTVObject = $this->modx->getObject(modTemplateVarTemplate::class, ['templateid:=' => $template->id]);
+                            if (!$templateTVObject) {
+                                $templateTVObject = $this->modx->newObject(modTemplateVarTemplate::class);
+                            }
+                            $templateTVObject->set('tmplvarid', $obj->id);
+                            $templateTVObject->set('templateid', $template->id);
+                            $templateTVObject->save();
+                            $this->logger->info(' -- ' . 'Linked with ' . $template->templatename . $this->setIdSuffix($template->id));
+                        }
+                    }
+                }
+
             } else {
                 $this->logger->error('Saving ' . ucfirst($cfgType) . ' ' . $element->name);
             }
@@ -661,4 +692,26 @@ class Update extends Operation
         $this->package->save();
     }
 
+    // ADD
+    protected function updateScripts($type): void
+    {
+        $availableTypes = ['before' => 'scriptsBefore', 'after' => 'scriptsAfter'];
+        if (!isset($availableTypes[$type])) return;
+
+        if (empty($this->newConfig->update)) {
+            return;
+        }
+
+        if (!empty($this->newConfig->update->{$availableTypes[$type]})) {
+            $this->logger->notice('Running update scripts ' . $type);
+        }
+
+        foreach ($this->newConfig->update->{$availableTypes[$type]} as $script) {
+            $scriptPath = $this->newConfig->paths->scripts . $script;
+            if (file_exists($scriptPath)) {
+                $this->logger->info(' - ' . $script);
+                require_once $scriptPath;
+            }
+        }
+    }
 }

@@ -19,4 +19,10 @@ abstract class Operation
     {
         $this->logger = $logger;
     }
+
+    // FIX TVs
+    public function setIdSuffix($id = null)
+    {
+        return ($id) ? '(' . $id . ')' : '';
+    }
 }

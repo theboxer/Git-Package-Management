@@ -7,6 +7,8 @@ use GPM\Config\Parts\HasProperties;
 use GPM\Config\Parts\Part;
 use GPM\Config\Rules;
 
+
+
 /**
  * Class Element
  *
@@ -123,7 +125,7 @@ abstract class Element extends Part
 
         /** @var \MODX\Revolution\modSnippet|\MODX\Revolution\modChunk|\MODX\Revolution\modTemplate|\MODX\Revolution\modPlugin $obj */
         $obj = null;
-
+        
         $pk = 'name';
         if ($this->type === 'template') {
             $pk = 'templatename';
@@ -135,7 +137,9 @@ abstract class Element extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject($class);
-            $obj->set('name', $this->name);
+            // $obj->set('name', $this->name);
+            // FIX PHP warning: Array to string conversion template_err_createArray Saving template
+            $obj->set($pk, $this->name);
         }
 
         $obj->set('description', $this->description);
@@ -146,21 +150,23 @@ abstract class Element extends Part
 
         $obj->set('property_preprocess', $this->propertyPreProcess);
 
-        if ($static) {
-            if ($debug) {
-                $obj->set('content', 'return include("' . $this->absoluteFilePath . '");');
-                $obj->set('static', 0);
-                $obj->set('static_file', '');
+        if ($this->type !== 'templateVar') {
+            if ($static) {
+                if ($debug) {
+                    $obj->set('content', 'return include("' . $this->absoluteFilePath . '");');
+                    $obj->set('static', 0);
+                    $obj->set('static_file', '');
+                } else {
+                    $obj->set('content', file_get_contents($this->absoluteFilePath));
+                    $obj->set('static', 1);
+                    $obj->set('source', 0);
+                    $obj->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath);
+                }
             } else {
                 $obj->set('content', file_get_contents($this->absoluteFilePath));
-                $obj->set('static', 1);
-                $obj->set('source', 0);
-                $obj->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath);
+                $obj->set('static', 0);
+                $obj->set('static_file', '');
             }
-        } else {
-            $obj->set('content', file_get_contents($this->absoluteFilePath));
-            $obj->set('static', 0);
-            $obj->set('static_file', '');
         }
 
         $obj->setProperties($this->getProperties());

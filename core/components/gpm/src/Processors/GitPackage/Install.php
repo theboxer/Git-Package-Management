@@ -1,7 +1,6 @@
 <?php
 namespace GPM\Processors\GitPackage;
 
-
 use GPM\Processors\Operation;
 use MODX\Revolution\modX;
 

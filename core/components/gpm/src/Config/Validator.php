@@ -61,6 +61,11 @@ final class Validator {
             $valid = $this->validate($template) && $valid;
         }
 
+        // FIX TVs
+        foreach ($this->config->templateVars as $templateVar) {
+            $valid = $this->validate($templateVar) && $valid;
+        }
+
         foreach ($this->config->propertySets as $propertySet) {
             $valid = $this->validate($propertySet) && $valid;
         }
@@ -85,9 +90,9 @@ final class Validator {
         $partName = array_pop($partName);
         $this->logger->debug(' ' . str_pad('', $this->logNesting, '-') . " {$partName}" . (!empty($part->keyField) ? (': ' . $part->{$part->keyField}) : ''));
 
-
         foreach ($rules as $field => $fieldRules) {
             foreach ($fieldRules as $fieldRule) {
+
                 if (is_string($fieldRule)) {
                     $fieldRule = ['rule' => $fieldRule];
                 }

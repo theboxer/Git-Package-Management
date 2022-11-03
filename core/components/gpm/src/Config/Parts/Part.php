@@ -47,6 +47,8 @@ abstract class Part
         ];
         $vars = get_object_vars($this);
 
+        
+
         foreach ($vars as $name => $var) {
             if ($name === 'config') continue;
             if ($name === 'rules') continue;
@@ -65,12 +67,12 @@ abstract class Part
                     $this->$setter($data[$name]);
                     continue;
                 }
-
                 $this->{$name} = $data[$name];
             }
         }
-
+    
         $this->generator();
+
     }
 
     public function setConfig(Config $config): void

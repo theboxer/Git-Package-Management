@@ -4,6 +4,8 @@ namespace GPM\Config;
 use MODX\Revolution\modX;
 use Psr\Log\LoggerInterface;
 
+
+
 /**
  * Class Config
  *
@@ -53,6 +55,10 @@ class Config
     /** @var Parts\Element\Template[] */
     private $templates = [];
 
+    // FIX TVs
+    /** @var Parts\Element\TemplateVar[] */
+    private $templateVars = [];
+
     /** @var Parts\Element\Category[] */
     private $categories = [];
 
@@ -64,6 +70,13 @@ class Config
 
     /** @var Parts\Build */
     private $build;
+
+    // ADD
+    /** @var Parts\Install */
+    private $install;
+
+    /** @var Parts\Update */
+    private $update;
 
     /** @var modX */
     private $modx;
@@ -111,6 +124,10 @@ class Config
         $config->build = new Parts\Build($cfg['build'], $config);
         $config->database = new Parts\Database($cfg['database'], $config);
 
+        // ADD 
+        $config->install = new Parts\Install($cfg['install'], $config);
+        $config->update = new Parts\Update($cfg['update'], $config);
+
         foreach ($cfg['systemSettings'] as $systemSetting) {
             $config->systemSettings[] = new Parts\SystemSetting($systemSetting, $config);
         }
@@ -138,6 +155,11 @@ class Config
         foreach ($cfg['templates'] as $template) {
             $config->templates[] = new Parts\Element\Template($template, $config);
         }
+
+        // FIX TVs
+        foreach ($cfg['templateVars'] as $templateVar) {
+            $config->templateVars[] = new Parts\Element\TemplateVar($templateVar, $config);
+        }   
 
         foreach ($cfg['propertySets'] as $propertySet) {
             $config->propertySets[] = new Parts\PropertySet($propertySet, $config);
@@ -202,6 +224,8 @@ class Config
             'chunks',
             'plugins',
             'templates',
+            // FIX TVs
+            'templateVars',
             'categories',
             'propertySets',
             'widgets',
@@ -240,6 +264,11 @@ class Config
 
         foreach ($config->templates as $template) {
             $template->setConfig($config);
+        }
+
+        // FIX TVs
+        foreach ($config->templateVars as $templateVar) {
+            $templateVar->setConfig($config);
         }
 
         foreach ($config->categories as $category) {

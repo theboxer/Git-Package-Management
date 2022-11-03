@@ -41,6 +41,7 @@ class Build extends Operation {
             $this->packMenu();
             $this->packDB();
             $this->packMainCategory();
+
             $this->packWidgets();
 
             $this->packScripts('after');
@@ -287,6 +288,11 @@ class Build extends Operation {
             $category->addMany($templates, 'Templates');
         }
 
+        $templateVars = $this->getElements('templateVar');
+        if (!empty($templateVars)) {
+            $category->addMany($templateVars, 'TemplateVars');
+        }
+
         $propertySets = $this->getPropertySets();
         if (!empty($propertySets)) {
             $category->addMany($propertySets, 'PropertySets');
@@ -305,6 +311,7 @@ class Build extends Operation {
                     'chunks' => $this->getElementPropertySets('chunks'),
                     'plugins' => $this->getElementPropertySets('plugins'),
                     'templates' => $this->getElementPropertySets('templates'),
+                    'templateVars' => $this->getElementPropertySets('templateVars'),
                     'source' => $this->getResolver('element_property_set'),
                 ]
             ]

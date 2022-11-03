@@ -32,7 +32,8 @@ final class MODX implements LoggerInterface
      * @param  string  $message
      * @param  array  $context
      */
-    public function log($level, $message, array $context = [])
+    // FIXED Fatal error: Declaration of ... must be compatible with Psr\Log\AbstractLogger::log($level, Stringable|string $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
         $message = str_replace(PHP_EOL, '<br>', $message);
         $message = str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', $message);

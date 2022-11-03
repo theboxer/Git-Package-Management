@@ -6,7 +6,7 @@ use xPDO\Transport\xPDOTransport;
  *
  * THIS RESOLVER IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
- * @package {{$general.lowCaseName}}
+ * @package gpm
  * @subpackage build
  *
  * @var \MODX\Revolution\modCategory $object
@@ -25,24 +25,13 @@ $elementClasses = [
     'chunks' => 'MODX\\Revolution\\modChunk',
     'templates' => 'MODX\\Revolution\\modTemplate',
     'plugins' => 'MODX\\Revolution\\modPlugin',
-
-    // FIX Tvs
-    'templateVars' => 'MODX\\Revolution\\modTemplateVar',
 ];
 
 foreach ($elementClasses as $type => $elementClass) {
     if (isset($fileMeta[$type]) && is_array($fileMeta[$type])) {
         foreach ($fileMeta[$type] as $elementName => $propertySets) {
             /** @var \MODX\Revolution\modElement $element */
-
-            // FIX Tvs
-            $pk = 'name';
-            if ($type === 'templates') {
-                $pk = 'templatename';
-            }
-            $element = $modx->getObject($elementClass, [$pk => $elementName]);
-
-            // $element = $modx->getObject($elementClass, ['name' => $elementName]);
+            $element = $modx->getObject($elementClass, ['name' => $elementName]);
             if (!$element) continue;
 
             if (empty($propertySets)) {

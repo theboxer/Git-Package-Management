@@ -8,6 +8,9 @@ use MODX\Revolution\modElementPropertySet;
 use MODX\Revolution\modNamespace;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\modPropertySet;
+use MODX\Revolution\modTemplate;
+use MODX\Revolution\modTemplateVar;
+use MODX\Revolution\modTemplateVarTemplate;
 use MODX\Revolution\modX;
 use Psr\Log\LoggerInterface;
 
@@ -47,6 +50,10 @@ class Install extends Operation
             $this->debug = intval($this->modx->getOption('gpm.enable_debug')) === 1;
 
             $this->config = Config::load($this->modx, $this->logger, $packages . $dir . DIRECTORY_SEPARATOR);
+
+            // ADD
+            $this->installScripts('before');
+
             $this->prepareGitPackage($dir);
 
             $this->createConfigFile();
@@ -62,9 +69,16 @@ class Install extends Operation
             $this->createElements('chunk');
             $this->createElements('plugin');
             $this->createElements('template');
+            // FIX TVs
+            $this->createElements('templateVar');
+
             $this->createWidgets();
 
             $this->saveGitPackage();
+
+             // ADD
+             $this->installScripts('after');
+
         } catch (\Exception $err) {
             $this->logger->error($err->getMessage());
             return;
@@ -352,7 +366,7 @@ class Install extends Operation
             $obj = $element->getObject($category, $this->debug);
             $saved = $obj->save();
             if ($saved) {
-                $this->logger->info(' - ' . $element->name);
+                $this->logger->info(' - ' . $element->name . $this->setIdSuffix($obj->id));
 
                 foreach ($element->propertySets as $propertySet) {
                     /** @var modPropertySet $propertySetObject */
@@ -366,6 +380,23 @@ class Install extends Operation
                         $propertySetLink->save();
 
                         $this->logger->info(' -- ' . $propertySet);
+                    }
+                }
+
+                 // FIX TVs
+                 if ($type === 'templateVar' && !empty($element->templates)) {
+                    $templates = $this->modx->getCollection(modTemplate::class, ['templatename:IN' => $element->templates]);
+                    if ($templates) {
+                        foreach ($templates as $template) {
+                            $templateTVObject = $this->modx->getObject(modTemplateVarTemplate::class, ['templateid:=' => $template->id]);
+                            if (!$templateTVObject) {
+                                $templateTVObject = $this->modx->newObject(modTemplateVarTemplate::class);
+                            }
+                            $templateTVObject->set('tmplvarid', $obj->id);
+                            $templateTVObject->set('templateid', $template->id);
+                            $templateTVObject->save();
+                            $this->logger->info(' -- ' . 'Linked with ' . $template->templatename . $this->setIdSuffix($template->id));
+                        }
                     }
                 }
             } else {
@@ -398,6 +429,29 @@ class Install extends Operation
     {
         $this->package->set('config', serialize($this->config));
         $this->package->save();
+    }
+
+    // ADD
+    protected function installScripts($type): void
+    {
+        $availableTypes = ['before' => 'scriptsBefore', 'after' => 'scriptsAfter'];
+        if (!isset($availableTypes[$type])) return;
+
+        if (empty($this->config->install)) {
+            return;
+        }
+
+        if (!empty($this->config->install->{$availableTypes[$type]})) {
+            $this->logger->notice('Running install scripts ' . $type);
+        }
+
+        foreach ($this->config->install->{$availableTypes[$type]} as $script) {
+            $scriptPath = $this->config->paths->scripts . $script;
+            if (file_exists($scriptPath)) {
+                $this->logger->info(' - ' . $script);
+                require_once $scriptPath;
+            }
+        }
     }
 
 }

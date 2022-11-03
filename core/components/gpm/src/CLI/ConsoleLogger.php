@@ -46,7 +46,8 @@ class ConsoleLogger extends AbstractLogger
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = [])
+    // FIXED Fatal error: Declaration of ... must be compatible with Psr\Log\AbstractLogger::log($level, Stringable|string $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
         if (!isset($this->verbosityLevelMap[$level])) {
             throw new InvalidArgumentException(sprintf('The log level "%s" does not exist.', $level));
