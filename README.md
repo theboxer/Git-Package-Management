@@ -14,7 +14,7 @@ Not all features of the first version of GPM are implemented here, please be pat
 ## Setup
 There **won't** be a transport package for this version for some time (maybe never). The only way how to install GPM is via CLI.
 
-The required directory structure for running GPM is same as for the 1st version ([docs](http://theboxer.github.io/Git-Package-Management/directory-structure/)).
+The required directory structure for running GPM is same as for the 1st version ([docs](http://theboxer.github.io/Git-Package-Management/directory-structure/)). Please note: this repository should be cloned into your webroot/public folder.
 
 - Clone the repo
 - Go to `core/components/gpm`
