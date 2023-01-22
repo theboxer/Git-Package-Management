@@ -137,8 +137,6 @@ abstract class Element extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject($class);
-            // $obj->set('name', $this->name);
-            // FIX PHP warning: Array to string conversion template_err_createArray Saving template
             $obj->set($pk, $this->name);
         }
 
