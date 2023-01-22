@@ -70,7 +70,6 @@ class TemplateVar extends Element
     protected $rules = [
         'name' => [Rules::isString, Rules::notEmpty],
         'caption' => [Rules::isString],
-        // 'type' => [Rules::isString],
         'description' => [Rules::isString],
         'templates' => [Rules::isArray],
         'category' => [Rules::isArray, Rules::categoryExists],
@@ -87,8 +86,6 @@ class TemplateVar extends Element
     {
         /** @var modTemplate $obj */
         $obj = parent::prepareObject($category, $update, $static, $debug);
-
-        // $obj->set('icon', $this->icon);
 
         $obj->set('caption', $this->caption);
         $obj->set('type', $this->tvtype);

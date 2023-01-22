@@ -156,21 +156,16 @@ class Parser
             'chunks'         => $this->getChunks(),
             'plugins'        => $this->getPlugins(),
             'templates'      => $this->getTemplates(),
-            // FIX TVs
             'templateVars'   => $this->getTemplateVars(),
             'categories'     => $this->getCategories(),
             'propertySets'   => $this->getPropertySets(),
             'widgets'        => $this->getWidgets(),
             'build'          => $this->getBuild(),
-            // ADD
-            'install'          => $this->getRunScripts('install'),
-            'update'          => $this->getRunScripts('update'),
-            // 'install'          => $this->getInstall(),
-            // 'update'          => $this->getUpdate(),
+            'install'        => $this->getRunScripts('install'),
+            'update'         => $this->getRunScripts('update'),
         ];
     }
 
-    // FIX TVs
     private function getTemplateVars()
     {
         $output = [];
@@ -195,7 +190,6 @@ class Parser
 
             if (is_array($templateVar)) {
                 $templateVar['properties'] = $this->getProperties($templateVar);
-                // FIX PHP warning: Undefined array key "category"
                 if (isset($templateVar['category']) && is_string($templateVar['category'])) {
                     $templateVar['category'] = [$templateVar['category']];
                 }
@@ -342,7 +336,6 @@ class Parser
 
             if (is_array($snippet)) {
                 $snippet['properties'] = $this->getProperties($snippet);
-                 // FIX PHP warning: Undefined array key "category"
                 if (isset($snippet['category']) && is_string($snippet['category'])) {
                     $snippet['category'] = [$snippet['category']];
                 }
@@ -418,7 +411,6 @@ class Parser
 
             if (is_array($chunk)) {
                 $chunk['properties'] = $this->getProperties($chunk);
-                // FIX PHP warning: Undefined array key "category"
                 if (isset($chunk['category']) && is_string($chunk['category'])) {
                     $chunk['category'] = [$chunk['category']];
                 }
@@ -458,7 +450,6 @@ class Parser
 
             if (is_array($plugin)) {
                 $plugin['properties'] = $this->getProperties($plugin);
-                // FIX PHP warning: Undefined array key "category"
                 if (isset($plugin['category']) && is_string($plugin['category'])) {
                     $plugin['category'] = [$plugin['category']];
                 }
@@ -511,7 +502,6 @@ class Parser
 
             if (is_array($template)) {
                 $template['properties'] = $this->getProperties($template);
-                 // FIX PHP warning: Undefined array key "category"
                 if (isset($template['category']) && is_string($template['category'])) {
                     $template['category'] = [$template['category']];
                 }
@@ -596,7 +586,6 @@ class Parser
 
             if (is_array($propertySet)) {
                 $propertySet['properties'] = $this->getProperties($propertySet);
-                // FIX PHP warning: Undefined array key "category"
                 if (isset($propertySet['category']) && is_string($propertySet['category'])) {
                     $propertySet['category'] = [$propertySet['category']];
                 }
@@ -672,7 +661,7 @@ class Parser
      */
     private function getRunScripts(String $type): array
     {
-        if (!isset($this->config[$type])) { // install || update
+        if (!isset($this->config[$type])) {
             return [];
         }
 

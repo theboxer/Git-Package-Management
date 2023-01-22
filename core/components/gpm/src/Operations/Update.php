@@ -67,7 +67,6 @@ class Update extends Operation
             $this->oldConfig = Config::wakeMe($package->config, $this->modx);
             $this->newConfig = Config::load($this->modx, $this->logger, $packages . $this->package->dir_name . DIRECTORY_SEPARATOR);
 
-            // ADD
             $this->updateScripts('before');
 
             $this->updateMenus();
@@ -80,7 +79,6 @@ class Update extends Operation
             $this->updateElements('chunk');
             $this->updateElements('plugin');
             $this->updateElements('template');
-            // FIX TVs
             $this->updateElements('templateVar');
             
             $this->updatePropertySets();
@@ -88,7 +86,6 @@ class Update extends Operation
 
             $this->updateGitPackage();
 
-            // ADD
             $this->updateScripts('after');
 
         } catch (\Exception $err) {

@@ -156,7 +156,6 @@ class Config
             $config->templates[] = new Parts\Element\Template($template, $config);
         }
 
-        // FIX TVs
         foreach ($cfg['templateVars'] as $templateVar) {
             $config->templateVars[] = new Parts\Element\TemplateVar($templateVar, $config);
         }   
@@ -224,7 +223,6 @@ class Config
             'chunks',
             'plugins',
             'templates',
-            // FIX TVs
             'templateVars',
             'categories',
             'propertySets',
@@ -266,7 +264,6 @@ class Config
             $template->setConfig($config);
         }
 
-        // FIX TVs
         foreach ($config->templateVars as $templateVar) {
             $templateVar->setConfig($config);
         }

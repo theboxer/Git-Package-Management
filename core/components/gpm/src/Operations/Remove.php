@@ -27,7 +27,6 @@ class Remove extends Operation
             $this->removeElements('chunk');
             $this->removeElements('plugin');
             $this->removeElements('template');
-            // FIX TVs
             $this->removeElements('templateVar');
 
             $this->removeCategories();
