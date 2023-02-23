@@ -282,13 +282,13 @@ class Update extends Operation
         $signature = $name . '-' . $version . '-' . $release;
         $filename = $signature . '.transport.zip';
         $listing = $this->modx->getObject(modTransportPackage::class, ['signature' => $signature]);
-        if(!empty($listing)){
-            $listing->set('installed', strftime('%Y-%m-%d %H:%M:%S'));
-        }else{
+        if ($listing) {
+            $listing->set('installed', date('Y-m-d H:i:s'));
+        } else {
             $listing = $this->modx->newObject(modTransportPackage::class);
             $listing->set('source', $filename);
             $listing->set('signature', $signature);
-            $listing->set('installed', strftime('%Y-%m-%d %H:%M:%S'));
+            $listing->set('installed', date('Y-m-d H:i:s'));
             $listing->set('workspace', 1);
             $listing->set('provider', 0);
             $listing->set('disabled', 0);
@@ -298,6 +298,23 @@ class Update extends Operation
             $listing->set('version_major', $version[0]);
             $listing->set('version_minor', $version[1]);
             $listing->set('version_patch', $version[2]);
+            $listing->set('metadata', [
+                'id' => "fred-{$this->newConfig->general->lowCaseName}",
+                'package' => "fred-package-{$this->newConfig->general->lowCaseName}",
+                'display_name' => $signature,
+                'name' => $this->newConfig->general->name,
+                'version' => $version,
+                'version_major' => $version[0],
+                'version_minor' => $version[1],
+                'version_patch' => $version[2],
+                'release' => '',
+                'vrelease' => '',
+                'vrelease_index' => '',
+                'author' => $this->newConfig->general->author,
+                'description' => '',
+                'instructions' => '',
+                'changelog' => '',
+            ]);
         }
         $listing->save();
     }
