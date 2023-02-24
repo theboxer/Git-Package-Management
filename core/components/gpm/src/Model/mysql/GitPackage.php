@@ -78,6 +78,17 @@ class GitPackage extends \GPM\Model\GitPackage
                 'null' => true,
             ),
         ),
+        'composites' => 
+        array (
+            'ApiKeys' => 
+            array (
+                'class' => 'GPM\\Model\\APIKey',
+                'local' => 'id',
+                'foreign' => 'package',
+                'cardinality' => 'many',
+                'owner' => 'local',
+            ),
+        ),
     );
 
 }

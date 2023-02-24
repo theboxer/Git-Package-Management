@@ -7,32 +7,48 @@ require_once $namespace['path'] . 'vendor/autoload.php';
 
 $modx->addPackage('GPM\Model', $namespace['path'] . 'src/', null, 'GPM\\');
 
-$modx->services->add('\\GPM\\Logger\\MODX', function() use ($modx) {
+$modx->services->add(\GPM\Logger\MODX::class, function() use ($modx) {
     return new \GPM\Logger\MODX($modx);
 });
 
-$modx->services->add('\\GPM\\Operations\\ParseSchema', function($c) use ($modx) {
-    return new \GPM\Operations\ParseSchema($modx, $c->get('\\GPM\\Logger\\MODX'));
+$modx->services->add(\GPM\Operations\ParseSchema::class, function($c) use ($modx) {
+    return new \GPM\Operations\ParseSchema($modx, $c->get(\GPM\Logger\MODX::class));
 });
 
-$modx->services->add('\\GPM\\Operations\\Build', function($c) use ($modx) {
-    return new \GPM\Operations\Build($modx, $c->get('\\GPM\\Logger\\MODX'));
+$modx->services->add(\GPM\Operations\Build::class, function($c) use ($modx) {
+    return new \GPM\Operations\Build($modx, $c->get(\GPM\Logger\MODX::class));
 });
 
-$modx->services->add('\\GPM\\Operations\\Install', function($c) use ($modx) {
-    return new \GPM\Operations\Install($modx, $c->get('\\GPM\\Operations\\ParseSchema'), $c->get('\\GPM\\Logger\\MODX'));
+$modx->services->add(\GPM\Operations\Install::class, function($c) use ($modx) {
+    return new \GPM\Operations\Install($modx, $c->get(\GPM\Operations\ParseSchema::class), $c->get(\GPM\Logger\MODX::class));
 });
 
-$modx->services->add('\\GPM\\Operations\\Update', function($c) use ($modx) {
-    return new \GPM\Operations\Update($modx, $c->get('\\GPM\\Operations\\ParseSchema'), $c->get('\\GPM\\Logger\\MODX'));
+$modx->services->add(\GPM\Operations\Update::class, function($c) use ($modx) {
+    return new \GPM\Operations\Update($modx, $c->get(\GPM\Operations\ParseSchema::class), $c->get(\GPM\Logger\MODX::class));
 });
 
-$modx->services->add('\\GPM\\Operations\\Remove', function($c) use ($modx) {
-    return new \GPM\Operations\Remove($modx, $c->get('\\GPM\\Logger\\MODX'));
+$modx->services->add(\GPM\Operations\Remove::class, function($c) use ($modx) {
+    return new \GPM\Operations\Remove($modx, $c->get(\GPM\Logger\MODX::class));
 });
 
-$modx->services->add('\\GPM\\Operations\\Create', function($c) use ($modx) {
-    return new \GPM\Operations\Create($modx, $c->get('\\GPM\\Logger\\MODX'));
+$modx->services->add(\GPM\Operations\Create::class, function($c) use ($modx) {
+    return new \GPM\Operations\Create($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
+$modx->services->add(\GPM\Operations\Key\Add::class, function($c) use ($modx) {
+    return new \GPM\Operations\Key\Add($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
+$modx->services->add(\GPM\Operations\Key\ListKeys::class, function($c) use ($modx) {
+    return new \GPM\Operations\Key\ListKeys($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
+$modx->services->add(\GPM\Operations\Key\Remove::class, function($c) use ($modx) {
+    return new \GPM\Operations\Key\Remove($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
+$modx->services->add(\GPM\Endpoint\Endpoint::class, function($c) use ($modx) {
+    return new \GPM\Endpoint\Endpoint($modx);
 });
 
 $modx->services->add('gpm', function($c) use ($modx) {

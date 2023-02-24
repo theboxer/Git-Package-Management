@@ -2,6 +2,7 @@ name: gpm
 lowCaseName: gpm
 description: Git Package Management for MODX Revolution 3.x
 author: John Peca
+namespace: GPM
 version: 3.0.0
 
 menus:
@@ -21,3 +22,4 @@ systemSettings:
 database:
   tables:
     - GPM\Model\GitPackage
+    - GPM\Model\APIKey

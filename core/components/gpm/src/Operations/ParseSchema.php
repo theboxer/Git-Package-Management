@@ -15,7 +15,7 @@ class ParseSchema extends Operation {
 
         $generator->parseSchema(
             $config->paths->core . 'schema/' . $config->general->lowCaseName . '.mysql.schema.xml',
-            $config->paths->core . '/src/',
+            $config->paths->core . 'src/',
             [
                 'compile'         => null,
                 'update'          => 0,
