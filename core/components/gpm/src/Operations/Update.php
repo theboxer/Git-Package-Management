@@ -65,7 +65,7 @@ class Update extends Operation
             $this->newConfig = Config::load($this->modx, $this->logger, $packages . $this->package->dir_name . DIRECTORY_SEPARATOR);
 
             $this->updateMenus();
-//            $this->updateSystemSettings();
+            $this->updateSystemSettings();
             $this->updateTables();
             $this->updateTransportListing();
             $this->clearCache();

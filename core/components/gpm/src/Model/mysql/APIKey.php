@@ -37,7 +37,6 @@ class APIKey extends \GPM\Model\APIKey
                 'precision' => '64',
                 'phptype' => 'string',
                 'null' => false,
-                'index' => 'unique',
             ),
             'permissions' => 
             array (
@@ -51,6 +50,25 @@ class APIKey extends \GPM\Model\APIKey
                 'dbtype' => 'datetime',
                 'phptype' => 'datetime',
                 'null' => true,
+            ),
+        ),
+        'indexes' => 
+        array (
+            'key' => 
+            array (
+                'alias' => 'key',
+                'primary' => false,
+                'unique' => true,
+                'type' => 'BTREE',
+                'columns' => 
+                array (
+                    'key' => 
+                    array (
+                        'length' => '',
+                        'collation' => 'A',
+                        'null' => false,
+                    ),
+                ),
             ),
         ),
         'aggregates' => 

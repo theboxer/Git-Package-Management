@@ -42,6 +42,9 @@ $keyAdd = $modx->services->get(\GPM\Operations\Key\Add::class);
 $keyList = $modx->services->get(\GPM\Operations\Key\ListKeys::class);
 $keyRemove = $modx->services->get(\GPM\Operations\Key\Remove::class);
 
+
+$gpmUpdate = $modx->services->get(\GPM\Operations\GPM\Update::class);
+
 // Commands
 $application->add(new \GPM\CLI\PackageInstall($install));
 $application->add(new \GPM\CLI\PackageBuild($build));
@@ -51,8 +54,13 @@ $application->add(new \GPM\CLI\PackageCreate($create));
 $packages = $modx->getIterator(\GPM\Model\GitPackage::class);
 foreach ($packages as $package) {
     if ($package->name === 'gpm') {
+        $application->add(new \GPM\CLI\GPM\Update("{$package->dir_name}:update", $package, $gpmUpdate));
+        $application->add(new \GPM\CLI\ParseSchema("{$package->dir_name}:schema", $package, $parseSchema));
+        $application->add(new \GPM\CLI\Build("{$package->dir_name}:build", $package, $build));
+        $application->add(new \GPM\CLI\Remove("{$package->dir_name}:remove", $package, $remove));
         continue;
     }
+
     $application->add(new \GPM\CLI\Update("{$package->dir_name}:update", $package, $update));
     $application->add(new \GPM\CLI\ParseSchema("{$package->dir_name}:schema", $package, $parseSchema));
     $application->add(new \GPM\CLI\Build("{$package->dir_name}:build", $package, $build));
