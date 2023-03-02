@@ -12,14 +12,14 @@ class Remove extends Operation
     public function execute(GitPackage $package, string $key): void
     {
         /** @var APIKey $key */
-        $key = $this->modx->getObject(APIKey::class, ['package' => $package->id, 'key' => $key]);
+        $apiKey = $this->modx->getObject(APIKey::class, ['package' => $package->id, 'key' => $key]);
 
-        if (!$key) {
+        if (!$apiKey) {
             $this->logger->warning('Key ' . $key . ' not found.');
             return;
         }
 
-        $removed = $key->remove();
+        $removed = $apiKey->remove();
         if ($removed) {
             $this->logger->warning('Key ' . $key . ' successfully removed');
             return;
