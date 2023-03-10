@@ -7,7 +7,7 @@ use MODX\Revolution\modX;
 
 class Install extends Operation
 {
-    public $operationClass = '\\GPM\\Operations\\Install';
+    public $operationClass = \GPM\Operations\Install::class;
 
     /** @var \GPM\Operations\Install */
     public $operation;

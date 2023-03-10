@@ -5,7 +5,7 @@ use GPM\Processors\ModelOperation;
 
 class Remove extends ModelOperation
 {
-    public $operationClass = '\\GPM\\Operations\\Remove';
+    public $operationClass = \GPM\Operations\Remove::class;
 
     /** @var \GPM\Operations\Remove */
     public $operation;
