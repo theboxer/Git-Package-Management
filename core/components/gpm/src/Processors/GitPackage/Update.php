@@ -5,7 +5,7 @@ use GPM\Processors\ModelOperation;
 
 class Update extends ModelOperation
 {
-    public $operationClass = '\\GPM\\Operations\\Update';
+    public $operationClass = \GPM\Operations\Update::class;
 
     /** @var \GPM\Operations\Update */
     public $operation;

@@ -5,7 +5,7 @@ use GPM\Processors\ModelOperation;
 
 class Build extends ModelOperation
 {
-    public $operationClass = '\\GPM\\Operations\\Build';
+    public $operationClass = \GPM\Operations\Build::class;
 
     /** @var \GPM\Operations\Build */
     public $operation;
