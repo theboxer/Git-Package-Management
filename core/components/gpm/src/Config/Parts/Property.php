@@ -40,9 +40,14 @@ class Property extends Part
     /** @var string */
     protected $area = '';
 
+    protected $options = [];
+
     protected $rules = [
         'name' => [Rules::isString, Rules::notEmpty],
         'type' => [Rules::isString],
+        'options' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isArray]]]
+        ],
     ];
 
     protected function generator(): void
@@ -65,6 +70,7 @@ class Property extends Part
             'value' => $this->value,
             'lexicon' => $this->lexicon,
             'area' => $this->area,
+            'options' => $this->options,
         ];
     }
 }
