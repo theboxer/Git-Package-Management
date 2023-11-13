@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
  * @property-read Parts\Element\Chunk[] $chunks;
  * @property-read Parts\Element\Plugin[] $plugins;
  * @property-read Parts\Element\Template[] $templates;
+ * @property-read Parts\Element\TemplateVar[] $templateVars;
  * @property-read Parts\Element\Category[] $categories;
  * @property-read Parts\PropertySet[] $propertySets;
  * @property-read Parts\Widget[] $widgets;
@@ -52,6 +53,9 @@ class Config
 
     /** @var Parts\Element\Template[] */
     private $templates = [];
+
+    /** @var Parts\Element\TemplateVar[] */
+    private $templateVars = [];
 
     /** @var Parts\Element\Category[] */
     private $categories = [];
@@ -139,6 +143,10 @@ class Config
             $config->templates[] = new Parts\Element\Template($template, $config);
         }
 
+        foreach ($cfg['templateVars'] as $templateVar) {
+            $config->templateVars[] = new Parts\Element\TemplateVar($templateVar, $config);
+        }
+
         foreach ($cfg['propertySets'] as $propertySet) {
             $config->propertySets[] = new Parts\PropertySet($propertySet, $config);
         }
@@ -202,6 +210,7 @@ class Config
             'chunks',
             'plugins',
             'templates',
+            'templateVars',
             'categories',
             'propertySets',
             'widgets',
@@ -240,6 +249,10 @@ class Config
 
         foreach ($config->templates as $template) {
             $template->setConfig($config);
+        }
+
+        foreach ($config->templateVars as $templateVar) {
+            $templateVar->setConfig($config);
         }
 
         foreach ($config->categories as $category) {

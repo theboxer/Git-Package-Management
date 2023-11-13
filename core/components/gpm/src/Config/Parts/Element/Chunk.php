@@ -6,7 +6,7 @@ use MODX\Revolution\modChunk;
 class Chunk extends Element
 {
     /** @var string */
-    protected $type = 'chunk';
+    protected $_type = 'chunk';
 
     /** @var string */
     protected $extension = 'tpl';

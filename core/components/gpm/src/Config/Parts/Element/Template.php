@@ -16,7 +16,7 @@ class Template extends Element
     protected $icon = '';
 
     /** @var string */
-    protected $type = 'template';
+    protected $_type = 'template';
 
     /** @var string */
     protected $extension = 'html';

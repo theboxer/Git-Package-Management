@@ -287,6 +287,11 @@ class Build extends Operation {
             $category->addMany($templates, 'Templates');
         }
 
+        $templateVars = $this->getElements('templateVar');
+        if (!empty($templateVars)) {
+            $category->addMany($templateVars, 'TemplateVars');
+        }
+
         $propertySets = $this->getPropertySets();
         if (!empty($propertySets)) {
             $category->addMany($propertySets, 'PropertySets');
@@ -297,17 +302,27 @@ class Build extends Operation {
             $category->addMany($categories, 'Children');
         }
 
-        $resolvers = [
-            'resolve' => [
-                [
-                    'type' => 'php',
-                    'snippets' => $this->getElementPropertySets('snippets'),
-                    'chunks' => $this->getElementPropertySets('chunks'),
-                    'plugins' => $this->getElementPropertySets('plugins'),
-                    'templates' => $this->getElementPropertySets('templates'),
-                    'source' => $this->getResolver('element_property_set'),
-                ]
+        $phpResolvers = [
+            [
+                'type' => 'php',
+                'snippets' => $this->getElementPropertySets('snippets'),
+                'chunks' => $this->getElementPropertySets('chunks'),
+                'plugins' => $this->getElementPropertySets('plugins'),
+                'templates' => $this->getElementPropertySets('templates'),
+                'source' => $this->getResolver('element_property_set'),
             ]
+        ];
+
+        if (!empty($templateVars)) {
+            $phpResolvers[] = [
+                'type' => 'php',
+                'templateVars' => $this->getTemplateVariableTemplates(),
+                'source' => $this->getResolver('template_var_templates'),
+            ];
+        }
+
+        $resolvers = [
+            'resolve' => $phpResolvers
         ];
 
         $this->package->put($category, array_merge(Attributes::$category, $resolvers));
@@ -322,6 +337,17 @@ class Build extends Operation {
         }
 
         return $elements;
+    }
+
+    protected function getTemplateVariableTemplates()
+    {
+        $templateVars = [];
+
+        foreach ($this->config->templateVars as $templateVar) {
+            $templateVars[$templateVar->name] = $templateVar->templates;
+        }
+
+        return $templateVars;
     }
 
     protected function packScripts($type): void

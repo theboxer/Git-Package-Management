@@ -64,6 +64,7 @@ class Install extends Operation
             $this->createElements('chunk');
             $this->createElements('plugin');
             $this->createElements('template');
+            $this->createElements('templateVar');
             $this->createWidgets();
 
             $this->saveGitPackage();

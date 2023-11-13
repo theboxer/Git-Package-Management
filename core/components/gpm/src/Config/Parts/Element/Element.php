@@ -13,6 +13,7 @@ use GPM\Config\Rules;
  * @property-read string $name
  * @property-read string $description
  * @property-read string $file
+ * @property-read string | null $content
  * @property-read string[] $category
  * @property-read int $propertyPreProcess
  * @property-read string $absoluteFilePath
@@ -37,6 +38,9 @@ abstract class Element extends Part
     /** @var string */
     protected $file = '';
 
+    /** @var string | string */
+    protected $content = null;
+
     /** @var int $propertyPreProcess */
     protected $propertyPreProcess = 0;
 
@@ -47,13 +51,16 @@ abstract class Element extends Part
     protected $filePath = '';
 
     /** @var string */
-    protected $type = '';
+    protected $_type = '';
 
     /** @var string */
     protected $extension = '';
 
     /** @var string[] */
     protected $propertySets = [];
+
+    /** @var string[] */
+    protected $category = [];
 
     protected $rules = [
         'name' => [Rules::isString, Rules::notEmpty],
@@ -75,7 +82,7 @@ abstract class Element extends Part
             $this->file = $this->name . '.' . $this->extension;
         }
 
-        $baseSnippetsPath = $this->config->paths->core . 'elements' . DIRECTORY_SEPARATOR . $this->type . 's' . DIRECTORY_SEPARATOR;
+        $baseSnippetsPath = $this->config->paths->core . 'elements' . DIRECTORY_SEPARATOR . $this->_type . 's' . DIRECTORY_SEPARATOR;
 
         $pathsToCheck = [];
         $pathsToCheck[] = $baseSnippetsPath . $this->file;
@@ -119,13 +126,13 @@ abstract class Element extends Part
 
     protected function prepareObject(int $category = null, bool $update = false, bool $static = true, bool $debug = false)
     {
-        $class = '\\MODX\\Revolution\\mod' . ucfirst($this->type);
+        $class = '\\MODX\\Revolution\\mod' . ucfirst($this->_type);
 
-        /** @var \MODX\Revolution\modSnippet|\MODX\Revolution\modChunk|\MODX\Revolution\modTemplate|\MODX\Revolution\modPlugin $obj */
+        /** @var \MODX\Revolution\modSnippet|\MODX\Revolution\modChunk|\MODX\Revolution\modTemplate|\MODX\Revolution\modPlugin|\MODX\Revolution\modTemplateVar $obj */
         $obj = null;
 
         $pk = 'name';
-        if ($this->type === 'template') {
+        if ($this->_type === 'template') {
             $pk = 'templatename';
         }
 
@@ -146,21 +153,30 @@ abstract class Element extends Part
 
         $obj->set('property_preprocess', $this->propertyPreProcess);
 
-        if ($static) {
-            if ($debug) {
-                $obj->set('content', 'return include("' . $this->absoluteFilePath . '");');
-                $obj->set('static', 0);
-                $obj->set('static_file', '');
-            } else {
-                $obj->set('content', file_get_contents($this->absoluteFilePath));
-                $obj->set('static', 1);
-                $obj->set('source', 0);
-                $obj->set('static_file', '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath);
-            }
-        } else {
-            $obj->set('content', file_get_contents($this->absoluteFilePath));
+        if ($this->content !== null) {
+            $obj->set('content', $this->content);
             $obj->set('static', 0);
             $obj->set('static_file', '');
+        } else {
+            if ($static) {
+                if ($debug) {
+                    $obj->set('content', 'return include("' . $this->absoluteFilePath . '");');
+                    $obj->set('static', 0);
+                    $obj->set('static_file', '');
+                } else {
+                    $obj->set('content', file_get_contents($this->absoluteFilePath));
+                    $obj->set('static', 1);
+                    $obj->set('source', 0);
+                    $obj->set(
+                        'static_file',
+                        '[[++' . $this->config->general->lowCaseName . '.core_path]]' . $this->filePath
+                    );
+                }
+            } else {
+                $obj->set('content', file_get_contents($this->absoluteFilePath));
+                $obj->set('static', 0);
+                $obj->set('static_file', '');
+            }
         }
 
         $obj->setProperties($this->getProperties());

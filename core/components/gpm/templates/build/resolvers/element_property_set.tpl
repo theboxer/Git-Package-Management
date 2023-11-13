@@ -2,7 +2,7 @@
 use xPDO\Transport\xPDOTransport;
 
 /**
- * Include bootstrap when installing the package
+ * Handle relation between elements and property sets
  *
  * THIS RESOLVER IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
@@ -30,8 +30,9 @@ $elementClasses = [
 foreach ($elementClasses as $type => $elementClass) {
     if (isset($fileMeta[$type]) && is_array($fileMeta[$type])) {
         foreach ($fileMeta[$type] as $elementName => $propertySets) {
+            $nameColumn = $type === 'templates' ? 'templatename' : 'name';
             /** @var \MODX\Revolution\modElement $element */
-            $element = $modx->getObject($elementClass, ['name' => $elementName]);
+            $element = $modx->getObject($elementClass, [$nameColumn => $elementName]);
             if (!$element) continue;
 
             if (empty($propertySets)) {

@@ -338,6 +338,9 @@
         "file": {
           "type": "string"
         },
+        "content": {
+          "type": "string"
+        },,
         "category": { "$ref": "#/definitions/category" },
         "propertyPreProcess": {
           "type": "integer"
@@ -566,6 +569,103 @@
                     "properties": {
                       "icon": {
                         "type": "string"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+
+    "tvs": {
+      "oneOf": [
+        { "$ref": "#/definitions/partialConfig" },
+        {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/definitions/partialConfig" },
+              {
+                "allOf": [
+                  { "$ref": "#/definitions/element" },
+                  {
+                    "properties": {
+                      "caption": {
+                        "type": "string"
+                      },
+                      "defaultValue": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "autotag",
+                              "checkbox",
+                              "date",
+                              "email",
+                              "file",
+                              "hidden",
+                              "image",
+                              "listbox-multiple",
+                              "listbox",
+                              "number",
+                              "option",
+                              "resourcelist",
+                              "richtext",
+                              "tag",
+                              "text",
+                              "textarea",
+                              "url"
+                            ]
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "inputOptionValues": {
+                        "type": "string"
+                      },
+                      "outputType": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "date",
+                              "default",
+                              "delim",
+                              "htmltag",
+                              "image",
+                              "richtext",
+                              "string",
+                              "text",
+                              "url"
+                            ]
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      },
+                      "inputOptions": {
+                        "type": "object"
+                      },
+                      "outputOptions": {
+                        "type": "object"
+                      },
+                      "templates": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "sortOrder": {
+                        "type": "number"
                       }
                     }
                   }

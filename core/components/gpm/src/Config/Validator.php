@@ -61,6 +61,10 @@ final class Validator {
             $valid = $this->validate($template) && $valid;
         }
 
+        foreach ($this->config->templateVars as $templateVar) {
+            $valid = $this->validate($templateVar) && $valid;
+        }
+
         foreach ($this->config->propertySets as $propertySet) {
             $valid = $this->validate($propertySet) && $valid;
         }

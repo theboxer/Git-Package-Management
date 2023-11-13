@@ -14,6 +14,7 @@ class Rules {
     const isString = 'isString';
     const notEmpty = 'notEmpty';
     const isArray = 'isArray';
+    const isObject = 'isObject';
     const isScalar = 'isScalar';
     const isInt = 'isInt';
     const isFloat = 'isFloat';
@@ -25,6 +26,7 @@ class Rules {
     const buildFileExists = 'buildFileExists';
     const validXType = 'validXType';
     const categoryExists = 'categoryExists';
+    const templateExists = 'templateExists';
     const configPart = 'configPart';
     const elementFileExists = 'elementFileExists';
     const containsEventPropertySets = 'containsEventPropertySets';
@@ -114,6 +116,23 @@ class Rules {
         }
 
         return $valid;
+    }
+
+    private static function isObject(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
+    {
+        $isArray = is_array($value);
+        if (!$isArray) {
+            $validator->logger->error(self::getLogID($part, $fieldName) . "has to be object, " . gettype($value) . " given.");
+            return false;
+        }
+
+        $keys = array_keys($value);
+        foreach ($keys as $key) {
+            $valid = self::check(['rule' => Rules::isString], $validator, $key, "{$fieldName} - {$key}", $part);
+            if (!$valid) return false;
+        }
+
+        return true;
     }
 
     private static function isArray(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
@@ -253,6 +272,30 @@ class Rules {
         return true;
     }
 
+    private static function templateExists(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
+    {
+        if (empty($value)) return true;
+        if (!is_array($value)) return false;
+
+        $configTemplates = $validator->config->templates;
+        foreach ($value as $template) {
+            $found = false;
+            foreach ($configTemplates as $configTemplate) {
+                if ($configTemplate->name === $template) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if ($found === false) {
+                $validator->logger->error(self::getLogID($part, $fieldName) . implode('/', $value) . " template doesn't exist");
+                break;
+            }
+        }
+
+        return true;
+    }
+
     private static function configPart(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
     {
         return $validator->validate($value, true);
@@ -260,6 +303,8 @@ class Rules {
 
     private static function elementFileExists(Validator $validator, $value, string $fieldName, Element $part, $params = null): bool
     {
+        if ($part->content !== null) return true;
+
         $valid = file_exists($part->absoluteFilePath);
 
         if (!$valid) {

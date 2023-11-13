@@ -6,7 +6,7 @@ use MODX\Revolution\modSnippet;
 class Snippet extends Element
 {
     /** @var string */
-    protected $type = 'snippet';
+    protected $_type = 'snippet';
 
     /** @var string */
     protected $extension = 'php';

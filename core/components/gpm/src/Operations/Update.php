@@ -75,6 +75,7 @@ class Update extends Operation
             $this->updateElements('chunk');
             $this->updateElements('plugin');
             $this->updateElements('template');
+            $this->updateElements('templateVar');
             $this->updatePropertySets();
             $this->updateWidgets();
 

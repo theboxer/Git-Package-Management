@@ -154,6 +154,7 @@ class Parser
             'chunks'         => $this->getChunks(),
             'plugins'        => $this->getPlugins(),
             'templates'      => $this->getTemplates(),
+            'templateVars'   => $this->getTemplateVars(),
             'categories'     => $this->getCategories(),
             'propertySets'   => $this->getPropertySets(),
             'widgets'        => $this->getWidgets(),
@@ -470,6 +471,45 @@ class Parser
                 }
 
                 $output[] = $template;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    private function getTemplateVars(): array
+    {
+        $output = [];
+
+        if (!isset($this->config['tvs'])) {
+            return $output;
+        }
+
+        $templateVars = $this->config['tvs'];
+        if (is_string($templateVars)) {
+            $templateVars = $this->loadConfigFile($templateVars);
+        }
+
+        if (!is_array($templateVars)) {
+            return $output;
+        }
+
+        foreach ($templateVars as $templateVar) {
+            if (is_string($templateVar)) {
+                $templateVar = $this->loadConfigFile($templateVar);
+            }
+
+            if (is_array($templateVar)) {
+                $templateVar['properties'] = $this->getProperties($templateVar);
+                if (is_string($templateVar['category'])) {
+                    $templateVar['category'] = [$templateVar['category']];
+                }
+
+                $output[] = $templateVar;
             }
         }
 

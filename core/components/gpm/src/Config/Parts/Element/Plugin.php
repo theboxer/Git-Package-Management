@@ -26,7 +26,7 @@ class Plugin extends Element
     protected $disabled = false;
 
     /** @var string */
-    protected $type = 'plugin';
+    protected $_type = 'plugin';
 
     /** @var string */
     protected $extension = 'php';
