@@ -340,7 +340,7 @@
         },
         "content": {
           "type": "string"
-        },,
+        },
         "category": { "$ref": "#/definitions/category" },
         "propertyPreProcess": {
           "type": "integer"
