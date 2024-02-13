@@ -52,7 +52,8 @@ class Menu extends Part
     protected $permission = '';
 
     protected $rules = [
-        'text' => [Rules::isString, Rules::notEmpty]
+        'text' => [Rules::isString, Rules::notEmpty],
+        'menuIndex' => [Rules::isInt]
     ];
 
     protected function generator(): void
@@ -79,7 +80,7 @@ class Menu extends Part
         $obj->set('parent', $this->parent);
         $obj->set('description', $this->description);
         $obj->set('icon', $this->icon);
-        $obj->set('menundex', $this->menuIndex);
+        $obj->set('menuindex', $this->menuIndex);
         $obj->set('params', $this->params);
         $obj->set('handler', $this->handler);
         $obj->set('permission', $this->permission);
