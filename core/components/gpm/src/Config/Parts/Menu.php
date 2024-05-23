@@ -40,7 +40,7 @@ class Menu extends Part
     protected $icon = '';
 
     /** @var int */
-    protected $menuIndex = '';
+    protected $menuIndex = 0;
 
     /** @var string */
     protected $params = '';
