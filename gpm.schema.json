@@ -2,31 +2,45 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "GPM Config",
   "name": "gpm.yml",
-  "fileMatch": [ "gpm.json", "gpm.yml", "gpm.yaml" ],
+  "fileMatch": [
+    "gpm.json",
+    "gpm.yml",
+    "gpm.yaml"
+  ],
   "description": "A config file for GPM",
-
   "definitions": {
     "partialConfig": {
       "type": "string",
       "description": "Partial config file path"
     },
-
     "categories": {
       "anyOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["name"],
+          "required": [
+            "name"
+          ],
           "properties": {
-            "name": { "type": "string" },
-            "rank": { "type":  "integer" },
+            "name": {
+              "type": "string"
+            },
+            "rank": {
+              "type": "integer"
+            },
             "children": {
               "oneOf": [
-                { "$ref": "#/definitions/partialConfig" },
+                {
+                  "$ref": "#/definitions/partialConfig"
+                },
                 {
                   "type": "array",
-                  "items": { "$ref": "#/definitions/categories" },
+                  "items": {
+                    "$ref": "#/definitions/categories"
+                  },
                   "default": []
                 }
               ]
@@ -35,12 +49,13 @@
         }
       ]
     },
-
     "properties": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string"
@@ -53,9 +68,15 @@
           },
           "value": {
             "oneOf": [
-              { "type": "string" },
-              { "type": "number" },
-              { "type": "boolean" }
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
             ]
           },
           "lexicon": {
@@ -67,7 +88,6 @@
         }
       }
     },
-
     "type": {
       "anyOf": [
         {
@@ -99,7 +119,6 @@
         }
       ]
     },
-
     "eventName": {
       "anyOf": [
         {
@@ -301,13 +320,16 @@
         }
       ]
     },
-
     "event": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "properties": {
-        "name": { "$ref": "#/definitions/eventName" },
+        "name": {
+          "$ref": "#/definitions/eventName"
+        },
         "priority": {
           "type": "integer"
         },
@@ -316,19 +338,26 @@
         }
       }
     },
-
     "category": {
       "oneOf": [
-        {"type":  "string"},
-        {"type":  "array", "items":  {"type": "string"}}
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       ]
     },
-
     "element": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name"],
-      "properties":  {
+      "required": [
+        "name"
+      ],
+      "properties": {
         "name": {
           "type": "string"
         },
@@ -341,7 +370,9 @@
         "content": {
           "type": "string"
         },
-        "category": { "$ref": "#/definitions/category" },
+        "category": {
+          "$ref": "#/definitions/category"
+        },
         "propertyPreProcess": {
           "type": "integer"
         },
@@ -357,14 +388,11 @@
       }
     }
   },
-
   "required": [
     "name",
     "version"
   ],
-
   "additionalProperties": false,
-
   "properties": {
     "name": {
       "type": "string",
@@ -386,15 +414,18 @@
       "type": "string",
       "pattern": "^[0-9]+.[0-9]+.[0-9]+(-[a-zA-Z]+)?[0-9]*$"
     },
-
     "menus": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
@@ -437,19 +468,24 @@
         }
       ]
     },
-
     "systemSettings": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["key"],
+                "required": [
+                  "key"
+                ],
                 "properties": {
                   "key": {
                     "type": "string"
@@ -466,9 +502,15 @@
                   },
                   "value": {
                     "oneOf": [
-                      { "type": "string" },
-                      { "type": "number" },
-                      { "type": "boolean" }
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
                     ]
                   }
                 }
@@ -478,58 +520,76 @@
         }
       ]
     },
-
     "categories": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
-          "items": { "$ref": "#/definitions/categories" }
+          "items": {
+            "$ref": "#/definitions/categories"
+          }
         }
       ]
     },
-
     "snippets": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
-              { "$ref": "#/definitions/element" }
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
+              {
+                "$ref": "#/definitions/element"
+              }
             ]
           }
         }
       ]
     },
-
     "chunks": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
-              { "$ref": "#/definitions/element" }
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
+              {
+                "$ref": "#/definitions/element"
+              }
             ]
           }
         }
       ]
     },
-
     "plugins": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "allOf": [
-                  { "$ref": "#/definitions/element" },
+                  {
+                    "$ref": "#/definitions/element"
+                  },
                   {
                     "properties": {
                       "disabled": {
@@ -539,8 +599,12 @@
                         "type": "array",
                         "items": {
                           "anyOf": [
-                            { "$ref": "#/definitions/eventName" },
-                            { "$ref": "#/definitions/event" }
+                            {
+                              "$ref": "#/definitions/eventName"
+                            },
+                            {
+                              "$ref": "#/definitions/event"
+                            }
                           ]
                         }
                       }
@@ -553,18 +617,23 @@
         }
       ]
     },
-
     "templates": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "allOf": [
-                  { "$ref": "#/definitions/element" },
+                  {
+                    "$ref": "#/definitions/element"
+                  },
                   {
                     "properties": {
                       "icon": {
@@ -579,18 +648,23 @@
         }
       ]
     },
-
     "tvs": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "allOf": [
-                  { "$ref": "#/definitions/element" },
+                  {
+                    "$ref": "#/definitions/element"
+                  },
                   {
                     "properties": {
                       "caption": {
@@ -676,19 +750,24 @@
         }
       ]
     },
-
     "propertySets": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["name"],
+                "required": [
+                  "name"
+                ],
                 "properties": {
                   "name": {
                     "type": "string"
@@ -709,10 +788,11 @@
         }
       ]
     },
-
     "build": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "object",
           "additionalProperties": false,
@@ -754,10 +834,11 @@
         }
       ]
     },
-
     "database": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "object",
           "additionalProperties": false,
@@ -772,19 +853,24 @@
         }
       ]
     },
-
     "widgets": {
       "oneOf": [
-        { "$ref": "#/definitions/partialConfig" },
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
         {
           "type": "array",
           "items": {
             "anyOf": [
-              { "$ref": "#/definitions/partialConfig" },
+              {
+                "$ref": "#/definitions/partialConfig"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["name"],
+                "required": [
+                  "name"
+                ],
                 "properties": {
                   "name": {
                     "type": "string"
@@ -795,12 +881,25 @@
                   "type": {
                     "type": "string",
                     "default": "file",
-                    "enum": ["html", "file", "snippet", "php"]
+                    "enum": [
+                      "html",
+                      "file",
+                      "snippet",
+                      "php"
+                    ]
                   },
                   "size": {
                     "type": "string",
                     "default": "half",
-                    "enum": ["quarter", "one-third", "half", "two-third", "three-quarters", "full", "double"]
+                    "enum": [
+                      "quarter",
+                      "one-third",
+                      "half",
+                      "two-third",
+                      "three-quarters",
+                      "full",
+                      "double"
+                    ]
                   },
                   "content": {
                     "type": "string"
@@ -817,6 +916,247 @@
                 }
               }
             ]
+          }
+        }
+      ]
+    },
+    "fred": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/partialConfig"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "templates": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "defaultBlueprint": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "elementCategories": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "rank": {
+                    "type": "number"
+                  },
+                  "uuid": {
+                    "type": "string"
+                  },
+                  "templates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "elements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "category"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "option_set": {
+                    "type": "string"
+                  },
+                  "rank": {
+                    "type": "number"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string"
+                  },
+                  "uuid": {
+                    "type": "string"
+                  },
+                  "options_override": {
+                    "type": "object"
+                  },
+                  "templates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "blueprintCategories": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "public": {
+                    "type": "boolean"
+                  },
+                  "rank": {
+                    "type": "number"
+                  },
+                  "uuid": {
+                    "type": "string"
+                  },
+                  "templates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "blueprints": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "uuid",
+                  "name",
+                  "category"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "rank": {
+                    "type": "number"
+                  },
+                  "public": {
+                    "type": "boolean"
+                  },
+                  "uuid": {
+                    "type": "string"
+                  },
+                  "templates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "optionSets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "object"
+                  },
+                  "rank": {
+                    "type": "number"
+                  },
+                  "complete": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "rteConfigs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "theme": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "uuid": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       ]
