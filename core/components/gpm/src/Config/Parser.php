@@ -2,8 +2,6 @@
 
 namespace GPM\Config;
 
-use Symfony\Component\Yaml\Yaml;
-
 class Parser
 {
 
@@ -38,7 +36,14 @@ class Parser
     protected function loadConfigFile(string $name): array
     {
         $configFileName = $this->getConfigFileName($name);
-        return $this->parseFile($configFileName);
+
+        try {
+            return FileParser::parseFile($this->buildDir . $configFileName);
+        } catch (UnsupportedFileException) {
+            throw new \Exception("Unsupported file type for config file $configFileName.");
+        } catch (InvalidFileException) {
+            throw new \Exception("Config file $configFileName is not valid.");
+        }
     }
 
     /**
@@ -47,7 +52,7 @@ class Parser
      * @return string
      * @throws \Exception
      */
-    protected function getConfigFileName(string $name): string
+    public function getConfigFileName(string $name): string
     {
         $validTypes = ['json', 'yaml', 'yml'];
 
@@ -78,63 +83,6 @@ class Parser
     }
 
     /**
-     * @param  string  $configName
-     *
-     * @return array
-     * @throws \Exception
-     */
-    protected function parseFile(string $configName): array
-    {
-        $type = explode('.', $configName);
-        $type = strtolower(array_pop($type));
-
-        switch ($type) {
-            case 'json':
-                return $this->parseJSON($configName);
-            case 'yaml':
-            case 'yml':
-                return $this->parseYAML($configName);
-        }
-
-        throw new \Exception("Unsupported file type for config file {$configName}.");
-    }
-
-    /**
-     * @param  string  $fileName
-     *
-     * @return array
-     * @throws \Exception
-     */
-    private function parseJSON(string $fileName): array
-    {
-        $content = file_get_contents($this->buildDir . $fileName);
-
-        $decoded = json_decode($content, true);
-        if (!is_array($decoded)) {
-            throw new \Exception("Config file {$fileName} is not valid.");
-        }
-
-        return $decoded;
-    }
-
-    /**
-     * @param  string  $fileName
-     *
-     * @return array
-     * @throws \Exception
-     */
-    private function parseYAML(string $fileName): array
-    {
-        $content = file_get_contents($this->buildDir . $fileName);
-
-        try {
-            return Yaml::parse($content);
-        } catch (\Exception $e) {
-            throw new \Exception("Config file {$fileName} is not valid.");
-        }
-    }
-
-    /**
      * @return array
      * @throws \Exception
      */
@@ -159,6 +107,7 @@ class Parser
             'propertySets'   => $this->getPropertySets(),
             'widgets'        => $this->getWidgets(),
             'build'          => $this->getBuild(),
+            'fred'           => $this->getFred(),
         ];
     }
 
@@ -269,6 +218,38 @@ class Parser
         }
 
         return [];
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    private function getFred(): array
+    {
+        $defaults = [
+            'theme' => [],
+            'elements' => [],
+            'templates' => [],
+            'elementCategories' => [],
+            'optionSets' => [],
+            'rteConfigs' => [],
+            'blueprintCategories' => [],
+        ];
+
+        if (!isset($this->config['fred'])) {
+            return $defaults;
+        }
+
+        $fred = $this->config['fred'];
+        if (is_string($fred)) {
+            $fred = $this->loadConfigFile($fred);
+        }
+
+        if (!is_array($fred)) {
+            return $defaults;
+        }
+
+        return array_merge($defaults, $fred);
     }
 
     /**

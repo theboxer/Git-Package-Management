@@ -1,5 +1,8 @@
 <?php
 
+use GPM\Config\Config;
+use GPM\Logger\Stealth;
+
 $configCore = dirname(dirname(__FILE__)) . '/config.core.php';
 if (!file_exists($configCore)) {
     require_once dirname(__DIR__) . '/core/components/gpm/vendor/autoload.php';
@@ -42,6 +45,8 @@ $keyAdd = $modx->services->get(\GPM\Operations\Key\Add::class);
 $keyList = $modx->services->get(\GPM\Operations\Key\ListKeys::class);
 $keyRemove = $modx->services->get(\GPM\Operations\Key\Remove::class);
 
+$fredExportBlueprints = $modx->services->get(\GPM\Operations\Fred\ExportBlueprints::class);
+
 
 $gpmUpdate = $modx->services->get(\GPM\Operations\GPM\Update::class);
 
@@ -49,6 +54,8 @@ $gpmUpdate = $modx->services->get(\GPM\Operations\GPM\Update::class);
 $application->add(new \GPM\CLI\PackageInstall($install));
 $application->add(new \GPM\CLI\PackageBuild($build));
 $application->add(new \GPM\CLI\PackageCreate($create));
+
+$fredAsPackage = false;
 
 /** @var \GPM\Model\GitPackage[] $packages */
 $packages = $modx->getIterator(\GPM\Model\GitPackage::class);
@@ -68,6 +75,16 @@ foreach ($packages as $package) {
     $application->add(new \GPM\CLI\KeyAdd("{$package->dir_name}:key:add", $package, $keyAdd));
     $application->add(new \GPM\CLI\KeyList("{$package->dir_name}:key:list", $package, $keyList));
     $application->add(new \GPM\CLI\KeyRemove("{$package->dir_name}:key:remove", $package, $keyRemove));
+
+    try {
+        $config = Config::load(
+            $modx,
+            new Stealth(),
+            $modx->getOption('gpm.packages_dir') . $package->dir_name . DIRECTORY_SEPARATOR
+        );
+        $application->add(new \GPM\CLI\Fred\ExportBlueprints("{$package->dir_name}:export:blueprints", $package, $fredExportBlueprints));
+    } catch (\Exception) {}
 }
+
 
 $application->run();

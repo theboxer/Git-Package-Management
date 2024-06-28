@@ -30,6 +30,8 @@ class Remove extends Operation
             $this->removeElements('template');
             $this->removeCategories();
 
+            $this->removeFred();
+
             $this->removeMenus();
 
             $this->removeTables();
@@ -158,6 +160,21 @@ class Remove extends Operation
                 }
             }
         }
+    }
+
+    protected function removeFred(): void {
+        if (!$this->modx->services->has('fred')) return;
+
+        if (empty($this->config->fred)) {
+            return;
+        }
+
+        $themeId = $this->config->fred->getThemeId();
+        $theme = $this->modx->getObject('\\Fred\\Model\\FredTheme', ['id' => $themeId]);
+        if ($theme) {
+            $theme->remove();
+        }
+
     }
 
     protected function removeGitPackage(): void

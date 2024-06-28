@@ -21,7 +21,7 @@ class Create extends Operation
 
         $packagesDir = $this->modx->getOption('gpm.packages_dir');
 
-        $config = \GPM\Config\Config::load($this->modx, $this->logger, ['general' => $generalData, 'paths' => ['package' => $packagesDir . $dir . DIRECTORY_SEPARATOR], 'build' => [], 'database' => []]);
+        $config = \GPM\Config\Config::load($this->modx, $this->logger, ['general' => $generalData, 'paths' => ['package' => $packagesDir . $dir . DIRECTORY_SEPARATOR], 'build' => [], 'database' => [], 'fred' => []]);
         $validator = new Validator($this->logger, $config);
 
         $valid = $validator->validateConfig();

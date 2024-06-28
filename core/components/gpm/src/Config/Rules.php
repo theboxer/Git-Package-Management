@@ -301,7 +301,7 @@ class Rules {
         return $validator->validate($value, true);
     }
 
-    private static function elementFileExists(Validator $validator, $value, string $fieldName, Element $part, $params = null): bool
+    private static function elementFileExists(Validator $validator, $value, string $fieldName, $part, $params = null): bool
     {
         if ($part->content !== null) return true;
 

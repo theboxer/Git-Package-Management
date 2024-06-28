@@ -15,7 +15,8 @@
     }
   },
   "require": {
-    "symfony/console": "^3.4",
-    "symfony/yaml": "^3.4"
+    "symfony/console": "^5.4",
+    "symfony/yaml": "^5.4",
+    "psr/log": "^1.0.0"
   }
 }

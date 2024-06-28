@@ -67,6 +67,8 @@ class Install extends Operation
             $this->createElements('templateVar');
             $this->createWidgets();
 
+            $this->createFred();
+
             $this->saveGitPackage();
         } catch (\Exception $err) {
             $this->logger->error($err->getMessage());
@@ -454,6 +456,186 @@ class Install extends Operation
                 $this->logger->info(' - ' . $widget->name);
             } else {
                 $this->logger->error("Saving widget {$widget->name}");
+            }
+        }
+    }
+
+    protected function createFred(): void {
+        if (!$this->modx->services->has('fred')) return;
+
+        if (empty($this->config->fred)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Theme');
+
+        $obj = $this->config->fred->theme->getObject();
+        $saved = $obj->save();
+        $this->config->fred->theme->setUuid($obj->get('uuid'));
+
+        if ($saved) {
+            $this->logger->info(' - ' . $this->config->general->name);
+        } else {
+            $this->logger->error('Saving Fred Theme  ' . $this->config->general->name);
+        }
+
+        $this->createFredOptionSets();
+        $this->createFredRteConfigs();
+
+        $this->createFredElementCategories();
+        $this->createFredBlueprintCategories();
+
+        $this->createFredElements();
+        $this->createFredBlueprints();
+
+        $this->createFredTemplates();
+
+        $this->config->fred->syncUuids();
+
+    }
+
+    protected function createFredElementCategories(): void {
+        if (empty($this->config->fred->elementCategories)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Element Categories');
+
+        foreach ($this->config->fred->elementCategories as $category) {
+            $obj = $category->getObject();
+            $saved = $obj->save();
+
+            $category->setUuid($obj->get('uuid'));
+
+
+            if ($saved) {
+                $this->logger->info(' - ' . $category->name);
+            } else {
+                $this->logger->error('Saving Fred Element Category  ' . $category->name);
+            }
+        }
+    }
+
+    protected function createFredBlueprintCategories(): void {
+        if (empty($this->config->fred->blueprintCategories)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Blueprint Categories');
+
+        foreach ($this->config->fred->blueprintCategories as $category) {
+            $obj = $category->getObject();
+            $saved = $obj->save();
+
+            $category->setUuid($obj->get('uuid'));
+
+            if ($saved) {
+                $this->logger->info(' - ' . $category->name);
+            } else {
+                $this->logger->error('Saving Fred Blueprint Category  ' . $category->name);
+            }
+        }
+    }
+
+    protected function createFredElements(): void {
+        if (empty($this->config->fred->elements)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Elements');
+
+        foreach ($this->config->fred->elements as $element) {
+            if (isset($notUsedElements[$element->uuid])) {
+                unset($notUsedElements[$element->uuid]);
+            }
+
+            $obj = $element->getObject();
+            $saved = $obj->save();
+
+            $element->setUuid($obj->get('uuid'));
+
+            if ($saved) {
+                $this->logger->info(' - ' . $element->name);
+            } else {
+                $this->logger->error('Saving Fred Element  ' . $element->name);
+            }
+        }
+    }
+
+    protected function createFredBlueprints(): void {
+        if (empty($this->config->fred->blueprints)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Blueprints');
+
+        foreach ($this->config->fred->blueprints as $blueprint) {
+            $obj = $blueprint->getObject();
+            $saved = $obj->save();
+
+            $blueprint->setUuid($obj->get('uuid'));
+
+            if ($saved) {
+                $this->logger->info(' - ' . $blueprint->name);
+            } else {
+                $this->logger->error('Saving Fred Blueprint  ' . $blueprint->name);
+            }
+        }
+    }
+
+    protected function createFredOptionSets(): void {
+        if (empty($this->config->fred->optionSets)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Option Sets');
+
+        foreach ($this->config->fred->optionSets as $optionSet) {
+            $obj = $optionSet->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $optionSet->name);
+            } else {
+                $this->logger->error('Saving Fred Option Set  ' . $optionSet->name);
+            }
+        }
+    }
+
+    protected function createFredRteConfigs(): void {
+        if (empty($this->config->fred->rteConfigs)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred RTE Configs');
+
+        foreach ($this->config->fred->rteConfigs as $rteConfig) {
+            $obj = $rteConfig->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $rteConfig->name);
+            } else {
+                $this->logger->error('Saving Fred RTE Config  ' . $rteConfig->name);
+            }
+        }
+    }
+
+    protected function createFredTemplates(): void {
+        if (empty($this->config->fred->templates)) {
+            return;
+        }
+
+        $this->logger->notice('Creating Fred Templates');
+
+        foreach ($this->config->fred->templates as $template) {
+            $obj = $template->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $template->name);
+            } else {
+                $this->logger->error('Saving Fred Template  ' . $template->name);
             }
         }
     }

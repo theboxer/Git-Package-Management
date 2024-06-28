@@ -13,7 +13,6 @@ use MODX\Revolution\modMenu;
 use MODX\Revolution\modSystemSetting;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\modX;
-use xPDO\Transport\xPDOTransport;
 
 class Update extends Operation
 {
@@ -78,6 +77,8 @@ class Update extends Operation
             $this->updateElements('templateVar');
             $this->updatePropertySets();
             $this->updateWidgets();
+
+            $this->updateFred();
 
             $this->updateGitPackage();
         } catch (\Exception $err) {
@@ -712,6 +713,341 @@ class Update extends Operation
         }
 
         return $catId;
+    }
+
+    protected function updateFred(): void {
+        if (!$this->modx->services->has('fred')) return;
+
+        if (empty($this->oldConfig->fred) && empty($this->newConfig->fred)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Theme');
+
+        $obj = $this->newConfig->fred->theme->getObject();
+        $saved = $obj->save();
+        $this->newConfig->fred->theme->setUuid($obj->get('uuid'));
+
+        if ($saved) {
+            $this->logger->info(' - ' . $this->newConfig->general->name);
+        } else {
+            $this->logger->error('Saving Fred Theme  ' . $this->newConfig->general->name);
+        }
+
+        $this->updateFredOptionSets();
+        $this->updateFredRteConfigs();
+
+        $this->updateFredElementCategories();
+        $this->updateFredBlueprintCategories();
+
+        $this->updateFredElements();
+        $this->updateFredBlueprints();
+
+        $this->updateFredTemplates();
+
+        $this->newConfig->fred->syncUuids();
+
+    }
+
+    protected function updateFredElementCategories(): void {
+        if (empty($this->oldConfig->fred->elementCategories) && empty($this->newConfig->fred->elementCategories)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Element Categories');
+
+        $notUsedCategories = [];
+        foreach ($this->oldConfig->fred->elementCategories as $oldCategories) {
+            if (empty($oldCategories->uuid)) continue;
+            $notUsedCategories[$oldCategories->uuid] = $oldCategories;
+        }
+
+        foreach ($this->newConfig->fred->elementCategories as $category) {
+            if (isset($notUsedCategories[$category->uuid])) {
+                unset($notUsedCategories[$category->uuid]);
+            }
+
+            $obj = $category->getObject();
+            $saved = $obj->save();
+
+            $category->setUuid($obj->get('uuid'));
+
+
+            if ($saved) {
+                $this->logger->info(' - ' . $category->name);
+            } else {
+                $this->logger->error('Saving Fred Element Category  ' . $category->name);
+            }
+        }
+
+        if (!empty($notUsedCategories)) {
+            $this->logger->notice('Removing unused Fred Element Categories');
+        }
+
+        foreach ($notUsedCategories as $catToDelete) {
+            $removed = $catToDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $catToDelete->name);
+            } else {
+                $this->logger->error('Removing Fred Element Category ' . $catToDelete->name);
+            }
+        }
+    }
+
+    protected function updateFredBlueprintCategories(): void {
+        if (empty($this->oldConfig->fred->blueprintCategories) && empty($this->newConfig->fred->blueprintCategories)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Blueprint Categories');
+
+        $notUsedCategories = [];
+        foreach ($this->oldConfig->fred->blueprintCategories as $oldCategories) {
+            if (empty($oldCategories->uuid)) continue;
+            $notUsedCategories[$oldCategories->uuid] = $oldCategories;
+        }
+
+        foreach ($this->newConfig->fred->blueprintCategories as $category) {
+            if (isset($notUsedCategories[$category->uuid])) {
+                unset($notUsedCategories[$category->uuid]);
+            }
+
+            $obj = $category->getObject();
+            $saved = $obj->save();
+
+            $category->setUuid($obj->get('uuid'));
+
+            if ($saved) {
+                $this->logger->info(' - ' . $category->name);
+            } else {
+                $this->logger->error('Saving Fred Blueprint Category  ' . $category->name);
+            }
+        }
+
+        if (!empty($notUsedCategories)) {
+            $this->logger->notice('Removing unused Fred Blueprint Categories');
+        }
+
+        foreach ($notUsedCategories as $catToDelete) {
+            $removed = $catToDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $catToDelete->name);
+            } else {
+                $this->logger->error('Removing Fred Blueprint Category ' . $catToDelete->name);
+            }
+        }
+    }
+
+    protected function updateFredElements(): void {
+        if (empty($this->oldConfig->fred->elements) && empty($this->newConfig->fred->elements)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Elements');
+
+        $notUsedElements = [];
+        foreach ($this->oldConfig->fred->elements as $oldElements) {
+            if (empty($oldElements->uuid)) continue;
+            $notUsedElements[$oldElements->uuid] = $oldElements;
+        }
+
+        foreach ($this->newConfig->fred->elements as $element) {
+            if (isset($notUsedElements[$element->uuid])) {
+                unset($notUsedElements[$element->uuid]);
+            }
+
+            $obj = $element->getObject();
+            $saved = $obj->save();
+
+            $element->setUuid($obj->get('uuid'));
+
+            if ($saved) {
+                $this->logger->info(' - ' . $element->name);
+            } else {
+                $this->logger->error('Saving Fred Element  ' . $element->name);
+            }
+        }
+
+        if (!empty($notUsedElements)) {
+            $this->logger->notice('Removing unused Fred Element');
+        }
+
+        foreach ($notUsedElements as $elToDelete) {
+            $removed = $elToDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $elToDelete->name);
+            } else {
+                $this->logger->error('Removing Fred Element ' . $elToDelete->name);
+            }
+        }
+    }
+
+    protected function updateFredBlueprints(): void {
+        if (empty($this->oldConfig->fred->blueprints) && empty($this->newConfig->fred->blueprints)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Blueprints');
+
+        $notUsedBlueprints = [];
+        foreach ($this->oldConfig->fred->blueprints as $oldBlueprint) {
+            if (empty($oldBlueprint->uuid)) continue;
+
+            $notUsedBlueprints[$oldBlueprint->uuid] = $oldBlueprint;
+        }
+
+        foreach ($this->newConfig->fred->blueprints as $blueprint) {
+            if (isset($notUsedBlueprints[$blueprint->uuid])) {
+                unset($notUsedBlueprints[$blueprint->uuid]);
+            }
+
+            $obj = $blueprint->getObject();
+            $saved = $obj->save();
+
+            $blueprint->setUuid($obj->get('uuid'));
+
+            if ($saved) {
+                $this->logger->info(' - ' . $blueprint->name);
+            } else {
+                $this->logger->error('Saving Fred Blueprint  ' . $blueprint->name);
+            }
+        }
+
+        if (!empty($notUsedBlueprints)) {
+            $this->logger->notice('Removing unused Fred Blueprint');
+        }
+
+        foreach ($notUsedBlueprints as $blueprintToDelete) {
+            $removed = $blueprintToDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $blueprintToDelete->name);
+            } else {
+                $this->logger->error('Removing Fred Blueprint ' . $blueprintToDelete->name);
+            }
+        }
+    }
+
+    protected function updateFredOptionSets(): void {
+        if (empty($this->oldConfig->fred->optionSets) && empty($this->newConfig->fred->optionSets)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Option Sets');
+
+        $notUsedOptionSets = [];
+        foreach ($this->oldConfig->fred->optionSets as $oldOptionSet) {
+            $notUsedOptionSets[$oldOptionSet->name] = $oldOptionSet;
+        }
+
+        foreach ($this->newConfig->fred->optionSets as $optionSet) {
+            if (isset($notUsedOptionSets[$optionSet->name])) {
+                unset($notUsedOptionSets[$optionSet->name]);
+            }
+
+            $obj = $optionSet->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $optionSet->name);
+            } else {
+                $this->logger->error('Saving Fred Option Set  ' . $optionSet->name);
+            }
+        }
+
+        if (!empty($notUsedOptionSets)) {
+            $this->logger->notice('Removing unused Fred Option Set');
+        }
+
+        foreach ($notUsedOptionSets as $toDelete) {
+            $removed = $toDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $toDelete->name);
+            } else {
+                $this->logger->error('Removing Fred Option Set ' . $toDelete->name);
+            }
+        }
+    }
+
+    protected function updateFredRteConfigs(): void {
+        if (empty($this->oldConfig->fred->rteConfigs) && empty($this->newConfig->fred->rteConfigs)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred RTE Configs');
+
+        $notUsedRteConfigs = [];
+        foreach ($this->oldConfig->fred->rteConfigs as $oldRteConfig) {
+            $notUsedRteConfigs[$oldRteConfig->name] = $oldRteConfig;
+        }
+
+        foreach ($this->newConfig->fred->rteConfigs as $rteConfig) {
+            if (isset($notUsedRteConfigs[$rteConfig->name])) {
+                unset($notUsedRteConfigs[$rteConfig->name]);
+            }
+
+            $obj = $rteConfig->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $rteConfig->name);
+            } else {
+                $this->logger->error('Saving Fred RTE Config  ' . $rteConfig->name);
+            }
+        }
+
+        if (!empty($notUsedRteConfigs)) {
+            $this->logger->notice('Removing unused Fred RTE Config');
+        }
+
+        foreach ($notUsedRteConfigs as $toDelete) {
+            $removed = $toDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $toDelete->name);
+            } else {
+                $this->logger->error('Removing Fred RTE Config ' . $toDelete->name);
+            }
+        }
+    }
+
+    protected function updateFredTemplates(): void {
+        if (empty($this->oldConfig->fred->templates) && empty($this->newConfig->fred->templates)) {
+            return;
+        }
+
+        $this->logger->notice('Updating Fred Templates');
+
+        $notUsedTemplates = [];
+        foreach ($this->oldConfig->fred->templates as $oldTemplate) {
+            $notUsedTemplates[$oldTemplate->name] = $oldTemplate;
+        }
+
+        foreach ($this->newConfig->fred->templates as $template) {
+            if (isset($notUsedTemplates[$template->name])) {
+                unset($notUsedTemplates[$template->name]);
+            }
+
+            $obj = $template->getObject();
+            $saved = $obj->save();
+
+            if ($saved) {
+                $this->logger->info(' - ' . $template->name);
+            } else {
+                $this->logger->error('Saving Fred Template  ' . $template->name);
+            }
+        }
+
+        if (!empty($notUsedTemplates)) {
+            $this->logger->notice('Removing unused Fred Template');
+        }
+
+        foreach ($notUsedTemplates as $toDelete) {
+            $removed = $toDelete->deleteObject();
+            if ($removed) {
+                $this->logger->info(' - ' . $toDelete->name);
+            } else {
+                $this->logger->error('Removing Fred Template ' . $toDelete->name);
+            }
+        }
     }
 
     protected function updateGitPackage(): void
