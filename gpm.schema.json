@@ -1435,7 +1435,21 @@
                     "type": "string"
                   },
                   "options_override": {
-                    "$ref": "#/definitions/fredOptions"
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/fredOptions"
+                      },
+                      {
+                        "properties": {
+                          "merge": {
+                            "type": "boolean"
+                          },
+                          "rteConfig": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    ]
                   },
                   "templates": {
                     "type": "array",
