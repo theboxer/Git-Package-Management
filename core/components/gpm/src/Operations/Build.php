@@ -2,6 +2,7 @@
 namespace GPM\Operations;
 
 use GPM\Config\Config;
+use GPM\Config\Parts\Fred\NoUuidException;
 use GPM\Utils\Build\Attributes;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\Transport\modPackageBuilder;
@@ -42,6 +43,8 @@ class Build extends Operation {
             $this->packDB();
             $this->packMainCategory();
             $this->packWidgets();
+
+            $this->packFred();
 
             $this->packScripts('after');
 
@@ -557,6 +560,96 @@ class Build extends Operation {
         $this->smarty->setTemplateDir($gpm->getOption('templatesPath') . '/build/');
 
         $this->smarty->assign('general', $this->config->general->toArray());
+    }
+
+    protected function packFred(): void
+    {
+        if (!$this->modx->services->has('fred')) return;
+        if (empty($this->config->fred->theme->uuid)) return;
+
+
+        try {
+            $this->package->put([
+                'type' => 'php',
+                "source" => $this->getResolver('fred_get_service'),
+            ], [
+                "vehicle_class" => xPDOScriptVehicle::class,
+                xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true
+            ]);
+
+            $theme = $this->config->fred->theme->getBuildObject();
+
+            $rteConfigs = [];
+            foreach ($this->config->fred->rteConfigs as $rteConfig) {
+                $rteConfigs[] = $rteConfig->getBuildObject();
+            }
+
+            $theme->addMany($rteConfigs, 'RTEConfigs');
+
+            $optionSets = [];
+
+            foreach ($this->config->fred->optionSets as $optionSet) {
+                $optionSets[] = $optionSet->getBuildObject();
+            }
+
+            $theme->addMany($optionSets, 'OptionSets');
+
+            $elementCategories = [];
+            foreach ($this->config->fred->elementCategories as $cat) {
+                $elementCategories[] = $cat->getBuildObject();
+            }
+            $theme->addMany($elementCategories, 'ElementCategories');
+
+            $blueprintCategories = [];
+            foreach ($this->config->fred->blueprintCategories as $bpCat) {
+                if ($bpCat->public === false) continue;
+
+                $blueprintCategories[] = $bpCat->getBuildObject();
+            }
+
+            $elementOptionSetMap = [];
+
+            foreach ($this->config->fred->elements as $element) {
+                if (empty($element->option_set)) continue;
+
+                $elementOptionSetMap[$element->uuid] = $element->option_set;
+            }
+
+            $theme->addMany($blueprintCategories, 'BlueprintCategories');
+
+            $this->package->put($theme, Attributes::$fredTheme);
+
+            $this->package->put([
+                'type' => 'php',
+                "source" => $this->getResolver('fred_link_element_option_set'),
+                "map" => $elementOptionSetMap
+            ], [
+                "vehicle_class" => xPDOScriptVehicle::class
+            ]);
+
+            $themedTemplates = [];
+
+            foreach ($this->config->fred->templates as $template) {
+                $themedTemplates[] = [
+                    'name' => $template->name,
+                    'blueprint' => !empty($template->defaultBlueprint) ? $this->config->fred->getBlueprintUuid($template->defaultBlueprint) : '',
+                ];
+            }
+
+            if (!empty($themedTemplates)) {
+                $this->package->put([
+                    'type' => 'php',
+                    "source" => $this->getResolver('fred_link_templates'),
+                    "templates" => $themedTemplates,
+                    "theme" => $this->config->fred->theme->uuid,
+                ], [
+                    "vehicle_class" => xPDOScriptVehicle::class
+                ]);
+            }
+
+        } catch (NoUuidException $err) {
+            $this->logger->critical('No UUID on ' . $err->getMessage());
+        }
     }
 
 }

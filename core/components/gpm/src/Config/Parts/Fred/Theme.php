@@ -37,6 +37,9 @@ class Theme extends Part
 
             $obj->_fields['namespace'] = $this->config->general->lowCaseName;
             $obj->setDirty('namespace');
+
+            $obj->_fields['settingsPrefix'] = $this->config->general->lowCaseName;
+            $obj->setDirty('settingsPrefix');
         }
 
         if (!empty($this->uuid)) {
@@ -46,5 +49,23 @@ class Theme extends Part
         $obj->set('description', $this->config->general->description);
 
         return $obj;
+    }
+
+    /**
+     * @return \xPDO\Om\xPDOObject
+     * @throws NoUuidException
+     */
+    public function getBuildObject()
+    {
+        if (empty($this->uuid)) {
+            throw new NoUuidException('theme');
+        }
+
+        /** @var \Fred\Model\FredTheme $obj */
+        $theme = $this->config->modx->getObject('\\Fred\\Model\\FredTheme', ['uuid' => $this->uuid]);
+
+        $theme->set('config', []);
+
+        return $theme;
     }
 }

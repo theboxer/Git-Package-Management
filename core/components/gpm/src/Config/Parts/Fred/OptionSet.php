@@ -83,7 +83,7 @@ class OptionSet extends Part
         parent::setConfig($config);
     }
 
-    protected function prepareObject()
+    public function getObject()
     {
         $obj = $this->config->modx->getObject('\\Fred\\Model\\FredElementOptionSet', ['name' => $this->name, 'theme' => $this->config->fred->getThemeId()]);
 
@@ -114,8 +114,8 @@ class OptionSet extends Part
         return false;
     }
 
-    public function getObject()
+    public function getBuildObject()
     {
-        return $this->prepareObject();
+        return $this->config->modx->getObject('\\Fred\\Model\\FredElementOptionSet', ['name' => $this->name, 'theme' => $this->config->fred->getThemeId()]);
     }
 }

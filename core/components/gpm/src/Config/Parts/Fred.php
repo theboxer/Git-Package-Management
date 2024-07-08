@@ -40,6 +40,15 @@ class Fred extends Part
     /** @var array  */
     private $blueprintCategoriesMap = [];
 
+    /** @var array */
+    private $elementsPerCategryMap = [];
+
+    /** @var array */
+    private $blueprintsPerCategryMap = [];
+
+    /** @var array */
+    private $blueprintsUuidMap = [];
+
     /** @var array  */
     private $blueprintsMap = [];
 
@@ -219,6 +228,21 @@ class Fred extends Part
         return $this->blueprintsMap[$name];
     }
 
+    public function getBlueprintUuid($name): string
+    {
+        if (empty($this->blueprintsUuidMap)) {
+            foreach ($this->config->fred->blueprints as $blueprint) {
+                $this->blueprintsUuidMap[$blueprint->name] = $blueprint->uuid;
+            }
+        }
+
+        if (empty($this->blueprintsUuidMap[$name])) {
+            throw new \Exception("Blueprint not found");
+        }
+
+        return $this->blueprintsUuidMap[$name];
+    }
+
     protected function setElementCategories(array $elementCategories): void
     {
         foreach ($elementCategories as $elementCategory) {
@@ -314,5 +338,57 @@ class Fred extends Part
         $fredConfig['theme']['uuid'] = $this->theme->uuid;
 
         FileParser::writeFile($fredConfigPath, $rawConfig);
+    }
+
+    /**
+     * @param $name
+     * @return Element[]
+     */
+    public function getElementsForCategory($name)
+    {
+        if (empty($this->elementsPerCategryMap)) {
+            $this->initElementsPerCategoryMap();
+        }
+
+        if (!isset($this->elementsPerCategryMap[$name])) return [];
+
+        return $this->elementsPerCategryMap[$name];
+    }
+
+    private function initElementsPerCategoryMap(): void
+    {
+        foreach ($this->elements as $el) {
+            if (empty($this->elementsPerCategryMap[$el->category])) {
+                $this->elementsPerCategryMap[$el->category] = [];
+            }
+
+            $this->elementsPerCategryMap[$el->category][] = $el;
+        }
+    }
+
+    /**
+     * @param $name
+     * @return Blueprint[]
+     */
+    public function getBlueprintsForCategory($name)
+    {
+        if (empty($this->blueprintsPerCategryMap)) {
+            $this->initBlueprintsPerCategoryMap();
+        }
+
+        if (!isset($this->blueprintsPerCategryMap[$name])) return [];
+
+        return $this->blueprintsPerCategryMap[$name];
+    }
+
+    private function initBlueprintsPerCategoryMap(): void
+    {
+        foreach ($this->blueprints as $blueprint) {
+            if (empty($this->blueprintsPerCategryMap[$blueprint->category])) {
+                $this->blueprintsPerCategryMap[$blueprint->category] = [];
+            }
+
+            $this->blueprintsPerCategryMap[$blueprint->category][] = $blueprint;
+        }
     }
 }

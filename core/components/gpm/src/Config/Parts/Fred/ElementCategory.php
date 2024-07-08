@@ -44,7 +44,7 @@ class ElementCategory extends Part
         parent::setConfig($config);
     }
 
-    protected function prepareObject()
+    public function getObject()
     {
         $where = empty($this->uuid) ? ['name' => $this->name] : ['uuid' => $this->uuid];
 
@@ -91,8 +91,30 @@ class ElementCategory extends Part
         return false;
     }
 
-    public function getObject()
+    public function getBuildObject()
     {
-        return $this->prepareObject();
+        if (empty($this->uuid)) {
+            throw new NoUuidException('element category: ' . $this->name);
+        }
+
+        $obj = $this->config->modx->getObject('\\Fred\\Model\\FredElementCategory', ['uuid' => $this->uuid]);
+
+        $elements = $this->getBuildElements();
+        $obj->addMany($elements, 'Elements');
+
+        return $obj;
+    }
+
+    private function getBuildElements()
+    {
+        $elements = $this->config->fred->getElementsForCategory($this->name);
+
+        $buildElementObjects = [];
+
+        foreach ($elements as $el) {
+            $buildElementObjects[] = $el->getBuildObject();
+        }
+
+        return $buildElementObjects;
     }
 }

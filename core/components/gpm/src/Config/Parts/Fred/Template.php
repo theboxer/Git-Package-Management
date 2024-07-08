@@ -9,6 +9,7 @@ use GPM\Config\Rules;
  * Class Category
  *
  * @property-read string $name
+ * @property-read string $defaultBlueprint
  *
  * @package GPM\Config\Parts\Element
  */
@@ -35,7 +36,7 @@ class Template extends Part
         parent::setConfig($config);
     }
 
-    protected function prepareObject()
+    public function getObject()
     {
         $obj = $this->config->modx->getObject('\\Fred\\Model\\FredThemedTemplate', ['template' => $this->config->fred->getTemplateId($this->name), 'theme' => $this->config->fred->getThemeId()]);
 
@@ -50,10 +51,5 @@ class Template extends Part
         }
 
         return $obj;
-    }
-
-    public function getObject()
-    {
-        return $this->prepareObject();
     }
 }

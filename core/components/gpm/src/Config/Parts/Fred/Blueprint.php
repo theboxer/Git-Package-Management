@@ -84,7 +84,7 @@ class Blueprint extends Part
         parent::setConfig($config);
     }
 
-    protected function prepareObject()
+    public function getObject()
     {
         $obj = $this->config->modx->getObject('\\Fred\\Model\\FredBlueprint', ['uuid' => $this->uuid]);
 
@@ -130,8 +130,15 @@ class Blueprint extends Part
         return false;
     }
 
-    public function getObject()
+    public function getBuildObject()
     {
-        return $this->prepareObject();
+        if (empty($this->uuid)) {
+            throw new NoUuidException('blueprint: ' . $this->category . '/' . $this->name);
+        }
+
+        $obj = $this->config->modx->getObject('\\Fred\\Model\\FredBlueprint', ['uuid' => $this->uuid]);
+        $obj->set('createdBy', 0);
+
+        return $obj;
     }
 }

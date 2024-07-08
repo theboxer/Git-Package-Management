@@ -89,4 +89,50 @@ class Attributes
         xPDOTransport::PRESERVE_KEYS => false,
         xPDOTransport::UPDATE_OBJECT => true,
     ];
+
+    public static $fredTheme = [
+        xPDOTransport::UNIQUE_KEY => 'uuid',
+        xPDOTransport::UPDATE_OBJECT => true,
+        xPDOTransport::PRESERVE_KEYS => false,
+        xPDOTransport::RELATED_OBJECTS => true,
+        xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
+            'ElementCategories' => [
+                xPDOTransport::PRESERVE_KEYS => false,
+                xPDOTransport::UPDATE_OBJECT => true,
+                xPDOTransport::UNIQUE_KEY => 'uuid',
+                xPDOTransport::RELATED_OBJECTS => true,
+                xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
+                    'Elements' => [
+                        xPDOTransport::PRESERVE_KEYS => false,
+                        xPDOTransport::UPDATE_OBJECT => true,
+                        xPDOTransport::UNIQUE_KEY => 'uuid',
+                        xPDOTransport::RELATED_OBJECTS => false,
+                    ]
+                ]
+            ],
+            'BlueprintCategories' => [
+                xPDOTransport::PRESERVE_KEYS => false,
+                xPDOTransport::UPDATE_OBJECT => true,
+                xPDOTransport::UNIQUE_KEY => 'uuid',
+                xPDOTransport::RELATED_OBJECTS => true,
+                xPDOTransport::RELATED_OBJECT_ATTRIBUTES => [
+                    'Blueprints' => [
+                        xPDOTransport::PRESERVE_KEYS => false,
+                        xPDOTransport::UPDATE_OBJECT => true,
+                        xPDOTransport::UNIQUE_KEY => 'uuid'
+                    ]
+                ]
+            ],
+            'RTEConfigs' => [
+                xPDOTransport::PRESERVE_KEYS => false,
+                xPDOTransport::UPDATE_OBJECT => true,
+                xPDOTransport::UNIQUE_KEY => ['name', 'theme'],
+            ],
+            'OptionSets' => [
+                xPDOTransport::PRESERVE_KEYS => false,
+                xPDOTransport::UPDATE_OBJECT => true,
+                xPDOTransport::UNIQUE_KEY => ['name', 'theme'],
+            ]
+        ]
+    ];
 }
