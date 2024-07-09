@@ -579,6 +579,13 @@ class Build extends Operation {
 
             $theme = $this->config->fred->theme->getBuildObject();
 
+            $accessMap = [
+                'elementCategories' => [],
+                'blueprintCategories' => [],
+                'elements' => [],
+                'blueprints' => [],
+            ];
+
             $rteConfigs = [];
             foreach ($this->config->fred->rteConfigs as $rteConfig) {
                 $rteConfigs[] = $rteConfig->getBuildObject();
@@ -597,6 +604,10 @@ class Build extends Operation {
             $elementCategories = [];
             foreach ($this->config->fred->elementCategories as $cat) {
                 $elementCategories[] = $cat->getBuildObject();
+
+                if (!empty($cat->templates)) {
+                    $accessMap['elementCategories'][$cat->uuid] = $cat->templates;
+                }
             }
             $theme->addMany($elementCategories, 'ElementCategories');
 
@@ -605,14 +616,30 @@ class Build extends Operation {
                 if ($bpCat->public === false) continue;
 
                 $blueprintCategories[] = $bpCat->getBuildObject();
+
+                if (!empty($bpCat->templates)) {
+                    $accessMap['blueprintCategories'][$bpCat->uuid] = $bpCat->templates;
+                }
             }
 
             $elementOptionSetMap = [];
 
             foreach ($this->config->fred->elements as $element) {
+                if (!empty($element->templates)) {
+                    $accessMap['elements'][$element->uuid] = $element->templates;
+                }
+
                 if (empty($element->option_set)) continue;
 
                 $elementOptionSetMap[$element->uuid] = $element->option_set;
+            }
+
+            foreach ($this->config->fred->blueprints as $bp) {
+                if ($bp->public === false) continue;
+
+                if (!empty($bp->templates)) {
+                    $accessMap['blueprints'][$bp->uuid] = $bp->templates;
+                }
             }
 
             $theme->addMany($blueprintCategories, 'BlueprintCategories');
@@ -642,6 +669,7 @@ class Build extends Operation {
                     "source" => $this->getResolver('fred_link_templates'),
                     "templates" => $themedTemplates,
                     "theme" => $this->config->fred->theme->uuid,
+                    "access" => $accessMap,
                 ], [
                     "vehicle_class" => xPDOScriptVehicle::class
                 ]);

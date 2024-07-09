@@ -237,7 +237,7 @@ class Fred extends Part
         }
 
         if (empty($this->blueprintsUuidMap[$name])) {
-            throw new \Exception("Blueprint not found");
+            throw new \Exception("Blueprint \"$name\" not found");
         }
 
         return $this->blueprintsUuidMap[$name];

@@ -32,6 +32,9 @@ if (empty($object['theme'])) {
 
 $templates = $object['templates'];
 $theme = $object['theme'];
+$access = $object['access'];
+
+$templatesMap = [];
 
 foreach ($templates as $template) {
     $templateObject = $modx->getObject(modTemplate::class, ['templatename' => $template['name']]);
@@ -48,6 +51,66 @@ foreach ($templates as $template) {
     $themedTemplate->set('theme', $themeObject->get('id'));
     $themedTemplate->set('default_blueprint', $blueprint);
     $themedTemplate->save();
+
+    $templatesMap[$template['name']] = $templateObject->get('id');
 }
 
+foreach ($access['elementCategories'] as $uuid => $accessTemplates) {
+    $category = $modx->getObject(\Fred\Model\FredElementCategory::class, ['uuid' => $uuid]);
+    if (!$category) continue;
 
+    $modx->removeCollection(\Fred\Model\FredElementCategoryTemplateAccess::class, ['category' => $category->get('id')]);
+
+    foreach ($accessTemplates as $templateName) {
+        if (!isset($templatesMap[$templateName])) continue;
+        $obj = $modx->newObject(\Fred\Model\FredElementCategoryTemplateAccess::class);
+        $obj->set('category', $category->get('id'));
+        $obj->set('template', $templatesMap[$templateName]);
+        $obj->save();
+    }
+}
+
+foreach ($access['blueprintCategories'] as $uuid => $accessTemplates) {
+    $category = $modx->getObject(\Fred\Model\FredBlueprintCategory::class, ['uuid' => $uuid]);
+    if (!$category) continue;
+
+    $modx->removeCollection(\Fred\Model\FredBlueprintCategoryTemplateAccess::class, ['category' => $category->get('id')]);
+
+    foreach ($accessTemplates as $templateName) {
+        if (!isset($templatesMap[$templateName])) continue;
+        $obj = $modx->newObject(\Fred\Model\FredBlueprintCategoryTemplateAccess::class);
+        $obj->set('category', $category->get('id'));
+        $obj->set('template', $templatesMap[$templateName]);
+        $obj->save();
+    }
+}
+
+foreach ($access['elements'] as $uuid => $accessTemplates) {
+    $el = $modx->getObject(\Fred\Model\FredElement::class, ['uuid' => $uuid]);
+    if (!$el) continue;
+
+    $modx->removeCollection(\Fred\Model\FredElementTemplateAccess::class, ['element' => $el->get('id')]);
+
+    foreach ($accessTemplates as $templateName) {
+        if (!isset($templatesMap[$templateName])) continue;
+        $obj = $modx->newObject(\Fred\Model\FredElementTemplateAccess::class);
+        $obj->set('element', $el->get('id'));
+        $obj->set('template', $templatesMap[$templateName]);
+        $obj->save();
+    }
+}
+
+foreach ($access['blueprints'] as $uuid => $accessTemplates) {
+    $bp = $modx->getObject(\Fred\Model\FredBlueprint::class, ['uuid' => $uuid]);
+    if (!$bp) continue;
+
+    $modx->removeCollection(\Fred\Model\FredBlueprintTemplateAccess::class, ['blueprint' => $bp->get('id')]);
+
+    foreach ($accessTemplates as $templateName) {
+        if (!isset($templatesMap[$templateName])) continue;
+        $obj = $modx->newObject(\Fred\Model\FredBlueprintTemplateAccess::class);
+        $obj->set('blueprint', $bp->get('id'));
+        $obj->set('template', $templatesMap[$templateName]);
+        $obj->save();
+    }
+}
