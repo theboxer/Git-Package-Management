@@ -99,6 +99,7 @@ class Blueprint extends Part
         $obj->set('category', $this->config->fred->getBlueprintCategoryId($this->category));
         $obj->set('image', $this->image);
         $obj->set('description', $this->description);
+        $obj->set('public', $this->public);
 
         if ($this->rank !== null) {
             $obj->set('rank', $this->rank);

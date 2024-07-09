@@ -176,6 +176,8 @@ class Update extends Operation
                 }
             }
         }
+
+        $this->modx->reloadConfig();
     }
 
     protected function updateTables(): void

@@ -174,6 +174,8 @@ class Install extends Operation
                 $this->logger->error('Saving system setting ' . $systemSetting->getNamespacedKey());
             }
         }
+
+        $this->modx->reloadConfig();
     }
 
     protected function createTables(): void
