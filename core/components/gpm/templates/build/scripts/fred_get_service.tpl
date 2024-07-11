@@ -10,9 +10,9 @@ use xPDO\Transport\xPDOTransport;
  * @package {{$general.lowCaseName}}
  * @subpackage build
  *
- * @var \MODX\Revolution\modX $modx
+ * @var \xPDO\Transport\xPDOTransport $transport
+ * @var array $object
  * @var array $options
- * @var array $fileMeta
  */
 
 if ($options[xPDOTransport::PACKAGE_ACTION] !== xPDOTransport::ACTION_UNINSTALL) {

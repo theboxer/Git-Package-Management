@@ -211,6 +211,13 @@ class Build extends Operation {
             $this->logger->info(' - ' . $systemSetting->getNamespacedKey());
             $this->package->put($systemSetting->getBuildObject(), Attributes::$setting);
         }
+
+        $this->package->put([
+            'type' => 'php',
+            "source" => $this->getScript('reload_system_settings'),
+        ], [
+            "vehicle_class" => xPDOScriptVehicle::class
+        ]);
     }
 
     protected function packDB(): void
@@ -571,7 +578,7 @@ class Build extends Operation {
         try {
             $this->package->put([
                 'type' => 'php',
-                "source" => $this->getResolver('fred_get_service'),
+                "source" => $this->getScript('fred_get_service'),
             ], [
                 "vehicle_class" => xPDOScriptVehicle::class,
                 xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true
@@ -648,7 +655,7 @@ class Build extends Operation {
 
             $this->package->put([
                 'type' => 'php',
-                "source" => $this->getResolver('fred_link_element_option_set'),
+                "source" => $this->getScript('fred_link_element_option_set'),
                 "map" => $elementOptionSetMap
             ], [
                 "vehicle_class" => xPDOScriptVehicle::class
@@ -666,7 +673,7 @@ class Build extends Operation {
             if (!empty($themedTemplates)) {
                 $this->package->put([
                     'type' => 'php',
-                    "source" => $this->getResolver('fred_link_templates'),
+                    "source" => $this->getScript('fred_link_templates'),
                     "templates" => $themedTemplates,
                     "theme" => $this->config->fred->theme->uuid,
                     "access" => $accessMap,

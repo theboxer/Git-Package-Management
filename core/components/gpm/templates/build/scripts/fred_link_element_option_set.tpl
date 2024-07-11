@@ -6,9 +6,9 @@
  * @package {{$general.lowCaseName}}
  * @subpackage build
  *
- * @var \MODX\Revolution\modX $modx
+ * @var \xPDO\Transport\xPDOTransport $transport
+ * @var array $object
  * @var array $options
- * @var array $fileMeta
  */
 
 use Fred\Model\FredElement;
