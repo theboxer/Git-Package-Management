@@ -52,8 +52,8 @@ $modx->services->add(\GPM\Operations\GPM\Update::class, function($c) use ($modx)
 });
 
 
-$modx->services->add(\GPM\Operations\Fred\ExportBlueprints::class, function($c) use ($modx) {
-    return new \GPM\Operations\Fred\ExportBlueprints($modx, $c->get(\GPM\Logger\MODX::class));
+$modx->services->add(\GPM\Operations\Fred\Export::class, function($c) use ($modx) {
+    return new \GPM\Operations\Fred\Export($modx, $c->get(\GPM\Logger\MODX::class));
 });
 
 $modx->services->add(\GPM\Endpoint\Endpoint::class, function($c) use ($modx) {

@@ -45,7 +45,7 @@ $keyAdd = $modx->services->get(\GPM\Operations\Key\Add::class);
 $keyList = $modx->services->get(\GPM\Operations\Key\ListKeys::class);
 $keyRemove = $modx->services->get(\GPM\Operations\Key\Remove::class);
 
-$fredExportBlueprints = $modx->services->get(\GPM\Operations\Fred\ExportBlueprints::class);
+$fredExportBlueprints = $modx->services->get(\GPM\Operations\Fred\Export::class);
 
 
 $gpmUpdate = $modx->services->get(\GPM\Operations\GPM\Update::class);
@@ -82,7 +82,7 @@ foreach ($packages as $package) {
             new Stealth(),
             $modx->getOption('gpm.packages_dir') . $package->dir_name . DIRECTORY_SEPARATOR
         );
-        $application->add(new \GPM\CLI\Fred\ExportBlueprints("{$package->dir_name}:export:blueprints", $package, $fredExportBlueprints));
+        $application->add(new \GPM\CLI\Fred\Export("{$package->dir_name}:export:fred", $package, $fredExportBlueprints));
     } catch (\Exception) {}
 }
 
