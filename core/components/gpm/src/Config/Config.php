@@ -274,7 +274,9 @@ class Config
             $widget->setConfig($config);
         }
 
-        $config->fred->setConfig($config);
+        if ($config->fred) {
+            $config->fred->setConfig($config);
+        }
 
         return $config;
     }
