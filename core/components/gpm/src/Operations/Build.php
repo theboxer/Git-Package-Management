@@ -46,6 +46,8 @@ class Build extends Operation {
 
             $this->packFred();
 
+            $this->packMigrations();
+
             $this->packScripts('after');
 
             $this->packUnInstallValidator();
@@ -383,6 +385,70 @@ class Build extends Operation {
                 );
             }
         }
+    }
+
+    protected function getMigrationContent($migrationFilePath)
+    {
+        $content = file_get_contents($migrationFilePath);
+        $content = trim($content);
+
+        if (strncmp($content, '<?', 2) == 0) {
+            $content = substr($content, 2);
+            if (strncmp($content, 'php', 3) == 0) {
+                $content = substr($content, 3);
+            }
+        }
+
+        if (str_ends_with($content, '?>')) {
+            $content = substr($content, 0, -2);
+        }
+
+        return trim($content, " \n\r\0\x0B");
+    }
+
+    protected function packMigrations()
+    {
+        $dir = new \DirectoryIterator($this->config->paths->build . 'migrations');
+
+        $migrations = [];
+
+        $logged = false;
+
+        /** @var \SplFileInfo[] $dir */
+        foreach ($dir as $fileInfo) {
+            if ($fileInfo->isDot()) continue;
+
+            $fileName = $fileInfo->getFilename();
+            $fileName = explode('.', $fileName);
+
+            if (count($fileName) !== 3) continue;
+
+            if (strtolower($fileName[2]) !== 'php') continue;
+            if (strtolower($fileName[1]) !== 'migration') continue;
+
+            if (!$logged) {
+                $this->logger->notice('Packing migrations');
+                $logged = true;
+            }
+
+            $className = "Migration$fileName[0]";
+
+            $migrations[$className] = $this->getMigrationContent($fileInfo->getRealPath());
+
+            $this->logger->notice(' - ' . implode('.', $fileName));
+        }
+
+        $this->package->put([
+            'type' => 'php',
+            "source" => $this->getScript('migrator', [
+                'lowCaseName' => $this->config->general->lowCaseName,
+                'versions' => array_keys($migrations),
+                'migrationClasses' => array_values($migrations),
+            ]),
+        ], [
+            "vehicle_class" => xPDOScriptVehicle::class,
+            xPDOTransport::ABORT_INSTALL_ON_VEHICLE_FAIL => true
+        ]);
     }
 
     /**

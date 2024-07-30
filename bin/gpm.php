@@ -41,12 +41,14 @@ $build = $modx->services->get(\GPM\Operations\Build::class);
 $remove = $modx->services->get(\GPM\Operations\Remove::class);
 $create = $modx->services->get(\GPM\Operations\Create::class);
 
+$migrationsRun = $modx->services->get(\GPM\Operations\Migrations\Run::class);
+$migrationsCreate = $modx->services->get(\GPM\Operations\Migrations\Create::class);
+
 $keyAdd = $modx->services->get(\GPM\Operations\Key\Add::class);
 $keyList = $modx->services->get(\GPM\Operations\Key\ListKeys::class);
 $keyRemove = $modx->services->get(\GPM\Operations\Key\Remove::class);
 
 $fredExportBlueprints = $modx->services->get(\GPM\Operations\Fred\Export::class);
-
 
 $gpmUpdate = $modx->services->get(\GPM\Operations\GPM\Update::class);
 
@@ -60,14 +62,19 @@ $fredAsPackage = false;
 /** @var \GPM\Model\GitPackage[] $packages */
 $packages = $modx->getIterator(\GPM\Model\GitPackage::class);
 foreach ($packages as $package) {
+    // region: --- gpm commands
     if ($package->name === 'gpm') {
         $application->add(new \GPM\CLI\GPM\Update("{$package->dir_name}:update", $package, $gpmUpdate));
         $application->add(new \GPM\CLI\ParseSchema("{$package->dir_name}:schema", $package, $parseSchema));
         $application->add(new \GPM\CLI\Build("{$package->dir_name}:build", $package, $build));
         $application->add(new \GPM\CLI\Remove("{$package->dir_name}:remove", $package, $remove));
+
+        $application->add(new \GPM\CLI\Migrations\Run("{$package->dir_name}:migrations:run", $package, $migrationsRun));
         continue;
     }
+    // endregion
 
+    // region: --- basic package commands
     $application->add(new \GPM\CLI\Update("{$package->dir_name}:update", $package, $update));
     $application->add(new \GPM\CLI\ParseSchema("{$package->dir_name}:schema", $package, $parseSchema));
     $application->add(new \GPM\CLI\Build("{$package->dir_name}:build", $package, $build));
@@ -75,7 +82,14 @@ foreach ($packages as $package) {
     $application->add(new \GPM\CLI\KeyAdd("{$package->dir_name}:key:add", $package, $keyAdd));
     $application->add(new \GPM\CLI\KeyList("{$package->dir_name}:key:list", $package, $keyList));
     $application->add(new \GPM\CLI\KeyRemove("{$package->dir_name}:key:remove", $package, $keyRemove));
+    // endregion
 
+    // region: --- migrations
+    $application->add(new \GPM\CLI\Migrations\Run("{$package->dir_name}:migrations:run", $package, $migrationsRun));
+    $application->add(new \GPM\CLI\Migrations\Create("{$package->dir_name}:migrations:create", $package, $migrationsCreate));
+    // endregion
+
+    // region: --- fred
     try {
         $config = Config::load(
             $modx,
@@ -84,6 +98,7 @@ foreach ($packages as $package) {
         );
         $application->add(new \GPM\CLI\Fred\Export("{$package->dir_name}:export:fred", $package, $fredExportBlueprints));
     } catch (\Exception) {}
+    // endregion
 }
 
 
