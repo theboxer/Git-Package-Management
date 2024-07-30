@@ -21,6 +21,11 @@ class Run extends Operation {
                 $packages . $package->dir_name . DIRECTORY_SEPARATOR
             );
 
+            if (!is_dir($this->config->paths->build . 'migrations')) {
+                $this->logger->warning("There are no migrations");
+                return;
+            }
+
             $lock = $this->config->paths->build . 'migrations' . DIRECTORY_SEPARATOR . 'migrations.lock';
 
             $latestMigration = null;

@@ -408,6 +408,14 @@ class Build extends Operation {
 
     protected function packMigrations()
     {
+        if (!is_dir($this->config->paths->build . 'migrations')) {
+            $migratorFile = $this->config->paths->package . '_build' . DIRECTORY_SEPARATOR . 'gpm_scripts' . DIRECTORY_SEPARATOR . 'gpm.script.migrator.php';
+            if (file_exists($migratorFile)) {
+                unlink($migratorFile);
+            }
+            return;
+        }
+
         $dir = new \DirectoryIterator($this->config->paths->build . 'migrations');
 
         $migrations = [];
