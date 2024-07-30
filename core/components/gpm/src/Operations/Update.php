@@ -19,6 +19,9 @@ class Update extends Operation
     /** @var \GPM\Operations\ParseSchema */
     protected $parseSchema;
 
+    /** @var \GPM\Operations\Migrations\Run */
+    protected $runMigrations;
+
     /** @var GitPackage */
     protected $package;
 
@@ -43,18 +46,23 @@ class Update extends Operation
     /** @var bool */
     protected $alterDatabase = false;
 
-    public function __construct(modX $modx, ParseSchema $parseSchema, LoggerInterface $logger)
+    /** @var bool */
+    protected $skipMigrations = false;
+
+    public function __construct(modX $modx, ParseSchema $parseSchema, \GPM\Operations\Migrations\Run $runMigrations, LoggerInterface $logger)
     {
         $this->parseSchema = $parseSchema;
+        $this->runMigrations = $runMigrations;
 
         parent::__construct($modx, $logger);
     }
 
-    public function execute(GitPackage $package, bool $recreateDatabase = false, bool $alterDatabase = false): void
+    public function execute(GitPackage $package, bool $recreateDatabase = false, bool $alterDatabase = false, bool $skipMigrations = false): void
     {
         $this->package = $package;
         $this->recreateDatabase = $recreateDatabase;
         $this->alterDatabase = $alterDatabase;
+        $this->skipMigrations = $skipMigrations;
 
         try {
             $packages = $this->modx->getOption('gpm.packages_dir');
@@ -79,6 +87,8 @@ class Update extends Operation
             $this->updateWidgets();
 
             $this->updateFred();
+
+            $this->runMigrations();
 
             $this->updateGitPackage();
         } catch (\Exception $err) {
@@ -749,6 +759,14 @@ class Update extends Operation
 
         $this->newConfig->fred->syncUuids();
 
+    }
+
+    protected function runMigrations(): void
+    {
+        if ($this->skipMigrations) return;
+
+        $this->logger->warning("Running migrations");
+        $this->runMigrations->execute($this->package);
     }
 
     protected function updateFredElementCategories(): void {

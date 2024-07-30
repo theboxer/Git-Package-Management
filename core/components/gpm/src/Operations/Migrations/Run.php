@@ -13,6 +13,7 @@ class Run extends Operation {
     public function execute(GitPackage $package): void
     {
         $packages = $this->modx->getOption('gpm.packages_dir');
+        $this->logger->warning("Running migrations");
 
         try {
             $this->config = Config::load(
@@ -22,7 +23,7 @@ class Run extends Operation {
             );
 
             if (!is_dir($this->config->paths->build . 'migrations')) {
-                $this->logger->warning("There are no migrations");
+                $this->logger->warning("- There are no migrations");
                 return;
             }
 
@@ -57,13 +58,19 @@ class Run extends Operation {
 
             foreach ($migrationsMap as $version => $migration) {
                 if ($latestMigration !== null && version_compare($latestMigration, $version, '>=')) {
+                    $this->logger->info("- Skipping $version");
                     continue;
                 }
 
-                if (version_compare($version, $package->version, '>')) {
-                    $migration($this->modx);
-                    file_put_contents($lock, $version);
+                if (!version_compare($version, $package->version, '>')) {
+                    $this->logger->info("- Skipping $version");
+                    continue;
                 }
+
+                $this->logger->info("- Executing $version");
+
+                $migration($this->modx);
+                file_put_contents($lock, $version);
             }
 
         } catch (\Exception $err) {

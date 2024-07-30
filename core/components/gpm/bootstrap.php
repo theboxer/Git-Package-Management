@@ -29,7 +29,7 @@ $modx->services->add(\GPM\Operations\Install::class, function($c) use ($modx) {
 });
 
 $modx->services->add(\GPM\Operations\Update::class, function($c) use ($modx) {
-    return new \GPM\Operations\Update($modx, $c->get(\GPM\Operations\ParseSchema::class), $c->get(\GPM\Logger\MODX::class));
+    return new \GPM\Operations\Update($modx, $c->get(\GPM\Operations\ParseSchema::class), $c->get(\GPM\Operations\Migrations\Run::class), $c->get(\GPM\Logger\MODX::class));
 });
 
 $modx->services->add(\GPM\Operations\Remove::class, function($c) use ($modx) {

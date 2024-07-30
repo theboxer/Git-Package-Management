@@ -387,7 +387,7 @@ class Build extends Operation {
         }
     }
 
-    protected function getMigrationContent($migrationFilePath)
+    protected function getMigrationContent($migrationFilePath): string
     {
         $content = file_get_contents($migrationFilePath);
         $content = trim($content);
@@ -406,7 +406,7 @@ class Build extends Operation {
         return trim($content, " \n\r\0\x0B");
     }
 
-    protected function packMigrations()
+    protected function packMigrations(): void
     {
         if (!is_dir($this->config->paths->build . 'migrations')) {
             $migratorFile = $this->config->paths->package . '_build' . DIRECTORY_SEPARATOR . 'gpm_scripts' . DIRECTORY_SEPARATOR . 'gpm.script.migrator.php';

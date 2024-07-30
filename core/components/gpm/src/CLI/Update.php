@@ -25,6 +25,7 @@ class Update extends Command {
             ->setDescription('Updates package')
             ->addOption('alterDB', null, InputOption::VALUE_NONE, 'Alters current DB tables')
             ->addOption('recreateDB', null, InputOption::VALUE_NONE, 'Removes all current DB tables and create them from scratch')
+            ->addOption('skipMigrations', null, InputOption::VALUE_NONE, 'Skip all migrations')
         ;
     }
 
@@ -35,8 +36,9 @@ class Update extends Command {
 
         $alterDB = $input->getOption('alterDB');
         $recreateDB = $input->getOption('recreateDB');
+        $skipMigrations = $input->getOption('skipMigrations');
 
-        $this->update->execute($this->package, $recreateDB, $alterDB);
+        $this->update->execute($this->package, $recreateDB, $alterDB, $skipMigrations);
 
         return Command::SUCCESS;
     }
