@@ -1,6 +1,6 @@
 <?php
 
-class Migration{{$versionPackaged}} {
+return new class() {
     // migration runs if self::VERSION > currently installed version
     const VERSION = '{{$version}}';
 {literal}
@@ -12,5 +12,5 @@ class Migration{{$versionPackaged}} {
     {
         // Migration code goes here
     }
-}
+};
 {/literal}

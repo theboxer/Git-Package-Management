@@ -3,7 +3,7 @@
  *
  * THIS SCRIPT IS AUTOMATICALLY GENERATED, NO CHANGES WILL APPLY
  *
- * @package {{$general.lowCaseName}}
+ * @package {{$lowCaseName}}
  * @subpackage build
  *
  * @var \xPDO\Transport\xPDOTransport $transport
@@ -13,34 +13,43 @@
 
 use MODX\Revolution\Transport\modTransportPackage;
 
-{foreach from=$migrationClasses item=migrationClass}
-{{$migrationClass}}
-
-{/foreach}
-
 class Migrator
 {
     private $modx;
     private $name = '{{$lowCaseName}}';
     private $latestVersion = '';
-{literal}
     public function __construct(&$modx)
     {
         $this->modx =& $modx;
         $this->getLatestVersion();
     }
 
-    public function migrate($migrations)
+    private function getMigrationsMap()
     {
-        if (empty($this->latestVersion)) return;
+        $migrations = [
+{foreach from=$migrations item=migration}
+            (function () {
+                {{$migration}}
+            })(),
+{/foreach}
+        ];
 
         $migrationsMap = [];
 
         foreach ($migrations as $migration) {
-            $migrationsMap[$migration::VERSION] = new $migration();
+            $migrationsMap[$migration::VERSION] = $migration;
         }
 
         uksort($migrationsMap, 'version_compare');
+
+        return $migrationsMap;
+    }
+{literal}
+    public function migrate()
+    {
+        if (empty($this->latestVersion)) return;
+
+        $migrationsMap = $this->getMigrationsMap();
 
         foreach ($migrationsMap as $version => $migration) {
             if (version_compare($version, $this->latestVersion, '>')) {
@@ -78,9 +87,6 @@ class Migrator
         $this->latestVersion = $oldPackage->getComparableVersion();
     }
 }
+
+(new Migrator($transport->xpdo))->migrate();
 {/literal}
-(new Migrator($transport->xpdo))->migrate([
-{foreach from=$versions item=version}
-    "{{$version}}",
-{/foreach}
-]);

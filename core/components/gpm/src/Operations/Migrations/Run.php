@@ -40,15 +40,12 @@ class Run extends Operation {
                 $fileName = explode('.', $fileName);
 
                 if (count($fileName) !== 3) continue;
-
                 if (strtolower($fileName[2]) !== 'php') continue;
                 if (strtolower($fileName[1]) !== 'migration') continue;
 
-                include $fileInfo->getRealPath();
+                $migration = include $fileInfo->getRealPath();
 
-                $className = "Migration$fileName[0]";
-
-                $migrationsMap[$className::VERSION] = new $className();
+                $migrationsMap[$migration::VERSION] = $migration;
             }
 
             uksort($migrationsMap, 'version_compare');

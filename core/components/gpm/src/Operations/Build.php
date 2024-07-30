@@ -431,9 +431,8 @@ class Build extends Operation {
                 $logged = true;
             }
 
-            $className = "Migration$fileName[0]";
 
-            $migrations[$className] = $this->getMigrationContent($fileInfo->getRealPath());
+            $migrations[] = $this->getMigrationContent($fileInfo->getRealPath());
 
             $this->logger->notice(' - ' . implode('.', $fileName));
         }
@@ -442,8 +441,7 @@ class Build extends Operation {
             'type' => 'php',
             "source" => $this->getScript('migrator', [
                 'lowCaseName' => $this->config->general->lowCaseName,
-                'versions' => array_keys($migrations),
-                'migrationClasses' => array_values($migrations),
+                'migrations' => $migrations,
             ]),
         ], [
             "vehicle_class" => xPDOScriptVehicle::class,
