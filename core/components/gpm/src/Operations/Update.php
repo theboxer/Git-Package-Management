@@ -22,6 +22,9 @@ class Update extends Operation
     /** @var \GPM\Operations\Migrations\Run */
     protected $runMigrations;
 
+    /** @var \GPM\Operations\Scripts\Run */
+    protected $runScripts;
+
     /** @var GitPackage */
     protected $package;
 
@@ -46,23 +49,20 @@ class Update extends Operation
     /** @var bool */
     protected $alterDatabase = false;
 
-    /** @var bool */
-    protected $skipMigrations = false;
-
-    public function __construct(modX $modx, ParseSchema $parseSchema, \GPM\Operations\Migrations\Run $runMigrations, LoggerInterface $logger)
+    public function __construct(modX $modx, ParseSchema $parseSchema, \GPM\Operations\Migrations\Run $runMigrations, \GPM\Operations\Scripts\Run $runScripts, LoggerInterface $logger)
     {
         $this->parseSchema = $parseSchema;
         $this->runMigrations = $runMigrations;
+        $this->runScripts = $runScripts;
 
         parent::__construct($modx, $logger);
     }
 
-    public function execute(GitPackage $package, bool $recreateDatabase = false, bool $alterDatabase = false, bool $skipMigrations = false): void
+    public function execute(GitPackage $package, bool $recreateDatabase = false, bool $alterDatabase = false, bool $skipMigrations = false, bool $skipScripts = false): void
     {
         $this->package = $package;
         $this->recreateDatabase = $recreateDatabase;
         $this->alterDatabase = $alterDatabase;
-        $this->skipMigrations = $skipMigrations;
 
         try {
             $packages = $this->modx->getOption('gpm.packages_dir');
@@ -70,6 +70,12 @@ class Update extends Operation
 
             $this->oldConfig = Config::wakeMe($package->config, $this->modx);
             $this->newConfig = Config::load($this->modx, $this->logger, $packages . $this->package->dir_name . DIRECTORY_SEPARATOR);
+
+
+            if (!$skipScripts) {
+                $this->logger->notice("Running scripts before");
+                $this->runScripts->execute($this->package, \GPM\Operations\Scripts\Run::ACTION_UPGRADE, \GPM\Operations\Scripts\Run::SCOPE_BEFORE);
+            }
 
             $this->updateMenus();
             $this->updateSystemSettings();
@@ -88,7 +94,15 @@ class Update extends Operation
 
             $this->updateFred();
 
-            $this->runMigrations();
+            if (!$skipMigrations) {
+                $this->logger->notice("Running migrations");
+                $this->runMigrations->execute($this->package);
+            }
+
+            if (!$skipScripts) {
+                $this->logger->notice("Running scripts after");
+                $this->runScripts->execute($this->package, \GPM\Operations\Scripts\Run::ACTION_UPGRADE, \GPM\Operations\Scripts\Run::SCOPE_AFTER);
+            }
 
             $this->updateGitPackage();
         } catch (\Exception $err) {
@@ -759,14 +773,6 @@ class Update extends Operation
 
         $this->newConfig->fred->syncUuids();
 
-    }
-
-    protected function runMigrations(): void
-    {
-        if ($this->skipMigrations) return;
-
-        $this->logger->warning("Running migrations");
-        $this->runMigrations->execute($this->package);
     }
 
     protected function updateFredElementCategories(): void {

@@ -25,15 +25,30 @@ $modx->services->add(\GPM\Operations\Build::class, function($c) use ($modx) {
 });
 
 $modx->services->add(\GPM\Operations\Install::class, function($c) use ($modx) {
-    return new \GPM\Operations\Install($modx, $c->get(\GPM\Operations\ParseSchema::class), $c->get(\GPM\Logger\MODX::class));
+    return new \GPM\Operations\Install(
+        $modx,
+        $c->get(\GPM\Operations\ParseSchema::class),
+        $c->get(\GPM\Operations\Scripts\Run::class),
+        $c->get(\GPM\Logger\MODX::class)
+    );
 });
 
 $modx->services->add(\GPM\Operations\Update::class, function($c) use ($modx) {
-    return new \GPM\Operations\Update($modx, $c->get(\GPM\Operations\ParseSchema::class), $c->get(\GPM\Operations\Migrations\Run::class), $c->get(\GPM\Logger\MODX::class));
+    return new \GPM\Operations\Update(
+        $modx,
+        $c->get(\GPM\Operations\ParseSchema::class),
+        $c->get(\GPM\Operations\Migrations\Run::class),
+        $c->get(\GPM\Operations\Scripts\Run::class),
+        $c->get(\GPM\Logger\MODX::class)
+    );
 });
 
 $modx->services->add(\GPM\Operations\Remove::class, function($c) use ($modx) {
-    return new \GPM\Operations\Remove($modx, $c->get(\GPM\Logger\MODX::class));
+    return new \GPM\Operations\Remove(
+        $modx,
+        $c->get(\GPM\Operations\Scripts\Run::class),
+        $c->get(\GPM\Logger\MODX::class)
+    );
 });
 
 $modx->services->add(\GPM\Operations\Create::class, function($c) use ($modx) {
@@ -74,6 +89,16 @@ $modx->services->add(\GPM\Operations\Migrations\Run::class, function($c) use ($m
 
 $modx->services->add(\GPM\Operations\Migrations\Create::class, function($c) use ($modx) {
     return new \GPM\Operations\Migrations\Create($modx, $c->get(\GPM\Logger\MODX::class));
+});
+// endregion
+
+// region: --- scripts
+$modx->services->add(\GPM\Operations\Scripts\Run::class, function($c) use ($modx) {
+    return new \GPM\Operations\Scripts\Run($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
+$modx->services->add(\GPM\Operations\Scripts\Create::class, function($c) use ($modx) {
+    return new \GPM\Operations\Scripts\Create($modx, $c->get(\GPM\Logger\MODX::class));
 });
 // endregion
 

@@ -13,7 +13,6 @@ class Run extends Operation {
     public function execute(GitPackage $package): void
     {
         $packages = $this->modx->getOption('gpm.packages_dir');
-        $this->logger->warning("Running migrations");
 
         try {
             $this->config = Config::load(
@@ -21,6 +20,8 @@ class Run extends Operation {
                 $this->logger,
                 $packages . $package->dir_name . DIRECTORY_SEPARATOR
             );
+
+            $this->logger->warning("Running migrations");
 
             if (!is_dir($this->config->paths->build . 'migrations')) {
                 $this->logger->warning("- There are no migrations");

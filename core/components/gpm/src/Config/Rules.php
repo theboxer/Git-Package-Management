@@ -20,6 +20,7 @@ class Rules {
     const isFloat = 'isFloat';
     const isBool = 'isBool';
     const isEnum = 'isEnum';
+    const ignore = 'ignore';
 
     const packageFileExists = 'packageFileExists';
     const scriptExists = 'scriptExists';
@@ -50,6 +51,11 @@ class Rules {
 
         $validator->logger->error(self::getLogID($part, $fieldName) . "has unknown rule {$rule['rule']}.");
         return false;
+    }
+
+    private static function ignore(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
+    {
+        return true;
     }
 
     private static function isString(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool

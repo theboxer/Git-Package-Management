@@ -44,6 +44,9 @@ $create = $modx->services->get(\GPM\Operations\Create::class);
 $migrationsRun = $modx->services->get(\GPM\Operations\Migrations\Run::class);
 $migrationsCreate = $modx->services->get(\GPM\Operations\Migrations\Create::class);
 
+$scriptRun = $modx->services->get(\GPM\Operations\Scripts\Run::class);
+$scriptCreate = $modx->services->get(\GPM\Operations\Scripts\Create::class);
+
 $keyAdd = $modx->services->get(\GPM\Operations\Key\Add::class);
 $keyList = $modx->services->get(\GPM\Operations\Key\ListKeys::class);
 $keyRemove = $modx->services->get(\GPM\Operations\Key\Remove::class);
@@ -87,6 +90,11 @@ foreach ($packages as $package) {
     // region: --- migrations
     $application->add(new \GPM\CLI\Migrations\Run("{$package->dir_name}:migrations:run", $package, $migrationsRun));
     $application->add(new \GPM\CLI\Migrations\Create("{$package->dir_name}:migrations:create", $package, $migrationsCreate));
+    // endregion
+
+    // region: --- scripts
+    $application->add(new \GPM\CLI\Scripts\Run("{$package->dir_name}:scripts:run", $package, $scriptRun));
+    $application->add(new \GPM\CLI\Scripts\Create("{$package->dir_name}:scripts:create", $package, $scriptCreate));
     // endregion
 
     // region: --- fred

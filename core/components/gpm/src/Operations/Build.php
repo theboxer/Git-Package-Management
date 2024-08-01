@@ -399,7 +399,7 @@ class Build extends Operation {
             }
         }
 
-        if (str_ends_with($content, '?>')) {
+        if (substr($content, -2, 2) == '?>') {
             $content = substr($content, 0, -2);
         }
 

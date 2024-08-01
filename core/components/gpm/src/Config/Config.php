@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
  * @property-read Parts\Element\Category[] $categories;
  * @property-read Parts\PropertySet[] $propertySets;
  * @property-read Parts\Widget[] $widgets;
- * @property-read Parts\Fred $fred;
+ * @property-read Parts\Fred | null $fred;
  *
  * @package GPM\Config
  */
@@ -159,7 +159,9 @@ class Config
             $config->widgets[] = new Parts\Widget($widget, $config);
         }
 
-        $config->fred = new Parts\Fred($cfg['fred'], $config);
+        if ($cfg['fred'] !== null) {
+            $config->fred = new Parts\Fred($cfg['fred'], $config);
+        }
 
         $valid = $config->validate($logger);
         if (!$valid) {
@@ -274,7 +276,7 @@ class Config
             $widget->setConfig($config);
         }
 
-        if ($config->fred) {
+        if ($config->fred !== null) {
             $config->fred->setConfig($config);
         }
 

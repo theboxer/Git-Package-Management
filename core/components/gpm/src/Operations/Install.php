@@ -18,6 +18,9 @@ class Install extends Operation
     /** @var \GPM\Operations\ParseSchema */
     protected $parseSchema;
 
+    /** @var \GPM\Operations\Scripts\Run */
+    protected $runScripts;
+
     /** @var Config */
     protected $config;
 
@@ -33,14 +36,15 @@ class Install extends Operation
     /** @var \GPM\Model\GitPackage $packageObject */
     protected $package;
 
-    public function __construct(modX $modx, ParseSchema $parseSchema, LoggerInterface $logger)
+    public function __construct(modX $modx, ParseSchema $parseSchema, \GPM\Operations\Scripts\Run $runScripts, LoggerInterface $logger)
     {
         $this->parseSchema = $parseSchema;
+        $this->runScripts = $runScripts;
 
         parent::__construct($modx, $logger);
     }
 
-    public function execute(string $dir): void
+    public function execute(string $dir, bool $skipScripts = false): void
     {
         try {
             $packages = $this->modx->getOption('gpm.packages_dir');
@@ -52,6 +56,12 @@ class Install extends Operation
 
             $this->createConfigFile();
             $this->createNamespace();
+
+            if (!$skipScripts) {
+                $this->logger->notice("Running scripts before");
+                $this->runScripts->execute($this->package, \GPM\Operations\Scripts\Run::ACTION_INSTALL, \GPM\Operations\Scripts\Run::SCOPE_BEFORE);
+            }
+
             $this->createMenus();
             $this->createSystemSettings($packagesBaseUrl);
             $this->createTables();
@@ -68,6 +78,11 @@ class Install extends Operation
             $this->createWidgets();
 
             $this->createFred();
+
+            if (!$skipScripts) {
+                $this->logger->notice("Running scripts after");
+                $this->runScripts->execute($this->package, \GPM\Operations\Scripts\Run::ACTION_INSTALL, \GPM\Operations\Scripts\Run::SCOPE_AFTER);
+            }
 
             $this->saveGitPackage();
         } catch (\Exception $err) {
@@ -239,10 +254,10 @@ class Install extends Operation
             $listing->set('version_minor', $version[1]);
             $listing->set('version_patch', $version[2]);
             $listing->set('metadata', [
-                'id' => "fred-{$this->newConfig->general->lowCaseName}",
-                'package' => "fred-package-{$this->newConfig->general->lowCaseName}",
+                'id' => "fred-{$this->config->general->lowCaseName}",
+                'package' => "fred-package-{$this->config->general->lowCaseName}",
                 'display_name' => $signature,
-                'name' => $this->newConfig->general->name,
+                'name' => $this->config->general->name,
                 'version' => $version,
                 'version_major' => $version[0],
                 'version_minor' => $version[1],
@@ -250,7 +265,7 @@ class Install extends Operation
                 'release' => '',
                 'vrelease' => '',
                 'vrelease_index' => '',
-                'author' => $this->newConfig->general->author,
+                'author' => $this->config->general->author,
                 'description' => '',
                 'instructions' => '',
                 'changelog' => '',

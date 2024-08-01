@@ -2,6 +2,8 @@
 
 namespace GPM\Operations;
 
+use MODX\Revolution\modX;
+use Psr\Log\LoggerInterface;
 use GPM\Config\Config;
 use GPM\Model\GitPackage;
 use MODX\Revolution\modMenu;
@@ -14,15 +16,30 @@ class Remove extends Operation
     /** @var GitPackage */
     protected $package;
 
+    /** @var \GPM\Operations\Scripts\Run */
+    protected $runScripts;
+
     /** @var Config */
     protected $config;
 
-    public function execute(GitPackage $package): void
+    public function __construct(modX $modx, \GPM\Operations\Scripts\Run $runScripts, LoggerInterface $logger)
+    {
+        $this->runScripts = $runScripts;
+
+        parent::__construct($modx, $logger);
+    }
+
+    public function execute(GitPackage $package, bool $skipScripts = false): void
     {
         $this->package = $package;
 
         try {
             $this->config = Config::wakeMe($package->config, $this->modx);
+
+            if (!$skipScripts) {
+                $this->logger->notice("Running scripts before");
+                $this->runScripts->execute($this->package, \GPM\Operations\Scripts\Run::ACTION_UNINSTALL, \GPM\Operations\Scripts\Run::SCOPE_BEFORE);
+            }
 
             $this->removeElements('snippet');
             $this->removeElements('chunk');
@@ -36,6 +53,12 @@ class Remove extends Operation
 
             $this->removeTables();
             $this->removeTransportListing();
+
+            if (!$skipScripts) {
+                $this->logger->notice("Running scripts after");
+                $this->runScripts->execute($this->package, \GPM\Operations\Scripts\Run::ACTION_UNINSTALL, \GPM\Operations\Scripts\Run::SCOPE_AFTER);
+            }
+
             $this->removeNamespace();
             $this->removeConfigFile();
             $this->clearCache();

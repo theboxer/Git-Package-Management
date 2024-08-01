@@ -224,7 +224,7 @@ class Parser
      * @return array
      * @throws \Exception
      */
-    private function getFred(): array
+    private function getFred()
     {
         $defaults = [
             'theme' => [],
@@ -237,7 +237,7 @@ class Parser
         ];
 
         if (!isset($this->config['fred'])) {
-            return $defaults;
+            return null;
         }
 
         $fred = $this->config['fred'];
