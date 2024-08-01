@@ -375,9 +375,15 @@ class Build extends Operation {
             $scriptPath = $this->config->paths->scripts . $script;
             if (file_exists($scriptPath)) {
                 $this->logger->info(' - ' . $script);
+
+                $isGPMScript = substr($script, -8, 8) === '.gpm.php';
+
                 $this->package->put(
                     [
-                        'source' => $scriptPath
+                        'source' => $isGPMScript ? $this->getScript('gpm_script', [
+                            'lowCaseName' => $this->config->general->lowCaseName,
+                            'script' => $this->getGPMScriptContent($scriptPath),
+                        ], str_replace('.gpm.php', '', $script)) : $scriptPath
                     ],
                     [
                         'vehicle_class' => xPDOScriptVehicle::class
@@ -387,9 +393,9 @@ class Build extends Operation {
         }
     }
 
-    protected function getMigrationContent($migrationFilePath): string
+    protected function getGPMScriptContent($scriptPath): string
     {
-        $content = file_get_contents($migrationFilePath);
+        $content = file_get_contents($scriptPath);
         $content = trim($content);
 
         if (strncmp($content, '<?', 2) == 0) {
@@ -440,7 +446,7 @@ class Build extends Operation {
             }
 
 
-            $migrations[] = $this->getMigrationContent($fileInfo->getRealPath());
+            $migrations[] = $this->getGPMScriptContent($fileInfo->getRealPath());
 
             $this->logger->notice(' - ' . implode('.', $fileName));
         }
@@ -600,14 +606,18 @@ class Build extends Operation {
         return $resolver;
     }
 
-    protected function getScript(string $name, array $props = []): string
+    protected function getScript(string $name, array $props = [], string $targetName = ''): string
     {
         $gpmScripts = $this->config->paths->package . '_build' . DIRECTORY_SEPARATOR . 'gpm_scripts' . DIRECTORY_SEPARATOR;
         if (!is_dir($gpmScripts)) {
             mkdir($gpmScripts);
         }
 
-        $script = "{$gpmScripts}gpm.script.{$name}.php";
+        if (empty($targetName)) {
+            $targetName = $name;
+        }
+
+        $script = "{$gpmScripts}gpm.script.{$targetName}.php";
         if (file_exists($script)) {
             unlink($script);
         }

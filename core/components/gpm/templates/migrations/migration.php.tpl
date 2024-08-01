@@ -5,11 +5,17 @@ return new class() {
     const VERSION = '{{$version}}';
 {literal}
     /**
+    * @var \MODX\Revolution\modX
+    */
+    private $modx;
+
+    /**
      * @param \MODX\Revolution\modX $modx
      * @return void
      */
-    public function __invoke($modx)
+    public function __invoke(&$modx)
     {
+        $this->modx =& $modx;
         // Migration code goes here
     }
 };

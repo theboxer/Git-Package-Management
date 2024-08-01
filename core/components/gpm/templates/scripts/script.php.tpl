@@ -16,9 +16,9 @@ return new class() {
     * @param int $action
     * @return bool
     */
-    public function __invoke($modx, $action)
+    public function __invoke(&$modx, $action)
     {
-        $this->modx = $modx;
+        $this->modx =& $modx;
         $this->action = $action;
 
         switch ($this->action) {
