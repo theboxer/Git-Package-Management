@@ -473,6 +473,8 @@ class Build extends Operation {
 
             $this->logger->notice(' - ' . implode('.', $fileName));
         }
+
+        // Already used in the migrator template
         unset($imports['MODX\Revolution\Transport\modTransportPackage']);
 
         $this->package->put([
