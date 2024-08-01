@@ -87,7 +87,9 @@ class Migrator
 
         /** @var modTransportPackage $oldPackage */
         $oldPackage = $this->modx->getObject(modTransportPackage::class, $c);
-        $this->latestVersion = $oldPackage->getComparableVersion();
+        if ($oldPackage) {
+            $this->latestVersion = $oldPackage->getComparableVersion();
+        }
     }
 }
 
