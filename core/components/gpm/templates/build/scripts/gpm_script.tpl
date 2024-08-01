@@ -11,6 +11,10 @@
  * @var array $options
  */
 
+{foreach from=$script.imports item=import}
+use {{$import}};
+{/foreach}
+
 return (function () {
-    {{$script}}
+    {{$script.content}}
 })()($transport->xpdo, $options[xPDOTransport::PACKAGE_ACTION]);

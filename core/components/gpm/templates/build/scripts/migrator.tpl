@@ -12,6 +12,9 @@
  */
 
 use MODX\Revolution\Transport\modTransportPackage;
+{foreach from=$imports item=import}
+use {{$import}};
+{/foreach}
 
 class Migrator
 {

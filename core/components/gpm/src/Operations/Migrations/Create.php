@@ -43,7 +43,7 @@ class Create extends Operation
 
     private function packVersion($version)
     {
-        return preg_replace('/[^a-zA-Z1-9]/', '', $version);
+        return preg_replace('/[^a-zA-Z0-9]/', '', $version);
     }
 
     protected function loadSmarty(): void

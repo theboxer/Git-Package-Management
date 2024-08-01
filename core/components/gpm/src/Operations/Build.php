@@ -393,7 +393,7 @@ class Build extends Operation {
         }
     }
 
-    protected function getGPMScriptContent($scriptPath): string
+    protected function getGPMScriptContent($scriptPath): array
     {
         $content = file_get_contents($scriptPath);
         $content = trim($content);
@@ -409,7 +409,23 @@ class Build extends Operation {
             $content = substr($content, 0, -2);
         }
 
-        return trim($content, " \n\r\0\x0B");
+        $content = trim($content, " \n\r\0\x0B");
+
+        $imports = [];
+
+        $content = preg_replace_callback('/^[[:blank:]]*use ([^;]+);[[:blank:]]*$/m', function ($matches) use (&$imports) {
+            $imports[trim($matches[1])] = true;
+            return '';
+        }, $content);
+
+        $imports = array_keys($imports);
+
+        $content = preg_replace('/^\n{2,}$/m', '', $content);
+
+        return [
+            'content' => $content,
+            'imports' => $imports,
+        ];
     }
 
     protected function packMigrations(): void
@@ -428,6 +444,8 @@ class Build extends Operation {
 
         $logged = false;
 
+        $imports = ['MODX\Revolution\Transport\modTransportPackage' => true];
+
         /** @var \SplFileInfo[] $dir */
         foreach ($dir as $fileInfo) {
             if ($fileInfo->isDot()) continue;
@@ -445,17 +463,24 @@ class Build extends Operation {
                 $logged = true;
             }
 
+            $script = $this->getGPMScriptContent($fileInfo->getRealPath());
 
-            $migrations[] = $this->getGPMScriptContent($fileInfo->getRealPath());
+            foreach ($script['imports'] as $import) {
+                $imports[$import] = true;
+            }
+
+            $migrations[] = $script['content'];
 
             $this->logger->notice(' - ' . implode('.', $fileName));
         }
+        unset($imports['MODX\Revolution\Transport\modTransportPackage']);
 
         $this->package->put([
             'type' => 'php',
             "source" => $this->getScript('migrator', [
                 'lowCaseName' => $this->config->general->lowCaseName,
                 'migrations' => $migrations,
+                'imports' => array_keys($imports),
             ]),
         ], [
             "vehicle_class" => xPDOScriptVehicle::class,
