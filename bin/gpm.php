@@ -104,7 +104,11 @@ foreach ($packages as $package) {
             new Stealth(),
             $modx->getOption('gpm.packages_dir') . $package->dir_name . DIRECTORY_SEPARATOR
         );
-        $application->add(new \GPM\CLI\Fred\Export("{$package->dir_name}:export:fred", $package, $fredExportBlueprints));
+        if ($config->fred !== null) {
+            $application->add(
+                new \GPM\CLI\Fred\Export("{$package->dir_name}:export:fred", $package, $fredExportBlueprints)
+            );
+        }
     } catch (\Exception) {}
     // endregion
 }
