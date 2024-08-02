@@ -79,7 +79,7 @@ class Menu extends Part
         $obj->set('parent', $this->parent);
         $obj->set('description', $this->description);
         $obj->set('icon', $this->icon);
-        $obj->set('menundex', $this->menuIndex);
+        $obj->set('menuindex', $this->menuIndex);
         $obj->set('params', $this->params);
         $obj->set('handler', $this->handler);
         $obj->set('permission', $this->permission);
