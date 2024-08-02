@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="g"
+                 name="GPM - Git Package Management for MODX Revolution"
+                 start-page="Intro.topic">
+
+    <toc-element topic="Intro.topic"/>
+    <toc-element toc-title="General">
+        <toc-element topic="Directory-Structure.md"/>
+        <toc-element topic="Installation.md"/>
+        <toc-element topic="System-Settings.md"/>
+        <toc-element topic="Scaffolding-Extra.md"/>
+        <toc-element topic="Migrations.md"/>
+    </toc-element>
+    <toc-element topic="CLI.md">
+        <toc-element topic="gpm.md"/>
+        <toc-element topic="package.md"/>
+        <toc-element topic="pkg.md"/>
+    </toc-element>
+    <toc-element topic="Config.md">
+        <toc-element topic="ConfigGeneral.md"/>
+        <toc-element topic="ConfigMenus.md"/>
+        <toc-element topic="ConfigSystemSettings.md"/>
+        <toc-element topic="ConfigCategories.md"/>
+        <toc-element topic="ConfigSnippets.md"/>
+        <toc-element topic="ConfigChunks.md"/>
+        <toc-element topic="ConfigTemplates.md"/>
+        <toc-element topic="ConfigPlugins.md"/>
+        <toc-element topic="ConfigTemplateVariables.md"/>
+        <toc-element topic="ConfigPropertySets.md"/>
+        <toc-element topic="ConfigWidgets.md"/>
+        <toc-element topic="ConfigFred.md"/>
+        <toc-element topic="ConfigDatabase.md"/>
+        <toc-element topic="ConfigBuild.md"/>
+    </toc-element>
+</instance-profile>

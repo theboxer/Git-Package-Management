@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Git Package Management [GPM]" id="Intro">
+
+    <section-starting-page>
+        <title>GPM - Git Package Management</title>
+        <description>
+            A tool for MODX developers to make, maintain and build extras at a speed of light.
+        </description>
+
+        <spotlight>
+            <a href="Installation.md"
+               summary="Installing GPM" type="start"/>
+            <a href="CLI.md"
+               summary="Using CLI tool" type="development"/>
+        </spotlight>
+
+        <primary>
+            <title>Main Parts</title>
+            <a href="ConfigGeneral.md" summary="Extra's details"/>
+            <a href="ConfigSystemSettings.md" summary="System settings for the extra"/>
+            <a href="ConfigDatabase.md" summary="Specify DB tables"/>
+            <a href="ConfigBuild.md" summary="Customize building the extra"/>
+        </primary>
+
+        <secondary>
+            <title>Elements</title>
+            <a href="ConfigMenus.md" summary="Define main menu items"/>
+            <a href="ConfigCategories.md" summary="Categories"/>
+            <a href="ConfigSnippets.md" summary="Snippets"/>
+            <a href="ConfigChunks.md" summary="Chunks"/>
+            <a href="ConfigTemplates.md" summary="Templates"/>
+            <a href="ConfigPlugins.md" summary="Plugins"/>
+            <a href="ConfigTemplateVariables.md" summary="Specify template variables"/>
+            <a href="ConfigPropertySets.md" summary="Define property sets for elements"/>
+            <a href="ConfigWidgets.md" summary="MODX dashboard widgets"/>
+            <a href="ConfigFred.md" summary="Define Fred elements"/>
+        </secondary>
+
+    </section-starting-page>
+
+
+</topic>

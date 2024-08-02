@@ -1,0 +1,3 @@
+# Template Variables
+
+Start typing here...
