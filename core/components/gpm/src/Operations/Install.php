@@ -8,9 +8,12 @@ use MODX\Revolution\modElementPropertySet;
 use MODX\Revolution\modNamespace;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\modPropertySet;
+use MODX\Revolution\modSystemSetting;
 use MODX\Revolution\modX;
 use MODX\Revolution\Transport\modTransportPackage;
 use Psr\Log\LoggerInterface;
+use xPDO\Cache\xPDOCacheManager;
+use xPDO\xPDO;
 
 class Install extends Operation
 {
@@ -190,7 +193,37 @@ class Install extends Operation
             }
         }
 
-        $this->modx->reloadConfig();
+        $this->reloadSystemSettings();
+    }
+
+    protected function reloadSystemSettings()
+    {
+        $this->modx->getCacheManager();
+        $this->modx->cacheManager->refresh();
+
+        $config = $this->modx->cacheManager->get('config', [
+            xPDO::OPT_CACHE_KEY => $this->modx->getOption('cache_system_settings_key', null, 'system_settings'),
+            xPDO::OPT_CACHE_HANDLER => $this->modx->getOption('cache_system_settings_handler', null, $this->modx->getOption(xPDO::OPT_CACHE_HANDLER)),
+            xPDO::OPT_CACHE_FORMAT => (integer) $this->modx->getOption('cache_system_settings_format', null, $this->modx->getOption(xPDO::OPT_CACHE_FORMAT, null, xPDOCacheManager::CACHE_PHP)),
+        ]);
+
+        if (empty($config)) {
+            $config = $this->modx->cacheManager->generateConfig();
+        }
+
+        if (empty($config)) {
+            $config = [];
+            if (!$settings = $this->modx->getCollection(modSystemSetting::class)) {
+                return;
+            }
+            /** @var modSystemSetting $setting */
+            foreach ($settings as $setting) {
+                $config[$setting->get('key')]= $setting->get('value');
+            }
+        }
+
+        $this->modx->config = array_merge($this->modx->config, $config);
+        $this->modx->_systemConfig = $this->modx->config;
     }
 
     protected function createTables(): void
