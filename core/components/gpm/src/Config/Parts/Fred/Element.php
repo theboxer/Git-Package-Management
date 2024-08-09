@@ -78,7 +78,7 @@ class Element extends Part
         }
 
         if (!empty($this->name) && empty($this->file)) {
-            $this->file = $this->name . '.html';
+            $this->file = $this->name . '.twig';
         }
 
         $baseElementsPath = $this->config->paths->core . 'elements' . DIRECTORY_SEPARATOR . 'fred' . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR;

@@ -474,7 +474,7 @@ class Export extends Operation
                 mkdir($contentPath, 0777, true);
             }
 
-            file_put_contents($contentPath . $element['name'] . '.html', $content);
+            file_put_contents($contentPath . $element['name'] . '.twig', $content);
 
             $fredConfig['elements'][] = $element;
         }
