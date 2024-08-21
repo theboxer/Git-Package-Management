@@ -90,11 +90,11 @@ class Blueprint extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject('\\Fred\\Model\\FredBlueprint');
-            $obj->set('name', $this->name);
         } else {
             $this->config->modx->removeCollection('\\Fred\\Model\\FredBlueprintTemplateAccess', ['blueprint' => $obj->get('id')]);
         }
 
+        $obj->set('name', $this->name);
         $obj->set('uuid', $this->uuid);
         $obj->set('category', $this->config->fred->getBlueprintCategoryId($this->category));
         $obj->set('image', $this->image);

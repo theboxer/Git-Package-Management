@@ -129,7 +129,6 @@ class Element extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject('\\Fred\\Model\\FredElement');
-            $obj->set('name', $this->name);
         } else {
             $this->config->modx->removeCollection('\\Fred\\Model\\FredElementTemplateAccess', ['element' => $obj->get('id')]);
         }
@@ -138,6 +137,7 @@ class Element extends Part
             $obj->set('uuid', $this->uuid);
         }
 
+        $obj->set('name', $this->name);
         $obj->set('category', $this->config->fred->getElementCategoryId($this->category));
         $obj->set('image', $this->image);
         $obj->set('description', $this->description);

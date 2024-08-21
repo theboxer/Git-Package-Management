@@ -56,7 +56,6 @@ class BlueprintCategory extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject('\\Fred\\Model\\FredBlueprintCategory');
-            $obj->set('name', $this->name);
             $obj->set('theme', $this->config->fred->getThemeId());
         } else {
             $this->config->modx->removeCollection('\\Fred\\Model\\FredBlueprintCategoryTemplateAccess', ['category' => $obj->get('id')]);
@@ -66,6 +65,7 @@ class BlueprintCategory extends Part
             $obj->set('uuid', $this->uuid);
         }
 
+        $obj->set('name', $this->name);
         $obj->set('rank', $this->rank);
         $obj->set('public', $this->public);
 

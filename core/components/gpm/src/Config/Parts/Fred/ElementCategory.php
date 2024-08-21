@@ -52,7 +52,6 @@ class ElementCategory extends Part
 
         if ($obj === null) {
             $obj = $this->config->modx->newObject('\\Fred\\Model\\FredElementCategory');
-            $obj->set('name', $this->name);
 
             $obj->set('theme', $this->config->fred->getThemeId());
         } else {
@@ -63,6 +62,7 @@ class ElementCategory extends Part
             $obj->set('uuid', $this->uuid);
         }
 
+        $obj->set('name', $this->name);
         $obj->set('rank', $this->rank);
 
         $templates = [];
