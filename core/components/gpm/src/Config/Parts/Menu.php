@@ -40,7 +40,7 @@ class Menu extends Part
     protected $icon = '';
 
     /** @var int */
-    protected $menuIndex = '';
+    protected $menuIndex = 0;
 
     /** @var string */
     protected $params = '';
@@ -52,7 +52,8 @@ class Menu extends Part
     protected $permission = '';
 
     protected $rules = [
-        'text' => [Rules::isString, Rules::notEmpty]
+        'text' => [Rules::isString, Rules::notEmpty],
+        'menuIndex' => [Rules::isInt]
     ];
 
     protected function generator(): void
