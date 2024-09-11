@@ -159,7 +159,7 @@ class Config
             $config->widgets[] = new Parts\Widget($widget, $config);
         }
 
-        if ($cfg['fred'] !== null) {
+        if (!empty($cfg['fred'])) {
             $config->fred = new Parts\Fred($cfg['fred'], $config);
         }
 
