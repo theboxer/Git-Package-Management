@@ -118,7 +118,7 @@ class Export extends Operation
             $c->where([
                 'blueprint' => $blueprint->get('id'),
             ]);
-            $c->leftJoin(modTemplate::class, 'Template', 'FredBlueprintTemplateAccess.template = template.id');
+            $c->leftJoin(modTemplate::class, 'Template', 'FredBlueprintTemplateAccess.template = Template.id');
             $c->select($this->modx->getSelectColumns(modTemplate::class, 'Template', '', ['templatename']));
             $c->prepare();
             $c->stmt->execute();
@@ -314,7 +314,7 @@ class Export extends Operation
             $c->where([
                 'category' => $category->get('id'),
             ]);
-            $c->leftJoin(modTemplate::class, 'Template', 'FredElementTemplateAccess.template = template.id');
+            $c->leftJoin(modTemplate::class, 'Template', 'FredElementTemplateAccess.template = Template.id');
             $c->select($this->modx->getSelectColumns(modTemplate::class, 'Template', '', ['templatename']));
             $c->prepare();
             $c->stmt->execute();
@@ -351,7 +351,7 @@ class Export extends Operation
             $c->where([
                 'category' => $category->get('id'),
             ]);
-            $c->leftJoin(modTemplate::class, 'Template', 'FredBlueprintCategoryTemplateAccess.template = template.id');
+            $c->leftJoin(modTemplate::class, 'Template', 'FredBlueprintCategoryTemplateAccess.template = Template.id');
             $c->select($this->modx->getSelectColumns(modTemplate::class, 'Template', '', ['templatename']));
             $c->prepare();
             $c->stmt->execute();
