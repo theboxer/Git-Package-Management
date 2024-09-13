@@ -175,7 +175,7 @@ class Export extends Operation
             $c->where([
                 'element' => $element->get('id'),
             ]);
-            $c->leftJoin(modTemplate::class, 'Template', 'FredElementTemplateAccess.template = template.id');
+            $c->leftJoin(modTemplate::class, 'Template', 'FredElementTemplateAccess.template = Template.id');
             $c->select($this->modx->getSelectColumns(modTemplate::class, 'Template', '', ['templatename']));
             $c->prepare();
             $c->stmt->execute();
