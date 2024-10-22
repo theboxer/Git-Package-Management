@@ -2,6 +2,7 @@
 namespace GPM\Config\Parts\Fred;
 
 use GPM\Config\Config;
+use GPM\Config\FileParser;
 use GPM\Config\Parts\Part;
 use GPM\Config\Rules;
 
@@ -16,9 +17,32 @@ class Theme extends Part
 
     protected $keyField = 'uuid';
 
+    protected $settings = null;
+
 
     protected function generator(): void
     {
+        $basePath = $this->config->paths->core . 'elements' . DIRECTORY_SEPARATOR . 'fred' . DIRECTORY_SEPARATOR . 'theme' . DIRECTORY_SEPARATOR;
+
+        $optionFiles = [
+            $this->config->general->name . '.options.json',
+            $this->config->general->name . '.options.yaml',
+            $this->config->general->name . '.options.yml'
+        ];
+
+        foreach ($optionFiles as $optionFile) {
+            if (empty($this->options_override) && file_exists($basePath . $optionFile)) {
+                $this->settings = $basePath . $optionFile;
+            }
+        }
+
+        if (is_string($this->settings)) {
+            if (file_exists($this->settings)) {
+                $this->settings = FileParser::parseFile($this->settings);
+            } else {
+                $this->settings = [];
+            }
+        }
     }
 
     /**
@@ -47,6 +71,7 @@ class Theme extends Part
         }
 
         $obj->set('description', $this->config->general->description);
+        $obj->set('settings', $this->settings);
 
         return $obj;
     }

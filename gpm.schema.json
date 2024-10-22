@@ -1591,6 +1591,9 @@
               "properties": {
                 "uuid": {
                   "type": "string"
+                },
+                "settings": {
+                  "type": "string"
                 }
               }
             }

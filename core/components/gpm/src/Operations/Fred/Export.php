@@ -88,6 +88,10 @@ class Export extends Operation
             $config['themedTemplates'] = $this->loadThemedTemplates();
         }
 
+        if (isset($parts['theme'])) {
+            $config['theme'] = $this->loadTheme();
+        }
+
         if (empty($config)) return;
 
         $this->saveConfig($config);
@@ -377,6 +381,20 @@ class Export extends Operation
         return $elementCategoriesConfig;
     }
 
+    private function loadTheme()
+    {
+        $this->logger->notice("Exporting Theme Config");
+
+        $theme = $this->modx->getObject('\\Fred\\Model\\FredTheme', ['id' => $this->themeId]);
+
+        $themeConfig = [
+            'uuid' => $theme->get('uuid'),
+            'settings' => $theme->get('settings'),
+        ];
+
+        return $themeConfig;
+    }
+
 
     private function saveConfig(array $config)
     {
@@ -429,6 +447,10 @@ class Export extends Operation
 
         if (!empty($config['blueprintCategories'])) {
             $this->saveBlueprintCategories($fredConfig, $config['blueprintCategories']);
+        }
+
+        if (!empty($config['theme'])) {
+            $this->saveThemeConfig($fredConfig, $config['theme']);
         }
 
         FileParser::writeFile($fredConfigPath, $rawConfig);
@@ -538,6 +560,11 @@ class Export extends Operation
         foreach ($themedTemplates as $themedTemplate) {
             $fredConfig['templates'][] = $themedTemplate;
         }
+    }
+
+    private function saveThemeConfig(&$fredConfig, array $themeConfig)
+    {
+        $fredConfig['theme'] = $themeConfig;
     }
 
 }

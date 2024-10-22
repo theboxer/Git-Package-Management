@@ -29,7 +29,7 @@ class Export extends Command {
                 'parts',
                 InputArgument::IS_ARRAY,
                 'List of Fred objects to export',
-                ['blueprints', 'elements', 'optionSets', 'rteConfigs', 'elementCategories', 'blueprintCategories', 'themedTemplates']
+                ['blueprints', 'elements', 'optionSets', 'rteConfigs', 'elementCategories', 'blueprintCategories', 'themedTemplates', 'theme']
             )
         ;
     }
