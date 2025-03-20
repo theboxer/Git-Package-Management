@@ -16,7 +16,7 @@ class GetList extends GetListProcessor
     public function prepareRow(xPDOObject $object)
     {
         $ta = $object->toArray();
-        $ta['updatedon'] = date('Y-m-d H:i:s', $ta['updatedon']);
+        $ta['updatedon'] = ($ta['updatedon']) ? date('Y-m-d H:i:s', $ta['updatedon']) : '';
         return $ta;
     }
 }
