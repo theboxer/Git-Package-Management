@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
  * @property-read string $readme
  * @property-read string $license
  * @property-read string $changelog
+ * @property-read array $files
  * @property-read array $scriptsBefore
  * @property-read array $scriptsAfter
  * @property-read array $requires
@@ -30,6 +31,9 @@ class Build extends Part
 
     /** @var string */
     protected $changelog = '';
+
+    /** @var array */
+    protected $files = [];
 
     /** @var string[] */
     protected $scriptsBefore = [];
@@ -53,6 +57,9 @@ class Build extends Part
         'readme' => [Rules::isString, Rules::packageFileExists],
         'license' => [Rules::isString, Rules::packageFileExists],
         'changelog' => [Rules::isString, Rules::packageFileExists],
+        'files' => [
+            ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isFileVehicles]]]
+        ],
         'scriptsBefore' => [
             ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isString, Rules::scriptExists]]]
         ],

@@ -34,6 +34,7 @@ class Rules {
     const propertySetExists = 'propertySetExists';
     const widgetContent = 'widgetContent';
     const packageDependencies = 'packageDependencies';
+    const isFileVehicles = 'isFileVehicles';
 
     private static function getLogID(Part $part, $fieldName): string
     {
@@ -417,5 +418,25 @@ class Rules {
         }
 
         return $valid;
+    }
+
+    private static function isFileVehicles(Validator $validator, $value, string $fieldName, Part $part, $params = null): bool
+    {
+        if (!is_array($value)) {
+            $validator->logger->error(self::getLogID($part, $fieldName) . "has to be an array");
+            return false;
+        }
+
+        if (empty($value['source'])) {
+            $validator->logger->error(self::getLogID($part, $fieldName) . "has to contain non-empty 'source'");
+            return false;
+        }
+
+        if (empty($value['target'])) {
+            $validator->logger->error(self::getLogID($part, $fieldName) . "has to contain non-empty 'target'");
+            return false;
+        }
+
+        return true;
     }
 }

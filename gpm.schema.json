@@ -1229,6 +1229,21 @@
             "changelog": {
               "type": "string"
             },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
             "scriptsBefore": {
               "type": "array",
               "items": {

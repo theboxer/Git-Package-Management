@@ -6,6 +6,7 @@ use GPM\Config\Parts\Fred\NoUuidException;
 use GPM\Utils\Build\Attributes;
 use MODX\Revolution\modCategory;
 use MODX\Revolution\Transport\modPackageBuilder;
+use xPDO\Transport\xPDOFileVehicle;
 use xPDO\Transport\xPDOScriptVehicle;
 use xPDO\Transport\xPDOTransport;
 
@@ -193,6 +194,20 @@ class Build extends Operation {
                     'target' => "return MODX_CORE_PATH . 'components/{$this->config->general->lowCaseName}/docs/';",
                 ];
             }
+        }
+
+        foreach ($this->config->build->files as $file) {
+            $source = $file['source'];
+
+            $source = str_replace('[[+corePath]]', $this->config->paths->core, $source);
+            $source = str_replace('[[+assetsPath]]', $this->config->paths->assets, $source);
+            $source = str_replace('[[+packagePath]]', $this->config->paths->package, $source);
+
+            $namespaceResolvers[] = [
+                'type' => 'file',
+                'source' => $source,
+                'target' => $file['target'],
+            ];
         }
 
         $this->package->put($namespace, [
