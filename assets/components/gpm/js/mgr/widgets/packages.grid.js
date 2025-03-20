@@ -51,6 +51,8 @@ gpm.grid.Packages = function (config) {
                 dataIndex: 'updatedon',
                 sortable: true,
                 width: 0.2
+                width: 0.2,
+                renderer: Ext.util.Format.dateRenderer( MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format)
             }
         ],
         tbar: [{
