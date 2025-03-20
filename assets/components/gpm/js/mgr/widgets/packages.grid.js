@@ -50,7 +50,6 @@ gpm.grid.Packages = function (config) {
                 header: _('gpm.package.updatedon'),
                 dataIndex: 'updatedon',
                 sortable: true,
-                width: 0.2
                 width: 0.2,
                 renderer: Ext.util.Format.dateRenderer( MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format)
             }
@@ -75,6 +74,11 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
 
         if (this.menu.record && (this.menu.record.name !== 'gpm')) {
             m.push({
+                text: _('gpm.package.build_publish'),
+                handler: this.buildPublish
+            });
+            m.push('-');
+            m.push({
                 text: _('gpm.package.update_package'),
                 handler: this.update
             });
@@ -86,6 +90,16 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 text: _('gpm.package.update_package_recreate'),
                 handler: this.updateRecreate
             });
+            m.push('-');
+            m.push({
+                text: _('gpm.package.check_lexicon'),
+                handler: this.checkLexicon
+            });
+            m.push({
+                text: _('gpm.package.create_docs'),
+                handler: this.createDocs
+            });
+            m.push('-');
             m.push({
                 text: _('gpm.package.uninstall_short'),
                 handler: this.uninstall
@@ -110,7 +124,7 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
 
     update: function (btn, e) {
         if (!this.menu.record) return false;
-        var self = this; 
+        var self = this;
 
         gpm.loggedAction(
             'GitPackage\\Update',
@@ -123,13 +137,13 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 self.refresh();
             }
         );
-        
+
         return true;
     },
 
     updateAlter: function (btn, e) {
         if (!this.menu.record) return false;
-        var self = this; 
+        var self = this;
 
         gpm.loggedAction(
             'GitPackage\\Update',
@@ -142,13 +156,13 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 self.refresh();
             }
         );
-        
+
         return true;
     },
 
     updateRecreate: function (btn, e) {
         if (!this.menu.record) return false;
-        var self = this; 
+        var self = this;
 
         gpm.loggedAction(
             'GitPackage\\Update',
@@ -161,7 +175,7 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 self.refresh();
             }
         );
-        
+
         return true;
     },
 
@@ -195,6 +209,45 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
         );
 
         return true;
-    }
+    },
+
+    buildPublish: function (btn, e) {
+        if (!this.menu.record) return false;
+
+        gpm.loggedAction(
+            'GitPackage\\BuildPublish',
+            {
+                id: this.menu.record.id
+            }
+        );
+
+        return true;
+    },
+
+    checkLexicon: function (btn, e) {
+        if (!this.menu.record) return false;
+
+        gpm.loggedAction(
+            'GitPackage\\CheckLexicon',
+            {
+                id: this.menu.record.id
+            }
+        );
+
+        return true;
+    },
+
+    createDocs: function (btn, e) {
+        if (!this.menu.record) return false;
+
+        gpm.loggedAction(
+            'GitPackage\\CreateDocs',
+            {
+                id: this.menu.record.id
+            }
+        );
+
+        return true;
+    },
 });
 Ext.reg('gpm-grid-packages', gpm.grid.Packages);

@@ -15,6 +15,8 @@
     }
   },
   "require": {
+    "ext-curl": "*",
+    "league/flysystem-sftp-v3": "^2.0",
     "symfony/console": "^5.4",
     "symfony/yaml": "^5.4",
     "psr/log": "^1.0.0"

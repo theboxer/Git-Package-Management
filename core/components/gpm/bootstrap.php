@@ -24,6 +24,10 @@ $modx->services->add(\GPM\Operations\Build::class, function($c) use ($modx) {
     return new \GPM\Operations\Build($modx, $c->get(\GPM\Logger\MODX::class));
 });
 
+$modx->services->add(\GPM\Operations\BuildPublish::class, function($c) use ($modx) {
+    return new \GPM\Operations\BuildPublish($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
 $modx->services->add(\GPM\Operations\Install::class, function($c) use ($modx) {
     return new \GPM\Operations\Install(
         $modx,
@@ -41,6 +45,14 @@ $modx->services->add(\GPM\Operations\Update::class, function($c) use ($modx) {
         $c->get(\GPM\Operations\Scripts\Run::class),
         $c->get(\GPM\Logger\MODX::class)
     );
+});
+
+$modx->services->add(\GPM\Operations\CheckLexicon::class, function($c) use ($modx) {
+    return new \GPM\Operations\CheckLexicon($modx, $c->get(\GPM\Logger\MODX::class));
+});
+
+$modx->services->add(\GPM\Operations\CreateDocs::class, function($c) use ($modx) {
+    return new \GPM\Operations\CreateDocs($modx, $c->get(\GPM\Logger\MODX::class));
 });
 
 $modx->services->add(\GPM\Operations\Remove::class, function($c) use ($modx) {

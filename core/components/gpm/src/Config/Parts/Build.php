@@ -53,6 +53,9 @@ class Build extends Part
     /** @var string */
     protected $unInstallValidator = '';
 
+    /** @var array */
+    public $options = [];
+
     protected $rules = [
         'readme' => [Rules::isString, Rules::packageFileExists],
         'license' => [Rules::isString, Rules::packageFileExists],
