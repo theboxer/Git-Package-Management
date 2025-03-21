@@ -28,6 +28,7 @@ $_lang['gpm.package.update_package_alter'] = 'Update package and alter database'
 $_lang['gpm.package.update_package_recreate'] = 'Update package and recreate database';
 $_lang['gpm.package.dir'] = 'Directory name';
 $_lang['gpm.package.build'] = 'Build package';
+$_lang['gpm.package.check_lexicon'] = 'Check Lexicon';
 
 $_lang['gpm.err.dir_ns'] = 'Directory name is required.';
 $_lang['gpm.err.operation_ns'] = 'Operation is not specified.';
