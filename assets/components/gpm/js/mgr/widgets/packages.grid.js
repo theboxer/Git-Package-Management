@@ -50,7 +50,6 @@ gpm.grid.Packages = function (config) {
                 header: _('gpm.package.updatedon'),
                 dataIndex: 'updatedon',
                 sortable: true,
-                width: 0.2
                 width: 0.2,
                 renderer: Ext.util.Format.dateRenderer( MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format)
             }
@@ -110,7 +109,7 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
 
     update: function (btn, e) {
         if (!this.menu.record) return false;
-        var self = this; 
+        var self = this;
 
         gpm.loggedAction(
             'GitPackage\\Update',
@@ -123,13 +122,13 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 self.refresh();
             }
         );
-        
+
         return true;
     },
 
     updateAlter: function (btn, e) {
         if (!this.menu.record) return false;
-        var self = this; 
+        var self = this;
 
         gpm.loggedAction(
             'GitPackage\\Update',
@@ -142,13 +141,13 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 self.refresh();
             }
         );
-        
+
         return true;
     },
 
     updateRecreate: function (btn, e) {
         if (!this.menu.record) return false;
-        var self = this; 
+        var self = this;
 
         gpm.loggedAction(
             'GitPackage\\Update',
@@ -161,7 +160,7 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 self.refresh();
             }
         );
-        
+
         return true;
     },
 
