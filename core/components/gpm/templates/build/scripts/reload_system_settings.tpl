@@ -11,9 +11,6 @@
  * @var array $options
  */
 
-use Fred\Model\FredThemedTemplate;
-use Fred\Model\FredBlueprint;
-use Fred\Model\FredTheme;
 use xPDO\Transport\xPDOTransport;
 use MODX\Revolution\modSystemSetting;
 use xPDO\xPDO;
