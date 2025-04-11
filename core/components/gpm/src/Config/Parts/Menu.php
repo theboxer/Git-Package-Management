@@ -83,7 +83,7 @@ class Menu extends Part
         $obj->set('menuindex', $this->menuIndex);
         $obj->set('params', $this->params);
         $obj->set('handler', $this->handler);
-        $obj->set('permission', $this->permission);
+        $obj->set('permissions', $this->permission);
         $obj->set('action', $this->action);
         $obj->set('namespace', $this->config->general->lowCaseName);
 
