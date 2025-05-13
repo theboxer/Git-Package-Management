@@ -93,6 +93,7 @@ abstract class Element extends Part
         if (!empty($this->category)) {
             $category = implode(DIRECTORY_SEPARATOR, $this->category) . DIRECTORY_SEPARATOR;
             $pathsToCheck[] = $baseSnippetsPath . $category . $this->file;
+            $pathsToCheck[] = $baseSnippetsPath . $category . strtolower($this->name) . '.' . $this->_type . '.' . $this->extension;
             $pathsToCheck[] = $baseSnippetsPath . str_replace(' ', '-', strtolower($category)) . $this->file;
         }
 
