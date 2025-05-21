@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
  * @property-read array $scriptsBefore
  * @property-read array $scriptsAfter
  * @property-read array $requires
+ * @property-read bool $composer
  * @property-read string $setupOptions
  * @property-read string $installValidator
  * @property-read string $unInstallValidator
@@ -44,6 +45,9 @@ class Build extends Part
     /** @var string[] */
     protected $requires = [];
 
+    /** @var bool */
+    protected $composer = false;
+
     /** @var string */
     protected $setupOptions = '';
 
@@ -64,6 +68,7 @@ class Build extends Part
             ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::isString, Rules::scriptExists]]]
         ],
         'requires' => [Rules::isArray, Rules::packageDependencies],
+        'composer' => [Rules::isBool],
         'setupOptions' => [Rules::isString, Rules::buildFileExists],
         'installValidator' => [Rules::isString, Rules::scriptExists],
         'unInstallValidator' => [Rules::isString, Rules::scriptExists],
