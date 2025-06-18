@@ -86,6 +86,7 @@ abstract class Element extends Part
 
         $pathsToCheck = [];
         $pathsToCheck[] = $baseSnippetsPath . $this->file;
+        $pathsToCheck[] = $baseSnippetsPath . strtolower($this->name) . '.' . $this->_type . '.' . $this->extension;;
 
         $this->absoluteFilePath = $baseSnippetsPath . $this->file;
         $this->filePath = str_replace($this->config->paths->core, '', $this->absoluteFilePath);
