@@ -17,4 +17,4 @@ use {{$import}};
 
 return (function () {
     {{$script.content}}
-})()($transport->xpdo, $options[xPDOTransport::PACKAGE_ACTION]);
+})()($transport->xpdo, $options[xPDOTransport::PACKAGE_ACTION], $options, $object);
