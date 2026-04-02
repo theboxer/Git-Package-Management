@@ -14,9 +14,11 @@ return new class() {
     /**
     * @param \MODX\Revolution\modX $modx
     * @param int $action
+    * @param array $options
+    * @param array $object
     * @return bool
     */
-    public function __invoke(&$modx, $action)
+    public function __invoke(&$modx, $action, $options, $object)
     {
         $this->modx =& $modx;
         $this->action = $action;
