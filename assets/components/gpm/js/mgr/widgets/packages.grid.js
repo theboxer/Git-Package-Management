@@ -86,6 +86,10 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
                 handler: this.updateRecreate
             });
             m.push({
+                text: _('gpm.package.check_lexicon'),
+                handler: this.checkLexicon
+            });
+            m.push({
                 text: _('gpm.package.uninstall_short'),
                 handler: this.uninstall
             });
@@ -194,6 +198,19 @@ Ext.extend(gpm.grid.Packages, MODx.grid.Grid, {
         );
 
         return true;
-    }
+    },
+
+    checkLexicon: function (btn, e) {
+        if (!this.menu.record) return false;
+
+        gpm.loggedAction(
+            'GitPackage\\CheckLexicon',
+            {
+                id: this.menu.record.id
+            }
+        );
+
+        return true;
+    },
 });
 Ext.reg('gpm-grid-packages', gpm.grid.Packages);
