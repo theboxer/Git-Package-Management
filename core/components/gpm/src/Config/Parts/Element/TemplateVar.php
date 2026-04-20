@@ -56,7 +56,7 @@ class TemplateVar extends Element
         'inputOptionValues' => [Rules::isString],
         'outputType' => [Rules::isString],
         'category' => [Rules::isArray, Rules::categoryExists],
-        'file' => [Rules::isString, Rules::notEmpty, Rules::elementFileExists],
+        'file' => [Rules::isString],
         'properties' => [
             ['rule' => Rules::isArray, 'params' => ['itemRules' => [Rules::configPart]]]
         ],
