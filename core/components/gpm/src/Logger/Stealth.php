@@ -8,7 +8,7 @@ final class Stealth implements LoggerInterface
 {
     use LoggerTrait;
 
-    public function log($level, $message, array $context = [])
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
     }
 }
