@@ -32,6 +32,9 @@ class Build extends Operation {
             $this->builder = new modPackageBuilder($this->modx);
 
             $this->loadSmarty();
+            
+            $this->processEmptyFolders();
+            
             $this->package = $this->createPackage();
 
             $this->packInstallValidator();
@@ -814,6 +817,67 @@ class Build extends Operation {
         } catch (NoUuidException $err) {
             $this->logger->critical('No UUID on ' . $err->getMessage());
         }
+    }
+
+    protected function processEmptyFolders(): void
+    {
+        $emptyFolders = $this->config->build->emptyFolders;
+        if (!empty($emptyFolders)) {
+            $this->logger->notice('Processing emptyFolders');
+            foreach ($emptyFolders as $emptyFolder => $emptyFiles) {
+                $emptyFolder = str_replace('{package_path}', $this->config->paths->package, $emptyFolder);
+                $this->emptyFolder($emptyFolder, $emptyFiles);
+            }
+        }
+    }
+
+    protected function emptyFolder(string $path, string $filemask = '*'): void
+    {
+        if (!is_dir($path)) {
+            return;
+        }
+        
+        $inverse = false;
+        if (strpos($filemask, '!') === 0) {
+            $filemask = substr($filemask, 1);
+            $inverse = true;
+        }
+        
+        $files = glob($path . '/' . $filemask, GLOB_BRACE);
+        if ($inverse) {
+            $allFiles = glob($path . '/*');
+            $files = array_diff($allFiles, $files);
+        }
+        
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                $this->removeDirectory($file);
+                $this->logger->debug('Removed directory: ' . $file);
+            } else {
+                unlink($file);
+                $this->logger->debug('Removed file: ' . $file);
+            }
+        }
+    }
+
+    protected function removeDirectory(string $dir): bool
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+        
+        $files = array_diff(scandir($dir), ['.', '..']);
+        
+        foreach ($files as $file) {
+            $filePath = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($filePath)) {
+                $this->removeDirectory($filePath);
+            } else {
+                unlink($filePath);
+            }
+        }
+        
+        return rmdir($dir);
     }
 
 }
