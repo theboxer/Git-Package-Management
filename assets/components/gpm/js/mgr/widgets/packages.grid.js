@@ -54,11 +54,16 @@ gpm.grid.Packages = function (config) {
                 renderer: Ext.util.Format.dateRenderer( MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format)
             }
         ],
-        tbar: [{
-            text: _('gpm.package.install'),
-            handler: this.installPackage,
-            scope: this
-        }]
+        tbar: [
+            {
+                text: _('gpm.package.install'),
+                handler: this.installPackage,
+                scope: this
+            },
+            '->',
+            this.getQueryFilterField(),
+            this.getClearFiltersButton('filter-query')
+        ]
     });
     gpm.grid.Packages.superclass.constructor.call(this, config);
 };
