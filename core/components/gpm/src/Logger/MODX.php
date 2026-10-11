@@ -28,11 +28,11 @@ final class MODX implements LoggerInterface
     }
 
     /**
-     * @param  string|int  $level
-     * @param  string  $message
-     * @param  array  $context
+     * @param string|int $level
+     * @param string|\Stringable $message
+     * @param array $context
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         $message = str_replace(PHP_EOL, '<br>', $message);
         $message = str_replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;', $message);
