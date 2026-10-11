@@ -53,6 +53,9 @@ class Build extends Part
     /** @var string */
     protected $unInstallValidator = '';
 
+    /** @var array */
+    protected $emptyFolders = [];
+
     protected $rules = [
         'readme' => [Rules::isString, Rules::packageFileExists],
         'license' => [Rules::isString, Rules::packageFileExists],
@@ -67,6 +70,7 @@ class Build extends Part
         'setupOptions' => [Rules::isString, Rules::buildFileExists],
         'installValidator' => [Rules::isString, Rules::scriptExists],
         'unInstallValidator' => [Rules::isString, Rules::scriptExists],
+        'emptyFolders' => [Rules::isArray],
     ];
 
     protected function generator(): void
