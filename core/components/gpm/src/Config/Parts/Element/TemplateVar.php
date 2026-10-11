@@ -46,8 +46,8 @@ class TemplateVar extends Element
     /** @var array */
     protected $templates = [];
 
-    /** @var string */
-    protected $sortOrder = '0';
+    /** @var int */
+    protected $sortOrder = 0;
 
     protected $rules = [
         'name' => [Rules::isString, Rules::notEmpty],
